@@ -1,0 +1,125 @@
+import { useEffect, useMemo, useState } from 'react';
+import { CheckCircle2, Eye, MapPin, Pencil, Plus, Trash2 } from 'lucide-react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import { readStorage, STORAGE_KEYS, writeStorage } from '../utils/storage';
+
+function SellerDashboard() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [listings, setListings] = useState(() => readStorage(STORAGE_KEYS.listings, []));
+  const [selectedListing, setSelectedListing] = useState(location.state?.listing || null);
+  const [deleteTarget, setDeleteTarget] = useState(null);
+
+  useEffect(() => {
+    const stored = readStorage(STORAGE_KEYS.listings, []);
+    setListings(stored);
+    if (!selectedListing && stored[0]) setSelectedListing(stored[0]);
+  }, [location.state?.refreshed, selectedListing]);
+
+  const stats = useMemo(() => ({
+    total: listings.length,
+    available: listings.filter((listing) => listing.status === 'Available').length,
+    sold: listings.filter((listing) => listing.status === 'Sold').length,
+    pending: listings.filter((listing) => listing.status === 'Pending').length,
+  }), [listings]);
+
+  const handleDelete = () => {
+    const nextListings = listings.filter((listing) => listing.id !== deleteTarget.id);
+    writeStorage(STORAGE_KEYS.listings, nextListings);
+    writeStorage(STORAGE_KEYS.lastProperty, nextListings[0] || null);
+    setListings(nextListings);
+    setSelectedListing(nextListings[0] || null);
+    setDeleteTarget(null);
+    toast.success('Listing deleted.');
+  };
+
+  return (
+    <div className="-mx-4 -mt-8 min-h-screen bg-[#FFFEFE] px-4 pb-20 pt-10 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
+      <div className="mx-auto max-w-6xl">
+        <section className="rounded-[32px] bg-ink p-8 text-white shadow-card sm:p-10">
+          <p className="eyebrow text-blue-100">Seller dashboard</p>
+          <h1 className="mt-3 text-4xl font-bold">Your listings remain in motion.</h1>
+          <p className="mt-4 max-w-2xl leading-7 text-white/70">Every listing is now stored in localStorage and can be edited, deleted, or previewed from this polished dashboard.</p>
+        </section>
+
+        <section className="mt-8 grid gap-5 sm:grid-cols-4">
+          {[
+            { label: 'Total Properties', value: stats.total },
+            { label: 'Available', value: stats.available },
+            { label: 'Sold', value: stats.sold },
+            { label: 'Pending', value: stats.pending },
+          ].map((item) => (
+            <div key={item.label} className="rounded-[24px] border border-slate-200 bg-white p-5 shadow-card">
+              <span className="text-sm text-muted">{item.label}</span>
+              <strong className="mt-2 block text-2xl text-ink">{item.value}</strong>
+            </div>
+          ))}
+        </section>
+
+        <div className="mt-8 flex items-center justify-between">
+          <h2 className="text-2xl font-semibold text-ink">Your listings</h2>
+          <button type="button" onClick={() => navigate('/add-property')} className="inline-flex items-center gap-2 rounded-full border border-primary px-5 py-3 font-semibold text-primary hover:bg-blue-50"><Plus size={18} /> Add Property</button>
+        </div>
+
+        <div className="mt-6 grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
+          <div className="space-y-4">
+            {listings.map((listing) => (
+              <article key={listing.id} className="rounded-[24px] border border-slate-200 bg-white p-5 shadow-card">
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                  <div className="flex gap-4">
+                    <img src={listing.images?.[0]?.preview || listing.images?.[0] || 'https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd?auto=format&fit=crop&w=800&q=80'} alt={listing.title} className="h-20 w-24 rounded-2xl object-cover" />
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <h3 className="text-lg font-semibold text-ink">{listing.title}</h3>
+                        <span className={`rounded-full px-3 py-1 text-xs font-semibold ${listing.status === 'Sold' ? 'bg-amber-500/15 text-amber-700' : listing.status === 'Pending' ? 'bg-slate-700/10 text-slate-700' : 'bg-success/15 text-success'}`}>{listing.status}</span>
+                      </div>
+                      <p className="mt-2 flex items-center gap-2 text-sm text-muted"><MapPin size={14} className="text-primary" />{listing.address}, {listing.city}</p>
+                      <p className="mt-2 text-sm text-muted">{listing.price} • {listing.area}</p>
+                    </div>
+                  </div>
+                  <div className="flex gap-2">
+                    <button type="button" onClick={() => navigate(`/property/${listing.id}`)} className="inline-flex items-center gap-2 rounded-full border border-slate-200 px-3 py-2 text-sm font-semibold text-ink"><Eye size={16} /> View</button>
+                    <button type="button" onClick={() => navigate(`/add-property?edit=${listing.id}`)} className="inline-flex items-center gap-2 rounded-full border border-slate-200 px-3 py-2 text-sm font-semibold text-ink"><Pencil size={16} /> Edit</button>
+                    <button type="button" onClick={() => setDeleteTarget(listing)} className="inline-flex items-center gap-2 rounded-full border border-red-200 px-3 py-2 text-sm font-semibold text-danger"><Trash2 size={16} /> Delete</button>
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+
+          <aside className="rounded-[32px] border border-slate-200 bg-white p-6 shadow-card">
+            <p className="eyebrow">Selected listing</p>
+            {selectedListing ? (
+              <>
+                <h3 className="mt-3 text-xl font-semibold text-ink">{selectedListing.title}</h3>
+                <p className="mt-3 text-sm leading-7 text-muted">{selectedListing.description}</p>
+                <div className="mt-6 space-y-3 rounded-[24px] border border-slate-200 bg-slate-50 p-4 text-sm text-slate-700">
+                  <div className="flex items-center justify-between"><span>Price</span><strong>{selectedListing.price}</strong></div>
+                  <div className="flex items-center justify-between"><span>Area</span><strong>{selectedListing.area}</strong></div>
+                  <div className="flex items-center justify-between"><span>Status</span><strong>{selectedListing.status}</strong></div>
+                  <div className="flex items-center justify-between"><span>Location</span><strong>{selectedListing.city}</strong></div>
+                </div>
+              </>
+            ) : <p className="mt-3 text-sm text-muted">Choose a listing to preview its details.</p>}
+          </aside>
+        </div>
+      </div>
+
+      {deleteTarget && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-ink/60 px-4">
+          <div className="w-full max-w-md rounded-[24px] border border-slate-200 bg-white p-6 shadow-card">
+            <h3 className="text-xl font-semibold text-ink">Delete this listing?</h3>
+            <p className="mt-3 text-sm leading-7 text-muted">This will remove the listing from your local dashboard and localStorage.</p>
+            <div className="mt-6 flex justify-end gap-3">
+              <button type="button" onClick={() => setDeleteTarget(null)} className="rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700">Cancel</button>
+              <button type="button" onClick={handleDelete} className="rounded-full bg-danger px-4 py-2 text-sm font-semibold text-white">Delete</button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+export default SellerDashboard;

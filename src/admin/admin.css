@@ -1,0 +1,205 @@
+.admin-app {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f7f9ff 0%, #f4f7fc 100%);
+  color: #0f172a;
+}
+
+.admin-shell {
+  display: flex;
+  min-height: 100vh;
+  background: #f8fafc;
+}
+
+.admin-sidebar {
+  width: 260px;
+  flex-shrink: 0;
+  background: linear-gradient(180deg, #07111f 0%, #0f172a 100%);
+  color: white;
+  min-height: 100vh;
+  padding: 20px 14px;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+.admin-sidebar a,
+.admin-sidebar button {
+  color: #e2e8f0;
+  text-decoration: none;
+  border-radius: 14px;
+  padding: 11px 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  transition: all 0.2s ease;
+}
+
+.admin-sidebar a:hover,
+.admin-sidebar button:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: white;
+}
+
+.admin-sidebar a.active {
+  background: rgba(255, 255, 255, 0.16);
+  color: white;
+  font-weight: 600;
+}
+
+.admin-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.admin-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 15;
+  backdrop-filter: blur(18px);
+  background: rgba(255, 255, 255, 0.9);
+  border-bottom: 1px solid rgba(226, 232, 240, 0.9);
+}
+
+.dashboard-card {
+  border: 0;
+  border-radius: 22px;
+  min-height: 128px;
+  box-shadow: 0 14px 35px rgba(15, 23, 42, 0.08);
+  overflow: hidden;
+}
+
+.dashboard-card .card-body {
+  position: relative;
+  z-index: 1;
+}
+
+.dashboard-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.16), transparent);
+  pointer-events: none;
+}
+
+.stat-pill {
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.18);
+  padding: 6px 10px;
+  font-size: 0.8rem;
+}
+
+.chart-card,
+.data-card,
+.table-card {
+  border: 0;
+  border-radius: 22px;
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.07);
+}
+
+.chart-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  height: 180px;
+  margin-top: 16px;
+}
+
+.chart-bars .bar {
+  flex: 1;
+  border-radius: 999px 999px 10px 10px;
+  background: linear-gradient(180deg, #4f8df6 0%, #2563eb 100%);
+  min-height: 20px;
+  position: relative;
+}
+
+.chart-bars .bar small {
+  position: absolute;
+  bottom: -24px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.78rem;
+  white-space: nowrap;
+}
+
+.table-responsive table {
+  min-width: 700px;
+}
+
+.avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(135deg, #2563eb, #3b82f6);
+}
+
+.badge-soft {
+  background: rgba(37, 99, 235, 0.12);
+  color: #1d4ed8;
+}
+
+.page-title {
+  letter-spacing: -0.02em;
+}
+
+.form-card {
+  border: 0;
+  border-radius: 24px;
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.08);
+}
+
+.input-glow:focus {
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15);
+  border-color: #2563eb;
+}
+
+.image-preview {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 12px;
+}
+
+.image-preview img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: 14px;
+  border: 1px solid #e2e8f0;
+}
+
+.sidebar-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(2, 6, 23, 0.45);
+  z-index: 18;
+}
+
+@media (max-width: 991px) {
+  .admin-sidebar {
+    position: fixed;
+    transform: translateX(-102%);
+    transition: transform 0.25s ease;
+  }
+
+  .admin-sidebar.open {
+    transform: translateX(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .admin-topbar {
+    padding: 12px 14px;
+  }
+
+  .dashboard-card {
+    min-height: 112px;
+  }
+}
