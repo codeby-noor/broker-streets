@@ -8,6 +8,9 @@ export const STORAGE_KEYS = {
   users: 'broker-streets-users',
   currentUserMobile: 'currentUserMobile',
   currentUserId: 'currentUserId',
+  pendingOtpMobile: 'broker-streets-pending-otp-mobile',
+  otpSession: 'broker-streets-otp-session',
+  activeOtpSession: 'broker-streets-active-otp-session',
 };
 
 export function readStorage(key, fallback = null) {
@@ -45,8 +48,19 @@ export function writeUsers(users) {
 }
 
 export function findUserByMobile(mobile) {
+  const normalizedMobile = String(mobile || '').replace(/\D/g, '');
   const users = readUsers();
   if (!Array.isArray(users)) return null;
-  return users.find((user) => String(user.mobile || '') === String(mobile));
+  return users.find((user) => String(user.mobile || '').replace(/\D/g, '') === normalizedMobile);
+}
+
+export function readPendingOtpMobile() {
+  const pendingMobile = readStorage(STORAGE_KEYS.pendingOtpMobile, null);
+  return pendingMobile ? String(pendingMobile).replace(/\D/g, '') : '';
+}
+
+export function writePendingOtpMobile(mobile) {
+  const normalizedMobile = String(mobile || '').replace(/\D/g, '');
+  return writeStorage(STORAGE_KEYS.pendingOtpMobile, normalizedMobile);
 }
 

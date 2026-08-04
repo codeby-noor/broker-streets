@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import LargeButton from '../components/LargeButton';
-import { findUserByMobile } from '../utils/storage';
-import { sendOTP } from '../utils/otpService';
+import { findUserByMobile, writePendingOtpMobile } from '../utils/storage';
+import { normalizeMobile, sendOTP } from '../utils/otpService';
 
 function LoginPage() {
   const navigate = useNavigate();
@@ -11,7 +11,7 @@ function LoginPage() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    const normalizedMobile = String(mobile || '').replace(/\D/g, '');
+    const normalizedMobile = normalizeMobile(mobile);
 
     if (!normalizedMobile) {
       toast.error('Please enter your mobile number');
@@ -25,7 +25,14 @@ function LoginPage() {
       return;
     }
 
-    sendOTP(normalizedMobile);
+    const otpResult = sendOTP(normalizedMobile);
+
+    if (!otpResult.success) {
+      toast.error(otpResult.message);
+      return;
+    }
+
+    writePendingOtpMobile(normalizedMobile);
     toast.success('OTP sent successfully');
     navigate('/otp', {
       state: {

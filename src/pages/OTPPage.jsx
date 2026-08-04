@@ -4,14 +4,15 @@ import LargeButton from '../components/LargeButton';
 import { toast } from 'react-toastify';
 import useCountdown from '../hooks/useCountdown';
 import { useUserStore } from '../store/useUserStore';
-import { STORAGE_KEYS } from '../utils/storage';
-import { resendOTP, verifyOTP } from '../utils/otpService';
+import { findUserByMobile, readPendingOtpMobile, STORAGE_KEYS, writePendingOtpMobile } from '../utils/storage';
+import { normalizeMobile, resendOTP, verifyOTP } from '../utils/otpService';
 
 function OTPPage() {
   const navigate = useNavigate();
   const location = useLocation();
-  const phone = location.state?.phone;
-  const user = location.state?.user;
+  const pendingPhone = readPendingOtpMobile();
+  const phone = location.state?.phone || pendingPhone;
+  const user = location.state?.user || (phone ? findUserByMobile(phone) : null);
 
   const login = useUserStore((state) => state.login);
   const setUser = useUserStore((state) => state.setUser);
@@ -102,10 +103,12 @@ function OTPPage() {
     }
 
     const authenticatedUser = user || { mobile: phone };
+    const normalizedMobile = normalizeMobile(authenticatedUser.mobile || phone || '');
     setUser(authenticatedUser);
     login(authenticatedUser);
-    localStorage.setItem(STORAGE_KEYS.currentUserMobile, String(authenticatedUser.mobile || phone || ''));
+    localStorage.setItem(STORAGE_KEYS.currentUserMobile, normalizedMobile);
     localStorage.setItem(STORAGE_KEYS.currentUserId, authenticatedUser.id || '');
+    writePendingOtpMobile('');
 
     toast.success('Login Successful');
 
@@ -123,6 +126,7 @@ function OTPPage() {
     reset();
     setDigits(['', '', '', '', '', '']);
     resendOTP(phone);
+    writePendingOtpMobile(phone);
     inputsRef.current[0]?.focus();
     toast.info('A new OTP has been sent');
   };
