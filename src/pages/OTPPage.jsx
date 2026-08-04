@@ -4,6 +4,7 @@ import LargeButton from '../components/LargeButton';
 import { toast } from 'react-toastify';
 import useCountdown from '../hooks/useCountdown';
 import { useUserStore } from '../store/useUserStore';
+import { findUserByMobile, STORAGE_KEYS } from '../utils/storage';
 
 function OTPPage() {
   const navigate = useNavigate();
@@ -90,7 +91,16 @@ function OTPPage() {
       return;
     }
 
-    login();
+    const user = phone ? findUserByMobile(phone) : null;
+
+    if (!user) {
+      toast.error('We could not find your account. Please login again.');
+      return;
+    }
+
+    login(user);
+    localStorage.setItem(STORAGE_KEYS.currentUserMobile, String(user.mobile || ''));
+    localStorage.setItem(STORAGE_KEYS.currentUserId, user.id || '');
 
     toast.success('Phone verified successfully');
 

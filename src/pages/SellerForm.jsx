@@ -8,6 +8,7 @@ import {
   gujaratDistricts,
   gujaratSubDistricts,
 } from '../utils/data';
+import { useUserStore } from '../store/useUserStore';
 
 const propertyOptions = [
   'Residential Plots',
@@ -41,6 +42,7 @@ const areaUnits = [
 
 function SellerForm() {
   const navigate = useNavigate();
+  const currentUser = useUserStore((state) => state.user);
 
   const {
   register,
@@ -68,6 +70,9 @@ const selectedDistrict = watch("district");
         const existing = JSON.parse(localStorage.getItem('broker-streets-seller-leads') || '[]');
      const lead = {
   ...data,
+  userId: currentUser?.id || '',
+  ownerName: currentUser?.name || data.name || '',
+  ownerMobile: currentUser?.mobile || data.mobile || '',
   price: data.price,
   priceType: data.priceType,
   propertyImages: images,

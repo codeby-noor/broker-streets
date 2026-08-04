@@ -5,6 +5,9 @@ export const STORAGE_KEYS = {
   sellerSubmitted: 'sellerFormSubmitted',
   listings: 'broker-streets-listings',
   lastProperty: 'broker-streets-last-property',
+  users: 'broker-streets-users',
+  currentUserMobile: 'currentUserMobile',
+  currentUserId: 'currentUserId',
 };
 
 export function readStorage(key, fallback = null) {
@@ -32,3 +35,18 @@ export function appendStorageArray(key, item) {
   writeStorage(key, next);
   return next;
 }
+
+export function readUsers() {
+  return readStorage(STORAGE_KEYS.users, []);
+}
+
+export function writeUsers(users) {
+  return writeStorage(STORAGE_KEYS.users, users);
+}
+
+export function findUserByMobile(mobile) {
+  const users = readUsers();
+  if (!Array.isArray(users)) return null;
+  return users.find((user) => String(user.mobile || '') === String(mobile));
+}
+

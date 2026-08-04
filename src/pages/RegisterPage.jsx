@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -9,33 +8,61 @@ import {
 import LargeButton from '../components/LargeButton';
 import { toast } from 'react-toastify';
 import { useUserStore } from '../store/useUserStore';
+import { readUsers, writeUsers, STORAGE_KEYS } from '../utils/storage';
 
 function RegisterPage() {
   const navigate = useNavigate();
   const setUser = useUserStore((state) => state.setUser);
   const { control, handleSubmit, watch, register, formState: { errors } } = useForm({
     defaultValues: {
-  name: '',
-  mobile: '',
-  email: '',
-  state: 'Gujarat',
-  district: '',
-  subDistrict: '',
-}
+      name: '',
+      mobile: '',
+      whatsapp: '',
+      email: '',
+      state: 'Gujarat',
+      district: '',
+      subDistrict: '',
+    },
   });
 
- const district = watch('district');
+  const district = watch('district');
+
   const onSubmit = (data) => {
-  setUser(data);
+    const normalizedMobile = String(data.mobile || '').replace(/\D/g, '');
+    const existingUsers = readUsers();
+    const duplicate = Array.isArray(existingUsers)
+      ? existingUsers.find((user) => String(user.mobile || '') === normalizedMobile)
+      : null;
 
-  localStorage.setItem('currentUserMobile', data.mobile);
+    if (duplicate) {
+      toast.error('This mobile number is already registered. Please login.');
+      return;
+    }
 
-  toast.success('Registration successful');
+    const userRecord = {
+      id: typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : `user-${Date.now()}`,
+      name: data.name,
+      mobile: normalizedMobile,
+      whatsapp: data.whatsapp || '',
+      email: data.email || '',
+      state: data.state || 'Gujarat',
+      district: data.district || '',
+      subDistrict: data.subDistrict || '',
+      profileImage: '',
+      createdAt: new Date().toISOString(),
+    };
 
-  navigate('/otp', {
-    state: { phone: data.mobile },
-  });
-};
+    writeUsers([...(Array.isArray(existingUsers) ? existingUsers : []), userRecord]);
+    setUser(userRecord);
+    localStorage.setItem(STORAGE_KEYS.currentUserMobile, normalizedMobile);
+    localStorage.setItem(STORAGE_KEYS.currentUserId, userRecord.id);
+
+    toast.success('Registration successful');
+
+    navigate('/otp', {
+      state: { phone: normalizedMobile },
+    });
+  };
 
   return (
     <div className="mx-auto max-w-2xl rounded-[30px] border border-slate-200 bg-white p-8 shadow-sm">
@@ -72,6 +99,14 @@ function RegisterPage() {
           {errors.mobile && <p className="mt-2 text-sm text-red-600">{errors.mobile.message}</p>}
         </div>
         <div>
+          <label className="mb-2 block text-sm font-semibold text-slate-800">WhatsApp Number</label>
+          <input
+            type="tel"
+            {...register('whatsapp')}
+            className="w-full rounded-3xl border border-slate-200 bg-slate-50 px-4 py-4 text-base text-slate-900 outline-none focus:border-primary"
+          />
+        </div>
+        <div>
           <label className="mb-2 block text-sm font-semibold text-slate-800">Email Address (optional)</label>
           <input
             type="email"
@@ -90,65 +125,60 @@ function RegisterPage() {
                 <select
                   {...field}
                   className="w-full rounded-3xl border border-slate-200 bg-slate-50 px-4 py-4 text-base text-slate-900 outline-none focus:border-primary"
-                >{gujaratStateOptions.map((state) => (
-  <option key={state.value} value={state.value}>
-    {state.label}
-  </option>
-))}
-                
+                >
+                  {gujaratStateOptions.map((state) => (
+                    <option key={state.value} value={state.value}>
+                      {state.label}
+                    </option>
+                  ))}
                 </select>
               )}
             />
           </div>
           <div>
-  <label className="mb-2 block text-sm font-semibold text-slate-800">
-    District
-  </label>
-
-  <Controller
-    control={control}
-    name="district"
-    render={({ field }) => (
-      <select
-        {...field}
-        className="w-full rounded-3xl border border-slate-200 bg-slate-50 px-4 py-4 text-base text-slate-900 outline-none focus:border-primary"
-      >
-        <option value="">Select District</option>
-
-        {gujaratDistricts.map((district) => (
-          <option key={district} value={district}>
-            {district}
-          </option>
-        ))}
-      </select>
-    )}
-  />
-</div>
-<div>
-  <label className="mb-2 block text-sm font-semibold text-slate-800">
-    Sub District / Taluka
-  </label>
-
-  <Controller
-    control={control}
-    name="subDistrict"
-    render={({ field }) => (
-      <select
-        {...field}
-        className="w-full rounded-3xl border border-slate-200 bg-slate-50 px-4 py-4 text-base text-slate-900 outline-none focus:border-primary"
-      >
-        <option value="">Select Taluka</option>
-
-        {(gujaratSubDistricts[district] || []).map((taluka) => (
-          <option key={taluka} value={taluka}>
-            {taluka}
-          </option>
-        ))}
-      </select>
-    )}
-  />
-</div>
-          
+            <label className="mb-2 block text-sm font-semibold text-slate-800">District</label>
+            <Controller
+              control={control}
+              name="district"
+              render={({ field }) => (
+                <select
+                  {...field}
+                  className="w-full rounded-3xl border border-slate-200 bg-slate-50 px-4 py-4 text-base text-slate-900 outline-none focus:border-primary"
+                >
+                  <option value="">Select District</option>
+                  {gujaratDistricts.map((districtName) => (
+                    <option key={districtName} value={districtName}>
+                      {districtName}
+                    </option>
+                  ))}
+                </select>
+              )}
+            />
+          </div>
+          <div>
+            <label className="mb-2 block text-sm font-semibold text-slate-800">Sub District / Taluka</label>
+            <Controller
+              control={control}
+              name="subDistrict"
+              render={({ field }) => (
+                <select
+                  {...field}
+                  className="w-full rounded-3xl border border-slate-200 bg-slate-50 px-4 py-4 text-base text-slate-900 outline-none focus:border-primary"
+                >
+                  <option value="">Select Taluka</option>
+                  {(gujaratSubDistricts[district] || []).map((taluka) => (
+                    <option key={taluka} value={taluka}>
+                      {taluka}
+                    </option>
+                  ))}
+                </select>
+              )}
+            />
+          </div>
+        </div>
+        <div className="flex items-center justify-between text-sm text-slate-600">
+          <button type="button" onClick={() => navigate('/login')} className="font-semibold text-primary">Already have an account? Login</button>
+          <button type="button" onClick={() => navigate('/admin/login')} className="font-semibold text-primary">Admin Login</button>
         </div>
         <LargeButton type="submit">Register</LargeButton>
       </form>

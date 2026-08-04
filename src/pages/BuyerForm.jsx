@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { CheckCircle2, ChevronRight, Home, Sparkles } from 'lucide-react';
 import { appendStorageArray, STORAGE_KEYS } from '../utils/storage';
+import { useUserStore } from '../store/useUserStore';
 import {
   gujaratStateOptions,
   gujaratDistricts,
@@ -27,7 +28,17 @@ const propertyTypes = ['Apartment', 'Villa', 'Bungalow', 'Commercial', 'Office',
 
 function BuyerForm() {
   const navigate = useNavigate();
-  const [form, setForm] = useState(initialForm);
+  const currentUser = useUserStore((state) => state.user);
+  const [form, setForm] = useState({
+    ...initialForm,
+    name: currentUser?.name || '',
+    mobile: currentUser?.mobile || '',
+    whatsapp: currentUser?.whatsapp || '',
+    email: currentUser?.email || '',
+    state: currentUser?.state || 'Gujarat',
+    district: currentUser?.district || '',
+    subDistrict: currentUser?.subDistrict || '',
+  });
   const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
 const [isRecording, setIsRecording] = useState(false);
@@ -144,6 +155,7 @@ const stopRecording = () => {
         typeof crypto !== 'undefined' && crypto.randomUUID
           ? crypto.randomUUID()
           : `buyer-${Date.now()}`,
+      userId: currentUser?.id || '',
       ...form,
       voiceRecording: audioUrl,
       createdAt: new Date().toISOString(),
@@ -151,7 +163,7 @@ const stopRecording = () => {
 
     appendStorageArray(STORAGE_KEYS.buyerLeads, lead);
 
-    const mobile = localStorage.getItem('currentUserMobile');
+    const mobile = currentUser?.mobile || localStorage.getItem('currentUserMobile');
 
     if (mobile) {
       localStorage.setItem(`buyerFormSubmitted_${mobile}`, 'true');

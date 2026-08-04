@@ -1,6 +1,7 @@
 import { Route, Routes } from 'react-router-dom';
 import Layout from '../layouts/Layout';
 import RegisterPage from '../pages/RegisterPage';
+import LoginPage from '../pages/LoginPage';
 import OTPPage from '../pages/OTPPage';
 import HomePage from '../pages/HomePage';
 import BuyPage from '../pages/BuyPage';
@@ -24,6 +25,8 @@ function AppRoutes() {
       <Route path="/admin/*" element={<AdminApp />} />
       <Route path="/" element={<Layout />}>
         <Route index element={<RegisterPage />} />
+        <Route path="register" element={<RegisterPage />} />
+        <Route path="login" element={<LoginPage />} />
         <Route path="otp" element={<OTPPage />} />
         <Route path="sell" element={<SellPage />} />
         <Route

@@ -14,12 +14,9 @@ export default function ProtectedRoute() {
   const isAuthenticated = useUserStore((state) => state.isAuthenticated);
   const hasHydrated = useUserStore.persist.hasHydrated();
 
-  console.log("Hydrated:", hasHydrated);
-  console.log("Authenticated:", isAuthenticated);
-
   if (!hasHydrated) {
     return <div>Loading...</div>;
   }
 
-  return isAuthenticated ? <Outlet /> : <Navigate to="/" replace />;
+  return isAuthenticated ? <Outlet /> : <Navigate to="/login" replace />;
 }

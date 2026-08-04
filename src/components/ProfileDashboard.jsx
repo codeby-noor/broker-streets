@@ -200,7 +200,7 @@ function ProfileDashboard() {
 
   const handleLogout = () => {
     logout();
-    navigate('/');
+    navigate('/login');
   };
 
   const handlePhotoUpload = (event) => {

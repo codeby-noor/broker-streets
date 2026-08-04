@@ -26,9 +26,10 @@ export const useUserStore = create(
           user: { ...state.user, ...user },
         })),
 
-      login: () =>
+      login: (user) =>
         set({
           isAuthenticated: true,
+          user: { ...initialUser, ...(user || {}) },
         }),
 
       logout: () =>
