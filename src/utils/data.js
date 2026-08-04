@@ -399,12 +399,13 @@ const propertyImages = [
 ];
 
 export const sampleProperties = Array.from({ length: 24 }, (_, index) => {
-  const location = ['Ahmedabad', 'Surat', 'Vadodara', 'Rajkot'][index % 4];
+  const district = ['Ahmedabad', 'Surat', 'Vadodara', 'Rajkot'][index % 4];
+  const subDistrict = ['Ahmedabad City', 'Adajan', 'Waghodia', 'Rajkot'][index % 4];
   const type = ['Apartment', 'Villa', 'Plot', 'Farm House', 'Commercial', 'Office'][index % 6];
   const bedrooms = 2 + (index % 3);
   const bathrooms = 1 + (index % 2);
   const price = `₹${45 + index * 5} Lakh`;
-  const address = `${['Prahlad Nagar', 'Vesu', 'Alkapuri', 'Kalawad Road'][index % 4]}, ${location}`;
+  const address = `${['Prahlad Nagar', 'Vesu', 'Alkapuri', 'Kalawad Road'][index % 4]}, ${district}`;
   const status = ['Available', 'Pending', 'Sold'][index % 3];
   const image = propertyImages[index % propertyImages.length];
 
@@ -412,8 +413,10 @@ export const sampleProperties = Array.from({ length: 24 }, (_, index) => {
     id: `prop-${index + 1}`,
     title: `${['Light-filled', 'Garden-facing', 'Quiet corner', 'Architect-designed'][index % 4]} ${['Apartment', 'House', 'Villa', 'Office'][index % 4]}`,
     price,
-    location,
-    city: location,
+    location: district,
+    city: district,
+    district,
+    subDistrict,
     type,
     bedrooms,
     bathrooms,
@@ -433,7 +436,7 @@ export const sampleProperties = Array.from({ length: 24 }, (_, index) => {
     sellerName: `Agent ${index + 1}`,
     sellerPhone: `+91 98765 43${100 + index}`,
     sellerEmail: `agent${index + 1}@brokerstreets.in`,
-    mapUrl: `https://www.google.com/maps?q=${encodeURIComponent(`${address}, ${location}`)}&output=embed`,
+    mapUrl: `https://www.google.com/maps?q=${encodeURIComponent(`${address}, ${district}`)}&output=embed`,
     status,
   };
 });
