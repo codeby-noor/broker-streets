@@ -2,13 +2,11 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import LargeButton from '../components/LargeButton';
-import { useUserStore } from '../store/useUserStore';
-import { findUserByMobile, STORAGE_KEYS } from '../utils/storage';
+import { findUserByMobile } from '../utils/storage';
+import { sendOTP } from '../utils/otpService';
 
 function LoginPage() {
   const navigate = useNavigate();
-  const login = useUserStore((state) => state.login);
-  const setUser = useUserStore((state) => state.setUser);
   const [mobile, setMobile] = useState('');
 
   const handleSubmit = (event) => {
@@ -27,12 +25,14 @@ function LoginPage() {
       return;
     }
 
-    setUser(user);
-    login(user);
-    localStorage.setItem(STORAGE_KEYS.currentUserMobile, normalizedMobile);
-    localStorage.setItem(STORAGE_KEYS.currentUserId, user.id || '');
-    toast.success('Login successful');
-    navigate('/home');
+    sendOTP(normalizedMobile);
+    toast.success('OTP sent successfully');
+    navigate('/otp', {
+      state: {
+        phone: normalizedMobile,
+        user,
+      },
+    });
   };
 
   return (

@@ -4,16 +4,19 @@ import LargeButton from '../components/LargeButton';
 import { toast } from 'react-toastify';
 import useCountdown from '../hooks/useCountdown';
 import { useUserStore } from '../store/useUserStore';
-import { findUserByMobile, STORAGE_KEYS } from '../utils/storage';
+import { STORAGE_KEYS } from '../utils/storage';
+import { resendOTP, verifyOTP } from '../utils/otpService';
 
 function OTPPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const phone = location.state?.phone;
+  const user = location.state?.user;
 
   const login = useUserStore((state) => state.login);
+  const setUser = useUserStore((state) => state.setUser);
 
-  const { seconds, reset, isComplete } = useCountdown(30);
+  const { seconds, reset, isComplete } = useCountdown(300);
 
   const [digits, setDigits] = useState(['', '', '', '', '', '']);
   const inputsRef = useRef([]);
@@ -22,7 +25,7 @@ function OTPPage() {
 
   useEffect(() => {
     if (!phone) {
-      navigate('/');
+      navigate('/login');
     }
   }, [phone, navigate]);
 
@@ -91,18 +94,20 @@ function OTPPage() {
       return;
     }
 
-    const user = phone ? findUserByMobile(phone) : null;
+    const verification = verifyOTP({ mobile: phone, otp: code });
 
-    if (!user) {
-      toast.error('We could not find your account. Please login again.');
+    if (!verification.success) {
+      toast.error(verification.message);
       return;
     }
 
-    login(user);
-    localStorage.setItem(STORAGE_KEYS.currentUserMobile, String(user.mobile || ''));
-    localStorage.setItem(STORAGE_KEYS.currentUserId, user.id || '');
+    const authenticatedUser = user || { mobile: phone };
+    setUser(authenticatedUser);
+    login(authenticatedUser);
+    localStorage.setItem(STORAGE_KEYS.currentUserMobile, String(authenticatedUser.mobile || phone || ''));
+    localStorage.setItem(STORAGE_KEYS.currentUserId, authenticatedUser.id || '');
 
-    toast.success('Phone verified successfully');
+    toast.success('Login Successful');
 
     navigate('/home');
   };
@@ -112,16 +117,14 @@ function OTPPage() {
     verifyAndProceed();
   };
 
-  const resendOTP = () => {
+  const resendOTPHandler = () => {
     if (!isComplete) return;
 
     reset();
-
     setDigits(['', '', '', '', '', '']);
-
+    resendOTP(phone);
     inputsRef.current[0]?.focus();
-
-    toast.info('A new code has been sent');
+    toast.info('A new OTP has been sent');
   };
 
   return (
@@ -131,7 +134,10 @@ function OTPPage() {
       </h1>
 
       <p className="mt-2 text-sm text-slate-600">
-        Enter the 6-digit code sent to{' '}
+        Verify your mobile number
+      </p>
+      <p className="mt-2 text-sm text-slate-600">
+        OTP sent to +91{' '}
         <span className="font-semibold text-slate-900">
           {phone}
         </span>
@@ -160,7 +166,7 @@ function OTPPage() {
           <button
             type="button"
             disabled={!isComplete}
-            onClick={resendOTP}
+            onClick={resendOTPHandler}
             className="font-semibold text-primary disabled:cursor-not-allowed disabled:opacity-50"
           >
             Resend OTP
