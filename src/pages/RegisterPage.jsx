@@ -1,7 +1,11 @@
 import { useMemo } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
-import { states } from '../utils/data';
+import {
+  gujaratStateOptions,
+  gujaratDistricts,
+  gujaratSubDistricts,
+} from '../utils/data';
 import LargeButton from '../components/LargeButton';
 import { toast } from 'react-toastify';
 import { useUserStore } from '../store/useUserStore';
@@ -11,17 +15,16 @@ function RegisterPage() {
   const setUser = useUserStore((state) => state.setUser);
   const { control, handleSubmit, watch, register, formState: { errors } } = useForm({
     defaultValues: {
-      name: '',
-      mobile: '',
-      email: '',
-      state: 'gujarat',
-      city: 'Ahmedabad'
-    }
+  name: '',
+  mobile: '',
+  email: '',
+  state: 'Gujarat',
+  district: '',
+  subDistrict: '',
+}
   });
 
-  const selectedState = watch('state');
-  const cities = useMemo(() => states.find((item) => item.value === selectedState)?.cities || [], [selectedState]);
-
+ const district = watch('district');
   const onSubmit = (data) => {
   setUser(data);
 
@@ -87,31 +90,65 @@ function RegisterPage() {
                 <select
                   {...field}
                   className="w-full rounded-3xl border border-slate-200 bg-slate-50 px-4 py-4 text-base text-slate-900 outline-none focus:border-primary"
-                >
-                  {states.map((state) => (
-                    <option key={state.value} value={state.value}>{state.label}</option>
-                  ))}
+                >{gujaratStateOptions.map((state) => (
+  <option key={state.value} value={state.value}>
+    {state.label}
+  </option>
+))}
+                
                 </select>
               )}
             />
           </div>
           <div>
-            <label className="mb-2 block text-sm font-semibold text-slate-800">City</label>
-            <Controller
-              control={control}
-              name="city"
-              render={({ field }) => (
-                <select
-                  {...field}
-                  className="w-full rounded-3xl border border-slate-200 bg-slate-50 px-4 py-4 text-base text-slate-900 outline-none focus:border-primary"
-                >
-                  {cities.map((city) => (
-                    <option key={city} value={city}>{city}</option>
-                  ))}
-                </select>
-              )}
-            />
-          </div>
+  <label className="mb-2 block text-sm font-semibold text-slate-800">
+    District
+  </label>
+
+  <Controller
+    control={control}
+    name="district"
+    render={({ field }) => (
+      <select
+        {...field}
+        className="w-full rounded-3xl border border-slate-200 bg-slate-50 px-4 py-4 text-base text-slate-900 outline-none focus:border-primary"
+      >
+        <option value="">Select District</option>
+
+        {gujaratDistricts.map((district) => (
+          <option key={district} value={district}>
+            {district}
+          </option>
+        ))}
+      </select>
+    )}
+  />
+</div>
+<div>
+  <label className="mb-2 block text-sm font-semibold text-slate-800">
+    Sub District / Taluka
+  </label>
+
+  <Controller
+    control={control}
+    name="subDistrict"
+    render={({ field }) => (
+      <select
+        {...field}
+        className="w-full rounded-3xl border border-slate-200 bg-slate-50 px-4 py-4 text-base text-slate-900 outline-none focus:border-primary"
+      >
+        <option value="">Select Taluka</option>
+
+        {(gujaratSubDistricts[district] || []).map((taluka) => (
+          <option key={taluka} value={taluka}>
+            {taluka}
+          </option>
+        ))}
+      </select>
+    )}
+  />
+</div>
+          
         </div>
         <LargeButton type="submit">Register</LargeButton>
       </form>

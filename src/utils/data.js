@@ -1,6 +1,391 @@
+export const gujaratStateOptions = [{ label: 'Gujarat', value: 'Gujarat' }];
+
+
+export const gujaratDistricts = [
+  'Ahmedabad',
+  'Amreli',
+  'Anand',
+  'Aravalli',
+  'Banaskantha',
+  'Bharuch',
+  'Bhavnagar',
+  'Botad',
+  'Chhota Udepur',
+  'Dahod',
+  'Dang',
+  'Devbhumi Dwarka',
+  'Gandhinagar',
+  'Gir Somnath',
+  'Jamnagar',
+  'Junagadh',
+  'Kheda',
+  'Kutch',
+  'Mahisagar',
+  'Mehsana',
+  'Morbi',
+  'Narmada',
+  'Navsari',
+  'Panchmahal',
+  'Patan',
+  'Porbandar',
+  'Rajkot',
+  'Sabarkantha',
+  'Surat',
+  'Surendranagar',
+  'Tapi',
+  'Vadodara',
+  'Valsad',
+];
+export const gujaratSubDistricts = {
+  Ahmedabad: [
+    "Ahmedabad City",
+    "Daskroi",
+    "Sanand",
+    "Dholka",
+    "Bavla",
+    "Viramgam",
+    "Detroj-Rampura",
+    "Mandal",
+  ],
+
+  Amreli: [
+    "Amreli",
+    "Bagasara",
+    "Babra",
+    "Dhari",
+    "Jafrabad",
+    "Khambha",
+    "Kunkavav",
+    "Lathi",
+    "Lilia",
+    "Rajula",
+    "Savar Kundla",
+  ],
+
+  Anand: [
+    "Anand",
+    "Anklav",
+    "Borsad",
+    "Khambhat",
+    "Petlad",
+    "Sojitra",
+    "Tarapur",
+    "Umreth",
+  ],
+
+  Aravalli: [
+    "Bayad",
+    "Bhiloda",
+    "Dhansura",
+    "Malpur",
+    "Meghraj",
+    "Modasa",
+  ],
+
+  Banaskantha: [
+    "Amirgadh",
+    "Bhabhar",
+    "Danta",
+    "Dantiwada",
+    "Deesa",
+    "Deodar",
+    "Dhanera",
+    "Kankrej",
+    "Lakhani",
+    "Palanpur",
+    "Suigam",
+    "Tharad",
+    "Vadgam",
+    "Vav",
+  ],
+
+  Bharuch: [
+    "Amod",
+    "Ankleshwar",
+    "Bharuch",
+    "Hansot",
+    "Jambusar",
+    "Jhagadia",
+    "Netrang",
+    "Vagra",
+    "Valia",
+  ],
+
+  Bhavnagar: [
+    "Bhavnagar",
+    "Botad",
+    "Gadhada",
+    "Ghogha",
+    "Mahuva",
+    "Palitana",
+    "Sihor",
+    "Talaja",
+    "Umrala",
+    "Vallabhipur",
+  ],
+
+  Botad: [
+    "Barwala",
+    "Botad",
+    "Gadhada",
+    "Ranpur",
+  ],
+
+  "Chhota Udepur": [
+    "Bodeli",
+    "Chhota Udepur",
+    "Jetpur Pavi",
+    "Kavant",
+    "Naswadi",
+    "Sankheda",
+  ],
+
+  Dahod: [
+    "Dahod",
+    "Devgadh Baria",
+    "Dhanpur",
+    "Fatepura",
+    "Garbada",
+    "Jhalod",
+    "Limkheda",
+    "Singvad",
+  ],
+
+  Dang: [
+    "Ahwa",
+    "Subir",
+    "Waghai",
+  ],
+
+  "Devbhumi Dwarka": [
+    "Bhanvad",
+    "Dwarka",
+    "Kalyanpur",
+    "Khambhalia",
+  ],
+
+  Gandhinagar: [
+    "Dehgam",
+    "Gandhinagar",
+    "Kalol",
+    "Mansa",
+  ],
+
+  "Gir Somnath": [
+    "Gir Gadhada",
+    "Kodinar",
+    "Patan-Veraval",
+    "Sutrapada",
+    "Talala",
+    "Una",
+  ],
+
+  Jamnagar: [
+    "Dhrol",
+    "Jamjodhpur",
+    "Jamnagar",
+    "Jodiya",
+    "Kalavad",
+    "Lalpur",
+  ],
+
+  Junagadh: [
+    "Bhesan",
+    "Junagadh",
+    "Keshod",
+    "Malia",
+    "Manavadar",
+    "Mangrol",
+    "Mendarda",
+    "Vanthali",
+    "Visavadar",
+  ],
+
+  Kheda: [
+    "Balasinor",
+    "Galteshwar",
+    "Kapadvanj",
+    "Kathlal",
+    "Kheda",
+    "Mahudha",
+    "Matar",
+    "Mehmedabad",
+    "Nadiad",
+    "Thasra",
+    "Vaso",
+  ],
+
+  Kutch: [
+    "Abdasa",
+    "Anjar",
+    "Bhachau",
+    "Bhuj",
+    "Gandhidham",
+    "Lakhpat",
+    "Mandvi",
+    "Mundra",
+    "Nakhatrana",
+    "Rapar",
+  ],
+
+  Mahisagar: [
+    "Balasinor",
+    "Kadana",
+    "Khanpur",
+    "Lunawada",
+    "Santrampur",
+    "Virpur",
+  ],
+
+  Mehsana: [
+    "Becharaji",
+    "Jotana",
+    "Kadi",
+    "Kheralu",
+    "Mehsana",
+    "Satlasana",
+    "Unjha",
+    "Vadnagar",
+    "Vijapur",
+    "Visnagar",
+  ],
+
+  Morbi: [
+    "Halvad",
+    "Maliya",
+    "Morbi",
+    "Tankara",
+    "Wankaner",
+  ],
+
+  Narmada: [
+    "Dediapada",
+    "Garudeshwar",
+    "Nandod",
+    "Sagbara",
+    "Tilakwada",
+  ],
+
+  Navsari: [
+    "Chikhli",
+    "Gandevi",
+    "Jalalpore",
+    "Khergam",
+    "Navsari",
+    "Vansda",
+  ],
+
+  Panchmahal: [
+    "Ghoghamba",
+    "Godhra",
+    "Halol",
+    "Jambughoda",
+    "Kalol",
+    "Morwa Hadaf",
+    "Shehera",
+  ],
+
+  Patan: [
+    "Chanasma",
+    "Harij",
+    "Patan",
+    "Radhanpur",
+    "Sami",
+    "Santalpur",
+    "Sidhpur",
+  ],
+
+  Porbandar: [
+    "Kutiyana",
+    "Porbandar",
+    "Ranavav",
+  ],
+
+  Rajkot: [
+    "Dhoraji",
+    "Gondal",
+    "Jasdan",
+    "Jetpur",
+    "Kotda Sangani",
+    "Lodhika",
+    "Paddhari",
+    "Rajkot",
+    "Upleta",
+    "Vinchhiya",
+  ],
+
+  Sabarkantha: [
+    "Himatnagar",
+    "Idar",
+    "Khedbrahma",
+    "Poshina",
+    "Prantij",
+    "Talod",
+    "Vadali",
+    "Vijaynagar",
+  ],
+
+  Surat: [
+    "Bardoli",
+    "Choryasi",
+    "Kamrej",
+    "Mahuva",
+    "Mandvi",
+    "Mangrol",
+    "Olpad",
+    "Palsana",
+    "Umarpada",
+  ],
+
+  Surendranagar: [
+    "Chotila",
+    "Dasada",
+    "Dhrangadhra",
+    "Lakhtar",
+    "Limbdi",
+    "Muli",
+    "Sayla",
+    "Surendranagar",
+    "Thangadh",
+    "Wadhwan",
+  ],
+
+  Tapi: [
+    "Dolvan",
+    "Kukarmunda",
+    "Nizar",
+    "Songadh",
+    "Uchchhal",
+    "Valod",
+    "Vyara",
+  ],
+
+  Vadodara: [
+    "Dabhoi",
+    "Desar",
+    "Karjan",
+    "Padra",
+    "Savli",
+    "Sinor",
+    "Vadodara",
+    "Vaghodia",
+  ],
+
+  Valsad: [
+    "Dharampur",
+    "Kaprada",
+    "Pardi",
+    "Umbergaon",
+    "Valsad",
+    "Vapi",
+  ],
+};
+
 export const states = [
-  { label: 'Gujarat', value: 'gujarat', cities: ['Ahmedabad', 'Surat', 'Vadodara', 'Rajkot', 'Bhavnagar', 'Jamnagar', 'Junagadh', 'Anand', 'Gandhinagar', 'Mehsana', 'Morbi', 'Nadiad', 'Bharuch', 'Navsari', 'Valsad', 'Porbandar', 'Palanpur', 'Godhra', 'Botad', 'Amreli'] },
-  { label: 'Maharashtra', value: 'maharashtra', cities: ['Mumbai', 'Pune', 'Nagpur', 'Nashik'] }
+  {
+    label: 'Gujarat',
+    value: 'gujarat',
+  },
 ];
 
 export const propertyTypes = ['Apartment', 'Villa', 'Plot', 'Farm House', 'Commercial', 'Office'];

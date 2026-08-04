@@ -3,6 +3,11 @@ import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import LargeButton from '../components/LargeButton';
 import { toast } from 'react-toastify';
+import {
+  gujaratStateOptions,
+  gujaratDistricts,
+  gujaratSubDistricts,
+} from '../utils/data';
 
 const propertyOptions = [
   'Residential Plots',
@@ -13,42 +18,62 @@ const propertyOptions = [
   'Farmhouse',
 ];
 
-const locationOptions = [
-  'Surat',
-  'Navsari',
-  'Other',
+const pricingTypes = [
+  'Total Property Price',
+  'Per Sq. Ft.',
+  'Per Sq. Yard',
+  'Per Sq. Meter',
+  'Per Acre',
+  'Per Hectare',
+  'Per Guntha',
+  'Per Bigha',
+];
+
+const areaUnits = [
+  'Sq. Ft.',
+  'Sq. Yard',
+  'Sq. Meter',
+  'Acre',
+  'Hectare',
+  'Guntha',
+  'Bigha',
 ];
 
 function SellerForm() {
   const navigate = useNavigate();
 
   const {
-    register,
-    handleSubmit,
-    watch,
-    formState: { errors },
-  } = useForm();
-
+  register,
+  handleSubmit,
+  watch,
+  formState: { errors },
+} = useForm({
+  defaultValues: {
+    state: "Gujarat",
+  },
+});
+const selectedDistrict = watch("district");
   const [submitting, setSubmitting] = useState(false);
-
-  const location = watch('location');
 
 
   const onSubmit = (data) => {
-
     setSubmitting(true);
 
     setTimeout(() => {
-
       setSubmitting(false);
 
-      toast.success(
-        'Your property has been submitted successfully.'
-      );
+      toast.success('Your property has been submitted successfully.');
 
       try {
         const existing = JSON.parse(localStorage.getItem('broker-streets-seller-leads') || '[]');
-        const lead = { ...data, submittedAt: new Date().toISOString() };
+     const lead = {
+  ...data,
+  price: data.price,
+  priceType: data.priceType,
+  propertyImages: images,
+  propertyDocument: document,
+  submittedAt: new Date().toISOString(),
+};
         localStorage.setItem('broker-streets-seller-leads', JSON.stringify([...existing, lead]));
         localStorage.setItem('sellerFormSubmitted', 'true');
         localStorage.setItem('broker-streets-seller-lead', JSON.stringify(lead));
@@ -62,10 +87,7 @@ function SellerForm() {
           data,
         },
       });
-
-
-    },700);
-
+    }, 700);
   };
 
 
@@ -208,98 +230,41 @@ function SellerForm() {
 
 
             <div>
-
-
-              <h3 className="text-xl font-bold text-ink">
-
-                Owner Information
-
-              </h3>
-
-
-
-              <div className="mt-5 grid gap-5 md:grid-cols-2">
-
-
-
+              <h3 className="text-xl font-bold text-ink">Owner Details</h3>
+              <div className="mt-5 space-y-5">
                 <div>
-
-                  <label className="label-style">
-                    Full Name *
-                  </label>
-
-
+                  <label className="label-style">Full Name *</label>
                   <input
-
-                    {...register(
-                      'name',
-                      {
-                        required:
-                        'Name is required'
-                      }
-                    )}
-
+                    {...register('name', { required: 'Name is required' })}
                     className="input-style"
-
                     placeholder="Enter your name"
-
                   />
-
-
-                  {errors.name &&
-                  <p className="error-style">
-                    {errors.name.message}
-                  </p>}
-
-
+                  {errors.name && <p className="error-style">{errors.name.message}</p>}
                 </div>
 
-
-
-
-
                 <div>
-
-                  <label className="label-style">
-                    Mobile Number *
-                  </label>
-
-
+                  <label className="label-style">Mobile Number *</label>
                   <input
-
-                    {...register(
-                      'mobile',
-                      {
-                        required:
-                        'Mobile is required',
-
-                        pattern:{
-                          value:/^[0-9]{10}$/,
-                          message:
-                          'Enter valid 10 digit number'
-                        }
-                      }
-                    )}
-
+                    {...register('mobile', {
+                      required: 'Mobile is required',
+                      pattern: {
+                        value: /^[0-9]{10}$/,
+                        message: 'Enter valid 10 digit number',
+                      },
+                    })}
                     className="input-style"
-
                     placeholder="9876543210"
-
                   />
-
-
-                  {errors.mobile &&
-                  <p className="error-style">
-                    {errors.mobile.message}
-                  </p>}
-
-
+                  {errors.mobile && <p className="error-style">{errors.mobile.message}</p>}
                 </div>
 
                 <div>
-                  <label className="label-style">
-                    Email (optional)
-                  </label>
+                  <label className="label-style">WhatsApp Number</label>
+                  <input {...register('whatsapp')} className="input-style" placeholder="Optional" />
+                </div>
+
+                <div>
+                  <label className="label-style">Email (optional)</label>
                   <input
                     {...register('email', {
                       pattern: {
@@ -312,11 +277,7 @@ function SellerForm() {
                   />
                   {errors.email && <p className="error-style">{errors.email.message}</p>}
                 </div>
-
-
               </div>
-
-
             </div>
 
 
@@ -326,217 +287,215 @@ function SellerForm() {
 
             {/* Property Section */}
 
-
-
             <div>
-
-
-              <h3 className="text-xl font-bold text-ink">
-
-                Property Information
-
-              </h3>
-
-
-
-              <div className="mt-5 grid gap-5 md:grid-cols-2">
-
-
-
-                <input
-
-                  {...register(
-                    'city',
-                    {
-                      required:
-                      'City is required'
-                    }
-                  )}
-
-                  className="input-style"
-
-                  placeholder="City"
-
-                />
-
-
-
-
-
-                <select
-
-                  {...register(
-                    'type',
-                    {
-                      required:
-                      'Select property type'
-                    }
-                  )}
-
-                  className="input-style"
-
-                >
-
-                  <option value="">
-                    Select Property Type
-                  </option>
-
-
-                  {
-                    propertyOptions.map(
-                      item =>
-                      <option key={item}>
-                        {item}
+              <h3 className="text-xl font-bold text-ink">Property Details</h3>
+              <div className="mt-5 space-y-5">
+                <div>
+                  <label className="label-style">State *</label>
+                  <select {...register('state', { required: 'State is required' })} className="input-style">
+                    {gujaratStateOptions.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
                       </option>
-                    )
-                  }
-
-
-                </select>
-
-
-
-
-
-
-                <input
-
-                  {...register('price')}
-
-                  className="input-style"
-
-                  placeholder="Expected Price"
-
-                />
-
-
-
-
-
+                    ))}
+                  </select>
+                  {errors.state && <p className="error-style">{errors.state.message}</p>}
+                </div>
 
                 <div>
+  <label className="label-style">District *</label>
+
+  <select
+    {...register("district", {
+      required: "District is required",
+    })}
+    className="input-style"
+  >
+    <option value="">Select District</option>
+
+    {gujaratDistricts.map((district) => (
+      <option key={district} value={district}>
+        {district}
+      </option>
+    ))}
+  </select>
+
+  {errors.district && (
+    <p className="error-style">
+      {errors.district.message}
+    </p>
+  )}
+</div>
+<div>
   <label className="label-style">
-    Google Maps Link *
+    Sub District / Taluka *
+  </label>
+
+  <select
+    {...register("subDistrict", {
+      required: "Sub District is required",
+    })}
+    className="input-style"
+  >
+    <option value="">Select Sub District</option>
+
+    {gujaratSubDistricts[selectedDistrict]?.map((taluka) => (
+      <option key={taluka} value={taluka}>
+        {taluka}
+      </option>
+    ))}
+  </select>
+
+  {errors.subDistrict && (
+    <p className="error-style">
+      {errors.subDistrict.message}
+    </p>
+  )}
+</div>
+                <div>
+                  <label className="label-style">Property Type *</label>
+                  <select {...register('type', { required: 'Select property type' })} className="input-style">
+                    <option value="">Select Property Type</option>
+                    {propertyOptions.map((item) => (
+                      <option key={item} value={item}>
+                        {item}
+                      </option>
+                    ))}
+                  </select>
+                  {errors.type && <p className="error-style">{errors.type.message}</p>}
+                </div>
+
+                <div>
+  <label className="label-style">Price *</label>
+
+  <input
+    type="number"
+    {...register("price", {
+      required: "Price is required",
+    })}
+    className="input-style"
+    placeholder="e.g. 2300000"
+  />
+
+  {errors.price && (
+    <p className="error-style">{errors.price.message}</p>
+  )}
+</div>
+
+<div>
+  <label className="label-style">Price Type *</label>
+
+  <select
+    {...register("priceType", {
+      required: "Select price type",
+    })}
+    className="input-style"
+  >
+    <option value="">Select Price Type</option>
+    <option>Total Property Price</option>
+    <option>Per Sq. Ft.</option>
+    <option>Per Sq. Yard</option>
+    <option>Per Sq. Meter</option>
+    <option>Per Acre</option>
+    <option>Per Hectare</option>
+    <option>Per Guntha</option>
+    <option>Per Bigha</option>
+  </select>
+
+  {errors.priceType && (
+    <p className="error-style">{errors.priceType.message}</p>
+  )}
+</div>
+
+               
+
+                <div>
+                  <label className="label-style">Google Maps Link *</label>
+                  <input
+                    {...register('mapLink', {
+                      required: 'Google Maps link is required',
+                      pattern: {
+                        value: /^https?:\/\/(www\.)?(google\.[a-z.]+\/maps|maps\.app\.goo\.gl|goo\.gl\/maps|maps\.google\.com).+/i,
+                        message: 'Please enter a valid Google Maps link',
+                      },
+                    })}
+                    className="input-style"
+                    placeholder="https://maps.google.com/..."
+                  />
+                  {errors.mapLink && <p className="error-style">{errors.mapLink.message}</p>}
+                  <p className="mt-2 text-sm text-slate-500">Paste the Google Maps location link of your property.</p>
+                </div>
+
+                <div>
+                  <label className="label-style">Additional Property Details (optional)</label>
+                  <textarea {...register('additionalDetails')} className="input-style min-h-[100px]" placeholder="Parking, size, furnishing, facing, etc." />
+                </div>
+                <div>
+  <label className="label-style">
+    Property Images *
   </label>
 
   <input
-    {...register('mapLink', {
-      required: 'Google Maps link is required',
-      pattern: {
-        value: /^https?:\/\/(www\.)?(google\.[a-z.]+\/maps|maps\.app\.goo\.gl|goo\.gl\/maps|maps\.google\.com).+/i,
-        message: 'Please enter a valid Google Maps link',
+    type="file"
+    multiple
+    accept="image/*"
+    {...register("propertyImages", {
+      required: "Please upload at least one property image",
+      validate: (files) =>
+        files?.length > 0 || "Please upload at least one image",
+    })}
+    className="input-style"
+  />
+
+  <p className="mt-2 text-sm text-slate-500">
+    Upload multiple images (JPG, PNG, WEBP).
+  </p>
+
+  {errors.propertyImages && (
+    <p className="error-style">
+      {errors.propertyImages.message}
+    </p>
+  )}
+</div><div>
+  <label className="label-style">
+    Property Documents (PDF) *
+  </label>
+
+  <input
+    type="file"
+    accept=".pdf"
+    {...register("propertyDocument", {
+      required: "Property document is required",
+      validate: (files) => {
+        if (!files?.length) return "Property document is required";
+
+        const file = files[0];
+
+        if (file.type !== "application/pdf") {
+          return "Only PDF files are allowed";
+        }
+
+        if (file.size > 10 * 1024 * 1024) {
+          return "Maximum file size is 10 MB";
+        }
+
+        return true;
       },
     })}
     className="input-style"
-    placeholder="https://maps.google.com/..."
   />
 
-  {errors.mapLink && (
+  <p className="mt-2 text-sm text-slate-500">
+    Upload Sale Deed, 7/12 Extract, Property Card, NA Order or other ownership proof.
+  </p>
+
+  {errors.propertyDocument && (
     <p className="error-style">
-      {errors.mapLink.message}
+      {errors.propertyDocument.message}
     </p>
   )}
-
-  <p className="mt-2 text-sm text-slate-500">
-    Paste the Google Maps location link of your property.
-  </p>
 </div>
-
               </div>
-
-
-            </div>
-
-
-
-
-
-
-
-
-            {/* Location Section */}
-
-
-
-            <div>
-
-
-              <h3 className="text-xl font-bold text-ink">
-
-                Property Location
-
-              </h3>
-
-
-
-              <div className="mt-5 flex flex-wrap gap-4">
-
-
-              {
-                locationOptions.map(
-                  loc => (
-
-                  <label
-
-                    key={loc}
-
-                    className="flex cursor-pointer items-center gap-3 rounded-2xl border border-slate-200 px-5 py-4"
-
-                  >
-
-                    <input
-
-                      type="radio"
-
-                      value={loc}
-
-                      {...register(
-                        'location',
-                        {
-                          required:
-                          'Select location'
-                        }
-                      )}
-
-                    />
-
-
-                    {loc}
-
-
-                  </label>
-
-                  )
-                )
-              }
-
-
-              </div>
-
-
-
-              {
-                location === 'Other' &&
-
-                <input
-
-                  {...register(
-                    'locationOther',
-                    {
-                      required:
-                      'Specify location'
-                    }
-                  )}
-
-                  className="input-style mt-5"
-
-                  placeholder="Enter location"
-
-                />
-
-              }
-
-
             </div>
 
 
