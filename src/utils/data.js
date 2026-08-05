@@ -388,8 +388,8 @@ export const states = [
   },
 ];
 
-export const propertyTypes = ['Apartment', 'Villa', 'Plot', 'Farm House', 'Commercial', 'Office'];
-export const amenities = ['Lift', 'Parking', 'Garden', 'Security', 'Pet Friendly'];
+export const propertyTypes = ['Agricultural Land', 'Non-Agricultural Land'];
+export const amenities = ['Road access', 'Water source', 'Electricity nearby', 'Clear title', 'Fencing'];
 
 const propertyImages = [
   'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1200&q=85',
@@ -398,7 +398,7 @@ const propertyImages = [
   'https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?auto=format&fit=crop&w=1200&q=85'
 ];
 
-export const sampleProperties = Array.from({ length: 24 }, (_, index) => {
+const legacySampleProperties = Array.from({ length: 24 }, (_, index) => {
   const district = ['Ahmedabad', 'Surat', 'Vadodara', 'Rajkot'][index % 4];
   const subDistrict = ['Ahmedabad City', 'Adajan', 'Waghodia', 'Rajkot'][index % 4];
   const type = ['Apartment', 'Villa', 'Plot', 'Farm House', 'Commercial', 'Office'][index % 6];
@@ -439,6 +439,34 @@ export const sampleProperties = Array.from({ length: 24 }, (_, index) => {
     mapUrl: `https://www.google.com/maps?q=${encodeURIComponent(`${address}, ${district}`)}&output=embed`,
     status,
   };
+});
+
+const landImages = [
+  'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1200&q=85',
+  'https://images.unsplash.com/photo-1488542612085-1342d9baf66e?auto=format&fit=crop&w=1200&q=85',
+  'https://images.unsplash.com/photo-1497864149931-5d6a77a8f7b8?auto=format&fit=crop&w=1200&q=85',
+  'https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=1200&q=85',
+  'https://images.unsplash.com/photo-1445019980597-5f76dbe8cb11?auto=format&fit=crop&w=1200&q=85',
+  'https://images.unsplash.com/photo-1494526585095-c41746248156?auto=format&fit=crop&w=1200&q=85',
+  'https://images.unsplash.com/photo-1460537480680-508c53563a10?auto=format&fit=crop&w=1200&q=85',
+  'https://images.unsplash.com/photo-1556761175-4b46a572b786?auto=format&fit=crop&w=1200&q=85',
+  'https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=1200&q=85',
+];
+const landListingSeed = [
+  ['Mango Farm', 'Navsari', 'Gandevi', 'Agricultural Land', '₹1.25 Cr', '4 Acres'],
+  ['Sugarcane Farm', 'Navsari', 'Chikhli', 'Agricultural Land', '₹88 Lakh', '3 Acres'],
+  ['Banana Farm', 'Navsari', 'Bilimora', 'Agricultural Land', '₹96 Lakh', '2.7 Acres'],
+  ['Cotton Farm', 'Navsari', 'Amalsad', 'Agricultural Land', '₹72 Lakh', '2 Acres'],
+  ['Agricultural Plot', 'Navsari', 'Jalalpore', 'Agricultural Land', '₹48 Lakh', '1.2 Acres'],
+  ['Residential NA Plot', 'Surat', 'Vesu', 'Non-Agricultural Land', '₹1.1 Cr', '540 sq yd'],
+  ['Commercial NA Plot', 'Surat', 'Adajan', 'Non-Agricultural Land', '₹1.45 Cr', '410 sq yd'],
+  ['Industrial NA Plot', 'Surat', 'Piplod', 'Non-Agricultural Land', '₹1.8 Cr', '1 Acre'],
+  ['Investment NA Plot', 'Surat', 'Pal', 'Non-Agricultural Land', '₹84 Lakh', '360 sq yd'],
+];
+export const sampleProperties = landListingSeed.map(([title, city, location, propertyType, price, landArea], index) => {
+  const image = landImages[index % landImages.length];
+  const address = `${location}, ${city}, Gujarat`;
+  return { id: `land-${index + 1}`, title, city, location, district: city, subDistrict: location, type: propertyType, propertyType, price, area: landArea, landArea, googleMaps: `https://www.google.com/maps?q=${encodeURIComponent(address)}`, mapUrl: `https://www.google.com/maps?q=${encodeURIComponent(address)}&output=embed`, description: `${title} with clear access, local connectivity, and verified land details.`, images: [image, landImages[(index + 1) % landImages.length], landImages[(index + 2) % landImages.length]], gallery: [image, landImages[(index + 1) % landImages.length], landImages[(index + 2) % landImages.length]], image, pdf: '#', documentUrl: '#', seller: { name: `Broker Streets Partner ${index + 1}`, phone: `+91 98765 43${100 + index}` }, sellerName: `Broker Streets Partner ${index + 1}`, sellerPhone: `+91 98765 43${100 + index}`, uploadedDate: '2026-08-04', amenities, owner: `Broker Streets Partner ${index + 1}`, verified: true, status: 'Available', address, tags: ['Verified land'] };
 });
 
 export const popularCities = [

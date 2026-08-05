@@ -5,11 +5,12 @@ import { toast } from 'react-toastify';
 import useCountdown from '../hooks/useCountdown';
 import { useUserStore } from '../store/useUserStore';
 import { findUserByMobile, readPendingOtpMobile, STORAGE_KEYS, writePendingOtpMobile } from '../utils/storage';
-import { normalizeMobile, resendOTP, verifyOTP } from '../utils/otpService';
+import { getOtpSessionKey, normalizeMobile, resendOTP, verifyOTP } from '../utils/otpService';
 
 function OTPPage() {
   const navigate = useNavigate();
   const location = useLocation();
+  const [verifying, setVerifying] = useState(false);
   const pendingPhone = readPendingOtpMobile();
   const phone = location.state?.phone || pendingPhone;
   const user = location.state?.user || (phone ? findUserByMobile(phone) : null);
@@ -95,9 +96,11 @@ function OTPPage() {
       return;
     }
 
+    setVerifying(true);
     const verification = verifyOTP({ mobile: phone, otp: code });
 
     if (!verification.success) {
+      setVerifying(false);
       toast.error(verification.message);
       return;
     }
@@ -184,8 +187,8 @@ function OTPPage() {
         </div>
 
         <div className="flex flex-col gap-3 sm:flex-row">
-          <LargeButton type="submit">
-            Verify
+          <LargeButton type="submit" disabled={verifying}>
+            {verifying ? 'Verifying...' : 'Verify'}
           </LargeButton>
 
           <button

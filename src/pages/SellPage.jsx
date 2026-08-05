@@ -1,6 +1,8 @@
 import { sampleProperties } from '../utils/data';
+import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import SectionHeading from '../components/SectionHeading';
+import ContactModal from '../components/ContactModal';
 import PropertyCard from '../components/PropertyCard';
 
 function SellPage() {
@@ -8,6 +10,7 @@ function SellPage() {
   const navigate = useNavigate();
   const justSubmitted = location.state?.justSubmitted;
   const submittedData = location.state?.data;
+  const [contactModal, setContactModal] = useState(null);
 
   return (
     <div className="-mx-4 -mt-8 space-y-16 bg-[#FFFEFE] pb-20 sm:-mx-6 lg:-mx-8">
@@ -46,9 +49,10 @@ function SellPage() {
         </section>
       )}
 
-      <section className="mx-auto max-w-7xl px-6 lg:px-12"><div className="grid gap-12 lg:grid-cols-[0.8fr_1.2fr]"><div><SectionHeading eyebrow="Seller notes" title="Small details make a big difference" /><ul className="mt-6 space-y-4 text-sm leading-6 text-muted"><li className="flex gap-3"><span className="font-bold text-primary">01</span>Keep your expected price realistic for the neighbourhood.</li><li className="flex gap-3"><span className="font-bold text-primary">02</span>Add a clear map link so buyers can understand the location.</li><li className="flex gap-3"><span className="font-bold text-primary">03</span>Share the strongest features of the property in your notes.</li></ul></div><div><SectionHeading eyebrow="Recently sold" title="Local results" /><div className="mt-6 grid gap-4 sm:grid-cols-2">{sampleProperties.slice(0, 2).map((property) => <PropertyCard key={property.id} property={property} />)}</div></div></div></section>
+      <section className="mx-auto max-w-7xl px-6 lg:px-12"><div className="grid gap-12 lg:grid-cols-[0.8fr_1.2fr]"><div><SectionHeading eyebrow="Seller notes" title="Small details make a big difference" /><ul className="mt-6 space-y-4 text-sm leading-6 text-muted"><li className="flex gap-3"><span className="font-bold text-primary">01</span>Keep your expected price realistic for the neighbourhood.</li><li className="flex gap-3"><span className="font-bold text-primary">02</span>Add a clear map link so buyers can understand the location.</li><li className="flex gap-3"><span className="font-bold text-primary">03</span>Share the strongest features of the property in your notes.</li></ul></div><div><SectionHeading eyebrow="Recently sold" title="Local results" /><div className="mt-6 grid gap-4 sm:grid-cols-2">{sampleProperties.slice(0, 2).map((property) => <PropertyCard key={property.id} property={property} onContact={setContactModal} />)}</div></div></div></section>
 
       <section className="mx-6 bg-primary px-6 py-12 text-white sm:mx-10 lg:mx-auto lg:max-w-7xl lg:px-12"><div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between"><div><h2 className="text-3xl font-bold">Ready to take the first step?</h2><p className="mt-2 text-white/75">Tell us about your property and our team will be in touch.</p></div><button type="button" onClick={() => navigate('/seller-form')} className="rounded-full bg-white px-6 py-3.5 font-semibold text-primary">Start Selling</button></div></section>
+      <ContactModal open={Boolean(contactModal)} onClose={() => setContactModal(null)} data={contactModal || {}} title="Contact Seller" />
     </div>
   );
 }

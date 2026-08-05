@@ -8,6 +8,7 @@ import { normalizeMobile, sendOTP } from '../utils/otpService';
 function LoginPage() {
   const navigate = useNavigate();
   const [mobile, setMobile] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -25,14 +26,17 @@ function LoginPage() {
       return;
     }
 
+    setLoading(true);
     const otpResult = sendOTP(normalizedMobile);
 
     if (!otpResult.success) {
+      setLoading(false);
       toast.error(otpResult.message);
       return;
     }
 
     writePendingOtpMobile(normalizedMobile);
+    setLoading(false);
     toast.success('OTP sent successfully');
     navigate('/otp', {
       state: {
@@ -58,7 +62,7 @@ function LoginPage() {
           />
         </div>
         <div className="flex flex-col gap-3 sm:flex-row">
-          <LargeButton type="submit">Login</LargeButton>
+          <LargeButton type="submit" disabled={loading}>{loading ? 'Sending OTP...' : 'Login'}</LargeButton>
           <button type="button" onClick={() => navigate('/register')} className="rounded-3xl border border-slate-200 bg-white px-6 py-4 text-base font-semibold text-slate-900 hover:bg-slate-50">
             Create account
           </button>

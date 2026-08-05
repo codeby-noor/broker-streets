@@ -1,575 +1,210 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
-import LargeButton from '../components/LargeButton';
 import { toast } from 'react-toastify';
-import {
-  gujaratStateOptions,
-  gujaratDistricts,
-  gujaratSubDistricts,
-} from '../utils/data';
+import LargeButton from '../components/LargeButton';
 import { useUserStore } from '../store/useUserStore';
+import { gujaratStateOptions, gujaratDistricts } from '../utils/data';
+import { appendStorageArray, writeStorage, STORAGE_KEYS } from '../utils/storage';
 
-const propertyOptions = [
-  'Residential Plots',
-  'Industrial Plots',
-  'Bungalows',
-  'Commercial Space (Office, Shop)',
-  'Villas',
-  'Farmhouse',
-];
-
-const pricingTypes = [
-  'Total Property Price',
-  'Per Sq. Ft.',
-  'Per Sq. Yard',
-  'Per Sq. Meter',
-  'Per Acre',
-  'Per Hectare',
-  'Per Guntha',
-  'Per Bigha',
-];
-
-const areaUnits = [
-  'Sq. Ft.',
-  'Sq. Yard',
-  'Sq. Meter',
-  'Acre',
-  'Hectare',
-  'Guntha',
-  'Bigha',
-];
+const propertyTypes = ['Agricultural Land', 'Non-Agricultural Land'];
+const priceTypes = ['Total Property Price', 'Per Acre', 'Per Hectare', 'Per Guntha', 'Per Sq. Yard'];
+const metadata = (files) => Array.from(files || []).map((file) => ({ name: file.name, type: file.type, size: file.size, lastModified: file.lastModified }));
 
 function SellerForm() {
   const navigate = useNavigate();
-  const currentUser = useUserStore((state) => state.user);
-
-  const {
-  register,
-  handleSubmit,
-  watch,
-  formState: { errors },
-} = useForm({
-  defaultValues: {
-    state: "Gujarat",
-  },
-});
-const selectedDistrict = watch("district");
+  const user = useUserStore((state) => state.user);
+  const { register, handleSubmit, formState: { errors } } = useForm();
+  const [images, setImages] = useState([]);
+  const [videos, setVideos] = useState([]);
+  const [pdf, setPdf] = useState(null);
   const [submitting, setSubmitting] = useState(false);
 
+  const addFiles = (event, setter, accept) => {
+    const files = Array.from(event.target.files || []).filter((file) => file.type.startsWith(accept));
+    setter((current) => [...current, ...files].map((file) => ({ file, url: URL.createObjectURL(file) })));
+    event.target.value = '';
+  };
+  const removeFile = (setter, index) => setter((current) => current.filter((_, itemIndex) => itemIndex !== index));
 
-  const onSubmit = (data) => {
+  const submit = (data) => {
+    if (!pdf) { toast.error('Please upload a property PDF.'); return; }
     setSubmitting(true);
-
-    setTimeout(() => {
+    const lead = {
+      id: typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : `seller-${Date.now()}`,
+      ...data,
+      userId: user?.id || '', userName: user?.name || '', userMobile: user?.mobile || '', userEmail: user?.email || '',
+      ownerName: user?.name || '', ownerMobile: user?.mobile || '', ownerEmail: user?.email || '',
+      propertyImages: metadata(images.map((item) => item.file)), propertyVideos: metadata(videos.map((item) => item.file)), propertyDocument: metadata([pdf])[0],
+      submittedAt: new Date().toISOString(),
+    };
+    try {
+      appendStorageArray(STORAGE_KEYS.sellerLeads, lead);
+      writeStorage(STORAGE_KEYS.lastProperty, lead);
+    } catch {
+      toast.error('Unable to save the property details.');
       setSubmitting(false);
-
-      toast.success('Your property has been submitted successfully.');
-
-      try {
-        const existing = JSON.parse(localStorage.getItem('broker-streets-seller-leads') || '[]');
-     const lead = {
-  ...data,
-  userId: currentUser?.id || '',
-  ownerName: currentUser?.name || data.name || '',
-  ownerMobile: currentUser?.mobile || data.mobile || '',
-  price: data.price,
-  priceType: data.priceType,
-  propertyImages: images,
-  propertyDocument: document,
-  submittedAt: new Date().toISOString(),
-};
-        localStorage.setItem('broker-streets-seller-leads', JSON.stringify([...existing, lead]));
-        localStorage.setItem('sellerFormSubmitted', 'true');
-        localStorage.setItem('broker-streets-seller-lead', JSON.stringify(lead));
-      } catch (e) {
-        // ignore quota errors
-      }
-
-      navigate('/add-property', {
-        state: {
-          justSubmitted: true,
-          data,
-        },
-      });
-    }, 700);
+      return;
+    }
+    setSubmitting(false);
+    toast.success('Your property has been submitted successfully.');
+    navigate('/add-property', { state: { justSubmitted: true, data: lead } });
   };
 
-
-
-  return (
-
-    <div className="-mx-4 -mt-8 bg-[#FFFEFE] pb-20 sm:-mx-6 lg:-mx-8">
-
-
-      {/* Hero */}
-
-      <section className="bg-ink px-6 py-20 text-white sm:px-10 lg:px-12">
-
-        <div className="mx-auto max-w-6xl">
-
-          <p className="eyebrow text-blue-200">
-            Sell With Broker Streets
-          </p>
-
-
-          <h1 className="mt-4 max-w-3xl text-4xl font-bold leading-tight sm:text-6xl">
-
-            Turn your property into the right opportunity.
-
-          </h1>
-
-
-          <p className="mt-5 max-w-2xl text-lg leading-8 text-white/70">
-
-            Share your property details and connect with genuine
-            buyers through our local real estate network.
-
-          </p>
-
-
-
-          <div className="mt-10 grid gap-4 sm:grid-cols-3">
-
-
-            <div className="rounded-2xl bg-white/10 p-5">
-
-              <p className="text-2xl font-bold">
-                1200+
-              </p>
-
-              <p className="text-sm text-white/70">
-                Buyer enquiries
-              </p>
-
-            </div>
-
-
-
-            <div className="rounded-2xl bg-white/10 p-5">
-
-              <p className="text-2xl font-bold">
-                14 Days
-              </p>
-
-              <p className="text-sm text-white/70">
-                Average response
-              </p>
-
-            </div>
-
-
-
-
-            <div className="rounded-2xl bg-white/10 p-5">
-
-              <p className="text-2xl font-bold">
-                4.8/5
-              </p>
-
-              <p className="text-sm text-white/70">
-                Seller rating
-              </p>
-
-            </div>
-
-
-          </div>
-
-
+  return <div className="-mx-4 -mt-8 bg-[#FFFEFE] pb-20 sm:-mx-6 lg:-mx-8">
+    <section className="bg-ink px-6 py-16 text-white sm:px-10 lg:px-12"><div className="mx-auto max-w-5xl"><p className="eyebrow text-blue-200">Sell land with Broker Streets</p><h1 className="mt-4 text-4xl font-bold sm:text-6xl">List your land with confidence.</h1><p className="mt-4 max-w-2xl text-white/70">Your authenticated profile is attached securely to this listing.</p></div></section>
+    <section className="mx-auto -mt-8 max-w-4xl px-6">
+      <form onSubmit={handleSubmit(submit)} className="space-y-6 rounded-[32px] bg-white p-8 shadow-xl sm:p-10">
+        <div>
+          <p className="eyebrow">Land details</p>
+          <h2 className="mt-2 text-3xl font-bold text-ink">Tell us about your land</h2>
         </div>
 
+        <div className="space-y-5">
+          <label className="block">
+            <span className="field-label">State *</span>
+            <select {...register('state', { required: 'State is required' })} className="field-control w-full">
+              <option value="">Select state</option>
+              {gujaratStateOptions.map((state) => (
+                <option key={state.value} value={state.value}>
+                  {state.label}
+                </option>
+              ))}
+            </select>
+            {errors.state && <p className="error-style">{errors.state.message}</p>}
+          </label>
 
-      </section>
+          <label className="block">
+            <span className="field-label">District *</span>
+            <select {...register('district', { required: 'District is required' })} className="field-control w-full">
+              <option value="">Select district</option>
+              {gujaratDistricts.map((district) => (
+                <option key={district} value={district}>
+                  {district}
+                </option>
+              ))}
+            </select>
+            {errors.district && <p className="error-style">{errors.district.message}</p>}
+          </label>
 
+          <label className="block">
+            <span className="field-label">City *</span>
+            <input
+              {...register('city', { required: 'City is required' })}
+              className="field-control w-full"
+              placeholder="e.g. Surat"
+            />
+            {errors.city && <p className="error-style">{errors.city.message}</p>}
+          </label>
 
+          <label className="block">
+            <span className="field-label">Property Type *</span>
+            <select {...register('type', { required: 'Select a property type' })} className="field-control w-full">
+              <option value="">Select land type</option>
+              {propertyTypes.map((type) => (
+                <option key={type} value={type}>
+                  {type}
+                </option>
+              ))}
+            </select>
+            {errors.type && <p className="error-style">{errors.type.message}</p>}
+          </label>
 
+          <label className="block">
+            <span className="field-label">Price *</span>
+            <input
+              type="number"
+              {...register('price', { required: 'Price is required', min: { value: 1, message: 'Enter a valid price' } })}
+              className="field-control w-full"
+              placeholder="Enter price"
+            />
+            {errors.price && <p className="error-style">{errors.price.message}</p>}
+          </label>
 
+          <label className="block">
+            <span className="field-label">Price Type *</span>
+            <select {...register('priceType', { required: 'Select a price type' })} className="field-control w-full">
+              <option value="">Select price type</option>
+              {priceTypes.map((type) => (
+                <option key={type} value={type}>
+                  {type}
+                </option>
+              ))}
+            </select>
+            {errors.priceType && <p className="error-style">{errors.priceType.message}</p>}
+          </label>
 
-      {/* Form Container */}
+          <label className="block">
+            <span className="field-label">Property Images</span>
+            <input type="file" accept="image/*" multiple onChange={(event) => addFiles(event, setImages, 'image/')} className="field-control w-full" />
+            {images.length === 0 && <p className="mt-1 text-xs text-slate-500">Upload one or more image files.</p>}
+            {images.length > 0 && (
+              <div className="mt-3 grid gap-3 sm:grid-cols-2">
+                {images.map((item, index) => (
+                  <div key={item.url} className="space-y-2">
+                    <img src={item.url} alt="Property upload" className="h-36 w-full rounded-3xl object-cover" />
+                    <button type="button" onClick={() => removeFile(setImages, index)} className="text-sm font-semibold text-red-600">Remove image</button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </label>
 
-      <section className="mx-auto -mt-10 max-w-5xl px-6 lg:px-12">
+          <label className="block">
+            <span className="field-label">Property Videos</span>
+            <input type="file" accept="video/*" multiple onChange={(event) => addFiles(event, setVideos, 'video/')} className="field-control w-full" />
+            {videos.length > 0 && (
+              <div className="mt-3 space-y-3">
+                {videos.map((item, index) => (
+                  <div key={item.url}>
+                    <video controls src={item.url} className="h-48 w-full rounded-3xl bg-slate-900" />
+                    <button type="button" onClick={() => removeFile(setVideos, index)} className="mt-2 text-sm font-semibold text-red-600">Remove video</button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </label>
 
-
-        <div className="rounded-[32px] bg-white p-6 shadow-xl sm:p-10">
-
-
-
-          <div className="border-b border-slate-200 pb-6">
-
-            <p className="eyebrow">
-              Property Details
-            </p>
-
-
-            <h2 className="mt-3 text-3xl font-bold text-ink">
-
-              Tell us about your property
-
-            </h2>
-
-
-            <p className="mt-3 text-muted">
-
-              Fields marked with * are required.
-
-            </p>
-
-
-          </div>
-
-
-
-
-
-          <form
-            onSubmit={handleSubmit(onSubmit)}
-            className="mt-8 space-y-10"
-          >
-
-
-
-
-
-            {/* Owner Section */}
-
-
-            <div>
-              <h3 className="text-xl font-bold text-ink">Owner Details</h3>
-              <div className="mt-5 space-y-5">
-                <div>
-                  <label className="label-style">Full Name *</label>
-                  <input
-                    {...register('name', { required: 'Name is required' })}
-                    className="input-style"
-                    placeholder="Enter your name"
-                  />
-                  {errors.name && <p className="error-style">{errors.name.message}</p>}
-                </div>
-
-                <div>
-                  <label className="label-style">Mobile Number *</label>
-                  <input
-                    {...register('mobile', {
-                      required: 'Mobile is required',
-                      pattern: {
-                        value: /^[0-9]{10}$/,
-                        message: 'Enter valid 10 digit number',
-                      },
-                    })}
-                    className="input-style"
-                    placeholder="9876543210"
-                  />
-                  {errors.mobile && <p className="error-style">{errors.mobile.message}</p>}
-                </div>
-
-                <div>
-                  <label className="label-style">WhatsApp Number</label>
-                  <input {...register('whatsapp')} className="input-style" placeholder="Optional" />
-                </div>
-
-                <div>
-                  <label className="label-style">Email (optional)</label>
-                  <input
-                    {...register('email', {
-                      pattern: {
-                        value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                        message: 'Enter a valid email address',
-                      },
-                    })}
-                    className="input-style"
-                    placeholder="name@example.com"
-                  />
-                  {errors.email && <p className="error-style">{errors.email.message}</p>}
+          <label className="block">
+            <span className="field-label">Property PDF *</span>
+            <input type="file" accept="application/pdf,.pdf" onChange={(event) => setPdf(event.target.files?.[0] || null)} className="field-control w-full" />
+            {pdf && (
+              <div className="mt-3 rounded-3xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm">
+                <div className="flex items-center justify-between gap-4">
+                  <span className="truncate">{pdf.name}</span>
+                  <button type="button" onClick={() => setPdf(null)} className="text-red-600">Remove PDF</button>
                 </div>
               </div>
-            </div>
-
-
-
-
-
-
-            {/* Property Section */}
-
-            <div>
-              <h3 className="text-xl font-bold text-ink">Property Details</h3>
-              <div className="mt-5 space-y-5">
-                <div>
-                  <label className="label-style">State *</label>
-                  <select {...register('state', { required: 'State is required' })} className="input-style">
-                    {gujaratStateOptions.map((option) => (
-                      <option key={option.value} value={option.value}>
-                        {option.label}
-                      </option>
-                    ))}
-                  </select>
-                  {errors.state && <p className="error-style">{errors.state.message}</p>}
-                </div>
-
-                <div>
-  <label className="label-style">District *</label>
-
-  <select
-    {...register("district", {
-      required: "District is required",
-    })}
-    className="input-style"
-  >
-    <option value="">Select District</option>
-
-    {gujaratDistricts.map((district) => (
-      <option key={district} value={district}>
-        {district}
-      </option>
-    ))}
-  </select>
-
-  {errors.district && (
-    <p className="error-style">
-      {errors.district.message}
-    </p>
-  )}
-</div>
-<div>
-  <label className="label-style">
-    Sub District / Taluka *
-  </label>
-
-  <select
-    {...register("subDistrict", {
-      required: "Sub District is required",
-    })}
-    className="input-style"
-  >
-    <option value="">Select Sub District</option>
-
-    {gujaratSubDistricts[selectedDistrict]?.map((taluka) => (
-      <option key={taluka} value={taluka}>
-        {taluka}
-      </option>
-    ))}
-  </select>
-
-  {errors.subDistrict && (
-    <p className="error-style">
-      {errors.subDistrict.message}
-    </p>
-  )}
-</div>
-                <div>
-                  <label className="label-style">Property Type *</label>
-                  <select {...register('type', { required: 'Select property type' })} className="input-style">
-                    <option value="">Select Property Type</option>
-                    {propertyOptions.map((item) => (
-                      <option key={item} value={item}>
-                        {item}
-                      </option>
-                    ))}
-                  </select>
-                  {errors.type && <p className="error-style">{errors.type.message}</p>}
-                </div>
-
-                <div>
-  <label className="label-style">Price *</label>
-
-  <input
-    type="number"
-    {...register("price", {
-      required: "Price is required",
-    })}
-    className="input-style"
-    placeholder="e.g. 2300000"
-  />
-
-  {errors.price && (
-    <p className="error-style">{errors.price.message}</p>
-  )}
-</div>
-
-<div>
-  <label className="label-style">Price Type *</label>
-
-  <select
-    {...register("priceType", {
-      required: "Select price type",
-    })}
-    className="input-style"
-  >
-    <option value="">Select Price Type</option>
-    <option>Total Property Price</option>
-    <option>Per Sq. Ft.</option>
-    <option>Per Sq. Yard</option>
-    <option>Per Sq. Meter</option>
-    <option>Per Acre</option>
-    <option>Per Hectare</option>
-    <option>Per Guntha</option>
-    <option>Per Bigha</option>
-  </select>
-
-  {errors.priceType && (
-    <p className="error-style">{errors.priceType.message}</p>
-  )}
-</div>
-
-               
-
-                <div>
-                  <label className="label-style">Google Maps Link *</label>
-                  <input
-                    {...register('mapLink', {
-                      required: 'Google Maps link is required',
-                      pattern: {
-                        value: /^https?:\/\/(www\.)?(google\.[a-z.]+\/maps|maps\.app\.goo\.gl|goo\.gl\/maps|maps\.google\.com).+/i,
-                        message: 'Please enter a valid Google Maps link',
-                      },
-                    })}
-                    className="input-style"
-                    placeholder="https://maps.google.com/..."
-                  />
-                  {errors.mapLink && <p className="error-style">{errors.mapLink.message}</p>}
-                  <p className="mt-2 text-sm text-slate-500">Paste the Google Maps location link of your property.</p>
-                </div>
-
-                <div>
-                  <label className="label-style">Additional Property Details (optional)</label>
-                  <textarea {...register('additionalDetails')} className="input-style min-h-[100px]" placeholder="Parking, size, furnishing, facing, etc." />
-                </div>
-                <div>
-  <label className="label-style">
-    Property Images *
-  </label>
-
-  <input
-    type="file"
-    multiple
-    accept="image/*"
-    {...register("propertyImages", {
-      required: "Please upload at least one property image",
-      validate: (files) =>
-        files?.length > 0 || "Please upload at least one image",
-    })}
-    className="input-style"
-  />
-
-  <p className="mt-2 text-sm text-slate-500">
-    Upload multiple images (JPG, PNG, WEBP).
-  </p>
-
-  {errors.propertyImages && (
-    <p className="error-style">
-      {errors.propertyImages.message}
-    </p>
-  )}
-</div><div>
-  <label className="label-style">
-    Property Documents (PDF) *
-  </label>
-
-  <input
-    type="file"
-    accept=".pdf"
-    {...register("propertyDocument", {
-      required: "Property document is required",
-      validate: (files) => {
-        if (!files?.length) return "Property document is required";
-
-        const file = files[0];
-
-        if (file.type !== "application/pdf") {
-          return "Only PDF files are allowed";
-        }
-
-        if (file.size > 10 * 1024 * 1024) {
-          return "Maximum file size is 10 MB";
-        }
-
-        return true;
-      },
-    })}
-    className="input-style"
-  />
-
-  <p className="mt-2 text-sm text-slate-500">
-    Upload Sale Deed, 7/12 Extract, Property Card, NA Order or other ownership proof.
-  </p>
-
-  {errors.propertyDocument && (
-    <p className="error-style">
-      {errors.propertyDocument.message}
-    </p>
-  )}
-</div>
-              </div>
-            </div>
-
-
-
-
-
-
-
-
-            {/* Buttons */}
-
-
-
-            <div className="flex flex-wrap gap-4">
-
-
-              <LargeButton type="submit" disabled={submitting}>
-
-                {
-                  submitting
-                  ?
-                  'Submitting...'
-                  :
-                  'Submit Property'
-                }
-
-              </LargeButton>
-
-
-
-
-              <button
-
-                type="button"
-
-                onClick={
-                  ()=>navigate('/home')
-                }
-
-                className="rounded-3xl border border-slate-200 px-8 py-4 font-semibold"
-
-              >
-
-                Cancel
-
-              </button>
-
-
-            </div>
-
-
-
-          </form>
-
-
-
+            )}
+          </label>
+
+          <label className="block">
+            <span className="field-label">Google Maps Link *</span>
+            <input
+              {...register('mapLink', { required: 'Google Maps link is required', pattern: { value: /^https?:\/\//i, message: 'Enter a valid URL' } })}
+              className="field-control w-full"
+              placeholder="https://maps.google.com/..."
+            />
+            {errors.mapLink && <p className="error-style">{errors.mapLink.message}</p>}
+          </label>
+
+          <label className="block">
+            <span className="field-label">Additional Details</span>
+            <textarea
+              {...register('additionalDetails')}
+              rows="4"
+              className="field-control w-full resize-y"
+              placeholder="Land area, road access, water source, title details..."
+            />
+          </label>
         </div>
 
-
-
-      </section>
-
-
-
-    </div>
-
-  );
-
+        <div className="flex justify-end">
+          <LargeButton type="submit" disabled={submitting}>{submitting ? 'Submitting...' : 'Submit Property'}</LargeButton>
+        </div>
+      </form>
+    </section>
+  </div>;
 }
-
 
 export default SellerForm;

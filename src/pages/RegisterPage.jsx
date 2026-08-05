@@ -1,31 +1,24 @@
-import { useForm, Controller } from 'react-hook-form';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import {
-  gujaratStateOptions,
-  gujaratDistricts,
-  gujaratSubDistricts,
-} from '../utils/data';
 import LargeButton from '../components/LargeButton';
 import { toast } from 'react-toastify';
+import { useForm } from 'react-hook-form';
 import { useUserStore } from '../store/useUserStore';
-import { readUsers, writeUsers, STORAGE_KEYS } from '../utils/storage';
+import { readUsers, writeUsers, STORAGE_KEYS, writePendingOtpMobile } from '../utils/storage';
+import { sendOTP } from '../utils/otpService';
 
 function RegisterPage() {
   const navigate = useNavigate();
   const setUser = useUserStore((state) => state.setUser);
-  const { control, handleSubmit, watch, register, formState: { errors } } = useForm({
+  const [submitting, setSubmitting] = useState(false);
+  const { handleSubmit, register, formState: { errors } } = useForm({
     defaultValues: {
       name: '',
       mobile: '',
-      whatsapp: '',
       email: '',
-      state: 'Gujarat',
-      district: '',
-      subDistrict: '',
+      city: '',
     },
   });
-
-  const district = watch('district');
 
   const onSubmit = (data) => {
     const normalizedMobile = String(data.mobile || '').replace(/\D/g, '');
@@ -43,11 +36,10 @@ function RegisterPage() {
       id: typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : `user-${Date.now()}`,
       name: data.name,
       mobile: normalizedMobile,
-      whatsapp: data.whatsapp || '',
+      whatsapp: '',
       email: data.email || '',
-      state: data.state || 'Gujarat',
-      district: data.district || '',
-      subDistrict: data.subDistrict || '',
+      city: data.city,
+      state: 'Gujarat', district: '', subDistrict: '',
       profileImage: '',
       createdAt: new Date().toISOString(),
     };
@@ -57,10 +49,22 @@ function RegisterPage() {
     localStorage.setItem(STORAGE_KEYS.currentUserMobile, normalizedMobile);
     localStorage.setItem(STORAGE_KEYS.currentUserId, userRecord.id);
 
+    setSubmitting(true);
+    const otpResult = sendOTP(normalizedMobile);
+
+    if (!otpResult.success) {
+      setSubmitting(false);
+      toast.error(otpResult.message);
+      return;
+    }
+
+    writePendingOtpMobile(normalizedMobile);
+    setSubmitting(false);
+
     toast.success('Registration successful');
 
     navigate('/otp', {
-      state: { phone: normalizedMobile },
+      state: { phone: normalizedMobile, user: userRecord },
     });
   };
 
@@ -81,7 +85,7 @@ function RegisterPage() {
       </div>
       <form onSubmit={handleSubmit(onSubmit)} className="mt-8 space-y-6">
         <div>
-          <label className="mb-2 block text-sm font-semibold text-slate-800">Full Name</label>
+          <label className="mb-2 block text-sm font-semibold text-slate-800">Full Name *</label>
           <input
             type="text"
             {...register('name', { required: 'Full Name is required' })}
@@ -89,8 +93,9 @@ function RegisterPage() {
           />
           {errors.name && <p className="mt-2 text-sm text-red-600">{errors.name.message}</p>}
         </div>
+
         <div>
-          <label className="mb-2 block text-sm font-semibold text-slate-800">Mobile Number</label>
+          <label className="mb-2 block text-sm font-semibold text-slate-800">Mobile Number *</label>
           <input
             type="tel"
             {...register('mobile', { required: 'Mobile is required', pattern: { value: /^[0-9]{10}$/, message: 'Enter a valid 10-digit mobile number' } })}
@@ -98,16 +103,9 @@ function RegisterPage() {
           />
           {errors.mobile && <p className="mt-2 text-sm text-red-600">{errors.mobile.message}</p>}
         </div>
+
         <div>
-          <label className="mb-2 block text-sm font-semibold text-slate-800">WhatsApp Number</label>
-          <input
-            type="tel"
-            {...register('whatsapp')}
-            className="w-full rounded-3xl border border-slate-200 bg-slate-50 px-4 py-4 text-base text-slate-900 outline-none focus:border-primary"
-          />
-        </div>
-        <div>
-          <label className="mb-2 block text-sm font-semibold text-slate-800">Email Address (optional)</label>
+          <label className="mb-2 block text-sm font-semibold text-slate-800">Email Address (Optional)</label>
           <input
             type="email"
             {...register('email', { pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: 'Enter a valid email address' } })}
@@ -115,72 +113,23 @@ function RegisterPage() {
           />
           {errors.email && <p className="mt-2 text-sm text-red-600">{errors.email.message}</p>}
         </div>
-        <div className="grid gap-6 md:grid-cols-2">
-          <div>
-            <label className="mb-2 block text-sm font-semibold text-slate-800">State</label>
-            <Controller
-              control={control}
-              name="state"
-              render={({ field }) => (
-                <select
-                  {...field}
-                  className="w-full rounded-3xl border border-slate-200 bg-slate-50 px-4 py-4 text-base text-slate-900 outline-none focus:border-primary"
-                >
-                  {gujaratStateOptions.map((state) => (
-                    <option key={state.value} value={state.value}>
-                      {state.label}
-                    </option>
-                  ))}
-                </select>
-              )}
-            />
-          </div>
-          <div>
-            <label className="mb-2 block text-sm font-semibold text-slate-800">District</label>
-            <Controller
-              control={control}
-              name="district"
-              render={({ field }) => (
-                <select
-                  {...field}
-                  className="w-full rounded-3xl border border-slate-200 bg-slate-50 px-4 py-4 text-base text-slate-900 outline-none focus:border-primary"
-                >
-                  <option value="">Select District</option>
-                  {gujaratDistricts.map((districtName) => (
-                    <option key={districtName} value={districtName}>
-                      {districtName}
-                    </option>
-                  ))}
-                </select>
-              )}
-            />
-          </div>
-          <div>
-            <label className="mb-2 block text-sm font-semibold text-slate-800">Sub District / Taluka</label>
-            <Controller
-              control={control}
-              name="subDistrict"
-              render={({ field }) => (
-                <select
-                  {...field}
-                  className="w-full rounded-3xl border border-slate-200 bg-slate-50 px-4 py-4 text-base text-slate-900 outline-none focus:border-primary"
-                >
-                  <option value="">Select Taluka</option>
-                  {(gujaratSubDistricts[district] || []).map((taluka) => (
-                    <option key={taluka} value={taluka}>
-                      {taluka}
-                    </option>
-                  ))}
-                </select>
-              )}
-            />
-          </div>
+
+        <div>
+          <label className="mb-2 block text-sm font-semibold text-slate-800">City *</label>
+          <input
+            type="text"
+            {...register('city', { required: 'City is required' })}
+            className="w-full rounded-3xl border border-slate-200 bg-slate-50 px-4 py-4 text-base text-slate-900 outline-none focus:border-primary"
+          />
+          {errors.city && <p className="mt-2 text-sm text-red-600">{errors.city.message}</p>}
         </div>
-        <div className="flex items-center justify-between text-sm text-slate-600">
-          <button type="button" onClick={() => navigate('/login')} className="font-semibold text-primary">Already have an account? Login</button>
-          <button type="button" onClick={() => navigate('/admin/login')} className="font-semibold text-primary">Admin Login</button>
+
+        <div className="flex flex-col gap-4 pt-2 text-sm text-slate-600">
+          <button type="button" onClick={() => navigate('/login')} className="font-semibold text-primary text-left">Already have an account? Login</button>
+          <button type="button" onClick={() => navigate('/admin/login')} className="font-semibold text-primary text-left">Admin Login</button>
         </div>
-        <LargeButton type="submit">Register</LargeButton>
+
+        <LargeButton type="submit" disabled={submitting}>{submitting ? 'Registering...' : 'Register'}</LargeButton>
       </form>
     </div>
   );

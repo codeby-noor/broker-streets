@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useState } from 'react';
-import { CheckCircle2, Eye, MapPin, Pencil, Plus, Trash2 } from 'lucide-react';
+import { Eye, MapPin, Pencil, Plus, Trash2 } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { readStorage, STORAGE_KEYS, writeStorage } from '../utils/storage';
+import { onListingsChanged, readStorage, STORAGE_KEYS, writeStorage } from '../utils/storage';
+import AsyncImage from '../components/AsyncImage';
 
 function SellerDashboard() {
   const navigate = useNavigate();
@@ -15,7 +16,19 @@ function SellerDashboard() {
     const stored = readStorage(STORAGE_KEYS.listings, []);
     setListings(stored);
     if (!selectedListing && stored[0]) setSelectedListing(stored[0]);
-  }, [location.state?.refreshed, selectedListing]);
+  }, [location.state?.refreshed]);
+
+  useEffect(() => {
+    const cleanup = onListingsChanged(() => {
+      const stored = readStorage(STORAGE_KEYS.listings, []);
+      setListings(stored);
+      setSelectedListing((current) => {
+        if (!current) return stored[0] || null;
+        return stored.find((item) => item.id === current.id) || stored[0] || null;
+      });
+    });
+    return cleanup;
+  }, []);
 
   const stats = useMemo(() => ({
     total: listings.length,
@@ -32,6 +45,33 @@ function SellerDashboard() {
     setSelectedListing(nextListings[0] || null);
     setDeleteTarget(null);
     toast.success('Listing deleted.');
+  };
+
+  const handleDuplicate = (listing) => {
+    const duplicate = {
+      ...listing,
+      id: `listing-${Date.now()}`,
+      title: `${listing.title} (Copy)`,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+    const nextListings = [duplicate, ...listings];
+    writeStorage(STORAGE_KEYS.listings, nextListings);
+    setListings(nextListings);
+    setSelectedListing(duplicate);
+    toast.success('Listing duplicated.');
+  };
+
+  const handleToggleStatus = (listing) => {
+    const nextListings = listings.map((item) =>
+      item.id === listing.id
+        ? { ...item, status: item.status === 'Sold' ? 'Available' : 'Sold', updatedAt: new Date().toISOString() }
+        : item
+    );
+    writeStorage(STORAGE_KEYS.listings, nextListings);
+    setListings(nextListings);
+    setSelectedListing((current) => (current?.id === listing.id ? nextListings.find((item) => item.id === listing.id) : current));
+    toast.success(`Listing marked ${listing.status === 'Sold' ? 'available' : 'sold'}.`);
   };
 
   return (
@@ -68,7 +108,7 @@ function SellerDashboard() {
               <article key={listing.id} className="rounded-[24px] border border-slate-200 bg-white p-5 shadow-card">
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                   <div className="flex gap-4">
-                    <img src={listing.images?.[0]?.preview || listing.images?.[0] || 'https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd?auto=format&fit=crop&w=800&q=80'} alt={listing.title} className="h-20 w-24 rounded-2xl object-cover" />
+                    <AsyncImage property={listing} alt={listing.title} className="h-20 w-24 rounded-2xl object-cover" containerClassName="h-20 w-24 overflow-hidden rounded-2xl" />
                     <div>
                       <div className="flex items-center gap-2">
                         <h3 className="text-lg font-semibold text-ink">{listing.title}</h3>
@@ -78,9 +118,11 @@ function SellerDashboard() {
                       <p className="mt-2 text-sm text-muted">{listing.price} • {listing.area}</p>
                     </div>
                   </div>
-                  <div className="flex gap-2">
+                  <div className="flex flex-wrap gap-2">
                     <button type="button" onClick={() => navigate(`/property/${listing.id}`)} className="inline-flex items-center gap-2 rounded-full border border-slate-200 px-3 py-2 text-sm font-semibold text-ink"><Eye size={16} /> View</button>
                     <button type="button" onClick={() => navigate(`/add-property?edit=${listing.id}`)} className="inline-flex items-center gap-2 rounded-full border border-slate-200 px-3 py-2 text-sm font-semibold text-ink"><Pencil size={16} /> Edit</button>
+                    <button type="button" onClick={() => handleDuplicate(listing)} className="inline-flex items-center gap-2 rounded-full border border-slate-200 px-3 py-2 text-sm font-semibold text-ink">Duplicate</button>
+                    <button type="button" onClick={() => handleToggleStatus(listing)} className="inline-flex items-center gap-2 rounded-full border border-slate-200 px-3 py-2 text-sm font-semibold text-ink">{listing.status === 'Sold' ? 'Mark Available' : 'Mark Sold'}</button>
                     <button type="button" onClick={() => setDeleteTarget(listing)} className="inline-flex items-center gap-2 rounded-full border border-red-200 px-3 py-2 text-sm font-semibold text-danger"><Trash2 size={16} /> Delete</button>
                   </div>
                 </div>

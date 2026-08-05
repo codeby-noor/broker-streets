@@ -4,13 +4,18 @@ import { STORAGE_KEYS } from './storage';
 const OTP_TTL_MS = 5 * 60 * 1000;
 const OTP_LOCK_MS = 10 * 60 * 1000;
 const MAX_ATTEMPTS = 5;
-const DEV_OTP_LOG = import.meta.env.DEV;
+const OTP_DEBUG = import.meta.env.DEV;
+
+function logOtp(stage, details) {
+  if (!OTP_DEBUG) return;
+  console.info(`[OTP] ${stage}`, details);
+}
 
 export function normalizeMobile(mobile) {
   return String(mobile || '').replace(/\D/g, '');
 }
 
-function getSessionKey(mobile) {
+export function getOtpSessionKey(mobile) {
   const normalizedMobile = normalizeMobile(mobile);
   return `${STORAGE_KEYS.otpSession || 'broker-streets-otp-session'}:${normalizedMobile}`;
 }
@@ -19,21 +24,17 @@ function readSession(mobile) {
   const normalizedMobile = normalizeMobile(mobile);
 
   try {
-    const stored = window.localStorage.getItem(getSessionKey(normalizedMobile));
-    if (stored) {
-      return JSON.parse(stored);
-    }
+    const sessionKey = getOtpSessionKey(normalizedMobile);
+    const rawSession = window.localStorage.getItem(sessionKey);
+    logOtp('readSession() localStorage lookup', { normalizedMobile, sessionKey, rawSession });
 
-    const activeSession = window.localStorage.getItem(STORAGE_KEYS.activeOtpSession);
-    if (!activeSession) return null;
+    if (!rawSession) return null;
 
-    const parsed = JSON.parse(activeSession);
-    if (parsed && normalizeMobile(parsed.mobile) === normalizedMobile) {
-      return parsed;
-    }
-
-    return null;
+    const session = JSON.parse(rawSession);
+    logOtp('Session loaded from localStorage', { normalizedMobile, sessionKey, session });
+    return session;
   } catch (error) {
+    logOtp('Unable to load OTP session', { normalizedMobile, error });
     return null;
   }
 }
@@ -46,10 +47,21 @@ function writeSession(mobile, session) {
       ...session,
       mobile: normalizedMobile,
     };
-    window.localStorage.setItem(getSessionKey(normalizedMobile), JSON.stringify(payload));
-    window.localStorage.setItem(STORAGE_KEYS.activeOtpSession, JSON.stringify(payload));
-    return true;
+    const sessionKey = getOtpSessionKey(normalizedMobile);
+    const savedJson = JSON.stringify(payload);
+    window.localStorage.setItem(sessionKey, savedJson);
+    const rawSession = window.localStorage.getItem(sessionKey);
+    const saved = rawSession === savedJson;
+    logOtp('writeSession() localStorage write', {
+      normalizedMobile,
+      sessionKey,
+      savedJson,
+      rawSession,
+      saved,
+    });
+    return saved;
   } catch (error) {
+    logOtp('Unable to save OTP session', { normalizedMobile, error });
     return false;
   }
 }
@@ -58,16 +70,12 @@ function clearSession(mobile) {
   const normalizedMobile = normalizeMobile(mobile);
 
   try {
-    window.localStorage.removeItem(getSessionKey(normalizedMobile));
-    const activeSession = window.localStorage.getItem(STORAGE_KEYS.activeOtpSession);
-    if (activeSession) {
-      const parsed = JSON.parse(activeSession);
-      if (normalizeMobile(parsed.mobile) === normalizedMobile) {
-        window.localStorage.removeItem(STORAGE_KEYS.activeOtpSession);
-      }
-    }
+    const sessionKey = getOtpSessionKey(normalizedMobile);
+    logOtp('clearSession() called', { normalizedMobile, sessionKey });
+    window.localStorage.removeItem(sessionKey);
     return true;
   } catch (error) {
+    logOtp('Unable to clear OTP session', { normalizedMobile, error });
     return false;
   }
 }
@@ -101,16 +109,32 @@ export function sendOTP(mobile) {
   };
 
   const saved = writeSession(normalizedMobile, session);
+  const storedSession = readSession(normalizedMobile);
+  const sessionPersisted = Boolean(
+    storedSession
+      && storedSession.mobile === normalizedMobile
+      && storedSession.otp === otp
+  );
 
-  if (!saved) {
+  logOtp('sendOTP()', {
+    normalizedMobile,
+    generatedOtp: otp,
+    sessionKey: getOtpSessionKey(normalizedMobile),
+    session,
+    saved,
+    storedSession,
+    sessionPersisted,
+  });
+
+  if (!saved || !sessionPersisted) {
     return {
       success: false,
       message: 'Unable to save OTP session. Please try again.',
     };
   }
 
-  if (DEV_OTP_LOG) {
-    console.info(`[OTP] Development OTP: ${otp}`);
+  if (OTP_DEBUG) {
+    console.info('Development OTP:', otp);
     toast.info(`Development OTP: ${otp}`);
   }
 
@@ -126,24 +150,45 @@ export function verifyOTP({ mobile, otp }) {
   const normalizedMobile = normalizeMobile(mobile);
   const session = readSession(normalizedMobile);
 
+  logOtp('verifyOTP()', {
+    normalizedMobile,
+    sessionKey: getOtpSessionKey(normalizedMobile),
+    storedOtp: session?.otp,
+    enteredOtp: String(otp ?? ''),
+    expiry: session?.expiresAt,
+    attempts: session?.attempts,
+    used: session?.used,
+    locked: isLocked(session),
+    session,
+  });
+
   if (!session) {
+    logOtp('Verification result', { success: false, reason: 'session not found' });
     return { success: false, message: 'OTP expired or not found. Please request a new one.' };
   }
 
   if (isLocked(session)) {
+    logOtp('Verification result', { success: false, reason: 'session locked' });
     return { success: false, message: 'Too many attempts. Please try again later.' };
   }
 
   if (session.used) {
+    logOtp('Verification result', { success: false, reason: 'session already used' });
     return { success: false, message: 'OTP has already been used.' };
   }
 
   if (isExpired(session)) {
     clearSession(normalizedMobile);
+    logOtp('Verification result', { success: false, reason: 'session expired' });
     return { success: false, message: 'OTP expired. Please request a new one.' };
   }
 
-  if (String(session.otp) !== String(otp)) {
+  const storedOtp = String(session.otp ?? '');
+  const enteredOtp = String(otp ?? '').trim();
+  const matches = storedOtp === enteredOtp;
+  logOtp('OTP comparison', { storedOtp, enteredOtp, matches });
+
+  if (!matches) {
     const nextAttempts = (session.attempts || 0) + 1;
     const nextSession = {
       ...session,
@@ -154,9 +199,11 @@ export function verifyOTP({ mobile, otp }) {
     writeSession(normalizedMobile, nextSession);
 
     if (nextAttempts >= MAX_ATTEMPTS) {
+      logOtp('Verification result', { success: false, reason: 'maximum attempts reached', attempts: nextAttempts });
       return { success: false, message: 'Too many attempts. Please try again later.' };
     }
 
+    logOtp('Verification result', { success: false, reason: 'OTP mismatch', attempts: nextAttempts });
     return { success: false, message: 'Invalid OTP' };
   }
 
@@ -169,6 +216,7 @@ export function verifyOTP({ mobile, otp }) {
 
   writeSession(normalizedMobile, verifiedSession);
 
+  logOtp('Verification result', { success: true });
   return { success: true, message: 'OTP verified successfully' };
 }
 

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -34,7 +34,9 @@ import {
   Upload,
 } from 'lucide-react';
 import { useUserStore } from '../store/useUserStore';
-import { readStorage, writeStorage, STORAGE_KEYS } from '../utils/storage';
+import { readStorage, writeStorage, STORAGE_KEYS, getBuyerLeads, getNotifications, getSavedProperties, getRecentlyViewed, onBuyerLeadsChanged, onNotificationsChanged, onSavedPropertiesChanged, onRecentlyViewedChanged, removeBuyerLead, removeSavedProperty, onListingsChanged } from '../utils/storage';
+import AsyncImage from '../components/AsyncImage';
+import ContactModal from '../components/ContactModal';
 import '../styles/profile-dashboard.css';
 
 const sidebarItems = [
@@ -142,12 +144,14 @@ function ProfileDashboard() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [profile, setProfile] = useState({ ...initialProfileState, ...user, joinedDate: user.createdAt || '2026-01-15' });
   const [listings, setListings] = useState(() => readStorage(STORAGE_KEYS.listings, sampleListings));
-  const [buyerRequests] = useState(sampleBuyerRequests);
-  const [saved] = useState(sampleSaved);
-  const [recent] = useState(sampleRecent);
-  const [notifications, setNotifications] = useState(sampleNotifications);
+  const [buyerRequests, setBuyerRequests] = useState(() => getBuyerLeads() || sampleBuyerRequests);
+  const [saved, setSaved] = useState(() => getSavedProperties() || sampleSaved);
+  const [recent, setRecent] = useState(() => getRecentlyViewed() || sampleRecent);
+  const [notifications, setNotifications] = useState(() => getNotifications() || sampleNotifications);
   const [isEditingProfile, setIsEditingProfile] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState(null);
+  const [contactModal, setContactModal] = useState(null);
+  const audioRefs = useRef({});
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -164,6 +168,22 @@ function ProfileDashboard() {
   useEffect(() => {
     setProfile((current) => ({ ...current, ...user, joinedDate: user.createdAt || current.joinedDate || '2026-01-15' }));
   }, [user]);
+
+  useEffect(() => {
+    const savedCleanup = onSavedPropertiesChanged(() => setSaved(getSavedProperties() || sampleSaved));
+    const recentCleanup = onRecentlyViewedChanged(() => setRecent(getRecentlyViewed() || sampleRecent));
+    const buyerLeadsCleanup = onBuyerLeadsChanged(() => setBuyerRequests(getBuyerLeads() || sampleBuyerRequests));
+    const notificationsCleanup = onNotificationsChanged(() => setNotifications(getNotifications() || sampleNotifications));
+    const listingsCleanup = onListingsChanged(() => setListings(readStorage(STORAGE_KEYS.listings, sampleListings)));
+
+    return () => {
+      savedCleanup();
+      recentCleanup();
+      buyerLeadsCleanup();
+      notificationsCleanup();
+      listingsCleanup();
+    };
+  }, []);
 
   const summary = useMemo(() => ({
     listed: listings.length,
@@ -186,21 +206,42 @@ function ProfileDashboard() {
   };
 
   const handleDeleteListing = (listing) => {
-    setListings((current) => current.filter((item) => item.id !== listing.id));
+    const nextListings = (readStorage(STORAGE_KEYS.listings, sampleListings) || []).filter((item) => item.id !== listing.id);
+    writeStorage(STORAGE_KEYS.listings, nextListings);
+    setListings(nextListings);
     setDeleteTarget(null);
   };
 
+  const handleDeleteBuyerRequest = (request) => {
+    const next = removeBuyerLead(request.id);
+    setBuyerRequests(next);
+  };
+
   const markNotificationRead = (id) => {
-    setNotifications((current) => current.map((item) => item.id === id ? { ...item, read: true } : item));
+    const next = notifications.map((item) => (item.id === id ? { ...item, read: true } : item));
+    setNotifications(next);
+    writeStorage(STORAGE_KEYS.notifications, next);
   };
 
   const deleteNotification = (id) => {
-    setNotifications((current) => current.filter((item) => item.id !== id));
+    const next = notifications.filter((item) => item.id !== id);
+    setNotifications(next);
+    writeStorage(STORAGE_KEYS.notifications, next);
   };
 
   const handleLogout = () => {
     logout();
     navigate('/login');
+  };
+
+  const handlePlayAudio = (id) => {
+    const player = audioRefs.current[id];
+    if (player) player.play();
+  };
+
+  const handlePauseAudio = (id) => {
+    const player = audioRefs.current[id];
+    if (player) player.pause();
   };
 
   const handlePhotoUpload = (event) => {
@@ -305,7 +346,7 @@ function ProfileDashboard() {
               {listings.map((listing) => (
                 <div key={listing.id} className="rounded-[28px] border border-slate-200 bg-slate-50 p-3 shadow-sm">
                   <div className="dashboard-image-grid">
-                    <img src={listing.images[0]} alt={listing.title} />
+                    <AsyncImage property={listing} alt={listing.title} className="h-full w-full object-cover rounded-xl" containerClassName="h-16 w-16 overflow-hidden rounded-xl" />
                     <div className="flex flex-col gap-2">
                       <div className="rounded-[22px] border border-slate-200 bg-white p-3">
                         <p className="text-sm font-semibold text-slate-900">{listing.title}</p>
@@ -367,19 +408,19 @@ function ProfileDashboard() {
                   {request.audio ? (
                     <div className="mt-4 rounded-2xl border border-slate-200 bg-white p-3">
                       <p className="text-sm font-semibold text-slate-900">Voice Recording</p>
-                      <audio controls className="mt-3 w-full">
+                      <audio controls className="mt-3 w-full" ref={(el) => { if (el) audioRefs.current[request.id] = el; }}>
                         <source src={request.audio} />
                       </audio>
                       <div className="mt-3 flex gap-2">
-                        <button type="button" className="dashboard-action-btn bg-primary text-white">Play</button>
-                        <button type="button" className="dashboard-action-btn bg-slate-100 text-slate-800">Pause</button>
+                        <button type="button" onClick={() => handlePlayAudio(request.id)} className="dashboard-action-btn bg-primary text-white">Play</button>
+                        <button type="button" onClick={() => handlePauseAudio(request.id)} className="dashboard-action-btn bg-slate-100 text-slate-800">Pause</button>
                         <span className="rounded-full bg-blue-50 px-3 py-2 text-sm font-semibold text-blue-700">{request.duration}</span>
                       </div>
                     </div>
                   ) : null}
                   <div className="mt-4 flex gap-2">
-                    <button type="button" className="dashboard-action-btn bg-white text-slate-700">Edit</button>
-                    <button type="button" className="dashboard-action-btn bg-rose-50 text-rose-700">Delete</button>
+                    <button type="button" onClick={() => navigate('/buyer-requirements')} className="dashboard-action-btn bg-white text-slate-700">View</button>
+                    <button type="button" onClick={() => handleDeleteBuyerRequest(request)} className="dashboard-action-btn bg-rose-50 text-rose-700">Delete</button>
                   </div>
                 </div>
               ))}
@@ -402,16 +443,16 @@ function ProfileDashboard() {
             <div className="grid gap-4 md:grid-cols-2">
               {saved.map((item) => (
                 <div key={item.id} className="rounded-[24px] border border-slate-200 bg-slate-50 p-3">
-                  <img src={item.image} alt={item.title} className="h-40 w-full rounded-[20px] object-cover" />
+                  <AsyncImage property={item} alt={item.title} className="h-40 w-full rounded-[20px] object-cover" />
                   <div className="mt-3">
                     <p className="text-lg font-semibold text-slate-900">{item.title}</p>
                     <p className="mt-1 flex items-center gap-2 text-sm text-slate-600"><MapPin size={16} /> {item.location}</p>
                     <p className="mt-2 text-sm font-semibold text-primary">₹{item.price.toLocaleString()}</p>
                   </div>
                   <div className="mt-4 flex flex-wrap gap-2">
-                    <button type="button" className="dashboard-action-btn bg-white text-slate-700">View Property</button>
-                    <button type="button" className="dashboard-action-btn bg-slate-900 text-white">Contact Seller</button>
-                    <button type="button" className="dashboard-action-btn bg-rose-50 text-rose-700">Remove</button>
+                    <button type="button" onClick={() => navigate(`/property/${item.id}`)} className="dashboard-action-btn bg-white text-slate-700">View Property</button>
+                    <button type="button" onClick={() => setContactModal(item)} className="dashboard-action-btn bg-slate-900 text-white">Contact Seller</button>
+                    <button type="button" onClick={() => { const next = removeSavedProperty(item.id); setSaved(next); }} className="dashboard-action-btn bg-rose-50 text-rose-700">Remove</button>
                   </div>
                 </div>
               ))}
@@ -435,7 +476,7 @@ function ProfileDashboard() {
               {recent.map((item) => (
                 <div key={item.id} className="dashboard-list-item">
                   <div className="flex items-center gap-3">
-                    <img src={item.image} alt={item.title} className="h-14 w-14 rounded-2xl object-cover" />
+                    <AsyncImage property={item} alt={item.title} className="h-14 w-14 rounded-2xl object-cover" containerClassName="h-14 w-14 overflow-hidden rounded-2xl" />
                     <div>
                       <p className="font-semibold text-slate-900">{item.title}</p>
                       <p className="text-sm text-slate-600">{item.location}</p>
@@ -555,7 +596,7 @@ function ProfileDashboard() {
                 <p className="eyebrow">Dashboard Overview</p>
                 <h2 className="text-2xl font-semibold text-slate-900">Welcome back, {profile.name || 'there'}.</h2>
               </div>
-              <button type="button" className="dashboard-action-btn bg-primary text-white flex items-center gap-2">
+              <button type="button" onClick={() => navigate('/add-property')} className="dashboard-action-btn bg-primary text-white flex items-center gap-2">
                 <PlusCircle size={16} /> New Listing
               </button>
             </div>
@@ -700,6 +741,7 @@ function ProfileDashboard() {
           </motion.div>
         ) : null}
       </AnimatePresence>
+      <ContactModal open={Boolean(contactModal)} onClose={() => setContactModal(null)} data={contactModal || {}} title="Contact Seller" />
     </div>
   );
 }

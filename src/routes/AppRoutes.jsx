@@ -15,6 +15,7 @@ import BuyerForm from '../pages/BuyerForm';
 import SellerForm from '../pages/SellerForm';
 import AddPropertyPage from '../pages/AddPropertyPage';
 import SellerDashboard from '../pages/SellerDashboard';
+import BuyerRequirementsPage from '../pages/BuyerRequirementsPage';
 import FormGuard from '../components/FormGuard';
 import ProtectedRoute from './ProtectedRoute';
 import AdminApp from '../admin/AdminApp';
@@ -82,6 +83,7 @@ function AppRoutes() {
           <Route path="about" element={<AboutPage />} />
           <Route path="contact" element={<ContactPage />} />
           <Route path="profile" element={<ProfilePage />} />
+          <Route path="buyer-requirements" element={<BuyerRequirementsPage />} />
         </Route>
         <Route path="*" element={<NotFoundPage />} />
       </Route>
