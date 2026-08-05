@@ -69,8 +69,9 @@ function RegisterPage() {
   };
 
   return (
-    <div className="mx-auto max-w-2xl rounded-[30px] border border-slate-200 bg-white p-8 shadow-sm">
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+    <div className="min-h-[calc(100vh-160px)] flex items-center justify-center px-4 py-10 sm:px-6">
+      <div className="w-full max-w-2xl rounded-[30px] border border-slate-200 bg-white p-8 shadow-sm">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <h1 className="text-3xl font-semibold text-slate-900">Register</h1>
           <p className="mt-2 text-sm text-slate-600">Enter your details to start buying or selling property.</p>
@@ -131,6 +132,7 @@ function RegisterPage() {
 
         <LargeButton type="submit" disabled={submitting}>{submitting ? 'Registering...' : 'Register'}</LargeButton>
       </form>
+      </div>
     </div>
   );
 }

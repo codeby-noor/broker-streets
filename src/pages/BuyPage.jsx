@@ -215,6 +215,24 @@ function BuyPage() {
           </button>
         </div>
 
+        {mobileFilters ? (
+          <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-950/70 px-4 py-6 sm:px-6">
+            <div className="mx-auto max-w-md rounded-[32px] bg-white p-6 shadow-xl">
+              <div className="flex items-center justify-between gap-4">
+                <div>
+                  <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-800">Filters</p>
+                  <p className="text-sm text-slate-600">Refine your search before browsing listings.</p>
+                </div>
+                <button type="button" onClick={() => setMobileFilters(false)} className="rounded-full border border-slate-200 bg-slate-50 p-3 text-slate-700 transition hover:bg-slate-100">Close</button>
+              </div>
+              <div className="mt-6">{filters}</div>
+              <div className="mt-6 flex justify-end">
+                <button type="button" onClick={() => setMobileFilters(false)} className="rounded-full bg-primary px-5 py-3 text-sm font-semibold text-white transition hover:bg-primary-dark">Apply filters</button>
+              </div>
+            </div>
+          </div>
+        ) : null}
+
         <div className="grid gap-10 lg:grid-cols-[280px_1fr]">
           <aside className="hidden self-start border border-stone-200 bg-white p-6 shadow-card lg:sticky lg:top-24 lg:block">{filters}</aside>
           <div className="space-y-7">

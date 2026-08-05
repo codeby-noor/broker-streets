@@ -47,10 +47,11 @@ function LoginPage() {
   };
 
   return (
-    <div className="mx-auto max-w-xl rounded-[30px] border border-slate-200 bg-white p-8 shadow-sm">
-      <h1 className="text-3xl font-semibold text-slate-900">Login</h1>
-      <p className="mt-2 text-sm text-slate-600">Enter your registered mobile number to continue to Broker Streets.</p>
-      <form onSubmit={handleSubmit} className="mt-8 space-y-6">
+    <div className="min-h-[calc(100vh-160px)] flex items-center justify-center px-4 py-10 sm:px-6">
+      <div className="w-full max-w-xl rounded-[30px] border border-slate-200 bg-white p-8 shadow-sm">
+        <h1 className="text-3xl font-semibold text-slate-900">Login</h1>
+        <p className="mt-2 text-sm text-slate-600">Enter your registered mobile number to continue to Broker Streets.</p>
+        <form onSubmit={handleSubmit} className="mt-8 space-y-6">
         <div>
           <label className="mb-2 block text-sm font-semibold text-slate-800">Mobile Number</label>
           <input
@@ -68,6 +69,7 @@ function LoginPage() {
           </button>
         </div>
       </form>
+      </div>
     </div>
   );
 }
