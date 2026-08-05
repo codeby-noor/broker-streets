@@ -4,7 +4,8 @@ import { STORAGE_KEYS } from './storage';
 const OTP_TTL_MS = 5 * 60 * 1000;
 const OTP_LOCK_MS = 10 * 60 * 1000;
 const MAX_ATTEMPTS = 5;
-const OTP_DEBUG = import.meta.env.DEV;
+const ENV_ENABLE_DEV_OTP = String(import.meta.env.VITE_ENABLE_DEV_OTP || '').toLowerCase();
+const OTP_DEBUG = ENV_ENABLE_DEV_OTP !== 'false' && (import.meta.env.DEV || ENV_ENABLE_DEV_OTP === 'true');
 
 function logOtp(stage, details) {
   if (!OTP_DEBUG) return;
@@ -140,9 +141,9 @@ export function sendOTP(mobile) {
 
   return {
     success: true,
-    otp,
     expiresAt: session.expiresAt,
     message: 'OTP sent successfully',
+    ...(OTP_DEBUG ? { otp } : {}),
   };
 }
 
