@@ -304,7 +304,7 @@ function ProfileDashboard() {
                   ['email', 'Email', 'email'],
                   ['state', 'State', 'text'],
                   ['district', 'District', 'text'],
-                  ['subDistrict', 'Sub District', 'text'],
+                  ['subDistrict', 'Taluka', 'text'],
                   ['joinedDate', 'Joined Date', 'text'],
                 ].map(([field, label, type]) => (
                   <label key={field} className="space-y-2 text-sm font-medium text-slate-700">
@@ -630,7 +630,7 @@ function ProfileDashboard() {
               <div className="flex items-center gap-2"><UserCircle2 size={16} /> {profile.name || 'Broker Streets User'}</div>
               <div className="flex items-center gap-2"><Mail size={16} /> {profile.email || 'No email added'}</div>
               <div className="flex items-center gap-2"><Phone size={16} /> {profile.mobile || 'No mobile added'}</div>
-              <div className="flex items-center gap-2"><MapPin size={16} /> {profile.district || 'District not set'}, {profile.subDistrict || 'Sub district not set'}</div>
+              <div className="flex items-center gap-2"><MapPin size={16} /> {profile.district || 'District not set'}, {profile.subDistrict || 'Taluka not set'}</div>
               <div className="flex items-center gap-2"><CalendarDays size={16} /> Joined {profile.joinedDate || '2026-01-15'}</div>
             </div>
           </div>

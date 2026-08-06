@@ -16,6 +16,7 @@ import SellerForm from '../pages/SellerForm';
 import AddPropertyPage from '../pages/AddPropertyPage';
 import SellerDashboard from '../pages/SellerDashboard';
 import BuyerRequirementsPage from '../pages/BuyerRequirementsPage';
+import LocationDetailsPage from '../pages/LocationDetailsPage';
 import FormGuard from '../components/FormGuard';
 import ProtectedRoute from './ProtectedRoute';
 import AdminApp from '../admin/AdminApp';
@@ -69,6 +70,14 @@ function AppRoutes() {
             element={
               <FormGuard flagKey="buyerFormSubmitted" formPath="/buyer-form" requireSubmitted={true}>
                 <BuyPage />
+              </FormGuard>
+            }
+          />
+          <Route
+            path="location/:slug"
+            element={
+              <FormGuard flagKey="buyerFormSubmitted" formPath="/buyer-form" requireSubmitted={true}>
+                <LocationDetailsPage />
               </FormGuard>
             }
           />

@@ -35,7 +35,6 @@ function BuyPage() {
   const [sort, setSort] = useState('relevance');
   const [page, setPage] = useState(1);
   const [mobileFilters, setMobileFilters] = useState(false);
-  const [showSold, setShowSold] = useState(false);
   const [loading, setLoading] = useState(true);
   const [contactModal, setContactModal] = useState(null);
   const [listings, setListings] = useState(() => {
@@ -64,11 +63,15 @@ function BuyPage() {
     const minimum = Number(minPrice) || 0;
     const maximum = Number(maxPrice) || Number.POSITIVE_INFINITY;
 
-    return sampleProperties.filter((property) => {
-      const searchable = `${property.title} ${property.city} ${property.location} ${property.type}`.toLowerCase();
-      const matchesSearch = !normalized || searchable.includes(normalized);
-      const matchesLocation = selectedLocation === 'All locations' || property.location === selectedLocation || property.city === selectedLocation;
-      const matchesType = type === 'All types' || property.type === type;
+    const result = listings.filter((property) => {
+      const searchText = `${property.title || ''} ${property.city || ''} ${property.location || ''} ${property.type || property.propertyType || ''}`.toLowerCase();
+      const matchesSearch = !normalized || searchText.includes(normalized);
+      const matchesLocation =
+        selectedLocation === 'All locations' ||
+        property.location === selectedLocation ||
+        property.city === selectedLocation ||
+        property.subDistrict === selectedLocation;
+      const matchesType = type === 'All types' || property.type === type || property.propertyType === type;
       const price = priceNumber(property.price);
       const matchesBudget = price >= minimum && price <= maximum;
       const size = landSizeInSqFt(property.landArea || property.area);
@@ -77,19 +80,29 @@ function BuyPage() {
         (landArea === 'Under 1000 Sq Ft' && size < 1000) ||
         (landArea === '1000–5000 Sq Ft' && size >= 1000 && size <= 5000) ||
         (landArea === '5000+ Sq Ft' && size > 5000);
-      const matchesSold = showSold || property.status !== 'Sold';
 
-      return matchesSearch && matchesLocation && matchesType && matchesBudget && matchesArea && matchesSold;
-    }).sort((a, b) => {
-      if (sort === 'newest') return String(b.uploadedDate || b.id).localeCompare(String(a.uploadedDate || a.id));
-      if (sort === 'price_asc') return priceNumber(a.price) - priceNumber(b.price);
-      if (sort === 'price_desc') return priceNumber(b.price) - priceNumber(a.price);
-      return 0;
+      return matchesSearch && matchesLocation && matchesType && matchesBudget && matchesArea;
     });
-  }, [query, selectedLocation, type, minPrice, maxPrice, landArea, sort]);
+
+    if (sort === 'newest') {
+      return [...result].sort((a, b) => String(b.uploadedDate || b.id).localeCompare(String(a.uploadedDate || a.id)));
+    }
+
+    if (sort === 'price_asc') {
+      return [...result].sort((a, b) => priceNumber(a.price) - priceNumber(b.price));
+    }
+
+    if (sort === 'price_desc') {
+      return [...result].sort((a, b) => priceNumber(b.price) - priceNumber(a.price));
+    }
+
+    return result;
+  }, [listings, query, selectedLocation, type, minPrice, maxPrice, landArea, sort]);
 
   const pageCount = Math.max(1, Math.ceil(filtered.length / perPage));
-  const paged = filtered.slice((page - 1) * perPage, page * perPage);
+  const activePage = Math.min(page, pageCount);
+  const paged = filtered.slice((activePage - 1) * perPage, activePage * perPage);
+
   const change = (setter) => (event) => {
     setter(event.target.value);
     setPage(1);
@@ -119,9 +132,9 @@ function BuyPage() {
       </div>
 
       <label>
-        <span className="field-label">City / Area</span>
+        <span className="field-label">City</span>
         <select value={selectedLocation} onChange={change(setSelectedLocation)} className="field-control">
-          <option>All locations</option>
+          <option value="All locations">All locations</option>
           {Object.entries(locationGroups).map(([cityName, areas]) => (
             <optgroup key={cityName} label={cityName}>
               {areas.map((area) => (
@@ -135,9 +148,9 @@ function BuyPage() {
       <label>
         <span className="field-label">Property Type</span>
         <select value={type} onChange={change(setType)} className="field-control">
-          <option>All types</option>
+          <option value="All types">All types</option>
           {propertyTypes.map((item) => (
-            <option key={item}>{item}</option>
+            <option key={item} value={item}>{item}</option>
           ))}
         </select>
       </label>
@@ -169,10 +182,10 @@ function BuyPage() {
       <label>
         <span className="field-label">Land Area</span>
         <select value={landArea} onChange={change(setLandArea)} className="field-control">
-          <option>Any area</option>
-          <option>Under 1000 Sq Ft</option>
-          <option>1000–5000 Sq Ft</option>
-          <option>5000+ Sq Ft</option>
+          <option value="Any area">Any area</option>
+          <option value="Under 1000 Sq Ft">Under 1000 Sq Ft</option>
+          <option value="1000–5000 Sq Ft">1000–5000 Sq Ft</option>
+          <option value="5000+ Sq Ft">5000+ Sq Ft</option>
         </select>
       </label>
     </div>
@@ -200,11 +213,7 @@ function BuyPage() {
 
         <div className="mb-8 flex flex-col gap-4 border-b border-stone-200 pb-8 sm:flex-row sm:items-end sm:justify-between">
           <div className="space-y-3">
-            <SectionHeading eyebrow="Land listings" title="Property collection" description="Filter by location, land type, budget, and land area." />
-            <label className="inline-flex items-center gap-2 rounded-full border border-stone-200 bg-slate-50 px-4 py-2 text-sm text-slate-700">
-              <input type="checkbox" checked={showSold} onChange={(event) => setShowSold(event.target.checked)} className="h-4 w-4 rounded border-slate-300 text-primary" />
-              Show sold properties
-            </label>
+            <SectionHeading eyebrow="Land listings" title="Property collection" description="Filter by city, property type, budget, and land area." />
           </div>
           <button
             type="button"
@@ -245,7 +254,7 @@ function BuyPage() {
                     aria-label="Search land"
                     value={query}
                     onChange={change(setQuery)}
-                    placeholder="Search property, city, or area"
+                    placeholder="Search by property name, city, or area"
                     className="min-w-0 border-0 bg-transparent text-sm outline-none"
                   />
                 </label>
@@ -275,16 +284,18 @@ function BuyPage() {
               </div>
             ) : (
               <div className="border border-stone-200 bg-white px-8 py-16 text-center">
-                <Search size={30} className="mx-auto text-sage" />
-                <h2 className="mt-5 text-2xl font-semibold text-ink">No land listings found</h2>
-                <p className="mt-3 text-sm text-muted">Adjust filters or search terms to find land matching your criteria.</p>
+                <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-sage/10 text-sage">
+                  <Search size={28} />
+                </div>
+                <h2 className="mt-6 text-2xl font-semibold text-ink">No land listings match these filters</h2>
+                <p className="mt-3 text-sm text-muted">Try a broader search or reset the filters to explore available agricultural and non-agricultural land.</p>
                 <button type="button" onClick={clearFilters} className="mt-6 rounded-full bg-sage px-5 py-3 text-sm font-semibold text-white">
                   Clear Filters
                 </button>
               </div>
             )}
 
-            {!loading && <Pagination currentPage={page} pageCount={pageCount} onChange={setPage} />}
+            {!loading && <Pagination currentPage={activePage} pageCount={pageCount} onChange={setPage} />}
           </div>
         </div>
       </main>

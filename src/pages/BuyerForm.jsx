@@ -1,14 +1,18 @@
-import { useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { appendStorageArray, appendNotification, STORAGE_KEYS } from '../utils/storage';
 import { useUserStore } from '../store/useUserStore';
-import { gujaratStateOptions, gujaratDistricts } from '../utils/data';
+import { gujaratDistricts, gujaratStateOptions, gujaratSubDistricts, gujaratVillages } from '../utils/data';
+
 const initialForm = {
   state: 'Gujarat',
   district: '',
+  taluka: '',
+  preferredVillages: [],
   propertyType: '',
-  budget: '',
+  purpose: '',
+  purposeOther: '',
   requirements: '',
 };
 const propertyTypes = ['Agricultural Land', 'Non-Agricultural Land'];
@@ -16,123 +20,172 @@ const propertyTypes = ['Agricultural Land', 'Non-Agricultural Land'];
 function BuyerForm() {
   const navigate = useNavigate();
   const currentUser = useUserStore((state) => state.user);
-  const [form, setForm] = useState({
-    ...initialForm,
-  });
+  const [form, setForm] = useState({ ...initialForm });
   const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
-const [isRecording, setIsRecording] = useState(false);
-const [audioUrl, setAudioUrl] = useState('');
+  const [isRecording, setIsRecording] = useState(false);
+  const [audioUrl, setAudioUrl] = useState('');
+  const [villageSearch, setVillageSearch] = useState('');
 
-const mediaRecorderRef = useRef(null);
-const chunksRef = useRef([]);
+  const mediaRecorderRef = useRef(null);
+  const chunksRef = useRef([]);
+
   const handleChange = (event) => {
-  const { name, value, type, checked } = event.target;
+    const { name, value } = event.target;
 
-  setForm((current) => ({ ...current, [name]: type === 'checkbox' ? checked : value }));
+    setForm((current) => {
+      if (name === 'district') {
+        return { ...current, district: value, taluka: '', preferredVillages: [] };
+      }
+      if (name === 'taluka') {
+        return { ...current, taluka: value, preferredVillages: [] };
+      }
+      return { ...current, [name]: value };
+    });
 
-  setErrors((current) => ({
-    ...current,
-    [name]: '',
-  }));
-};
+    setVillageSearch('');
+    setErrors((current) => ({
+      ...current,
+      [name]: '',
+      preferredVillages: '',
+    }));
+  };
+
+  const handleVillageToggle = (village) => {
+    setForm((current) => {
+      const selectedVillages = current.preferredVillages || [];
+      const alreadySelected = selectedVillages.includes(village);
+      return {
+        ...current,
+        preferredVillages: alreadySelected
+          ? selectedVillages.filter((item) => item !== village)
+          : [...selectedVillages, village],
+      };
+    });
+  };
+
   const validate = () => {
     const nextErrors = {};
     if (!form.state) nextErrors.state = 'Please choose a state.';
     if (!form.district) nextErrors.district = 'Please choose a district.';
+    if (!form.taluka) nextErrors.taluka = 'Please choose a taluka.';
     if (!form.propertyType) nextErrors.propertyType = 'Please choose a property type.';
-    if (!form.budget.trim()) nextErrors.budget = 'Budget helps us tailor results.';
+    if (!form.purpose) nextErrors.purpose = 'Please choose a purpose.';
+    if (form.purpose === 'Other' && !form.purposeOther.trim()) nextErrors.purposeOther = 'Please specify your purpose.';
+    if (form.taluka && (!form.preferredVillages || form.preferredVillages.length < 2)) {
+      nextErrors.preferredVillages = 'Please select at least two preferred villages.';
+    }
     return nextErrors;
   };
-const startRecording = async () => {
-  try {
-    const stream = await navigator.mediaDevices.getUserMedia({
-      audio: true,
-    });
 
-    const recorder = new MediaRecorder(stream);
+  const startRecording = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const recorder = new MediaRecorder(stream);
+      mediaRecorderRef.current = recorder;
+      chunksRef.current = [];
 
-    mediaRecorderRef.current = recorder;
-    chunksRef.current = [];
+      recorder.ondataavailable = (event) => {
+        if (event.data.size > 0) {
+          chunksRef.current.push(event.data);
+        }
+      };
 
-    recorder.ondataavailable = (e) => {
-      if (e.data.size > 0) {
-        chunksRef.current.push(e.data);
-      }
-    };
+      recorder.onstop = () => {
+        const blob = new Blob(chunksRef.current, { type: 'audio/webm' });
+        setAudioUrl(URL.createObjectURL(blob));
+        stream.getTracks().forEach((track) => track.stop());
+      };
 
-    recorder.onstop = () => {
-      const blob = new Blob(chunksRef.current, {
-        type: 'audio/webm',
+      recorder.start();
+      setIsRecording(true);
+    } catch (err) {
+      toast.error('Microphone permission denied.');
+    }
+  };
+
+  const stopRecording = () => {
+    mediaRecorderRef.current?.stop();
+    setIsRecording(false);
+  };
+
+  const talukaOptions = useMemo(() => (form.district ? gujaratSubDistricts[form.district] || [] : []), [form.district]);
+
+  const allVillageOptions = useMemo(() => {
+    if (!form.district || !form.taluka) return [];
+    return [...(gujaratVillages[form.district]?.[form.taluka] || [])].sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }));
+  }, [form.district, form.taluka]);
+
+  const filteredVillageOptions = useMemo(() => {
+    const query = villageSearch.trim().toLowerCase();
+    if (!query) return allVillageOptions;
+    return allVillageOptions.filter((village) => village.toLowerCase().includes(query));
+  }, [allVillageOptions, villageSearch]);
+
+  const selectedVillageCount = form.preferredVillages?.length || 0;
+
+  const handleSelectAllVisible = () => {
+    setForm((current) => ({
+      ...current,
+      preferredVillages: Array.from(new Set([...(current.preferredVillages || []), ...filteredVillageOptions])),
+    }));
+  };
+
+  const handleClearAllVisible = () => {
+    setForm((current) => ({
+      ...current,
+      preferredVillages: (current.preferredVillages || []).filter((village) => !filteredVillageOptions.includes(village)),
+    }));
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+
+    const nextErrors = validate();
+
+    if (Object.keys(nextErrors).length) {
+      setErrors(nextErrors);
+      toast.error('Please correct the highlighted fields before continuing.');
+      return;
+    }
+
+    setSubmitting(true);
+
+    setTimeout(() => {
+      const lead = {
+        id: typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : `buyer-${Date.now()}`,
+        userId: currentUser?.id || '',
+        userName: currentUser?.name || '',
+        userMobile: currentUser?.mobile || '',
+        userEmail: currentUser?.email || '',
+        ...form,
+        preferredVillages: form.preferredVillages || [],
+        audio: audioUrl,
+        voiceRecording: audioUrl,
+        createdAt: new Date().toISOString(),
+      };
+
+      appendStorageArray(STORAGE_KEYS.buyerLeads, lead);
+      appendNotification({
+        id: `notif-${Date.now()}`,
+        type: 'Requirement submitted',
+        message: `New buyer requirement submitted for ${lead.district} ${lead.propertyType}.`,
+        createdAt: new Date().toISOString(),
+        category: 'buyer',
       });
 
-      setAudioUrl(URL.createObjectURL(blob));
+      setSubmitting(false);
+      toast.success('Your buyer profile has been submitted successfully.');
 
-      stream.getTracks().forEach((track) => track.stop());
-    };
-
-    recorder.start();
-    setIsRecording(true);
-  } catch (err) {
-    toast.error('Microphone permission denied.');
-  }
-};
-
-const stopRecording = () => {
-  mediaRecorderRef.current.stop();
-  setIsRecording(false);
-};
-  const handleSubmit = (event) => {
-  event.preventDefault();
-
-  const nextErrors = validate();
-
-  if (Object.keys(nextErrors).length) {
-    setErrors(nextErrors);
-    toast.error('Please correct the highlighted fields before continuing.');
-    return;
-  }
-
-  setSubmitting(true);
-
-  setTimeout(() => {
-    const lead = {
-      id:
-        typeof crypto !== 'undefined' && crypto.randomUUID
-          ? crypto.randomUUID()
-          : `buyer-${Date.now()}`,
-      userId: currentUser?.id || '',
-      userName: currentUser?.name || '',
-      userMobile: currentUser?.mobile || '',
-      userEmail: currentUser?.email || '',
-      ...form,
-      audio: audioUrl,
-      voiceRecording: audioUrl,
-      createdAt: new Date().toISOString(),
-    };
-
-    appendStorageArray(STORAGE_KEYS.buyerLeads, lead);
-    appendNotification({
-      id: `notif-${Date.now()}`,
-      type: 'Requirement submitted',
-      message: `New buyer requirement submitted for ${lead.district} ${lead.propertyType}.`,
-      createdAt: new Date().toISOString(),
-      category: 'buyer',
-    });
-
-    setSubmitting(false);
-
-    toast.success('Your buyer profile has been submitted successfully.');
-
-    navigate('/buy', {
-      replace: true,
-      state: {
-        justSubmitted: true,
-        lead,
-      },
-    });
-  }, 700);
-};
+      navigate('/buy', {
+        replace: true,
+        state: {
+          justSubmitted: true,
+          lead,
+        },
+      });
+    }, 700);
+  };
 
   return (
     <div className="min-h-screen bg-[#FFFEFE] px-4 py-8 sm:px-6 lg:px-8">
@@ -183,6 +236,89 @@ const stopRecording = () => {
             </label>
 
             <label className="block">
+              <span className="field-label">Preferred Taluka *</span>
+              <select
+                name="taluka"
+                value={form.taluka}
+                onChange={handleChange}
+                className={`field-control w-full ${errors.taluka ? 'border-red-400' : ''}`}
+                disabled={!form.district}
+              >
+                <option value="">{form.district ? 'Select taluka' : 'Select district first'}</option>
+                {talukaOptions.map((taluka) => (
+                  <option key={taluka} value={taluka}>
+                    {taluka}
+                  </option>
+                ))}
+              </select>
+              {errors.taluka && <p className="error-style">{errors.taluka}</p>}
+            </label>
+
+            {form.taluka ? (
+              <div className="block">
+                <div className="mb-3 flex flex-col gap-3 rounded-[24px] border border-slate-200 bg-white p-4 sm:flex-row sm:items-center sm:justify-between">
+                  <div>
+                    <span className="field-label">Preferred Villages *</span>
+                    <p className="text-sm text-slate-500">Search and select at least two villages from the chosen taluka.</p>
+                  </div>
+                  <div className="rounded-full bg-sage/10 px-3 py-1 text-sm font-semibold text-sage">
+                    Selected: {selectedVillageCount}
+                  </div>
+                </div>
+
+                <div className="mb-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                  <input
+                    type="text"
+                    value={villageSearch}
+                    onChange={(event) => setVillageSearch(event.target.value)}
+                    placeholder={`Search villages in ${form.taluka}`}
+                    className="field-control w-full sm:max-w-xs"
+                  />
+                  <div className="flex flex-wrap gap-2">
+                    <button type="button" onClick={handleSelectAllVisible} className="rounded-full border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700 transition hover:border-sage hover:text-sage">
+                      Select All
+                    </button>
+                    <button type="button" onClick={handleClearAllVisible} className="rounded-full border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700 transition hover:border-red-300 hover:text-red-600">
+                      Clear All
+                    </button>
+                  </div>
+                </div>
+
+                {allVillageOptions.length ? (
+                  <div className="max-h-[360px] overflow-y-auto rounded-[24px] border border-slate-200 bg-white p-3">
+                    <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                      {filteredVillageOptions.length ? (
+                        filteredVillageOptions.map((village) => {
+                          const isSelected = (form.preferredVillages || []).includes(village);
+                          return (
+                            <label key={village} className="flex items-start gap-2 rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3 text-sm font-medium text-slate-700">
+                              <input
+                                type="checkbox"
+                                checked={isSelected}
+                                onChange={() => handleVillageToggle(village)}
+                                className="mt-0.5 h-4 w-4 rounded border-slate-300 text-primary"
+                              />
+                              <span className="leading-5">{village}</span>
+                            </label>
+                          );
+                        })
+                      ) : (
+                        <div className="col-span-full rounded-2xl border border-dashed border-slate-200 px-4 py-4 text-sm text-slate-500">
+                          No villages match your search.
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="rounded-[24px] border border-dashed border-slate-200 bg-white px-4 py-4 text-sm text-slate-500">
+                    No villages available for this taluka.
+                  </div>
+                )}
+                {errors.preferredVillages && <p className="error-style">{errors.preferredVillages}</p>}
+              </div>
+            ) : null}
+
+            <label className="block">
               <span className="field-label">Property Type *</span>
               <select
                 name="propertyType"
@@ -201,16 +337,36 @@ const stopRecording = () => {
             </label>
 
             <label className="block">
-              <span className="field-label">Budget *</span>
-              <input
-                name="budget"
-                value={form.budget}
+              <span className="field-label">Purpose *</span>
+              <select
+                name="purpose"
+                value={form.purpose}
                 onChange={handleChange}
-                className={`field-control w-full ${errors.budget ? 'border-red-400' : ''}`}
-                placeholder="e.g. ₹50 Lakh"
-              />
-              {errors.budget && <p className="error-style">{errors.budget}</p>}
+                className={`field-control w-full ${errors.purpose ? 'border-red-400' : ''}`}
+              >
+                <option value="">Select purpose</option>
+                <option value="Investment">Investment</option>
+                <option value="Project">Project</option>
+                <option value="Personal Farm">Personal Farm</option>
+                <option value="Other">Other</option>
+              </select>
+              {errors.purpose && <p className="error-style">{errors.purpose}</p>}
             </label>
+
+            {form.purpose === 'Other' ? (
+              <label className="block">
+                <span className="field-label">Please specify your purpose</span>
+                <textarea
+                  name="purposeOther"
+                  rows="3"
+                  value={form.purposeOther}
+                  onChange={handleChange}
+                  className={`field-control w-full resize-y ${errors.purposeOther ? 'border-red-400' : ''}`}
+                  placeholder="Describe your purpose"
+                />
+                {errors.purposeOther && <p className="error-style">{errors.purposeOther}</p>}
+              </label>
+            ) : null}
 
             <label className="block">
               <span className="field-label">Additional Requirements</span>
@@ -249,11 +405,7 @@ const stopRecording = () => {
               {audioUrl && (
                 <div className="space-y-3 rounded-3xl border border-slate-200 bg-white p-4">
                   <audio controls src={audioUrl} className="w-full" />
-                  <button
-                    type="button"
-                    onClick={() => setAudioUrl('')}
-                    className="text-sm font-semibold text-red-600"
-                  >
+                  <button type="button" onClick={() => setAudioUrl('')} className="text-sm font-semibold text-red-600">
                     Remove recording
                   </button>
                 </div>

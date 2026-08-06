@@ -1,5 +1,5 @@
 ﻿import { useEffect, useMemo, useState } from 'react';
-import { ArrowLeft, Bath, BedDouble, Building2, CheckCircle2, Heart, MapPin, Maximize2, Phone, Share2, ShieldCheck } from 'lucide-react';
+import { ArrowLeft, ChevronLeft, ChevronRight, Download, ExternalLink, FileText, Heart, MapPin, Maximize2, Phone, Share2, ShieldCheck, X } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { readStorage, onListingsChanged, STORAGE_KEYS } from '../utils/storage';
@@ -11,16 +11,26 @@ import ContactModal from '../components/ContactModal';
 import SectionHeading from '../components/SectionHeading';
 import { addRecentlyViewed, isPropertySaved, toggleSavedProperty } from '../utils/storage';
 
+const formatPrice = (value) => {
+  if (typeof value === 'number') return `₹${value.toLocaleString('en-IN')}`;
+  if (typeof value === 'string') {
+    const trimmed = value.trim();
+    if (!trimmed) return 'Not Provided';
+    return trimmed.startsWith('₹') ? trimmed : trimmed;
+  }
+  return 'Not Provided';
+};
+
 function PropertyDetailsPage() {
   const navigate = useNavigate();
   const { id } = useParams();
   const [property, setProperty] = useState(null);
-  const [gallery, setGallery] = useState([]);
-  const [similar, setSimilar] = useState([]);
+  const [sourceProperties, setSourceProperties] = useState([]);
   const [activeIndex, setActiveIndex] = useState(0);
   const [zoomOpen, setZoomOpen] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
   const [contactModal, setContactModal] = useState(null);
+  const [touchStart, setTouchStart] = useState(null);
 
   const resolvePropertySource = () => {
     const stored = readStorage(STORAGE_KEYS.listings, []);
@@ -30,16 +40,8 @@ function PropertyDetailsPage() {
   const loadProperty = () => {
     const source = resolvePropertySource();
     const current = source.find((item) => item.id === id) || sampleProperties.find((item) => item.id === id) || null;
+    setSourceProperties(source);
     setProperty(current);
-    if (!current) {
-      setGallery([]);
-      setSimilar([]);
-      return;
-    }
-
-    const baseIndex = Math.max(0, (Number(String(current.id).split('-')[1]) || 1) - 1);
-    setGallery([current, source[(baseIndex + 1) % source.length], source[(baseIndex + 2) % source.length]]);
-    setSimilar(source.filter((item) => item.id !== current.id && item.type === current.type && item.city === current.city).slice(0, 4));
   };
 
   useEffect(() => {
@@ -47,16 +49,16 @@ function PropertyDetailsPage() {
   }, [id]);
 
   useEffect(() => {
-    const cleanup = onListingsChanged(loadProperty);
+    const cleanup = onListingsChanged(() => loadProperty());
     return cleanup;
   }, [id]);
 
   const handleShare = async () => {
-    const shareUrl = `${window.location.origin}/property/${property.id}`;
-    const shareText = `${property.title} • ${property.price} • ${property.location}`;
+    const shareUrl = `${window.location.origin}/property/${property?.id}`;
+    const shareText = `${property?.title || 'Land listing'} • ${property?.price || ''}`;
     try {
       if (navigator.share) {
-        await navigator.share({ title: property.title, text: shareText, url: shareUrl });
+        await navigator.share({ title: property?.title || 'Land listing', text: shareText, url: shareUrl });
       } else if (navigator.clipboard) {
         await navigator.clipboard.writeText(shareUrl);
         toast.info('Property link copied.');
@@ -74,100 +76,315 @@ function PropertyDetailsPage() {
     }
   }, [property]);
 
+  const galleryImages = useMemo(() => {
+    const normalized = [];
+    const candidates = [
+      property?.gallery,
+      property?.images,
+      property?.image ? [property.image] : null,
+      property?.photos,
+      property?.media,
+    ].filter(Boolean);
+
+    candidates.forEach((entry) => {
+      if (Array.isArray(entry)) {
+        entry.forEach((item) => {
+          if (typeof item === 'string' && item) normalized.push(item);
+        });
+      }
+    });
+
+    if (!normalized.length && property?.image) normalized.push(property.image);
+    if (!normalized.length) normalized.push('https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=1400&q=85');
+    return normalized.filter((item, index, array) => array.indexOf(item) === index);
+  }, [property]);
+
+  const overviewItems = useMemo(() => {
+    const items = [];
+    const addItem = (label, value, fallback) => {
+      const resolved = value ?? fallback;
+      if (resolved === undefined || resolved === null || resolved === '') return;
+      if (typeof resolved === 'string' && resolved.trim() === '') return;
+      if (typeof resolved === 'string' && resolved.toLowerCase() === 'not provided') return;
+      items.push({ label, value: resolved });
+    };
+
+    addItem('Property Type', property?.type || property?.propertyType);
+    addItem('Land Area', property?.landArea || property?.area);
+    addItem('Price', formatPrice(property?.priceAmount || property?.price));
+    addItem('Price Unit', property?.priceUnit);
+    addItem('District', property?.district || property?.location);
+    addItem('Taluka', property?.subDistrict || property?.taluka);
+    addItem('Village', property?.village);
+    addItem('State', property?.state || 'Gujarat');
+    addItem('Google Maps', property?.mapUrl || property?.googleMaps || property?.mapLink ? 'Available' : undefined);
+    addItem('7/12 Available', property?.propertyDocument || property?.documentUrl || property?.pdf || property?.document ? 'Available' : undefined);
+
+    return items;
+  }, [property]);
+
+  const documentItems = useMemo(() => {
+    const documents = [];
+    const pushDocument = (entry) => {
+      if (!entry) return;
+      if (Array.isArray(entry)) {
+        entry.forEach(pushDocument);
+        return;
+      }
+      if (typeof entry === 'string') {
+        documents.push({ name: '7/12 Document', url: entry, type: entry.toLowerCase().endsWith('.pdf') ? 'application/pdf' : 'image/*' });
+        return;
+      }
+      if (entry && typeof entry === 'object') {
+        documents.push({
+          name: entry.name || '7/12 Document',
+          url: entry.url || entry.href || entry.link || entry.fileUrl || '',
+          type: entry.type || 'application/pdf',
+        });
+      }
+    };
+
+    pushDocument(property?.propertyDocument);
+    pushDocument(property?.propertyDocuments);
+    pushDocument(property?.document);
+    pushDocument(property?.documentUrl);
+    pushDocument(property?.pdf);
+    pushDocument(property?.documents);
+
+    if (!documents.length && (property?.documentUrl || property?.pdf || property?.propertyDocument)) {
+      documents.push({ name: '7/12 Document', url: property.documentUrl || property.pdf || property.propertyDocument?.url || '', type: 'application/pdf' });
+    }
+
+    return documents.slice(0, 1);
+  }, [property]);
+
+  const similarProperties = useMemo(() => {
+    const currentType = property?.type || property?.propertyType || '';
+    const currentDistrict = property?.district || property?.location || '';
+    return sourceProperties.filter((item) => item.id !== property?.id).filter((item) => {
+      const sameType = (item.type || item.propertyType || '').toLowerCase() === currentType.toLowerCase();
+      const sameDistrict = (item.district || item.location || '').toLowerCase() === currentDistrict.toLowerCase();
+      return sameType || sameDistrict;
+    }).slice(0, 4);
+  }, [property, sourceProperties]);
+
+  const handlePrev = () => {
+    setActiveIndex((current) => (current === 0 ? galleryImages.length - 1 : current - 1));
+  };
+
+  const handleNext = () => {
+    setActiveIndex((current) => (current === galleryImages.length - 1 ? 0 : current + 1));
+  };
+
+  const handleTouchStart = (event) => setTouchStart(event.touches[0].clientX);
+  const handleTouchEnd = (event) => {
+    if (touchStart === null) return;
+    const delta = event.changedTouches[0].clientX - touchStart;
+    if (delta > 50) handlePrev();
+    if (delta < -50) handleNext();
+    setTouchStart(null);
+  };
+
   if (!property) {
     return <div className="border border-slate-200 bg-white p-8 shadow-card"><h1 className="text-3xl font-semibold text-ink">Property not found</h1><p className="mt-3 text-muted">The listing you requested is unavailable. Please return to browsing.</p><button type="button" onClick={() => navigate(getSubmissionDestination('buyerFormSubmitted', '/buyer-form', '/buy'))} className="mt-6 rounded-full bg-primary px-5 py-3 text-sm font-semibold text-white">Back to listings</button></div>;
   }
 
-  return (
-    <div className="-mx-4 -mt-8 bg-[#FFFEFE] pb-20 sm:-mx-6 lg:-mx-8">
-      <div className="mx-auto max-w-7xl px-6 py-8 lg:px-12"><button type="button" onClick={() => navigate(getSubmissionDestination('buyerFormSubmitted', '/buyer-form', '/buy'))} className="inline-flex items-center gap-2 text-sm font-semibold text-muted hover:text-primary"><ArrowLeft size={17} /> Back to properties</button></div>
-      <main className="mx-auto max-w-7xl space-y-12 px-6 lg:px-12">
-        <section className="grid gap-3 lg:grid-cols-[1.45fr_0.8fr]">
-          <div>
-            <div className="relative h-[360px] overflow-hidden bg-slate-200 sm:h-[500px]">
-              <AsyncImage src={property.gallery?.[0] || property.image} alt={property.title} className="h-full w-full object-cover cursor-zoom-in" onClick={() => setZoomOpen(true)} />
-              <div className="absolute left-5 top-5 flex items-center gap-2 rounded-full bg-white px-3 py-2 text-xs font-bold text-ink"><ShieldCheck size={15} className="text-primary" /> Verified listing</div>
-              <div className="absolute right-5 top-5 flex items-center gap-2">
-                <button type="button" aria-label="Share property" onClick={handleShare} className="rounded-full bg-white p-3 text-ink shadow-sm"><Share2 size={18} /></button>
-                <button type="button" aria-label="Save property" onClick={() => { const next = toggleSavedProperty(property); setIsSaved(next.some((p) => String(p.id) === String(property.id))); }} className="rounded-full bg-white p-3 text-ink shadow-sm">{isSaved ? <Heart size={18} className="text-rose-600" /> : <Heart size={18} />}</button>
-              </div>
-            </div>
+  const propertyTitle = property.title || property.name || 'Land Listing';
+  const propertyTypeLabel = property.type || property.propertyType || 'Land';
+  const propertyLocationLabel = [property?.state || 'Gujarat', property?.district || property?.location || '', property?.subDistrict || property?.taluka || '', property?.village || ''].filter(Boolean).join(' • ');
+  const postedDate = property.uploadedDate || property.submittedAt || property.createdAt || property.updatedAt || 'Recently listed';
+  const sellerName = property.seller?.name || property.sellerName || property.owner || property.ownerName || 'Seller';
+  const sellerPhone = property.seller?.phone || property.sellerPhone || property.ownerMobile || property.mobile || '';
+  const sellerEmail = property.seller?.email || property.sellerEmail || property.ownerEmail || property.email || '';
+  const sellerWhatsApp = sellerPhone ? `https://wa.me/91${String(sellerPhone).replace(/\D/g, '')}` : '';
+  const sellerCall = sellerPhone ? `tel:${sellerPhone}` : '';
+  const sellerMail = sellerEmail ? `mailto:${sellerEmail}` : '';
 
-            <div className="mt-3">
-              <div className="flex gap-3 overflow-auto">
-                {(property.gallery || []).map((img, idx) => (
-                  <button key={img} onClick={() => setActiveIndex(idx)} className={`h-20 w-28 overflow-hidden rounded-lg ${activeIndex === idx ? 'ring-2 ring-sage' : ''}`}>
-                    <AsyncImage src={img} alt={`${property.title} ${idx + 1}`} className="h-full w-full object-cover" />
+  return (
+    <div className="-mx-4 -mt-8 bg-[#FFFEFE] pb-24 sm:-mx-6 lg:-mx-8">
+      <div className="mx-auto max-w-7xl px-6 py-8 lg:px-12">
+        <button type="button" onClick={() => navigate(getSubmissionDestination('buyerFormSubmitted', '/buyer-form', '/buy'))} className="inline-flex items-center gap-2 text-sm font-semibold text-muted hover:text-primary">
+          <ArrowLeft size={17} /> Back to properties
+        </button>
+      </div>
+
+      <main className="mx-auto max-w-7xl space-y-10 px-6 lg:px-12">
+        <section className="overflow-hidden rounded-[32px] border border-slate-200 bg-white shadow-card">
+          <div className="grid gap-8 lg:grid-cols-[1.2fr_0.8fr]">
+            <div className="p-4 sm:p-6">
+              <div className="relative overflow-hidden rounded-[28px] bg-slate-200" onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
+                <AsyncImage src={galleryImages[activeIndex] || galleryImages[0]} alt={propertyTitle} className="h-[360px] w-full cursor-zoom-in object-cover sm:h-[500px]" onClick={() => setZoomOpen(true)} />
+                <div className="absolute inset-x-0 top-0 flex items-center justify-between p-4 sm:p-6">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="rounded-full bg-white/95 px-3 py-1.5 text-xs font-semibold text-ink shadow-sm">{propertyTypeLabel}</span>
+                    {property?.verified ? <span className="rounded-full bg-emerald-600/90 px-3 py-1.5 text-xs font-semibold text-white shadow-sm"><ShieldCheck size={13} className="mr-1 inline" />Verified listing</span> : null}
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <button type="button" aria-label="Share property" onClick={handleShare} className="rounded-full bg-white/95 p-3 text-ink shadow-sm transition hover:bg-white"><Share2 size={17} /></button>
+                    <button type="button" aria-label="Save property" onClick={() => { const next = toggleSavedProperty(property); setIsSaved(next.some((item) => String(item.id) === String(property.id))); }} className="rounded-full bg-white/95 p-3 text-ink shadow-sm transition hover:bg-white">{isSaved ? <Heart size={17} className="text-rose-600" /> : <Heart size={17} />}</button>
+                  </div>
+                </div>
+                <div className="absolute inset-y-0 left-4 flex items-center">
+                  <button type="button" onClick={handlePrev} className="rounded-full bg-white/90 p-2 shadow-sm"> <ChevronLeft size={18} /> </button>
+                </div>
+                <div className="absolute inset-y-0 right-4 flex items-center">
+                  <button type="button" onClick={handleNext} className="rounded-full bg-white/90 p-2 shadow-sm"> <ChevronRight size={18} /> </button>
+                </div>
+              </div>
+
+              <div className="mt-4 grid grid-cols-4 gap-2 sm:grid-cols-6">
+                {galleryImages.map((image, index) => (
+                  <button key={`${image}-${index}`} type="button" onClick={() => setActiveIndex(index)} className={`overflow-hidden rounded-2xl border ${activeIndex === index ? 'border-sage ring-2 ring-sage/20' : 'border-slate-200'}`}>
+                    <AsyncImage src={image} alt={`${propertyTitle} ${index + 1}`} className="h-20 w-full object-cover" />
                   </button>
                 ))}
               </div>
             </div>
 
-            {zoomOpen && (
-              <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80" onClick={() => setZoomOpen(false)}>
-                <img src={property.gallery?.[activeIndex] || property.image} alt={property.title} className="max-h-[90vh] max-w-[90vw] object-contain" />
+            <div className="flex flex-col justify-between border-t border-slate-200 p-4 sm:p-6 lg:border-l lg:border-t-0">
+              <div>
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className={`rounded-full px-3 py-1.5 text-xs font-semibold ${propertyTypeLabel.toLowerCase().includes('agricultural') ? 'bg-emerald-100 text-emerald-700' : 'bg-sky-100 text-sky-700'}`}>{propertyTypeLabel}</span>
+                  <span className={`rounded-full px-3 py-1.5 text-xs font-semibold ${property.status === 'Sold' ? 'bg-amber-500/90 text-white' : 'bg-slate-800/90 text-white'}`}>{property.status || 'Available'}</span>
+                </div>
+                <h1 className="mt-5 text-3xl font-semibold text-ink sm:text-4xl">{propertyTitle}</h1>
+                <div className="mt-4 flex items-center gap-2 text-sm text-slate-600">
+                  <MapPin size={16} className="text-sage" />
+                  <span>{propertyLocationLabel}</span>
+                </div>
+                <div className="mt-6 rounded-[24px] border border-slate-200 bg-slate-50 p-4">
+                  <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">Land price</p>
+                  <div className="mt-2 flex items-end justify-between gap-3">
+                    <div>
+                      <p className="text-3xl font-semibold text-ink">{formatPrice(property.priceAmount || property.price)}</p>
+                      <p className="mt-1 text-sm text-slate-600">{property.priceUnit || 'Price unit not provided'}</p>
+                    </div>
+                    <div className="rounded-full bg-white px-3 py-2 text-sm font-semibold text-slate-700 shadow-sm">{property?.landArea || property?.area || 'Land area'}</div>
+                  </div>
+                </div>
+                <div className="mt-5 flex flex-wrap gap-2 text-sm text-slate-600">
+                  <span className="rounded-full border border-slate-200 bg-white px-3 py-2">Posted: {postedDate}</span>
+                  <span className="rounded-full border border-slate-200 bg-white px-3 py-2">Verified: {property.verified ? 'Yes' : 'No'}</span>
+                </div>
               </div>
-            )}
-          </div>
 
-          <div className="grid grid-cols-2 gap-3 lg:grid-cols-1">
-            <AsyncImage src={property.gallery?.[1] || property.image} alt="Property interior" className="h-full min-h-[175px] w-full object-cover" />
-            <AsyncImage src={property.gallery?.[2] || property.image} alt="Property exterior" className="h-full min-h-[175px] w-full object-cover" />
+              <div className="mt-6 flex flex-col gap-3 border-t border-slate-200 pt-6">
+                <a href={sellerCall || '#'} className="inline-flex items-center justify-center gap-2 rounded-full bg-sage px-5 py-3 text-sm font-semibold text-white transition hover:bg-sage-dark"><Phone size={16} /> Call Seller</a>
+                <a href={sellerWhatsApp || '#'} target="_blank" rel="noreferrer" className="inline-flex items-center justify-center gap-2 rounded-full border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"><ExternalLink size={16} /> WhatsApp</a>
+                <a href={sellerMail || '#'} className="inline-flex items-center justify-center gap-2 rounded-full border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"><Download size={16} /> Email Seller</a>
+              </div>
+            </div>
           </div>
         </section>
 
-        <section className="grid gap-10 lg:grid-cols-[1fr_340px]">
-          <div>
-            <div className="flex flex-wrap items-start justify-between gap-5">
-              <div>
-                <p className="eyebrow">{property.type} - {property.location}</p>
-                <div className="flex items-center gap-3">
-                  <h1 className="mt-3 text-4xl font-bold text-ink sm:text-5xl">{property.title}</h1>
-                  <span className={`px-3 py-1 rounded-full text-sm font-semibold ${property.type && property.type.toLowerCase().includes('agricultural') ? 'bg-emerald-100 text-emerald-700' : 'bg-sky-100 text-sky-700'}`}>{property.type}</span>
+        <section className="grid gap-8 lg:grid-cols-[1.05fr_360px]">
+          <div className="space-y-8">
+            <div className="rounded-[28px] border border-slate-200 bg-white p-5 shadow-card sm:p-6">
+              <h2 className="text-2xl font-semibold text-ink">Quick Overview</h2>
+              <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
+                {overviewItems.map((item) => (
+                  <div key={item.label} className="rounded-[20px] border border-slate-200 bg-slate-50 p-4">
+                    <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">{item.label}</p>
+                    <p className="mt-2 text-sm font-semibold text-ink">{item.value}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="rounded-[28px] border border-slate-200 bg-white p-5 shadow-card sm:p-6">
+              <h2 className="text-2xl font-semibold text-ink">Property Location</h2>
+              {property?.mapUrl || property?.googleMaps || property?.mapLink ? (
+                <div className="mt-5 space-y-4">
+                  <iframe title="property-map" src={property.mapUrl || property.googleMaps || property.mapLink} className="h-72 w-full rounded-[20px] border border-slate-200" loading="lazy" />
+                  <a href={property.mapUrl || property.googleMaps || property.mapLink} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 text-sm font-semibold text-primary">
+                    <ExternalLink size={16} /> Open in Google Maps
+                  </a>
                 </div>
-                <p className="mt-4 flex items-center gap-2 text-muted"><MapPin size={17} className="text-primary" />{property.address}</p>
-                <p className="mt-2 text-sm text-muted">Uploaded: {property.uploadedDate || property.updatedAt || '—'}</p>
-              </div>
-              <div className="text-right">
-                <p className="text-2xl font-bold text-ink">{property.price}</p>
-                <p className="mt-2 text-sm text-muted">{property.area}</p>
-              </div>
-            </div><div className="mt-8 grid grid-cols-2 gap-3 border-y border-slate-200 py-5 sm:grid-cols-4"><div className="flex items-center gap-3"><BedDouble size={20} className="text-primary" /><span><strong className="block text-sm text-ink">{property.bedrooms} BHK</strong><small className="text-muted">Bedrooms</small></span></div><div className="flex items-center gap-3"><Bath size={20} className="text-primary" /><span><strong className="block text-sm text-ink">{property.bathrooms}</strong><small className="text-muted">Bathrooms</small></span></div><div className="flex items-center gap-3"><Maximize2 size={20} className="text-primary" /><span><strong className="block text-sm text-ink">{property.area}</strong><small className="text-muted">Built-up area</small></span></div><div className="flex items-center gap-3"><Building2 size={20} className="text-primary" /><span><strong className="block text-sm text-ink">{property.parking ? 'Yes' : 'No'}</strong><small className="text-muted">Parking</small></span></div></div><div className="mt-9"><h2 className="text-2xl font-semibold text-ink">About this property</h2><p className="mt-4 max-w-2xl leading-8 text-muted">{property.description}</p></div><div className="mt-9"><h2 className="text-2xl font-semibold text-ink">Amenities</h2><div className="mt-5 grid gap-3 sm:grid-cols-2">{['Lift access', '24/7 security', 'Power backup', 'Visitor parking', 'Water supply', 'Well-connected location'].map((item) => <div key={item} className="flex items-center gap-3 text-sm text-muted"><CheckCircle2 size={17} className="text-primary" />{item}</div>)}</div></div>
-            <div className="mt-9"><h2 className="text-2xl font-semibold text-ink">Nearby essentials</h2><div className="mt-5 grid gap-3 sm:grid-cols-3"><div className="border border-slate-200 bg-blue-50 p-4"><strong className="block text-sm text-ink">Schools</strong><span className="mt-2 block text-sm text-muted">Within 2.4 km</span></div><div className="border border-slate-200 bg-blue-50 p-4"><strong className="block text-sm text-ink">Hospitals</strong><span className="mt-2 block text-sm text-muted">Within 3.1 km</span></div><div className="border border-slate-200 bg-blue-50 p-4"><strong className="block text-sm text-ink">Banks</strong><span className="mt-2 block text-sm text-muted">Within 1.2 km</span></div></div></div>
-            <div className="mt-9 rounded-[24px] border border-slate-200 bg-slate-50 p-6">
-              <h2 className="text-2xl font-semibold text-ink">Map & locality</h2>
-              <div className="mt-4">
-                <iframe title="property-map" src={property.mapUrl || property.googleMaps || `https://www.google.com/maps?q=${encodeURIComponent(property.address)}`} className="w-full h-72 rounded-[16px] border" loading="lazy" />
+              ) : (
+                <div className="mt-5 rounded-[20px] border border-dashed border-slate-200 bg-slate-50 p-6 text-sm text-slate-600">Location not available.</div>
+              )}
+            </div>
+
+            <div className="rounded-[28px] border border-slate-200 bg-white p-5 shadow-card sm:p-6">
+              <h2 className="text-2xl font-semibold text-ink">Property Documents</h2>
+              <div className="mt-5 space-y-3">
+                {documentItems.length ? documentItems.map((document, index) => {
+                  const isImage = document.type?.startsWith('image') || /\.(png|jpg|jpeg|webp)$/i.test(document.name || '');
+                  return (
+                    <div key={`${document.name}-${index}`} className="flex flex-col gap-3 rounded-[20px] border border-slate-200 bg-slate-50 p-4 sm:flex-row sm:items-center sm:justify-between">
+                      <div className="flex items-center gap-3">
+                        {isImage ? <Maximize2 size={18} className="text-sage" /> : <FileText size={18} className="text-sage" />}
+                        <div>
+                          <p className="font-semibold text-ink">{document.name || '7/12 Document'}</p>
+                          <p className="text-sm text-slate-500">7/12 Document</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        {isImage && document.url ? <a href={document.url} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700">View</a> : null}
+                        {document.url ? <a href={document.url} download={document.name || '712-document'} className="inline-flex items-center gap-2 rounded-full bg-sage px-4 py-2 text-sm font-semibold text-white">Download</a> : <span className="text-sm text-slate-500">Not uploaded</span>}
+                      </div>
+                    </div>
+                  );
+                }) : <div className="rounded-[20px] border border-dashed border-slate-200 bg-slate-50 p-6 text-sm text-slate-600">No 7/12 document uploaded.</div>}
               </div>
             </div>
           </div>
-          <aside className="self-start border border-slate-200 bg-white p-6 shadow-card lg:sticky lg:top-24">
-            <p className="eyebrow">Interested in this home?</p>
-            <h2 className="mt-3 text-2xl font-semibold text-ink">Talk to the seller</h2>
-            <p className="mt-3 text-sm leading-6 text-muted">Get availability, viewing times, and answers to your questions.</p>
-            <div className="mt-4 rounded-lg border border-slate-100 bg-slate-50 p-4">
-              <p className="text-sm text-muted">Seller</p>
-              <p className="font-semibold text-ink">{property.seller?.name || property.sellerName || property.owner || property.ownerName || 'Seller'}</p>
-              <p className="mt-1 text-sm text-muted">{property.city || property.district || property.location}</p>
-              <p className="mt-2 text-sm"><strong>Mobile: </strong>{property.seller?.phone || property.sellerPhone || property.ownerMobile || '—'}</p>
-              <p className="mt-1 text-sm"><strong>Email: </strong>{property.seller?.email || property.sellerEmail || property.ownerEmail || '—'}</p>
-            </div>
 
-            <div className="mt-6 grid gap-3">
-              <a href={`tel:+91${String(property.seller?.phone || property.sellerPhone || property.ownerMobile || property.mobile || '').replace(/\D/g, '')}`} className="flex w-full items-center justify-center gap-2 rounded-full bg-sage px-5 py-3.5 font-semibold text-white"><Phone size={17} /> Call Seller</a>
-              <a href={`https://wa.me/91${String(property.seller?.phone || property.sellerPhone || property.ownerMobile || property.mobile || '').replace(/\D/g, '')}`} target="_blank" rel="noreferrer" className="flex w-full items-center justify-center gap-2 rounded-full border border-stone-200 px-5 py-3.5 font-semibold">WhatsApp Seller</a>
-              <a href={`mailto:${property.seller?.email || property.sellerEmail || property.ownerEmail || property.email || ''}`} className="flex w-full items-center justify-center gap-2 rounded-full border border-stone-200 px-5 py-3.5 font-semibold">Email Seller</a>
-              <button type="button" onClick={() => setContactModal(property)} className="flex w-full items-center justify-center gap-2 rounded-full bg-white px-5 py-3.5 font-semibold">Contact Seller</button>
+          <aside className="self-start lg:sticky lg:top-24">
+            <div className="rounded-[28px] border border-slate-200 bg-white p-5 shadow-card sm:p-6">
+              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">Seller Information</p>
+              <div className="mt-4 rounded-[20px] border border-slate-200 bg-slate-50 p-4">
+                <p className="text-lg font-semibold text-ink">{sellerName}</p>
+                <p className="mt-1 text-sm text-slate-600">{property?.district || property?.location || 'Land seller'}</p>
+                <p className="mt-1 text-sm text-slate-600">{property?.subDistrict || property?.taluka || 'Taluka not provided'}</p>
+                <div className="mt-4 space-y-2 text-sm text-slate-700">
+                  {sellerPhone ? <p><span className="font-semibold">Mobile:</span> {sellerPhone}</p> : null}
+                  {sellerEmail ? <p><span className="font-semibold">Email:</span> {sellerEmail}</p> : null}
+                </div>
+              </div>
+              <div className="mt-5 grid gap-3">
+                {sellerCall ? <a href={sellerCall} className="inline-flex items-center justify-center gap-2 rounded-full bg-sage px-5 py-3 text-sm font-semibold text-white">Call Seller</a> : null}
+                {sellerWhatsApp ? <a href={sellerWhatsApp} target="_blank" rel="noreferrer" className="inline-flex items-center justify-center gap-2 rounded-full border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-700">WhatsApp</a> : null}
+                {sellerMail ? <a href={sellerMail} className="inline-flex items-center justify-center gap-2 rounded-full border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-700">Email Seller</a> : null}
+              </div>
             </div>
-            <p className="mt-4 text-center text-xs text-muted">No commitment. Just useful guidance.</p>
           </aside>
         </section>
 
-        <section><SectionHeading eyebrow="You may also like" title="Similar properties" /><div className="mt-8 grid gap-5 md:grid-cols-3">{similar.map((item) => <PropertyCard key={item.id} property={item} onContact={setContactModal} />)}</div></section>
-
-        <ContactModal open={Boolean(contactModal)} onClose={() => setContactModal(null)} data={contactModal || {}} title="Contact Seller" />
-
+        <section className="rounded-[28px] border border-slate-200 bg-white p-5 shadow-card sm:p-6">
+          <SectionHeading eyebrow="More land options" title="Similar Agricultural & Non-Agricultural Lands" />
+          <div className="mt-6 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+            {similarProperties.length ? similarProperties.map((item) => <PropertyCard key={item.id} property={item} onContact={setContactModal} />) : <div className="rounded-[20px] border border-dashed border-slate-200 bg-slate-50 p-6 text-sm text-slate-600">No similar land listings available right now.</div>}
+          </div>
+        </section>
       </main>
+
+      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-slate-200 bg-white/95 px-4 py-3 shadow-[0_-8px_30px_rgba(15,23,42,0.08)] backdrop-blur lg:hidden">
+        <div className="mx-auto flex max-w-7xl items-center gap-2">
+          <a href={sellerCall || '#'} className="flex-1 rounded-full bg-sage px-4 py-3 text-center text-sm font-semibold text-white">Call</a>
+          {sellerWhatsApp ? <a href={sellerWhatsApp} target="_blank" rel="noreferrer" className="flex-1 rounded-full border border-slate-200 px-4 py-3 text-center text-sm font-semibold text-slate-700">WhatsApp</a> : null}
+          {sellerMail ? <a href={sellerMail} className="flex-1 rounded-full border border-slate-200 px-4 py-3 text-center text-sm font-semibold text-slate-700">Email</a> : null}
+        </div>
+      </div>
+
+      {zoomOpen ? (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/90 px-4 py-6" onClick={() => setZoomOpen(false)}>
+          <div className="relative w-full max-w-5xl" onClick={(event) => event.stopPropagation()}>
+            <button type="button" onClick={() => setZoomOpen(false)} className="absolute right-2 top-2 z-10 rounded-full bg-white/90 p-2 shadow-sm">
+              <X size={18} />
+            </button>
+            <div className="overflow-hidden rounded-[24px] bg-white">
+              <AsyncImage src={galleryImages[activeIndex] || galleryImages[0]} alt={propertyTitle} className="h-[70vh] w-full object-contain" />
+            </div>
+            <div className="mt-4 flex items-center justify-center gap-3">
+              <button type="button" onClick={handlePrev} className="rounded-full bg-white/90 p-2 shadow-sm"><ChevronLeft size={18} /></button>
+              <button type="button" onClick={handleNext} className="rounded-full bg-white/90 p-2 shadow-sm"><ChevronRight size={18} /></button>
+            </div>
+          </div>
+        </div>
+      ) : null}
+
+      <ContactModal open={Boolean(contactModal)} onClose={() => setContactModal(null)} data={contactModal || {}} title="Contact Seller" />
     </div>
   );
 }

@@ -1,24 +1,41 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import LargeButton from '../components/LargeButton';
 import { useUserStore } from '../store/useUserStore';
-import { gujaratStateOptions, gujaratDistricts } from '../utils/data';
+import { gujaratDistricts, gujaratStateOptions, gujaratSubDistricts } from '../utils/data';
 import { appendStorageArray, writeStorage, STORAGE_KEYS } from '../utils/storage';
 
 const propertyTypes = ['Agricultural Land', 'Non-Agricultural Land'];
-const priceTypes = ['Total Property Price', 'Per Acre', 'Per Hectare', 'Per Guntha', 'Per Sq. Yard'];
+const priceUnits = ['Vigha', 'Var (Square Yard)', 'Sq. Ft.'];
 const metadata = (files) => Array.from(files || []).map((file) => ({ name: file.name, type: file.type, size: file.size, lastModified: file.lastModified }));
 
 function SellerForm() {
   const navigate = useNavigate();
   const user = useUserStore((state) => state.user);
-  const { register, handleSubmit, formState: { errors } } = useForm();
+  const { register, handleSubmit, watch, setValue, formState: { errors } } = useForm({
+    defaultValues: {
+      state: '',
+      district: '',
+      subDistrict: '',
+      type: '',
+      priceUnit: '',
+      priceAmount: '',
+      mapLink: '',
+      additionalDetails: '',
+    },
+  });
   const [images, setImages] = useState([]);
   const [videos, setVideos] = useState([]);
   const [pdf, setPdf] = useState(null);
   const [submitting, setSubmitting] = useState(false);
+  const selectedDistrict = watch('district');
+  const subDistrictOptions = selectedDistrict ? gujaratSubDistricts[selectedDistrict] || [] : [];
+
+  useEffect(() => {
+    setValue('subDistrict', '');
+  }, [selectedDistrict, setValue]);
 
   const addFiles = (event, setter, accept) => {
     const files = Array.from(event.target.files || []).filter((file) => file.type.startsWith(accept));
@@ -28,11 +45,12 @@ function SellerForm() {
   const removeFile = (setter, index) => setter((current) => current.filter((_, itemIndex) => itemIndex !== index));
 
   const submit = (data) => {
-    if (!pdf) { toast.error('Please upload a property PDF.'); return; }
+    if (!pdf) { toast.error('Please upload your property 7/12 document.'); return; }
     setSubmitting(true);
     const lead = {
       id: typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : `seller-${Date.now()}`,
       ...data,
+      subDistrict: data.subDistrict || '',
       userId: user?.id || '', userName: user?.name || '', userMobile: user?.mobile || '', userEmail: user?.email || '',
       ownerName: user?.name || '', ownerMobile: user?.mobile || '', ownerEmail: user?.email || '',
       propertyImages: metadata(images.map((item) => item.file)), propertyVideos: metadata(videos.map((item) => item.file)), propertyDocument: metadata([pdf])[0],
@@ -88,13 +106,20 @@ function SellerForm() {
           </label>
 
           <label className="block">
-            <span className="field-label">City *</span>
-            <input
-              {...register('city', { required: 'City is required' })}
+            <span className="field-label">Taluka *</span>
+            <select
+              {...register('subDistrict', { required: 'Taluka is required' })}
               className="field-control w-full"
-              placeholder="e.g. Surat"
-            />
-            {errors.city && <p className="error-style">{errors.city.message}</p>}
+              disabled={!selectedDistrict}
+            >
+              <option value="">{selectedDistrict ? 'Select taluka' : 'Select district first'}</option>
+              {subDistrictOptions.map((subDistrict) => (
+                <option key={subDistrict} value={subDistrict}>
+                  {subDistrict}
+                </option>
+              ))}
+            </select>
+            {errors.subDistrict && <p className="error-style">{errors.subDistrict.message}</p>}
           </label>
 
           <label className="block">
@@ -111,27 +136,27 @@ function SellerForm() {
           </label>
 
           <label className="block">
-            <span className="field-label">Price *</span>
-            <input
-              type="number"
-              {...register('price', { required: 'Price is required', min: { value: 1, message: 'Enter a valid price' } })}
-              className="field-control w-full"
-              placeholder="Enter price"
-            />
-            {errors.price && <p className="error-style">{errors.price.message}</p>}
-          </label>
-
-          <label className="block">
-            <span className="field-label">Price Type *</span>
-            <select {...register('priceType', { required: 'Select a price type' })} className="field-control w-full">
-              <option value="">Select price type</option>
-              {priceTypes.map((type) => (
-                <option key={type} value={type}>
-                  {type}
+            <span className="field-label">Price Unit *</span>
+            <select {...register('priceUnit', { required: 'Select a price unit' })} className="field-control w-full">
+              <option value="">Select price unit</option>
+              {priceUnits.map((unit) => (
+                <option key={unit} value={unit}>
+                  {unit}
                 </option>
               ))}
             </select>
-            {errors.priceType && <p className="error-style">{errors.priceType.message}</p>}
+            {errors.priceUnit && <p className="error-style">{errors.priceUnit.message}</p>}
+          </label>
+
+          <label className="block">
+            <span className="field-label">Price Amount *</span>
+            <input
+              type="number"
+              {...register('priceAmount', { required: 'Price amount is required', min: { value: 1, message: 'Enter a valid price' } })}
+              className="field-control w-full"
+              placeholder="Enter property price"
+            />
+            {errors.priceAmount && <p className="error-style">{errors.priceAmount.message}</p>}
           </label>
 
           <label className="block">
@@ -166,13 +191,17 @@ function SellerForm() {
           </label>
 
           <label className="block">
-            <span className="field-label">Property PDF *</span>
-            <input type="file" accept="application/pdf,.pdf" onChange={(event) => setPdf(event.target.files?.[0] || null)} className="field-control w-full" />
+            <span className="field-label">7/12 Document *</span>
+            <input type="file" accept=".pdf,.jpg,.jpeg,.png,.webp" onChange={(event) => setPdf(event.target.files?.[0] || null)} className="field-control w-full" />
+            <p className="mt-1 text-xs text-slate-500">Upload your property&apos;s 7/12 document or a clear photo/screenshot of the document.</p>
             {pdf && (
               <div className="mt-3 rounded-3xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm">
                 <div className="flex items-center justify-between gap-4">
-                  <span className="truncate">{pdf.name}</span>
-                  <button type="button" onClick={() => setPdf(null)} className="text-red-600">Remove PDF</button>
+                  <div>
+                    <p className="font-semibold text-slate-800">{pdf.name}</p>
+                    <p className="mt-1 text-xs text-slate-500">Upload status: ready</p>
+                  </div>
+                  <button type="button" onClick={() => setPdf(null)} className="text-red-600">Remove</button>
                 </div>
               </div>
             )}
