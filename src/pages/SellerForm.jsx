@@ -5,10 +5,11 @@ import { toast } from 'react-toastify';
 import LargeButton from '../components/LargeButton';
 import { useUserStore } from '../store/useUserStore';
 import { gujaratDistricts, gujaratSubDistricts, gujaratVillages } from '../utils/data';
-import { appendStorageArray, writeStorage, STORAGE_KEYS } from '../utils/storage';
+import { appendStorageArray, readStorage, writeStorage, STORAGE_KEYS } from '../utils/storage';
 
 const propertyTypes = ['Agricultural Land', 'Non-Agricultural Land'];
 const priceUnits = ['Vigha', 'Sq.Yard (Var)', 'Sq.Ft'];
+const fallbackPropertyImage = 'https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=1400&q=85';
 const metadata = (files) => Array.from(files || []).map((file) => ({ name: file.name, type: file.type, size: file.size, lastModified: file.lastModified }));
 
 function SellerForm() {
@@ -74,8 +75,13 @@ function SellerForm() {
   const submit = (data) => {
     if (!pdf) { toast.error('Please upload your property 7/12 document.'); return; }
     setSubmitting(true);
+    const listingId = typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : `listing-${Date.now()}`;
+    const imageUrls = images.map((item) => item.url).filter(Boolean);
+    const pdfUrl = pdf ? URL.createObjectURL(pdf) : '';
+    const priceValue = data.priceAmount ? Number(String(data.priceAmount).replace(/[^\d]/g, '')) : 0;
+    const title = `${data.type || 'Land'} in ${data.village || data.subDistrict || data.district || 'Gujarat'}`;
     const lead = {
-      id: typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : `seller-${Date.now()}`,
+      id: listingId,
       ...data,
       priceAmount: data.priceAmount || '',
       subDistrict: data.subDistrict || '',
@@ -85,9 +91,54 @@ function SellerForm() {
       propertyImages: metadata(images.map((item) => item.file)), propertyVideos: metadata(videos.map((item) => item.file)), propertyDocument: metadata([pdf])[0],
       submittedAt: new Date().toISOString(),
     };
+    const listing = {
+      ...lead,
+      id: listingId,
+      title,
+      name: title,
+      type: data.type || '',
+      propertyType: data.type || '',
+      state: data.state || 'Gujarat',
+      district: data.district || '',
+      subDistrict: data.subDistrict || '',
+      taluka: data.subDistrict || '',
+      village: data.village || '',
+      location: data.district || '',
+      city: data.district || '',
+      address: [data.village || '', data.subDistrict || '', data.district || '', 'Gujarat'].filter(Boolean).join(', '),
+      price: priceValue ? `₹${priceValue.toLocaleString('en-IN')}` : 'Price on request',
+      priceAmount: priceValue ? String(priceValue) : '',
+      priceUnit: data.priceUnit || '',
+      landArea: data.additionalDetails || 'Area not specified',
+      area: data.additionalDetails || 'Area not specified',
+      description: data.additionalDetails || 'Verified land listing with clear location and pricing details.',
+      status: 'Available',
+      verified: true,
+      image: imageUrls[0] || fallbackPropertyImage,
+      gallery: imageUrls.length ? imageUrls : [fallbackPropertyImage],
+      images: imageUrls.length ? imageUrls : [fallbackPropertyImage],
+      propertyDocument: pdf ? { name: pdf.name, type: pdf.type, size: pdf.size, lastModified: pdf.lastModified, url: pdfUrl } : null,
+      documentUrl: pdfUrl,
+      mapLink: data.mapLink || '',
+      mapUrl: data.mapLink || '',
+      googleMaps: data.mapLink || '',
+      seller: { name: user?.name || '', phone: user?.mobile || '', email: user?.email || '' },
+      sellerName: user?.name || '',
+      sellerPhone: user?.mobile || '',
+      sellerEmail: user?.email || '',
+      ownerName: user?.name || '',
+      ownerMobile: user?.mobile || '',
+      ownerEmail: user?.email || '',
+      submittedAt: lead.submittedAt,
+      createdAt: lead.submittedAt,
+      updatedAt: lead.submittedAt,
+      uploadedDate: lead.submittedAt,
+      userId: user?.id || '',
+    };
     try {
       appendStorageArray(STORAGE_KEYS.sellerLeads, lead);
-      writeStorage(STORAGE_KEYS.lastProperty, lead);
+      appendStorageArray(STORAGE_KEYS.listings, listing);
+      writeStorage(STORAGE_KEYS.lastProperty, listing);
     } catch {
       toast.error('Unable to save the property details.');
       setSubmitting(false);

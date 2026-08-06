@@ -60,10 +60,12 @@ function HomePage() {
     const loadLatest = () => {
       try {
         const storedListings = readStorage(STORAGE_KEYS.listings, []);
-        const latestListings = Array.isArray(storedListings) && storedListings.length
-          ? storedListings.slice().sort((a, b) => new Date(b.updatedAt || b.createdAt || 0) - new Date(a.updatedAt || a.createdAt || 0))
-          : sampleProperties.slice(0, 6);
-        setLatestProperties(latestListings.slice(0, 6));
+        const allListings = Array.isArray(storedListings) ? storedListings : [];
+        const activeListings = allListings.filter((listing) => String(listing.status || 'Available').toLowerCase() !== 'sold');
+        const sortedListings = activeListings.slice().sort((a, b) => new Date(b.updatedAt || b.createdAt || b.submittedAt || b.uploadedDate || 0) - new Date(a.updatedAt || a.createdAt || a.submittedAt || a.uploadedDate || 0));
+        const fallbackListings = sampleProperties.filter((listing) => String(listing.status || 'Available').toLowerCase() !== 'sold');
+        const combinedListings = [...sortedListings, ...fallbackListings.filter((item) => !sortedListings.some((listing) => String(listing.id) === String(item.id)))];
+        setLatestProperties(combinedListings.slice(0, 6));
 
         const buyers = readStorage(STORAGE_KEYS.buyerLeads, []);
         const sortedBuyers = Array.isArray(buyers)
@@ -71,7 +73,7 @@ function HomePage() {
           : [];
         setLatestBuyerLeads(sortedBuyers.slice(0, 4));
       } catch (err) {
-        setLatestProperties(sampleProperties.slice(0, 4));
+        setLatestProperties(sampleProperties.slice(0, 6));
         setLatestBuyerLeads([]);
       }
     };
@@ -127,7 +129,7 @@ function HomePage() {
       <section className="mx-auto max-w-7xl px-6 lg:px-12">
         <SectionHeading eyebrow="Featured" title="Featured Land Opportunities" description="Hand-picked agricultural and non-agricultural land with verified details." action={<button type="button" onClick={() => navigate('/buy')} className="inline-flex items-center gap-2 rounded-full border border-primary px-5 py-3 text-sm font-semibold text-primary transition hover:bg-primary/5">View All Properties</button>} />
         <div className="mt-10 grid gap-6 lg:grid-cols-2 xl:grid-cols-3">
-          {(latestProperties.length ? latestProperties.slice(0, 4) : sampleProperties.slice(0, 4)).map((property) => (
+          {latestProperties.slice(0, 6).map((property) => (
             <PropertyCard key={property.id} property={property} onContact={(data) => setContactModal({ type: 'seller', data })} />
           ))}
         </div>
