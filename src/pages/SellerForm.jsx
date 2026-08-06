@@ -1,24 +1,25 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import LargeButton from '../components/LargeButton';
 import { useUserStore } from '../store/useUserStore';
-import { gujaratDistricts, gujaratStateOptions, gujaratSubDistricts } from '../utils/data';
+import { gujaratDistricts, gujaratSubDistricts, gujaratVillages } from '../utils/data';
 import { appendStorageArray, writeStorage, STORAGE_KEYS } from '../utils/storage';
 
 const propertyTypes = ['Agricultural Land', 'Non-Agricultural Land'];
-const priceUnits = ['Vigha', 'Var (Square Yard)', 'Sq. Ft.'];
+const priceUnits = ['Vigha', 'Sq.Yard (Var)', 'Sq.Ft'];
 const metadata = (files) => Array.from(files || []).map((file) => ({ name: file.name, type: file.type, size: file.size, lastModified: file.lastModified }));
 
 function SellerForm() {
   const navigate = useNavigate();
   const user = useUserStore((state) => state.user);
-  const { register, handleSubmit, watch, setValue, formState: { errors } } = useForm({
+  const { register, handleSubmit, watch, setValue, clearErrors, formState: { errors } } = useForm({
     defaultValues: {
-      state: '',
+      state: 'Gujarat',
       district: '',
       subDistrict: '',
+      village: '',
       type: '',
       priceUnit: '',
       priceAmount: '',
@@ -30,12 +31,25 @@ function SellerForm() {
   const [videos, setVideos] = useState([]);
   const [pdf, setPdf] = useState(null);
   const [submitting, setSubmitting] = useState(false);
+  const [displayPrice, setDisplayPrice] = useState('');
   const selectedDistrict = watch('district');
+  const selectedTaluka = watch('subDistrict');
   const subDistrictOptions = selectedDistrict ? gujaratSubDistricts[selectedDistrict] || [] : [];
+  const villageOptions = useMemo(() => {
+    if (!selectedDistrict || !selectedTaluka) return [];
+    return (gujaratVillages[selectedDistrict]?.[selectedTaluka] || []).slice().sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }));
+  }, [selectedDistrict, selectedTaluka]);
 
   useEffect(() => {
     setValue('subDistrict', '');
-  }, [selectedDistrict, setValue]);
+    setValue('village', '');
+    clearErrors('village');
+  }, [selectedDistrict, setValue, clearErrors]);
+
+  useEffect(() => {
+    setValue('village', '');
+    clearErrors('village');
+  }, [selectedTaluka, setValue, clearErrors]);
 
   const addFiles = (event, setter, accept) => {
     const files = Array.from(event.target.files || []).filter((file) => file.type.startsWith(accept));
@@ -44,13 +58,28 @@ function SellerForm() {
   };
   const removeFile = (setter, index) => setter((current) => current.filter((_, itemIndex) => itemIndex !== index));
 
+  const formatIndianNumber = (value) => {
+    const digitsOnly = String(value).replace(/[^\d]/g, '');
+    if (!digitsOnly) return '';
+    return Number(digitsOnly).toLocaleString('en-IN');
+  };
+
+  const handlePriceInput = (event) => {
+    const value = event.target.value;
+    const digitsOnly = String(value).replace(/[^\d]/g, '');
+    setDisplayPrice(formatIndianNumber(digitsOnly));
+    setValue('priceAmount', digitsOnly, { shouldDirty: true, shouldValidate: true });
+  };
+
   const submit = (data) => {
     if (!pdf) { toast.error('Please upload your property 7/12 document.'); return; }
     setSubmitting(true);
     const lead = {
       id: typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : `seller-${Date.now()}`,
       ...data,
+      priceAmount: data.priceAmount || '',
       subDistrict: data.subDistrict || '',
+      village: data.village || '',
       userId: user?.id || '', userName: user?.name || '', userMobile: user?.mobile || '', userEmail: user?.email || '',
       ownerName: user?.name || '', ownerMobile: user?.mobile || '', ownerEmail: user?.email || '',
       propertyImages: metadata(images.map((item) => item.file)), propertyVideos: metadata(videos.map((item) => item.file)), propertyDocument: metadata([pdf])[0],
@@ -66,7 +95,7 @@ function SellerForm() {
     }
     setSubmitting(false);
     toast.success('Your property has been submitted successfully.');
-    navigate('/add-property', { state: { justSubmitted: true, data: lead } });
+    navigate('/seller-form', { state: { justSubmitted: true, data: lead } });
   };
 
   return <div className="-mx-4 -mt-8 bg-[#FFFEFE] pb-20 sm:-mx-6 lg:-mx-8">
@@ -81,15 +110,13 @@ function SellerForm() {
         <div className="space-y-5">
           <label className="block">
             <span className="field-label">State *</span>
-            <select {...register('state', { required: 'State is required' })} className="field-control w-full">
-              <option value="">Select state</option>
-              {gujaratStateOptions.map((state) => (
-                <option key={state.value} value={state.value}>
-                  {state.label}
-                </option>
-              ))}
-            </select>
-            {errors.state && <p className="error-style">{errors.state.message}</p>}
+            <input
+              value="Gujarat"
+              readOnly
+              disabled
+              className="field-control w-full bg-slate-100 text-slate-600"
+            />
+            <input type="hidden" {...register('state', { required: 'State is required' })} value="Gujarat" />
           </label>
 
           <label className="block">
@@ -123,6 +150,28 @@ function SellerForm() {
           </label>
 
           <label className="block">
+            <span className="field-label">Village *</span>
+            <select
+              {...register('village', { required: 'Please select a village.' })}
+              className="field-control w-full"
+              disabled={!selectedTaluka}
+              value={watch('village') || ''}
+              onChange={(event) => {
+                setValue('village', event.target.value, { shouldDirty: true, shouldValidate: true });
+                if (event.target.value) clearErrors('village');
+              }}
+            >
+              <option value="">{selectedTaluka ? 'Select Village' : 'Select Taluka First'}</option>
+              {villageOptions.map((village) => (
+                <option key={village} value={village}>
+                  {village}
+                </option>
+              ))}
+            </select>
+            {errors.village && <p className="error-style">{errors.village.message}</p>}
+          </label>
+
+          <label className="block">
             <span className="field-label">Property Type *</span>
             <select {...register('type', { required: 'Select a property type' })} className="field-control w-full">
               <option value="">Select land type</option>
@@ -151,10 +200,12 @@ function SellerForm() {
           <label className="block">
             <span className="field-label">Price Amount *</span>
             <input
-              type="number"
-              {...register('priceAmount', { required: 'Price amount is required', min: { value: 1, message: 'Enter a valid price' } })}
+              type="text"
+              value={displayPrice}
+              onChange={handlePriceInput}
               className="field-control w-full"
               placeholder="Enter property price"
+              inputMode="numeric"
             />
             {errors.priceAmount && <p className="error-style">{errors.priceAmount.message}</p>}
           </label>

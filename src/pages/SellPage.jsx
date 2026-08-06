@@ -42,7 +42,7 @@ function SellPage() {
             </div>
           )}
           <div className="mt-6 flex items-center gap-3">
-            <button onClick={() => navigate('/add-property')} className="inline-flex items-center justify-center rounded-3xl bg-primary px-6 py-3 text-base font-semibold text-white">Add Another Property</button>
+            <button onClick={() => navigate('/seller-form')} className="inline-flex items-center justify-center rounded-3xl bg-primary px-6 py-3 text-base font-semibold text-white">Add Another Property</button>
             <a href="mailto:help@brokerstreets.com" className="inline-flex items-center justify-center rounded-3xl border border-slate-200 bg-white px-6 py-3 text-base font-semibold text-slate-900">Contact Support</a>
             <button onClick={() => navigate('/home')} className="inline-flex items-center justify-center rounded-3xl border border-slate-200 bg-white px-6 py-3 text-base font-semibold text-slate-900">Back to Home</button>
           </div>

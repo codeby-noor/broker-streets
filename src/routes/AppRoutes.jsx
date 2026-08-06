@@ -1,4 +1,4 @@
-import { Route, Routes } from 'react-router-dom';
+import { Navigate, Route, Routes } from 'react-router-dom';
 import Layout from '../layouts/Layout';
 import RegisterPage from '../pages/RegisterPage';
 import LoginPage from '../pages/LoginPage';
@@ -51,11 +51,7 @@ function AppRoutes() {
           />
           <Route
             path="add-property"
-            element={
-              <FormGuard flagKey="sellerFormSubmitted" formPath="/seller-form" requireSubmitted={true}>
-                <AddPropertyPage />
-              </FormGuard>
-            }
+            element={<Navigate to="/seller-form" replace />}
           />
           <Route
             path="seller-dashboard"

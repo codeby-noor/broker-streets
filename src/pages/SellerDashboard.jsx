@@ -99,7 +99,7 @@ function SellerDashboard() {
 
         <div className="mt-8 flex items-center justify-between">
           <h2 className="text-2xl font-semibold text-ink">Your listings</h2>
-          <button type="button" onClick={() => navigate('/add-property')} className="inline-flex items-center gap-2 rounded-full border border-primary px-5 py-3 font-semibold text-primary hover:bg-blue-50"><Plus size={18} /> Add Property</button>
+          <button type="button" onClick={() => navigate('/seller-form')} className="inline-flex items-center gap-2 rounded-full border border-primary px-5 py-3 font-semibold text-primary hover:bg-blue-50"><Plus size={18} /> Add Property</button>
         </div>
 
         <div className="mt-6 grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
@@ -120,7 +120,7 @@ function SellerDashboard() {
                   </div>
                   <div className="flex flex-wrap gap-2">
                     <button type="button" onClick={() => navigate(`/property/${listing.id}`)} className="inline-flex items-center gap-2 rounded-full border border-slate-200 px-3 py-2 text-sm font-semibold text-ink"><Eye size={16} /> View</button>
-                    <button type="button" onClick={() => navigate(`/add-property?edit=${listing.id}`)} className="inline-flex items-center gap-2 rounded-full border border-slate-200 px-3 py-2 text-sm font-semibold text-ink"><Pencil size={16} /> Edit</button>
+                    <button type="button" onClick={() => navigate('/seller-form')} className="inline-flex items-center gap-2 rounded-full border border-slate-200 px-3 py-2 text-sm font-semibold text-ink"><Pencil size={16} /> Edit</button>
                     <button type="button" onClick={() => handleDuplicate(listing)} className="inline-flex items-center gap-2 rounded-full border border-slate-200 px-3 py-2 text-sm font-semibold text-ink">Duplicate</button>
                     <button type="button" onClick={() => handleToggleStatus(listing)} className="inline-flex items-center gap-2 rounded-full border border-slate-200 px-3 py-2 text-sm font-semibold text-ink">{listing.status === 'Sold' ? 'Mark Available' : 'Mark Sold'}</button>
                     <button type="button" onClick={() => setDeleteTarget(listing)} className="inline-flex items-center gap-2 rounded-full border border-red-200 px-3 py-2 text-sm font-semibold text-danger"><Trash2 size={16} /> Delete</button>
