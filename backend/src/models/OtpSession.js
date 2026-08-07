@@ -29,6 +29,10 @@ const otpSessionSchema = new mongoose.Schema(
       type: Date,
       default: null,
     },
+    pendingUserData: {
+      type: Object,
+      default: null,
+    },
   },
   {
     timestamps: true,

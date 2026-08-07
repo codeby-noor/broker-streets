@@ -1,3 +1,4 @@
+const crypto = require('crypto');
 const bcrypt = require('bcryptjs');
 const axios = require('axios');
 const OtpSession = require('../models/OtpSession');
@@ -7,12 +8,10 @@ const ApiError = require('../utils/ApiError');
 const { HTTP_STATUS } = require('../utils/constants');
 
 const generateOtp = () => {
-  const digits = '0123456789';
-  let otp = '';
-  for (let i = 0; i < env.otpLength; i += 1) {
-    otp += digits[Math.floor(Math.random() * 10)];
-  }
-  return otp;
+  // Item 2: Secure random generator using crypto.randomInt
+  const min = Math.pow(10, env.otpLength - 1);
+  const max = Math.pow(10, env.otpLength) - 1;
+  return crypto.randomInt(min, max + 1).toString();
 };
 
 const sendSmsViaMsg91 = async (mobile, otp) => {
@@ -46,8 +45,8 @@ const sendSmsViaMsg91 = async (mobile, otp) => {
   }
 };
 
-const createAndSendOtp = async (mobile) => {
-  // Check for active lockout
+const createAndSendOtp = async (mobile, pendingUserData = null) => {
+  // Check for active lockout across any unused session for this mobile
   const existingSession = await OtpSession.findOne({ mobile, used: false }).sort({ createdAt: -1 });
 
   if (existingSession && existingSession.lockedUntil && existingSession.lockedUntil > new Date()) {
@@ -58,14 +57,19 @@ const createAndSendOtp = async (mobile) => {
     );
   }
 
+  // Item 10: Invalidate prior unused active sessions for this mobile before creating a new one
+  await OtpSession.updateMany({ mobile, used: false }, { $set: { used: true } });
+
   const rawOtp = generateOtp();
   const hashedOtp = await bcrypt.hash(rawOtp, 10);
   const expiresAt = new Date(Date.now() + env.otpExpiryMinutes * 60 * 1000);
 
-  await OtpSession.create({
+  const newSession = await OtpSession.create({
     mobile,
     otp: hashedOtp,
     expiresAt,
+    // Item 1: Store pending registration data on session so User record isn't mutated before verification
+    pendingUserData: pendingUserData || null,
   });
 
   await sendSmsViaMsg91(mobile, rawOtp);
@@ -73,6 +77,7 @@ const createAndSendOtp = async (mobile) => {
   return {
     mobile,
     expiresAt,
+    sessionId: newSession._id,
     ...(env.nodeEnv === 'development' || !env.enableRealSms ? { otp: rawOtp } : {}),
   };
 };
@@ -99,24 +104,48 @@ const verifyOtp = async (mobile, inputOtp) => {
   const isValid = await bcrypt.compare(inputOtp, session.otp);
 
   if (!isValid) {
-    session.attempts += 1;
-    if (session.attempts >= env.otpMaxAttempts) {
-      session.lockedUntil = new Date(Date.now() + env.otpLockMinutes * 60 * 1000);
-      await session.save();
+    // Item 5: Atomic increment of failed attempts using $inc
+    const nextAttempts = session.attempts + 1;
+    const isLockingOut = nextAttempts >= env.otpMaxAttempts;
+    const lockedUntilDate = isLockingOut ? new Date(Date.now() + env.otpLockMinutes * 60 * 1000) : null;
+
+    // Item 9: Ensure expiresAt extends to cover lockedUntil so MongoDB TTL index won't delete locked session early
+    const updatePayload = {
+      $inc: { attempts: 1 },
+      ...(isLockingOut && {
+        lockedUntil: lockedUntilDate,
+        expiresAt: lockedUntilDate,
+      }),
+    };
+
+    await OtpSession.findByIdAndUpdate(session._id, updatePayload);
+
+    if (isLockingOut) {
       throw new ApiError(
         HTTP_STATUS.TOO_MANY_REQUESTS,
         `Maximum invalid OTP attempts reached. Locked for ${env.otpLockMinutes} minutes.`
       );
     }
-    await session.save();
-    const remainingAttempts = env.otpMaxAttempts - session.attempts;
+
+    const remainingAttempts = env.otpMaxAttempts - nextAttempts;
     throw new ApiError(HTTP_STATUS.BAD_REQUEST, `Invalid OTP. ${remainingAttempts} attempt(s) remaining.`);
   }
 
-  session.used = true;
-  await session.save();
+  // Item 4: Atomic update marking OTP as used to prevent race conditions and replay attacks
+  const updatedSession = await OtpSession.findOneAndUpdate(
+    { _id: session._id, used: false },
+    { $set: { used: true } },
+    { new: true }
+  );
 
-  return true;
+  if (!updatedSession) {
+    throw new ApiError(HTTP_STATUS.BAD_REQUEST, 'OTP has already been used or expired.');
+  }
+
+  return {
+    verified: true,
+    pendingUserData: updatedSession.pendingUserData || null,
+  };
 };
 
 module.exports = {

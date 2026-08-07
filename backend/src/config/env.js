@@ -25,10 +25,16 @@ const env = {
 
 
 const requiredEnvVars = ['MONGODB_URI'];
+if (env.nodeEnv === 'production') {
+  requiredEnvVars.push('JWT_SECRET', 'JWT_REFRESH_SECRET');
+}
 
 for (const envVar of requiredEnvVars) {
   if (!process.env[envVar]) {
-    console.warn(`[WARNING] Missing environment variable: ${envVar}. Using fallback default.`);
+    if (env.nodeEnv === 'production') {
+      throw new Error(`[FATAL] Missing mandatory environment variable in production: ${envVar}`);
+    }
+    console.warn(`[WARNING] Missing environment variable: ${envVar}. Using fallback default for development.`);
   }
 }
 

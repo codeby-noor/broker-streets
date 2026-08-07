@@ -2,6 +2,8 @@ const rateLimit = require('express-rate-limit');
 const ApiError = require('../utils/ApiError');
 const { HTTP_STATUS } = require('../utils/constants');
 
+// Note: express-rate-limit defaults to MemoryStore. For distributed multi-instance production deployments,
+// pass a RedisStore or MemcachedStore via options.store.
 const apiRateLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 100, // 100 requests per window

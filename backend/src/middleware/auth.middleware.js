@@ -25,6 +25,10 @@ const authenticateToken = asyncHandler(async (req, res, next) => {
       throw new ApiError(HTTP_STATUS.FORBIDDEN, 'User account is deactivated');
     }
 
+    if (decoded.tokenVersion !== undefined && decoded.tokenVersion !== user.tokenVersion) {
+      throw new ApiError(HTTP_STATUS.UNAUTHORIZED, 'Token has been revoked. Please sign in again.');
+    }
+
     req.user = user;
     return next();
   } catch (error) {

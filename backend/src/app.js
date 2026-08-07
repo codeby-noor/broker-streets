@@ -31,12 +31,17 @@ if (env.nodeEnv === 'development') {
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// Apply rate limiting to /api/ routes
+// Rewrite non-prefixed /auth requests to /api/auth for backward compatibility
+app.use('/auth', (req, res, next) => {
+  req.url = `/api/auth${req.url}`;
+  next();
+});
+
+// Apply rate limiting to all /api/ routes (including rewritten /auth requests)
 app.use('/api', apiRateLimiter);
 
 // Auth routes
 app.use('/api/auth', authRoutes);
-app.use('/auth', authRoutes);
 
 // Health check endpoint
 app.get('/health', (req, res) => {

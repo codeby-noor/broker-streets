@@ -6,6 +6,7 @@ const generateAccessToken = (user) => {
     userId: user._id || user.id,
     mobile: user.mobile,
     role: user.role || 'user',
+    tokenVersion: user.tokenVersion || 0,
   };
   return jwt.sign(payload, env.jwtSecret, { expiresIn: env.jwtExpiresIn });
 };
@@ -14,6 +15,7 @@ const generateRefreshToken = (user) => {
   const payload = {
     userId: user._id || user.id,
     mobile: user.mobile,
+    tokenVersion: user.tokenVersion || 0,
   };
   return jwt.sign(payload, env.jwtRefreshSecret, { expiresIn: env.jwtRefreshExpiresIn });
 };

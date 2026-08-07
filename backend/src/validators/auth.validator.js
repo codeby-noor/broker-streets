@@ -57,8 +57,15 @@ const verifyOtpSchema = Joi.object({
   email: Joi.string().trim().email().allow('').optional(),
 });
 
+const refreshTokenSchema = Joi.object({
+  refreshToken: Joi.string().trim().required().messages({
+    'string.empty': 'Refresh token is required',
+  }),
+});
+
 module.exports = {
   registerSchema,
   sendOtpSchema,
   verifyOtpSchema,
+  refreshTokenSchema,
 };
