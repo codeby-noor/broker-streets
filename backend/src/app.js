@@ -31,17 +31,12 @@ if (env.nodeEnv === 'development') {
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// Rewrite non-prefixed /auth requests to /api/auth for backward compatibility
-app.use('/auth', (req, res, next) => {
-  req.url = `/api/auth${req.url}`;
-  next();
-});
-
-// Apply rate limiting to all /api/ routes (including rewritten /auth requests)
+// After (working):
 app.use('/api', apiRateLimiter);
 
-// Auth routes
-app.use('/api/auth', authRoutes);
+// Mount auth routes on both the documented /api/auth prefix and the
+// legacy /auth prefix for backward compatibility.
+app.use(['/auth', '/api/auth'], authRoutes);
 
 // Health check endpoint
 app.get('/health', (req, res) => {
