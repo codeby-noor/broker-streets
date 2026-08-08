@@ -1,4 +1,3 @@
-import { toast } from 'react-toastify';
 import { STORAGE_KEYS } from './storage';
 
 const OTP_TTL_MS = 5 * 60 * 1000;
@@ -136,7 +135,6 @@ export function sendOTP(mobile) {
 
   if (OTP_DEBUG) {
     console.info('Development OTP:', otp);
-    toast.info(`Development OTP: ${otp}`);
   }
 
   return {
@@ -223,6 +221,12 @@ export function verifyOTP({ mobile, otp }) {
 
 export function resendOTP(mobile) {
   return sendOTP(mobile);
+}
+
+export function getDebugOtpForMobile(mobile) {
+  if (!OTP_DEBUG) return null;
+  const session = readSession(mobile);
+  return session?.otp ?? null;
 }
 
 export function getOtpTimeRemaining(mobile) {
