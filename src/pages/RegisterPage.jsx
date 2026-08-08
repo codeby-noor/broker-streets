@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import LargeButton from '../components/LargeButton';
+import logo from '../assets/images/logo.png';
 import { toast } from 'react-toastify';
 import { useForm } from 'react-hook-form';
 import { useUserStore } from '../store/useUserStore';
@@ -69,69 +70,72 @@ function RegisterPage() {
   };
 
   return (
-    <div className="min-h-[calc(100vh-160px)] flex items-center justify-center px-4 py-10 sm:px-6">
-      <div className="w-full max-w-2xl rounded-[30px] border border-slate-200 bg-white p-8 shadow-sm">
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-        <div>
+    <div className="min-h-screen bg-[#FAFAFB] px-4 py-8 sm:px-6">
+      <div className="mx-auto w-full max-w-md rounded-[32px] border border-slate-200 bg-white p-6 shadow-sm sm:max-w-2xl sm:p-8">
+        <div className="mx-auto mb-6 h-14 w-14 overflow-hidden rounded-3xl bg-slate-100">
+          <img src={logo} alt="Broker Streets logo" className="h-full w-full object-contain" />
+        </div>
+        <div className="flex flex-col gap-3 text-center sm:text-left">
           <h1 className="text-3xl font-semibold text-slate-900">Register</h1>
-          <p className="mt-2 text-sm text-slate-600">Enter your details to start buying or selling property.</p>
+          <p className="mx-auto max-w-xs text-sm leading-6 text-slate-600 sm:mx-0">Enter your details to start buying or selling property.</p>
         </div>
-        <button
-          type="button"
-          onClick={() => navigate('/admin/login')}
-          className="inline-flex items-center justify-center self-start rounded-full border border-primary/20 px-4 py-2 text-sm font-semibold text-primary transition hover:border-primary hover:bg-primary/5"
-        >
-          Admin Login
-        </button>
-      </div>
-      <form onSubmit={handleSubmit(onSubmit)} className="mt-8 space-y-6">
-        <div>
-          <label className="mb-2 block text-sm font-semibold text-slate-800">Full Name *</label>
-          <input
-            type="text"
-            {...register('name', { required: 'Full Name is required' })}
-            className="w-full rounded-3xl border border-slate-200 bg-slate-50 px-4 py-4 text-base text-slate-900 outline-none focus:border-primary"
-          />
-          {errors.name && <p className="mt-2 text-sm text-red-600">{errors.name.message}</p>}
+        <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <button
+            type="button"
+            onClick={() => navigate('/admin/login')}
+            className="inline-flex items-center justify-center rounded-full border border-primary/20 px-4 py-2 text-sm font-semibold text-primary transition hover:border-primary hover:bg-primary/5"
+          >
+            Admin Login
+          </button>
         </div>
+        <form onSubmit={handleSubmit(onSubmit)} className="mt-8 space-y-6">
+          <div>
+            <label className="mb-2 block text-sm font-semibold text-slate-800">Full Name *</label>
+            <input
+              type="text"
+              {...register('name', { required: 'Full Name is required' })}
+              className="w-full min-h-[56px] rounded-3xl border border-slate-200 bg-slate-50 px-4 py-4 text-base text-slate-900 outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10"
+            />
+            {errors.name && <p className="mt-2 text-sm text-red-600">{errors.name.message}</p>}
+          </div>
 
-        <div>
-          <label className="mb-2 block text-sm font-semibold text-slate-800">Mobile Number *</label>
-          <input
-            type="tel"
-            {...register('mobile', { required: 'Mobile is required', pattern: { value: /^[0-9]{10}$/, message: 'Enter a valid 10-digit mobile number' } })}
-            className="w-full rounded-3xl border border-slate-200 bg-slate-50 px-4 py-4 text-base text-slate-900 outline-none focus:border-primary"
-          />
-          {errors.mobile && <p className="mt-2 text-sm text-red-600">{errors.mobile.message}</p>}
-        </div>
+          <div>
+            <label className="mb-2 block text-sm font-semibold text-slate-800">Mobile Number *</label>
+            <input
+              type="tel"
+              {...register('mobile', { required: 'Mobile is required', pattern: { value: /^[0-9]{10}$/, message: 'Enter a valid 10-digit mobile number' } })}
+              className="w-full min-h-[56px] rounded-3xl border border-slate-200 bg-slate-50 px-4 py-4 text-base text-slate-900 outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10"
+            />
+            {errors.mobile && <p className="mt-2 text-sm text-red-600">{errors.mobile.message}</p>}
+          </div>
 
-        <div>
-          <label className="mb-2 block text-sm font-semibold text-slate-800">Email Address (Optional)</label>
-          <input
-            type="email"
-            {...register('email', { pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: 'Enter a valid email address' } })}
-            className="w-full rounded-3xl border border-slate-200 bg-slate-50 px-4 py-4 text-base text-slate-900 outline-none focus:border-primary"
-          />
-          {errors.email && <p className="mt-2 text-sm text-red-600">{errors.email.message}</p>}
-        </div>
+          <div>
+            <label className="mb-2 block text-sm font-semibold text-slate-800">Email Address (Optional)</label>
+            <input
+              type="email"
+              {...register('email', { pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: 'Enter a valid email address' } })}
+              className="w-full min-h-[56px] rounded-3xl border border-slate-200 bg-slate-50 px-4 py-4 text-base text-slate-900 outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10"
+            />
+            {errors.email && <p className="mt-2 text-sm text-red-600">{errors.email.message}</p>}
+          </div>
 
-        <div>
-          <label className="mb-2 block text-sm font-semibold text-slate-800">City *</label>
-          <input
-            type="text"
-            {...register('city', { required: 'City is required' })}
-            className="w-full rounded-3xl border border-slate-200 bg-slate-50 px-4 py-4 text-base text-slate-900 outline-none focus:border-primary"
-          />
-          {errors.city && <p className="mt-2 text-sm text-red-600">{errors.city.message}</p>}
-        </div>
+          <div>
+            <label className="mb-2 block text-sm font-semibold text-slate-800">City *</label>
+            <input
+              type="text"
+              {...register('city', { required: 'City is required' })}
+              className="w-full min-h-[56px] rounded-3xl border border-slate-200 bg-slate-50 px-4 py-4 text-base text-slate-900 outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10"
+            />
+            {errors.city && <p className="mt-2 text-sm text-red-600">{errors.city.message}</p>}
+          </div>
 
-        <div className="flex flex-col gap-4 pt-2 text-sm text-slate-600">
-          <button type="button" onClick={() => navigate('/login')} className="font-semibold text-primary text-left">Already have an account? Login</button>
-          <button type="button" onClick={() => navigate('/admin/login')} className="font-semibold text-primary text-left">Admin Login</button>
-        </div>
+          <div className="flex flex-col gap-4 pt-2 text-sm text-slate-600">
+            <button type="button" onClick={() => navigate('/login')} className="font-semibold text-primary text-left">Already have an account? Login</button>
+            <button type="button" onClick={() => navigate('/admin/login')} className="font-semibold text-primary text-left">Admin Login</button>
+          </div>
 
-        <LargeButton type="submit" disabled={submitting}>{submitting ? 'Registering...' : 'Register'}</LargeButton>
-      </form>
+          <LargeButton type="submit" disabled={submitting}>{submitting ? 'Registering...' : 'Register'}</LargeButton>
+        </form>
       </div>
     </div>
   );

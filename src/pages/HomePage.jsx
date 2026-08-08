@@ -1,4 +1,5 @@
-﻿import { useEffect, useState } from 'react';
+﻿import { useEffect, useMemo, useState } from 'react';
+import { ArrowRight, MapPin, ShieldCheck, Sparkles, Users } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { getSubmissionDestination } from '../utils/formNavigation';
 import { sampleProperties } from '../utils/data';
@@ -83,22 +84,236 @@ function HomePage() {
     return cleanup;
   }, []);
 
+  const latestActiveProperties = latestProperties.slice(0, 6);
+  const mobileQuickActions = [
+    { label: 'Buy Land', description: 'Browse verified land listings', action: goToBuy },
+    { label: 'Sell Land', description: 'List your land with confidence', action: goToSell },
+    { label: 'Post Requirement', description: 'Share what you want to buy', action: () => navigate('/buyer-form') },
+  ];
+
+  const whyBrokerStreetsSection = useMemo(() => (
+    <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-12">
+      <div className="rounded-[32px] border border-slate-200 bg-white p-6 shadow-card sm:p-8">
+        <div className="text-center">
+          <p className="eyebrow">Why Broker Streets</p>
+          <h2 className="mt-4 text-3xl font-semibold text-ink">A premium platform for land buyers and sellers in Gujarat.</h2>
+          <p className="mt-4 text-sm leading-7 text-muted">Browse verified land opportunities, connect directly with sellers, and access local market clarity for Surat and Navsari.</p>
+        </div>
+
+        <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {[
+            { icon: ShieldCheck, title: 'Verified Listings', description: 'Clear land details and seller credibility on every listing.' },
+            { icon: MapPin, title: 'Local Expertise', description: 'Surat and Navsari focused land coverage with trusted routes.' },
+            { icon: Users, title: 'Direct Contact', description: 'Speak directly to sellers and verified buyers.' },
+            { icon: Sparkles, title: 'Premium Presentation', description: 'Professional listing cards and trusted market insights.' },
+          ].map((item) => (
+            <div key={item.title} className="rounded-[24px] border border-slate-200 bg-slate-50 p-5">
+              <item.icon size={24} className="text-primary" />
+              <h3 className="mt-4 text-lg font-semibold text-ink">{item.title}</h3>
+              <p className="mt-2 text-sm leading-6 text-slate-600">{item.description}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  ), []);
+
+  const featuredSection = useMemo(() => (
+    <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-12">
+      <SectionHeading eyebrow="Featured" title="Featured Land Opportunities" description="Hand-picked agricultural and non-agricultural land with verified details." action={<button type="button" onClick={() => navigate('/buy')} className="inline-flex items-center gap-2 rounded-full border border-primary px-5 py-3 text-sm font-semibold text-primary transition hover:bg-primary/5">View All Properties</button>} />
+      <div className="mt-6 overflow-hidden sm:mt-10">
+        <div className="-mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-4 sm:-mx-6 sm:px-6" aria-label="Featured properties carousel">
+          {latestActiveProperties.map((property) => (
+            <div key={property.id} className="min-w-[86%] snap-start sm:min-w-[42%] lg:min-w-[32%]">
+              <PropertyCard property={property} onContact={(data) => setContactModal({ type: 'seller', data })} />
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  ), [latestActiveProperties, navigate]);
+
+  const buyerRequirementsSection = useMemo(() => (
+    <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-12">
+      <div className="rounded-[32px] border border-slate-200 bg-white p-5 shadow-card sm:p-8">
+        <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+          <div>
+            <p className="eyebrow">Latest Buyer Requirements</p>
+            <h2 className="mt-3 text-3xl font-semibold text-ink">Helping buyers connect with trusted land owners across Gujarat.</h2>
+            <p className="mt-4 text-sm leading-7 text-muted">Connect directly with verified buyers looking for agricultural and non-agricultural land.</p>
+          </div>
+          <button type="button" onClick={() => navigate('/buyer-requirements')} className="inline-flex items-center justify-center rounded-full border border-primary px-6 py-3 text-sm font-semibold text-primary transition hover:bg-primary/5">View All Requirements</button>
+        </div>
+
+        <div className="mt-8 overflow-hidden">
+          <div className="-mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-4 sm:-mx-6 sm:px-6">
+            {latestBuyerLeads.length ? latestBuyerLeads.slice(0, 4).map((lead) => {
+              const preferredVillages = Array.isArray(lead.preferredVillages) ? lead.preferredVillages : [];
+              const visibleVillages = preferredVillages.slice(0, 3);
+              const requirementsText = typeof lead.requirements === 'string' ? lead.requirements.trim() : '';
+              const isExpanded = Boolean(expandedRequirements[lead.id]);
+              const shouldClamp = requirementsText.length > 140;
+
+              return (
+                <article key={lead.id} className="min-w-[86%] snap-start rounded-[28px] border border-slate-200 bg-slate-50 p-5 shadow-sm transition duration-300 hover:-translate-y-1 sm:min-w-[42%]">
+                  <div className="flex flex-col gap-5">
+                    <div className="flex items-center justify-between gap-4">
+                      <div>
+                        <h3 className="text-xl font-semibold text-ink">{lead.userName || lead.name || lead.buyerName || 'Buyer request'}</h3>
+                        <p className="mt-2 text-sm text-slate-500">{formatSubmittedDate(lead)}</p>
+                      </div>
+                      <span className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-emerald-700">
+                        <span className="h-2 w-2 rounded-full bg-emerald-500" /> Verified Buyer
+                      </span>
+                    </div>
+
+                    <div className="flex flex-wrap gap-2">
+                      <span className={`rounded-full border px-3 py-1 text-xs font-semibold ${getPropertyTypeBadgeClass(lead.propertyType)}`}>
+                        {lead.propertyType || 'Land'}
+                      </span>
+                      <span className={`rounded-full border px-3 py-1 text-xs font-semibold ${getPurposeBadgeClass(lead.purpose)}`}>
+                        {lead.purpose || 'Other'}
+                      </span>
+                    </div>
+
+                    <div className="rounded-[20px] bg-white p-4">
+                      <p className="text-sm font-semibold uppercase tracking-[0.16em] text-slate-500">Location</p>
+                      <p className="mt-2 text-sm text-slate-700">{lead.district || 'District'} • {lead.taluka || 'Taluka'}</p>
+                    </div>
+
+                    {visibleVillages.length ? (
+                      <div>
+                        <p className="text-sm font-semibold uppercase tracking-[0.16em] text-slate-500">Preferred Villages</p>
+                        <div className="mt-3 flex flex-wrap gap-2">
+                          {visibleVillages.map((village) => (
+                            <span key={village} className="rounded-full border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium text-slate-700">{village}</span>
+                          ))}
+                          {preferredVillages.length > visibleVillages.length ? (
+                            <span className="rounded-full border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium text-slate-500">+{preferredVillages.length - visibleVillages.length} more</span>
+                          ) : null}
+                        </div>
+                      </div>
+                    ) : null}
+
+                    {requirementsText ? (
+                      <div>
+                        <p className="text-sm font-semibold uppercase tracking-[0.16em] text-slate-500">Requirements</p>
+                        <p className={`mt-3 text-sm leading-6 text-slate-600 ${shouldClamp && !isExpanded ? 'overflow-hidden' : ''}`} style={shouldClamp && !isExpanded ? { display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' } : undefined}>
+                          {requirementsText}
+                        </p>
+                        {shouldClamp ? (
+                          <button type="button" onClick={() => setExpandedRequirements((current) => ({ ...current, [lead.id]: !current[lead.id] }))} className="mt-3 text-sm font-semibold text-primary transition hover:text-primary-dark">
+                            {isExpanded ? 'Read Less' : 'Read More'}
+                          </button>
+                        ) : null}
+                      </div>
+                    ) : null}
+
+                    <button type="button" onClick={() => setContactModal({ type: 'buyer', data: lead })} className="mt-4 flex min-h-[48px] items-center justify-center gap-2 rounded-full bg-gradient-to-r from-emerald-600 to-green-600 px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:from-emerald-700 hover:to-green-700">
+                      <span>Contact Buyer</span>
+                    </button>
+                  </div>
+                </article>
+              );
+            }) : (
+              <div className="min-w-[86%] snap-start rounded-[28px] border border-dashed border-slate-300 bg-slate-50 p-8 text-sm text-slate-600 sm:min-w-[42%]">No buyer requirements available right now.</div>
+            )}
+          </div>
+        </div>
+      </div>
+    </section>
+  ), [expandedRequirements, latestBuyerLeads, navigate]);
+
+  const popularLocationsSection = useMemo(() => (
+    <section className="bg-surface py-12">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-12">
+        <div className="mx-auto mb-8 max-w-3xl text-center">
+          <p className="eyebrow">Popular Investment Locations</p>
+          <h2 className="mt-4 text-3xl font-semibold text-ink">Explore high-demand agricultural and non-agricultural land locations across Surat and Navsari.</h2>
+          <p className="mt-4 text-sm leading-7 text-muted">Discover verified listings in the most active land markets with premium infrastructure, strong connectivity, and investment momentum.</p>
+        </div>
+
+        <div className="-mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-6 sm:-mx-6 sm:px-6 lg:hidden">
+          {popularLandLocations.map((location) => (
+            <button
+              key={location.slug}
+              type="button"
+              aria-label={`Explore ${location.name} in ${location.district}`}
+              onClick={() => navigate(`/buy?district=${encodeURIComponent(location.district)}&taluka=${encodeURIComponent(location.name)}`)}
+              className="group min-w-[84%] snap-start overflow-hidden rounded-[28px] border border-slate-200 bg-white text-left shadow-sm transition duration-300 hover:-translate-y-1 hover:border-emerald-300 hover:shadow-card-hover"
+            >
+              <div className="relative h-64 overflow-hidden">
+                <img src={location.image} alt={location.name} className="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/20 to-transparent" />
+                <div className="absolute left-5 top-5 rounded-full border border-white/20 bg-white/15 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-white backdrop-blur-sm">
+                  {location.district}
+                </div>
+                <div className="absolute inset-x-0 bottom-0 p-6">
+                  <h3 className="text-2xl font-semibold text-white">{location.name}</h3>
+                  <p className="mt-2 text-sm text-slate-200">{location.activeListings} Properties</p>
+                </div>
+              </div>
+              <div className="space-y-4 p-6">
+                <p className="text-sm leading-7 text-slate-600">{location.description}</p>
+                <div className="flex items-center justify-between gap-3">
+                  <span className="text-sm font-semibold text-slate-700">{location.district} District</span>
+                  <span className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1.5 text-sm font-semibold text-primary">Explore <ArrowRight size={14} /></span>
+                </div>
+              </div>
+            </button>
+          ))}
+        </div>
+
+        <div className="hidden gap-4 lg:grid lg:grid-cols-3">
+          {popularLandLocations.map((location) => (
+            <button
+              key={location.slug}
+              type="button"
+              aria-label={`Explore ${location.name} in ${location.district}`}
+              onClick={() => navigate(`/buy?district=${encodeURIComponent(location.district)}&taluka=${encodeURIComponent(location.name)}`)}
+              className="group overflow-hidden rounded-[24px] border border-slate-200 bg-white text-left shadow-sm transition duration-300 hover:-translate-y-1 hover:border-emerald-300 hover:shadow-card-hover"
+            >
+              <div className="relative h-72 overflow-hidden">
+                <img src={location.image} alt={location.name} className="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/25 to-transparent" />
+                <div className="absolute left-5 top-5 rounded-full border border-white/20 bg-white/15 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-white backdrop-blur-sm">
+                  {location.district}
+                </div>
+                <div className="absolute inset-x-0 bottom-0 p-6">
+                  <h3 className="mt-4 text-2xl font-semibold text-white">{location.name}</h3>
+                  <p className="mt-2 text-sm text-slate-200">{location.activeListings} Properties</p>
+                </div>
+              </div>
+              <div className="space-y-4 p-6">
+                <p className="text-sm leading-7 text-slate-600">{location.description}</p>
+                <div className="flex items-center justify-between gap-3">
+                  <span className="text-sm font-semibold text-slate-700">{location.district} District</span>
+                  <span className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1.5 text-sm font-semibold text-primary">Explore <ArrowRight size={14} /></span>
+                </div>
+              </div>
+            </button>
+          ))}
+        </div>
+      </div>
+    </section>
+  ), [navigate]);
+
   return (
     <div className="space-y-24 pb-20 bg-background text-text">
       <section className="relative overflow-hidden bg-[url('https://images.unsplash.com/photo-1517816743773-6e0fd518b4a6?auto=format&fit=crop&w=1800&q=85')] bg-cover bg-center text-white">
         <div className="absolute inset-0 bg-gradient-to-b from-slate-950/80 via-slate-950/20 to-slate-950/90" />
-        <div className="relative mx-auto max-w-7xl px-4 py-16 sm:px-10 sm:py-24 lg:px-12">
-          <div className="grid gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:items-end">
+        <div className="relative mx-auto max-w-7xl px-4 py-14 sm:px-6 sm:py-16 lg:px-12">
+          <div className="grid gap-8 lg:grid-cols-[1.05fr_0.95fr] lg:items-end">
             <div className="max-w-2xl">
               <p className="eyebrow text-accentSoft">Invest in land. Invest in the future.</p>
-              <h1 className="mt-5 text-3xl font-semibold leading-tight tracking-tight sm:text-5xl lg:text-6xl">Gujarat's Trusted Agricultural & Non-Agricultural Land Marketplace</h1>
-              <p className="mt-6 max-w-2xl text-base leading-8 text-white/80 sm:text-lg">Discover verified farmland, investment plots, and non-agricultural land across Surat, Navsari, and Gujarat. Buy and sell with confidence.</p>
-              <div className="mt-8 flex flex-col gap-3 sm:mt-10 sm:flex-row sm:flex-wrap">
-                <button type="button" onClick={goToBuy} className="inline-flex min-h-[48px] items-center justify-center rounded-full bg-primary px-6 py-3.5 text-sm font-semibold text-white transition hover:bg-primary-dark sm:w-auto">Buy Properties</button>
-                <button type="button" onClick={goToSell} className="inline-flex min-h-[48px] items-center justify-center rounded-full border border-white/30 bg-white/10 px-6 py-3.5 text-sm font-semibold text-white transition hover:bg-white/20 sm:w-auto">Sell Your Land</button>
+              <h1 className="mt-4 text-3xl font-semibold leading-tight tracking-tight sm:text-4xl md:text-5xl lg:text-6xl">Gujarat's trusted agricultural and non-agricultural land marketplace</h1>
+              <p className="mt-5 max-w-xl text-base leading-7 text-white/85 sm:text-lg">Discover verified farmland, investment plots, and non-agricultural land across Surat, Navsari, and Gujarat. Buy and sell with confidence.</p>
+              <div className="mt-8 grid gap-3 sm:grid-cols-2">
+                <button type="button" onClick={goToBuy} className="inline-flex min-h-[48px] items-center justify-center rounded-full bg-primary px-6 py-3 text-sm font-semibold text-white transition hover:bg-primary-dark">Browse Properties</button>
+                <button type="button" onClick={goToSell} className="inline-flex min-h-[48px] items-center justify-center rounded-full border border-white/30 bg-white/15 px-6 py-3 text-sm font-semibold text-white transition hover:bg-white/20">Post Your Land</button>
               </div>
             </div>
-            <div className="rounded-[32px] border border-white/10 bg-white/10 p-8 shadow-glass backdrop-blur-xl">
+            <div className="rounded-[32px] border border-white/10 bg-white/10 p-6 shadow-glass backdrop-blur-xl sm:p-8">
               <p className="text-sm uppercase tracking-[0.24em] text-white/70">Premium land marketplace</p>
               <div className="mt-6 grid gap-4">
                 <div className="rounded-3xl bg-white/10 p-5 text-sm text-white/90">Verified listings, local context, and transparent land details.</div>
@@ -110,190 +325,28 @@ function HomePage() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-6 lg:px-12">
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          {[
-            { label: 'Verified Land Listings', value: '500+' },
-            { label: 'Happy Buyers', value: '1200+' },
-            { label: 'Trusted Sellers', value: '250+' },
-            { label: 'Cities Covered', value: '15+' },
-          ].map((stat) => (
-            <div key={stat.label} className="rounded-[28px] border border-slate-200 bg-white p-8 shadow-card transition hover:-translate-y-0.5 hover:shadow-card-hover">
-              <p className="text-3xl font-semibold text-ink">{stat.value}</p>
-              <p className="mt-3 text-sm uppercase tracking-[0.16em] text-muted">{stat.label}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <section className="mx-auto max-w-7xl px-6 lg:px-12">
-        <SectionHeading eyebrow="Featured" title="Featured Land Opportunities" description="Hand-picked agricultural and non-agricultural land with verified details." action={<button type="button" onClick={() => navigate('/buy')} className="inline-flex items-center gap-2 rounded-full border border-primary px-5 py-3 text-sm font-semibold text-primary transition hover:bg-primary/5">View All Properties</button>} />
-        <div className="mt-10 grid gap-6 lg:grid-cols-2 xl:grid-cols-3">
-          {latestProperties.slice(0, 6).map((property) => (
-            <PropertyCard key={property.id} property={property} onContact={(data) => setContactModal({ type: 'seller', data })} />
-          ))}
-        </div>
-      </section>
-
       <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-12">
-        <div className="rounded-[32px] border border-slate-200 bg-white p-5 shadow-card sm:p-8">
-          <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
-            <div className="max-w-2xl">
-              <p className="eyebrow">Latest Buyer Requirements</p>
-              <h2 className="mt-3 text-3xl font-semibold text-ink">Helping buyers connect with trusted land owners across Gujarat.</h2>
-              <p className="mt-4 text-sm leading-7 text-muted">Connect directly with verified buyers looking for agricultural and non-agricultural land.</p>
-            </div>
-            <button type="button" onClick={() => navigate('/buyer-requirements')} className="inline-flex items-center justify-center rounded-full border border-primary px-6 py-3 text-sm font-semibold text-primary transition hover:bg-primary/5">View All Requirements</button>
-          </div>
-
-          <div className="mt-10 grid gap-6 md:grid-cols-2">
-            {latestBuyerLeads.length ? latestBuyerLeads.slice(0, 4).map((lead) => {
-              const preferredVillages = Array.isArray(lead.preferredVillages) ? lead.preferredVillages : [];
-              const visibleVillages = preferredVillages.slice(0, 3);
-              const remainingVillages = preferredVillages.length - visibleVillages.length;
-              const requirementsText = typeof lead.requirements === 'string' ? lead.requirements.trim() : '';
-              const isExpanded = Boolean(expandedRequirements[lead.id]);
-              const shouldClamp = requirementsText.length > 180;
-
-              return (
-                <article key={lead.id} className="group flex h-full min-h-[430px] flex-col overflow-hidden rounded-[24px] border border-slate-200 bg-white p-7 shadow-sm transition duration-300 hover:-translate-y-1 hover:border-emerald-300 hover:shadow-card-hover">
-                  <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-emerald-500 to-green-600" />
-                  <div className="flex flex-1 flex-col">
-                    <div className="flex items-start justify-between gap-4">
-                      <div className="min-w-0 flex-1">
-                        <div className="flex flex-wrap items-center gap-2">
-                          <h3 className="break-words text-xl font-semibold leading-7 text-ink">{lead.userName || lead.name || lead.buyerName || 'Buyer request'}</h3>
-                          <span className="inline-flex items-center gap-1 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-emerald-700">
-                            <span className="h-2 w-2 rounded-full bg-emerald-500" />
-                            Verified Buyer
-                          </span>
-                        </div>
-                        <p className="mt-2 text-sm text-slate-500">Posted on {formatSubmittedDate(lead)}</p>
-                      </div>
-                      <span className={`inline-flex shrink-0 rounded-full border px-3 py-1 text-xs font-semibold ${getPropertyTypeBadgeClass(lead.propertyType)}`}>
-                        {lead.propertyType || 'Land'}
-                      </span>
-                    </div>
-
-                    <div className="mt-6 flex flex-wrap gap-2">
-                      <span className={`rounded-full border px-3 py-1 text-xs font-semibold ${getPurposeBadgeClass(lead.purpose)}`}>
-                        {lead.purpose || 'Other'}
-                      </span>
-                    </div>
-
-                    <div className="mt-6 rounded-[20px] bg-slate-50 p-4">
-                      <p className="flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.16em] text-slate-500">
-                        <span className="text-base">📍</span>
-                        {lead.district || 'District'} • {lead.taluka || 'Taluka'}
-                      </p>
-                    </div>
-
-                    {preferredVillages.length ? (
-                      <div className="mt-6">
-                        <p className="text-sm font-semibold uppercase tracking-[0.16em] text-slate-500">Preferred Villages</p>
-                        <div className="mt-3 flex flex-wrap gap-2">
-                          {visibleVillages.map((village) => (
-                            <span key={village} className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-sm font-medium text-slate-700">
-                              {village}
-                            </span>
-                          ))}
-                          {remainingVillages > 0 ? (
-                            <span className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-sm font-medium text-slate-500">
-                              +{remainingVillages} more
-                            </span>
-                          ) : null}
-                        </div>
-                      </div>
-                    ) : null}
-
-                    {requirementsText ? (
-                      <div className="mt-6 flex-1">
-                        <p className="text-sm font-semibold uppercase tracking-[0.16em] text-slate-500">Additional Requirements</p>
-                        <p
-                          className={`mt-3 text-sm leading-7 text-slate-600 ${shouldClamp && !isExpanded ? 'overflow-hidden' : ''}`}
-                          style={shouldClamp && !isExpanded ? { display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' } : undefined}
-                        >
-                          {requirementsText}
-                        </p>
-                        {shouldClamp ? (
-                          <button
-                            type="button"
-                            onClick={() => setExpandedRequirements((current) => ({ ...current, [lead.id]: !current[lead.id] }))}
-                            className="mt-3 text-sm font-semibold text-primary transition hover:text-primary-dark"
-                          >
-                            {isExpanded ? 'Read Less' : 'Read More'}
-                          </button>
-                        ) : null}
-                      </div>
-                    ) : null}
-
-                    <div className="mt-8 border-t border-slate-100 pt-5">
-                      <button
-                        type="button"
-                        onClick={() => setContactModal({ type: 'buyer', data: lead })}
-                        className="flex w-full items-center justify-center gap-2 rounded-full bg-gradient-to-r from-emerald-600 to-green-600 px-5 py-3.5 text-sm font-semibold text-white shadow-sm transition duration-300 hover:from-emerald-700 hover:to-green-700"
-                      >
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-4 w-4">
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M3 5.75A2.75 2.75 0 0 1 5.75 3h2.07a1.5 1.5 0 0 1 1.42 1.02l.94 2.5a1.5 1.5 0 0 1-.27 1.57l-1.16 1.16a13.95 13.95 0 0 0 5.6 5.6l1.16-1.16a1.5 1.5 0 0 1 1.57-.27l2.5.94A1.5 1.5 0 0 1 21 9.18v2.07A2.75 2.75 0 0 1 18.25 14H17.5c-4.14 0-7.5-3.36-7.5-7.5V3.75" />
-                        </svg>
-                        Contact Buyer
-                      </button>
-                    </div>
-                  </div>
-                </article>
-              );
-            }) : (
-              <div className="rounded-[24px] border border-dashed border-slate-300 bg-slate-50 p-8 text-center text-sm text-slate-600 md:col-span-2">
-                No buyer requirements available right now.
+        <div className="grid gap-4 sm:grid-cols-3">
+          {mobileQuickActions.map((action) => (
+            <button key={action.label} type="button" onClick={action.action} className="group rounded-[28px] border border-slate-200 bg-white p-5 text-left shadow-sm transition duration-300 hover:-translate-y-0.5 hover:shadow-card-hover">
+              <div className="flex items-center justify-between gap-3">
+                <div>
+                  <p className="text-lg font-semibold text-ink">{action.label}</p>
+                  <p className="mt-2 text-sm text-muted">{action.description}</p>
+                </div>
+                <span className="inline-flex h-12 w-12 items-center justify-center rounded-3xl bg-primary/10 text-primary">
+                  <ArrowRight size={20} />
+                </span>
               </div>
-            )}
-          </div>
+            </button>
+          ))}
         </div>
       </section>
 
-      <section className="bg-surface py-20">
-        <div className="mx-auto max-w-7xl px-6 lg:px-12">
-          <div className="mx-auto mb-12 max-w-3xl text-center">
-            <p className="eyebrow">Popular Investment Locations</p>
-            <h2 className="mt-4 text-3xl font-semibold text-ink">Explore high-demand agricultural and non-agricultural land locations across Surat and Navsari.</h2>
-            <p className="mt-4 text-sm leading-7 text-muted">Discover verified listings in the most active land markets with premium infrastructure, strong connectivity, and investment momentum.</p>
-          </div>
-          <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-            {popularLandLocations.map((location) => (
-              <button key={location.slug} type="button" onClick={() => navigate(`/location/${location.slug}`)} className="group overflow-hidden rounded-[24px] border border-slate-200 bg-white text-left shadow-sm transition duration-300 hover:-translate-y-1 hover:border-emerald-300 hover:shadow-card-hover">
-                <div className="relative h-72 overflow-hidden">
-                  <img src={location.image} alt={location.name} className="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/25 to-transparent" />
-                  <div className="absolute left-5 top-5 rounded-full border border-white/20 bg-white/15 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-white backdrop-blur-sm">
-                    {location.district}
-                  </div>
-                  <div className="absolute inset-x-0 bottom-0 p-6">
-                    <div className="inline-flex rounded-full border border-emerald-400/40 bg-emerald-500/20 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-emerald-100">
-                      Agricultural & NA Land
-                    </div>
-                    <h3 className="mt-4 text-2xl font-semibold text-white">{location.name}</h3>
-                    <p className="mt-2 text-sm text-slate-200">{location.activeListings} Active Listings</p>
-                  </div>
-                </div>
-                <div className="space-y-4 p-6">
-                  <p className="text-sm leading-7 text-slate-600">{location.description}</p>
-                  <div className="rounded-[18px] bg-slate-50 p-4">
-                    <p className="text-sm font-semibold text-slate-500">Starting From</p>
-                    <p className="mt-1 text-xl font-semibold text-emerald-700">{location.startingPrice}</p>
-                  </div>
-                  <div className="flex items-center justify-between gap-3">
-                    <span className="text-sm font-semibold text-slate-700">{location.region} District</span>
-                    <span className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1.5 text-sm font-semibold text-primary">
-                      Explore Properties
-                      <span aria-hidden="true">→</span>
-                    </span>
-                  </div>
-                </div>
-              </button>
-            ))}
-          </div>
-        </div>
-      </section>
+      {featuredSection}
+      {popularLocationsSection}
+      {whyBrokerStreetsSection}
+      {buyerRequirementsSection}
 
       <section className="mx-auto max-w-7xl px-6 lg:px-12">
         <div className="grid gap-10 lg:grid-cols-[1.35fr_0.85fr]">
@@ -322,9 +375,12 @@ function HomePage() {
 
       <section className="bg-surface py-20">
         <div className="mx-auto max-w-5xl px-6 text-center">
-          <p className="eyebrow">Final quote</p>
-          <blockquote className="mt-6 text-3xl font-semibold text-ink">Building trust through transparent land transactions.</blockquote>
-          <p className="mt-6 text-sm leading-7 text-muted">Broker Streets brings a premium marketplace experience for buyers and sellers of land in Gujarat.</p>
+          <p className="eyebrow">Ready to find the right land?</p>
+          <h2 className="mt-3 text-3xl font-semibold text-ink">Browse properties or post your requirement today.</h2>
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
+            <button type="button" onClick={goToBuy} className="inline-flex min-h-[48px] items-center justify-center rounded-full bg-primary px-6 py-3 text-sm font-semibold text-white transition hover:bg-primary-dark">Browse Properties</button>
+            <button type="button" onClick={() => navigate('/buyer-form')} className="inline-flex min-h-[48px] items-center justify-center rounded-full border border-primary px-6 py-3 text-sm font-semibold text-primary transition hover:bg-primary/5">Post Requirement</button>
+          </div>
         </div>
       </section>
 

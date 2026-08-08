@@ -916,7 +916,7 @@ function ProfileDashboard() {
               <button type="button" onClick={() => navigate('/seller-form')} className="dashboard-action-btn bg-primary text-white">Add Listing</button>
             </div>
           </div>
-          <div className="mt-6 grid gap-3 md:grid-cols-5">
+          <div className="mt-6 grid gap-3 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5">
             {[
               { label: 'Properties Listed', value: summary.listed },
               { label: 'Properties Sold', value: summary.sold },
@@ -924,9 +924,9 @@ function ProfileDashboard() {
               { label: 'Buyer Requirements', value: summary.requests },
               { label: 'Recently Viewed', value: summary.recent },
             ].map((item) => (
-              <div key={item.label} className="rounded-[20px] border border-slate-200 bg-slate-50/80 px-3 py-4 text-sm">
+              <div key={item.label} className="rounded-[20px] border border-slate-200 bg-slate-50/80 px-4 py-5 text-sm shadow-sm">
                 <p className="text-slate-500">{item.label}</p>
-                <p className="mt-2 text-2xl font-semibold text-slate-900">{item.value}</p>
+                <p className="mt-2 text-3xl font-semibold text-slate-900">{item.value}</p>
               </div>
             ))}
           </div>

@@ -80,22 +80,24 @@ function Navbar() {
         )}
 
         {!hideNav ? (
-          <div className="hidden items-center gap-3 md:flex">
-            <Link to="/profile" className="inline-flex h-12 items-center justify-center rounded-full border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-800 shadow-sm transition hover:bg-slate-50">
-              Profile
-            </Link>
-          </div>
-        ) : null}
+          <>
+            <div className="hidden items-center gap-3 md:flex">
+              <Link to="/profile" className="inline-flex h-12 items-center justify-center rounded-full border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-800 shadow-sm transition hover:bg-slate-50">
+                Profile
+              </Link>
+            </div>
 
-        <button
-          type="button"
-          onClick={() => setMenuOpen((current) => !current)}
-          aria-label={menuOpen ? 'Close menu' : 'Open menu'}
-          aria-expanded={menuOpen}
-          className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-800 shadow-sm transition hover:bg-slate-50 md:hidden"
-        >
-          {menuOpen ? <X size={24} /> : <Menu size={24} />}
-        </button>
+            <button
+              type="button"
+              onClick={() => setMenuOpen((current) => !current)}
+              aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+              aria-expanded={menuOpen}
+              className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-800 shadow-sm transition hover:bg-slate-50 md:hidden"
+            >
+              {menuOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
+          </>
+        ) : null}
       </div>
 
       {menuOpen && !hideNav ? (

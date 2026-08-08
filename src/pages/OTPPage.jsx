@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import LargeButton from '../components/LargeButton';
+import logo from '../assets/images/logo.png';
 import { toast } from 'react-toastify';
 import useCountdown from '../hooks/useCountdown';
 import { useUserStore } from '../store/useUserStore';
@@ -150,20 +151,20 @@ function OTPPage() {
   };
 
   return (
-    <div className="mx-auto max-w-xl rounded-[30px] border border-slate-200 bg-white p-8 shadow-sm">
-      <h1 className="text-3xl font-semibold text-slate-900">
-        OTP Verification
-      </h1>
-
-      <p className="mt-2 text-sm text-slate-600">
-        Verify your mobile number
-      </p>
-      <p className="mt-2 text-sm text-slate-600">
-        OTP sent to +91{' '}
-        <span className="font-semibold text-slate-900">
-          {phone}
-        </span>
-      </p>
+    <div className="min-h-screen bg-[#FAFAFB] px-4 py-8 sm:px-6">
+      <div className="mx-auto w-full max-w-md rounded-[32px] border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+        <div className="mx-auto mb-6 h-14 w-14 overflow-hidden rounded-3xl bg-slate-100">
+          <img src={logo} alt="Broker Streets logo" className="h-full w-full object-contain" />
+        </div>
+        <div className="space-y-3 text-center sm:text-left">
+          <h1 className="text-3xl font-semibold text-slate-900">Verify your account</h1>
+          <p className="mx-auto max-w-xs text-sm leading-6 text-slate-600 sm:mx-0">
+            Enter the 6-digit code sent to your mobile number.
+          </p>
+          <p className="text-sm text-slate-600">
+            OTP sent to <span className="font-semibold text-slate-900">+91 {phone}</span>
+          </p>
+        </div>
 
       {devOtp ? (
         <div className="mt-6 rounded-[24px] border border-slate-200 bg-slate-50 px-4 py-4 text-slate-900 shadow-sm sm:px-5 sm:py-4" role="status" aria-live="polite">
@@ -173,7 +174,7 @@ function OTPPage() {
       ) : null}
 
       <form onSubmit={onSubmit} className="mt-8 space-y-6">
-        <div className="grid grid-cols-3 gap-3 sm:grid-cols-6">
+        <div className="grid grid-cols-6 gap-2">
           {digits.map((digit, index) => (
             <input
               key={index}
@@ -186,12 +187,12 @@ function OTPPage() {
               }
               onKeyDown={(e) => handleKeyDown(index, e)}
               onPaste={handlePaste}
-              className="h-16 w-full min-w-0 rounded-3xl border border-slate-200 bg-slate-50 text-center text-2xl font-semibold text-slate-900 outline-none focus:border-primary"
+              className="min-h-[56px] min-w-[48px] rounded-3xl border border-slate-200 bg-slate-50 text-center text-2xl font-semibold text-slate-900 outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10"
             />
           ))}
         </div>
 
-        <div className="flex items-center justify-between text-sm text-slate-600">
+        <div className="flex flex-col gap-3 rounded-[24px] border border-slate-200 bg-slate-50 px-4 py-4 text-sm text-slate-600 sm:flex-row sm:items-center sm:justify-between">
           <button
             type="button"
             disabled={!isComplete}
@@ -201,10 +202,8 @@ function OTPPage() {
             Resend OTP
           </button>
 
-          <p>
-            {isComplete
-              ? 'Ready to resend'
-              : `Resend in ${seconds}s`}
+          <p className="text-center sm:text-left">
+            {isComplete ? 'Ready to resend' : `Resend in ${seconds}s`}
           </p>
         </div>
 
@@ -216,12 +215,13 @@ function OTPPage() {
           <button
             type="button"
             onClick={() => navigate(-1)}
-            className="rounded-3xl border border-slate-200 bg-white px-6 py-4 text-base font-semibold text-slate-900 hover:bg-slate-50"
+            className="inline-flex w-full items-center justify-center rounded-3xl border border-slate-200 bg-white px-6 py-4 text-base font-semibold text-slate-900 transition hover:bg-slate-50 sm:w-auto"
           >
             Back
           </button>
         </div>
       </form>
+      </div>
     </div>
   );
 }

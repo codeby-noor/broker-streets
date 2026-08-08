@@ -12,7 +12,6 @@ const initialForm = {
   preferredVillages: [],
   propertyType: '',
   purpose: '',
-  purposeOther: '',
   requirements: '',
 };
 const propertyTypes = ['Agricultural Land', 'Non-Agricultural Land'];
@@ -71,10 +70,17 @@ function BuyerForm() {
     if (!form.taluka) nextErrors.taluka = 'Please choose a taluka.';
     if (!form.propertyType) nextErrors.propertyType = 'Please choose a property type.';
     if (!form.purpose) nextErrors.purpose = 'Please choose a purpose.';
-    if (form.purpose === 'Other' && !form.purposeOther.trim()) nextErrors.purposeOther = 'Please specify your purpose.';
-    if (form.taluka && (!form.preferredVillages || form.preferredVillages.length < 2)) {
-      nextErrors.preferredVillages = 'Please select at least two preferred villages.';
+
+    const availableVillageCount = allVillageOptions.length;
+    if (form.taluka && availableVillageCount > 0) {
+      const selectedCount = form.preferredVillages?.length || 0;
+      if (availableVillageCount === 1 && selectedCount < 1) {
+        nextErrors.preferredVillages = 'Please select at least 1 village.';
+      } else if (availableVillageCount > 1 && selectedCount < 2) {
+        nextErrors.preferredVillages = 'Please select at least 2 villages.';
+      }
     }
+
     return nextErrors;
   };
 
@@ -256,50 +262,54 @@ function BuyerForm() {
 
             {form.taluka ? (
               <div className="block">
-                <div className="mb-3 flex flex-col gap-3 rounded-[24px] border border-slate-200 bg-white p-4 sm:flex-row sm:items-center sm:justify-between">
-                  <div>
-                    <span className="field-label">Preferred Villages *</span>
-                    <p className="text-sm text-slate-500">Search and select at least two villages from the chosen taluka.</p>
+                <div className="mb-3 space-y-3 rounded-[24px] border border-slate-200 bg-white p-4">
+                  <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                    <div>
+                      <p className="field-label">Preferred Villages *</p>
+                      <p className="text-sm text-slate-500">Select at least 2 villages</p>
+                    </div>
+                    <div className="inline-flex items-center gap-2 rounded-full bg-sage/10 px-3 py-2 text-sm font-semibold text-sage">
+                      Selected: {selectedVillageCount}
+                    </div>
                   </div>
-                  <div className="rounded-full bg-sage/10 px-3 py-1 text-sm font-semibold text-sage">
-                    Selected: {selectedVillageCount}
-                  </div>
-                </div>
 
-                <div className="mb-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                  <input
-                    type="text"
-                    value={villageSearch}
-                    onChange={(event) => setVillageSearch(event.target.value)}
-                    placeholder={`Search villages in ${form.taluka}`}
-                    className="field-control w-full sm:max-w-xs"
-                  />
-                  <div className="flex flex-wrap gap-2">
-                    <button type="button" onClick={handleSelectAllVisible} className="rounded-full border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700 transition hover:border-sage hover:text-sage">
-                      Select All
-                    </button>
-                    <button type="button" onClick={handleClearAllVisible} className="rounded-full border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700 transition hover:border-red-300 hover:text-red-600">
-                      Clear All
-                    </button>
+                  <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                    <input
+                      type="text"
+                      value={villageSearch}
+                      onChange={(event) => setVillageSearch(event.target.value)}
+                      placeholder="Search villages..."
+                      className="field-control w-full sm:max-w-xs"
+                    />
+                    <div className="flex flex-wrap gap-2">
+                      <button type="button" onClick={handleSelectAllVisible} className="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-sage hover:text-sage">
+                        Select All
+                      </button>
+                      <button type="button" onClick={handleClearAllVisible} className="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-red-300 hover:text-red-600">
+                        Clear All
+                      </button>
+                    </div>
                   </div>
                 </div>
 
                 {allVillageOptions.length ? (
                   <div className="max-h-[360px] overflow-y-auto rounded-[24px] border border-slate-200 bg-white p-3">
-                    <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                    <div className="grid gap-2 sm:grid-cols-2">
                       {filteredVillageOptions.length ? (
                         filteredVillageOptions.map((village) => {
                           const isSelected = (form.preferredVillages || []).includes(village);
                           return (
-                            <label key={village} className="flex items-start gap-2 rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3 text-sm font-medium text-slate-700">
-                              <input
-                                type="checkbox"
-                                checked={isSelected}
-                                onChange={() => handleVillageToggle(village)}
-                                className="mt-0.5 h-4 w-4 rounded border-slate-300 text-primary"
-                              />
-                              <span className="leading-5">{village}</span>
-                            </label>
+                            <button
+                              key={village}
+                              type="button"
+                              onClick={() => handleVillageToggle(village)}
+                              className={`group flex items-start gap-3 rounded-3xl border px-4 py-4 text-left transition ${isSelected ? 'border-sage bg-sage/10 text-ink' : 'border-slate-200 bg-slate-50 text-slate-700 hover:border-slate-400 hover:bg-slate-100'}`}
+                            >
+                              <span className={`mt-0.5 inline-flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full border ${isSelected ? 'border-sage bg-sage text-white' : 'border-slate-300 bg-white text-transparent'}`}>
+                                <span className="text-xs font-semibold">✓</span>
+                              </span>
+                              <span className="leading-6">{village}</span>
+                            </button>
                           );
                         })
                       ) : (
@@ -314,7 +324,7 @@ function BuyerForm() {
                     No villages available for this taluka.
                   </div>
                 )}
-                {errors.preferredVillages && <p className="error-style">{errors.preferredVillages}</p>}
+                {errors.preferredVillages && <p className="error-style mt-2">{errors.preferredVillages}</p>}
               </div>
             ) : null}
 
@@ -353,21 +363,6 @@ function BuyerForm() {
               {errors.purpose && <p className="error-style">{errors.purpose}</p>}
             </label>
 
-            {form.purpose === 'Other' ? (
-              <label className="block">
-                <span className="field-label">Please specify your purpose</span>
-                <textarea
-                  name="purposeOther"
-                  rows="3"
-                  value={form.purposeOther}
-                  onChange={handleChange}
-                  className={`field-control w-full resize-y ${errors.purposeOther ? 'border-red-400' : ''}`}
-                  placeholder="Describe your purpose"
-                />
-                {errors.purposeOther && <p className="error-style">{errors.purposeOther}</p>}
-              </label>
-            ) : null}
-
             <label className="block">
               <span className="field-label">Additional Requirements</span>
               <textarea
@@ -402,6 +397,7 @@ function BuyerForm() {
                   Stop Recording
                 </button>
               )}
+              {isRecording ? <p className="text-sm text-slate-600">Recording in progress…</p> : null}
               {audioUrl && (
                 <div className="space-y-3 rounded-3xl border border-slate-200 bg-white p-4">
                   <audio controls src={audioUrl} className="w-full" />
@@ -417,7 +413,7 @@ function BuyerForm() {
             <button
               type="submit"
               disabled={submitting}
-              className="inline-flex items-center justify-center rounded-3xl bg-sage px-6 py-3 text-sm font-semibold text-white transition hover:bg-sage-dark disabled:cursor-not-allowed disabled:bg-slate-300"
+              className="inline-flex w-full items-center justify-center rounded-3xl bg-sage px-6 py-3 text-sm font-semibold text-white transition hover:bg-sage-dark disabled:cursor-not-allowed disabled:bg-slate-300 min-h-[48px]"
             >
               {submitting ? 'Submitting...' : 'Submit'}
             </button>

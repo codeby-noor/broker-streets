@@ -152,13 +152,13 @@ function SellerForm() {
   return <div className="-mx-4 -mt-8 bg-[#FFFEFE] pb-20 sm:-mx-6 lg:-mx-8">
     <section className="bg-ink px-4 py-12 text-white sm:px-10 sm:py-16 lg:px-12"><div className="mx-auto max-w-5xl"><p className="eyebrow text-blue-200">Sell land with Broker Streets</p><h1 className="mt-4 text-3xl font-bold sm:text-6xl">List your land with confidence.</h1><p className="mt-4 max-w-2xl text-sm text-white/70 sm:text-base">Your authenticated profile is attached securely to this listing.</p></div></section>
     <section className="mx-auto -mt-8 max-w-4xl px-4 sm:px-6">
-      <form onSubmit={handleSubmit(submit)} className="space-y-6 rounded-[32px] bg-white p-4 shadow-xl sm:p-10">
+      <form onSubmit={handleSubmit(submit)} className="space-y-6 rounded-[32px] bg-white p-5 shadow-xl sm:p-10">
         <div>
           <p className="eyebrow">Land details</p>
           <h2 className="mt-2 text-3xl font-bold text-ink">Tell us about your land</h2>
         </div>
 
-        <div className="space-y-5">
+        <div className="space-y-6">
           <label className="block">
             <span className="field-label">State *</span>
             <input
@@ -263,50 +263,62 @@ function SellerForm() {
 
           <label className="block">
             <span className="field-label">Property Images</span>
-            <input type="file" accept="image/*" multiple onChange={(event) => addFiles(event, setImages, 'image/')} className="field-control w-full" />
-            {images.length === 0 && <p className="mt-1 text-xs text-slate-500">Upload one or more image files.</p>}
-            {images.length > 0 && (
-              <div className="mt-3 grid gap-3 sm:grid-cols-2">
-                {images.map((item, index) => (
-                  <div key={item.url} className="space-y-2">
-                    <img src={item.url} alt="Property upload" className="h-36 w-full rounded-3xl object-cover" />
-                    <button type="button" onClick={() => removeFile(setImages, index)} className="text-sm font-semibold text-red-600">Remove image</button>
-                  </div>
-                ))}
-              </div>
-            )}
+            <div className="rounded-[28px] border border-slate-200 bg-slate-50 p-4">
+              <input type="file" accept="image/*" multiple onChange={(event) => addFiles(event, setImages, 'image/')} className="field-control w-full bg-white" />
+              <p className="mt-3 text-sm text-slate-500">Upload a set of property images. Preview and remove images before submitting.</p>
+              {images.length > 0 && (
+                <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                  {images.map((item, index) => (
+                    <div key={item.url} className="overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-sm">
+                      <img src={item.url} alt="Property upload" className="h-40 w-full object-cover" />
+                      <div className="flex items-center justify-between gap-3 px-4 py-3">
+                        <p className="truncate text-sm font-semibold text-slate-800">Image {index + 1}</p>
+                        <button type="button" onClick={() => removeFile(setImages, index)} className="rounded-full bg-red-50 px-3 py-2 text-xs font-semibold text-red-600">Remove</button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </label>
 
           <label className="block">
             <span className="field-label">Property Videos</span>
-            <input type="file" accept="video/*" multiple onChange={(event) => addFiles(event, setVideos, 'video/')} className="field-control w-full" />
-            {videos.length > 0 && (
-              <div className="mt-3 space-y-3">
-                {videos.map((item, index) => (
-                  <div key={item.url}>
-                    <video controls src={item.url} className="h-48 w-full rounded-3xl bg-slate-900" />
-                    <button type="button" onClick={() => removeFile(setVideos, index)} className="mt-2 text-sm font-semibold text-red-600">Remove video</button>
-                  </div>
-                ))}
-              </div>
-            )}
+            <div className="rounded-[28px] border border-slate-200 bg-slate-50 p-4">
+              <input type="file" accept="video/*" multiple onChange={(event) => addFiles(event, setVideos, 'video/')} className="field-control w-full bg-white" />
+              {videos.length > 0 && (
+                <div className="mt-4 space-y-3">
+                  {videos.map((item, index) => (
+                    <div key={item.url} className="overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-sm">
+                      <video controls src={item.url} className="h-48 w-full bg-slate-900" />
+                      <div className="flex items-center justify-between gap-3 px-4 py-3">
+                        <p className="truncate text-sm font-semibold text-slate-800">Video {index + 1}</p>
+                        <button type="button" onClick={() => removeFile(setVideos, index)} className="rounded-full bg-red-50 px-3 py-2 text-xs font-semibold text-red-600">Remove</button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </label>
 
           <label className="block">
             <span className="field-label">7/12 Document *</span>
-            <input type="file" accept=".pdf,.jpg,.jpeg,.png,.webp" onChange={(event) => setPdf(event.target.files?.[0] || null)} className="field-control w-full" />
-            <p className="mt-1 text-xs text-slate-500">Upload your property&apos;s 7/12 document or a clear photo/screenshot of the document.</p>
-            {pdf && (
-              <div className="mt-3 rounded-3xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm">
-                <div className="flex items-center justify-between gap-4">
-                  <div>
-                    <p className="font-semibold text-slate-800">{pdf.name}</p>
-                    <p className="mt-1 text-xs text-slate-500">Upload status: ready</p>
+            <div className="rounded-[28px] border border-slate-200 bg-slate-50 p-4">
+              <input type="file" accept=".pdf,.jpg,.jpeg,.png,.webp" onChange={(event) => setPdf(event.target.files?.[0] || null)} className="field-control w-full bg-white" />
+              <p className="mt-3 text-sm text-slate-500">Upload your 7/12 document file in PDF, image, or supported format.</p>
+              {pdf && (
+                <div className="mt-4 rounded-[24px] border border-slate-200 bg-white p-4 shadow-sm">
+                  <div className="flex items-center justify-between gap-4">
+                    <div>
+                      <p className="font-semibold text-slate-800 truncate">{pdf.name}</p>
+                      <p className="mt-1 text-xs text-slate-500">Upload status: ready</p>
+                    </div>
+                    <button type="button" onClick={() => setPdf(null)} className="rounded-full bg-red-50 px-3 py-2 text-xs font-semibold text-red-600">Remove</button>
                   </div>
-                  <button type="button" onClick={() => setPdf(null)} className="text-red-600">Remove</button>
                 </div>
-              </div>
-            )}
+              )}
+            </div>
           </label>
 
           <label className="block">
@@ -323,15 +335,17 @@ function SellerForm() {
             <span className="field-label">Additional Details</span>
             <textarea
               {...register('additionalDetails')}
-              rows="4"
-              className="field-control w-full resize-y"
+              rows="5"
+              className="field-control w-full resize-y min-h-[160px]"
               placeholder="Land area, road access, water source, title details..."
             />
           </label>
         </div>
 
-        <div className="flex justify-end">
-          <LargeButton type="submit" disabled={submitting}>{submitting ? 'Submitting...' : 'Submit Property'}</LargeButton>
+        <div className="flex justify-end pt-2">
+          <LargeButton type="submit" disabled={submitting} className="min-h-[48px]">
+            {submitting ? 'Submitting...' : 'Submit Property'}
+          </LargeButton>
         </div>
       </form>
     </section>

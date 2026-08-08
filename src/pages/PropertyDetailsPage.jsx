@@ -117,10 +117,31 @@ function PropertyDetailsPage() {
     addItem('Taluka', property?.subDistrict || property?.taluka);
     addItem('Village', property?.village);
     addItem('State', property?.state || 'Gujarat');
-    addItem('Google Maps', property?.mapUrl || property?.googleMaps || property?.mapLink ? 'Available' : undefined);
-    addItem('7/12 Available', property?.propertyDocument || property?.documentUrl || property?.pdf || property?.document ? 'Available' : undefined);
 
     return items;
+  }, [property]);
+
+  const featureItems = useMemo(() => {
+    if (!property) return [];
+    const featureMap = [
+      { label: 'Road Access', value: property?.roadAccess || property?.roadConnectivity || property?.roadAccessStatus },
+      { label: 'Electricity Connection', value: property?.electricity || property?.electricityConnection || property?.electricityAvailable },
+      { label: 'Water Availability', value: property?.waterAvailability || property?.waterSource || property?.water },
+      { label: 'Borewell', value: property?.borewell || property?.hasBorewell },
+      { label: 'Irrigation Facility', value: property?.irrigation || property?.irrigationFacility },
+      { label: 'Boundary Wall', value: property?.boundaryWall || property?.boundaryFence || property?.boundary },
+      { label: 'Fencing', value: property?.fencing || property?.hasFencing },
+      { label: 'Corner Plot', value: property?.cornerPlot || property?.corner },
+      { label: 'Facing Direction', value: property?.facing || property?.direction },
+      { label: 'Soil Type', value: property?.soilType },
+      { label: 'Ownership Status', value: property?.ownershipStatus || property?.ownership },
+    ];
+
+    return featureMap.map((item) => ({
+      label: item.label,
+      value: item.value || 'Not Provided',
+      available: Boolean(item.value),
+    }));
   }, [property]);
 
   const documentItems = useMemo(() => {
@@ -211,24 +232,27 @@ function PropertyDetailsPage() {
       <main className="mx-auto max-w-7xl space-y-10 px-4 sm:px-6 lg:px-12">
         <section className="overflow-hidden rounded-[32px] border border-slate-200 bg-white shadow-card">
           <div className="grid gap-8 lg:grid-cols-[1.2fr_0.8fr]">
-            <div className="p-4 sm:p-6">
-              <div className="relative overflow-hidden rounded-[28px] bg-slate-200" onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
-                <AsyncImage src={galleryImages[activeIndex] || galleryImages[0]} alt={propertyTitle} className="h-[300px] w-full cursor-zoom-in object-cover sm:h-[500px]" onClick={() => setZoomOpen(true)} />
-                <div className="absolute inset-x-0 top-0 flex items-center justify-between p-4 sm:p-6">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <span className="rounded-full bg-white/95 px-3 py-1.5 text-xs font-semibold text-ink shadow-sm">{propertyTypeLabel}</span>
-                    {property?.verified ? <span className="rounded-full bg-emerald-600/90 px-3 py-1.5 text-xs font-semibold text-white shadow-sm"><ShieldCheck size={13} className="mr-1 inline" />Verified listing</span> : null}
+            <div className="p-0 sm:p-6">
+              <div className="relative overflow-hidden rounded-b-[32px] bg-slate-200" onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
+                <div className="relative aspect-[16/10] w-full overflow-hidden">
+                  <AsyncImage src={galleryImages[activeIndex] || galleryImages[0]} alt={propertyTitle} className="h-full w-full object-cover" onClick={() => setZoomOpen(true)} />
+                  <div className="absolute inset-x-0 top-0 flex items-center justify-between p-4 sm:p-6">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="rounded-full bg-white/95 px-3 py-1.5 text-xs font-semibold text-ink shadow-sm">{propertyTypeLabel}</span>
+                      {property?.verified ? <span className="rounded-full bg-emerald-600/90 px-3 py-1.5 text-xs font-semibold text-white shadow-sm"><ShieldCheck size={13} className="mr-1 inline" />Verified listing</span> : null}
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <button type="button" aria-label="Share property" onClick={handleShare} className="rounded-full bg-white/95 p-3 text-ink shadow-sm transition hover:bg-white"><Share2 size={17} /></button>
+                      <button type="button" aria-label="Save property" onClick={() => { const next = toggleSavedProperty(property); setIsSaved(next.some((item) => String(item.id) === String(property.id))); }} className="rounded-full bg-white/95 p-3 text-ink shadow-sm transition hover:bg-white">{isSaved ? <Heart size={17} className="text-rose-600" /> : <Heart size={17} />}</button>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <button type="button" aria-label="Share property" onClick={handleShare} className="rounded-full bg-white/95 p-3 text-ink shadow-sm transition hover:bg-white"><Share2 size={17} /></button>
-                    <button type="button" aria-label="Save property" onClick={() => { const next = toggleSavedProperty(property); setIsSaved(next.some((item) => String(item.id) === String(property.id))); }} className="rounded-full bg-white/95 p-3 text-ink shadow-sm transition hover:bg-white">{isSaved ? <Heart size={17} className="text-rose-600" /> : <Heart size={17} />}</button>
+                  <div className="absolute inset-x-0 bottom-4 flex items-center justify-between px-4 sm:px-6">
+                    <div className="rounded-full bg-black/70 px-3 py-1 text-xs font-semibold text-white backdrop-blur-sm">{activeIndex + 1}/{galleryImages.length}</div>
+                    <div className="flex gap-2">
+                      <button type="button" onClick={handlePrev} className="rounded-full border border-white/80 bg-white/90 p-2 shadow-sm"><ChevronLeft size={18} /></button>
+                      <button type="button" onClick={handleNext} className="rounded-full border border-white/80 bg-white/90 p-2 shadow-sm"><ChevronRight size={18} /></button>
+                    </div>
                   </div>
-                </div>
-                <div className="absolute inset-y-0 left-4 flex items-center">
-                  <button type="button" onClick={handlePrev} className="rounded-full bg-white/90 p-2 shadow-sm"> <ChevronLeft size={18} /> </button>
-                </div>
-                <div className="absolute inset-y-0 right-4 flex items-center">
-                  <button type="button" onClick={handleNext} className="rounded-full bg-white/90 p-2 shadow-sm"> <ChevronRight size={18} /> </button>
                 </div>
               </div>
 
@@ -252,7 +276,7 @@ function PropertyDetailsPage() {
                   <MapPin size={16} className="text-sage" />
                   <span>{propertyLocationLabel}</span>
                 </div>
-                <div className="mt-6 rounded-[24px] border border-slate-200 bg-slate-50 p-4">
+                <div className="mt-5 rounded-[24px] border border-slate-200 bg-slate-50 p-4">
                   <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">Land price</p>
                   <div className="mt-2 flex items-end justify-between gap-3">
                     <div>
@@ -269,9 +293,15 @@ function PropertyDetailsPage() {
               </div>
 
               <div className="mt-6 flex flex-col gap-3 border-t border-slate-200 pt-6">
-                <a href={sellerCall || '#'} className="inline-flex items-center justify-center gap-2 rounded-full bg-sage px-5 py-3 text-sm font-semibold text-white transition hover:bg-sage-dark"><Phone size={16} /> Call Seller</a>
-                <a href={sellerWhatsApp || '#'} target="_blank" rel="noreferrer" className="inline-flex items-center justify-center gap-2 rounded-full border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"><ExternalLink size={16} /> WhatsApp</a>
-                <a href={sellerMail || '#'} className="inline-flex items-center justify-center gap-2 rounded-full border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"><Download size={16} /> Email Seller</a>
+                {sellerCall ? (
+                  <a href={sellerCall} className="inline-flex items-center justify-center gap-2 rounded-full bg-sage px-5 py-3 text-sm font-semibold text-white transition hover:bg-sage-dark"><Phone size={16} /> Call Seller</a>
+                ) : null}
+                {sellerWhatsApp ? (
+                  <a href={sellerWhatsApp} target="_blank" rel="noreferrer" className="inline-flex items-center justify-center gap-2 rounded-full border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"><ExternalLink size={16} /> WhatsApp</a>
+                ) : null}
+                {sellerMail ? (
+                  <a href={sellerMail} className="inline-flex items-center justify-center gap-2 rounded-full border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"><Download size={16} /> Email Seller</a>
+                ) : null}
               </div>
             </div>
           </div>
@@ -281,11 +311,23 @@ function PropertyDetailsPage() {
           <div className="space-y-8">
             <div className="rounded-[28px] border border-slate-200 bg-white p-5 shadow-card sm:p-6">
               <h2 className="text-2xl font-semibold text-ink">Quick Overview</h2>
-              <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
+              <div className="mt-5 grid grid-cols-2 gap-3">
                 {overviewItems.map((item) => (
                   <div key={item.label} className="rounded-[20px] border border-slate-200 bg-slate-50 p-4">
-                    <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">{item.label}</p>
-                    <p className="mt-2 text-sm font-semibold text-ink">{item.value}</p>
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.3em] text-slate-500">{item.label}</p>
+                    <p className={`mt-2 text-sm font-semibold ${item.available ? 'text-ink' : 'text-slate-500'}`}>{item.value}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="rounded-[28px] border border-slate-200 bg-white p-5 shadow-card sm:p-6">
+              <h2 className="text-2xl font-semibold text-ink">Property Features</h2>
+              <div className="mt-5 grid grid-cols-2 gap-3">
+                {featureItems.map((feature) => (
+                  <div key={feature.label} className="rounded-[20px] border border-slate-200 bg-slate-50 p-4">
+                    <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">{feature.label}</p>
+                    <p className={`mt-2 text-sm font-semibold ${feature.available ? 'text-ink' : 'text-slate-500'}`}>{feature.value}</p>
                   </div>
                 ))}
               </div>
@@ -295,8 +337,21 @@ function PropertyDetailsPage() {
               <h2 className="text-2xl font-semibold text-ink">Property Location</h2>
               {property?.mapUrl || property?.googleMaps || property?.mapLink ? (
                 <div className="mt-5 space-y-4">
-                  <iframe title="property-map" src={property.mapUrl || property.googleMaps || property.mapLink} className="h-72 w-full rounded-[20px] border border-slate-200" loading="lazy" />
-                  <a href={property.mapUrl || property.googleMaps || property.mapLink} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 text-sm font-semibold text-primary">
+                  <div className="grid gap-3 rounded-[20px] border border-slate-200 bg-slate-50 p-4 sm:grid-cols-3">
+                    <div>
+                      <p className="text-xs uppercase tracking-[0.2em] text-slate-500">District</p>
+                      <p className="mt-1 font-semibold text-ink">{property.district || property.location || 'Not provided'}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs uppercase tracking-[0.2em] text-slate-500">Taluka</p>
+                      <p className="mt-1 font-semibold text-ink">{property.subDistrict || property.taluka || 'Not provided'}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs uppercase tracking-[0.2em] text-slate-500">Village</p>
+                      <p className="mt-1 font-semibold text-ink">{property.village || 'Not provided'}</p>
+                    </div>
+                  </div>
+                  <a href={property.mapUrl || property.googleMaps || property.mapLink} target="_blank" rel="noreferrer" className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-primary bg-primary/10 px-4 py-3 text-sm font-semibold text-primary transition hover:bg-primary/15">
                     <ExternalLink size={16} /> Open in Google Maps
                   </a>
                 </div>
@@ -319,9 +374,15 @@ function PropertyDetailsPage() {
                           <p className="text-sm text-slate-500">7/12 Document</p>
                         </div>
                       </div>
-                      <div className="flex items-center gap-2">
+                      <div className="flex flex-wrap gap-2">
                         {isImage && document.url ? <a href={document.url} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700">View</a> : null}
-                        {document.url ? <a href={document.url} download={document.name || '712-document'} className="inline-flex items-center gap-2 rounded-full bg-sage px-4 py-2 text-sm font-semibold text-white">Download</a> : <span className="text-sm text-slate-500">Not uploaded</span>}
+                        {document.url ? (
+                  <a href={document.url} download={document.name || '712-document'} className="inline-flex items-center gap-2 rounded-full bg-sage px-4 py-2 text-sm font-semibold text-white">
+                    Download
+                  </a>
+                ) : (
+                  <span className="text-sm text-slate-500">Not uploaded</span>
+                )}
                       </div>
                     </div>
                   );
@@ -333,13 +394,27 @@ function PropertyDetailsPage() {
           <aside className="self-start lg:sticky lg:top-24">
             <div className="rounded-[28px] border border-slate-200 bg-white p-5 shadow-card sm:p-6">
               <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">Seller Information</p>
-              <div className="mt-4 rounded-[20px] border border-slate-200 bg-slate-50 p-4">
-                <p className="text-lg font-semibold text-ink">{sellerName}</p>
-                <p className="mt-1 text-sm text-slate-600">{property?.district || property?.location || 'Land seller'}</p>
-                <p className="mt-1 text-sm text-slate-600">{property?.subDistrict || property?.taluka || 'Taluka not provided'}</p>
-                <div className="mt-4 space-y-2 text-sm text-slate-700">
-                  {sellerPhone ? <p><span className="font-semibold">Mobile:</span> {sellerPhone}</p> : null}
-                  {sellerEmail ? <p><span className="font-semibold">Email:</span> {sellerEmail}</p> : null}
+              <div className="mt-4 rounded-[24px] bg-slate-50 p-4">
+                <div className="flex items-center gap-4">
+                  <div className="flex h-16 w-16 items-center justify-center rounded-3xl bg-sage text-xl font-semibold text-white">{sellerName?.split(' ').map((part) => part[0]).slice(0, 2).join('') || 'S'}</div>
+                  <div>
+                    <p className="text-lg font-semibold text-ink">{sellerName}</p>
+                    <p className="mt-1 text-sm text-slate-600">{property?.district || property?.location || 'Land seller'}</p>
+                  </div>
+                </div>
+                <div className="mt-4 grid gap-2 text-sm text-slate-700">
+                  <div className="rounded-2xl bg-white p-3 shadow-sm">
+                    <p className="text-xs uppercase tracking-[0.2em] text-slate-500">District</p>
+                    <p className="mt-1 font-semibold text-ink">{property?.district || property?.location || 'Not provided'}</p>
+                  </div>
+                  <div className="rounded-2xl bg-white p-3 shadow-sm">
+                    <p className="text-xs uppercase tracking-[0.2em] text-slate-500">Taluka</p>
+                    <p className="mt-1 font-semibold text-ink">{property?.subDistrict || property?.taluka || 'Not provided'}</p>
+                  </div>
+                </div>
+                <div className="mt-4 rounded-2xl bg-white p-4 shadow-sm">
+                  <p className="text-xs uppercase tracking-[0.2em] text-slate-500">Mobile</p>
+                  <p className="mt-1 font-semibold text-ink">{sellerPhone || 'Not provided'}</p>
                 </div>
               </div>
               <div className="mt-5 grid gap-3">
@@ -359,13 +434,23 @@ function PropertyDetailsPage() {
         </section>
       </main>
 
-      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-slate-200 bg-white/95 px-4 py-3 shadow-[0_-8px_30px_rgba(15,23,42,0.08)] backdrop-blur lg:hidden">
-        <div className="mx-auto flex max-w-7xl items-center gap-2">
-          <a href={sellerCall || '#'} className="flex-1 rounded-full bg-sage px-4 py-3 text-center text-sm font-semibold text-white">Call</a>
-          {sellerWhatsApp ? <a href={sellerWhatsApp} target="_blank" rel="noreferrer" className="flex-1 rounded-full border border-slate-200 px-4 py-3 text-center text-sm font-semibold text-slate-700">WhatsApp</a> : null}
-          {sellerMail ? <a href={sellerMail} className="flex-1 rounded-full border border-slate-200 px-4 py-3 text-center text-sm font-semibold text-slate-700">Email</a> : null}
+      {sellerCall || sellerWhatsApp || sellerMail ? (
+        <div className="fixed inset-x-0 bottom-0 z-60 border-t border-slate-200 bg-white/95 px-4 py-3 pb-[calc(1rem+env(safe-area-inset-bottom))] shadow-[0_-8px_30px_rgba(15,23,42,0.08)] backdrop-blur lg:hidden">
+          <div className="mx-auto flex max-w-7xl flex-wrap items-center gap-2">
+            {sellerCall ? (
+              <a href={sellerCall} className="flex-1 min-w-[140px] rounded-full bg-sage px-4 py-3 text-center text-sm font-semibold text-white">Call</a>
+            ) : null}
+            {sellerWhatsApp ? (
+              <a href={sellerWhatsApp} target="_blank" rel="noreferrer" className="flex-1 min-w-[140px] rounded-full border border-slate-200 bg-white px-4 py-3 text-center text-sm font-semibold text-slate-700">WhatsApp</a>
+            ) : null}
+            {sellerMail ? (
+              <a href={sellerMail} className="flex-1 min-w-[140px] rounded-full border border-slate-200 bg-white px-4 py-3 text-center text-sm font-semibold text-slate-700">Email</a>
+            ) : null}
+          </div>
         </div>
-      </div>
+      ) : null}
+
+      {sellerCall || sellerWhatsApp || sellerMail ? <div className="h-[calc(5.25rem+env(safe-area-inset-bottom))] lg:hidden" /> : null}
 
       {zoomOpen ? (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/90 px-4 py-6" onClick={() => setZoomOpen(false)}>

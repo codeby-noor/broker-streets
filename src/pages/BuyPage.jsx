@@ -74,6 +74,25 @@ function BuyPage() {
     return cleanup;
   }, []);
 
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const districtParam = params.get('district')?.trim();
+    const talukaParam = params.get('taluka')?.trim();
+
+    const validDistrict = districtParam
+      ? districtOptions.find((district) => district.toLowerCase() === districtParam.toLowerCase()) || 'All districts'
+      : 'All districts';
+
+    const validTaluka = talukaParam && validDistrict !== 'All districts'
+      ? (gujaratSubDistricts[validDistrict] || []).find((taluka) => taluka.toLowerCase() === talukaParam.toLowerCase()) || 'All talukas'
+      : 'All talukas';
+
+    setSelectedDistrict(validDistrict);
+    setSelectedTaluka(validTaluka);
+    setSelectedVillage('All villages');
+    setPage(1);
+  }, [location.search]);
+
   const filtered = useMemo(() => {
     const normalized = query.trim().toLowerCase();
     const minimum = Number(minPrice) || 0;
@@ -138,17 +157,34 @@ function BuyPage() {
     setPage(1);
   };
 
+  useEffect(() => {
+    document.body.style.overflow = mobileFilters ? 'hidden' : '';
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [mobileFilters]);
+
   const filters = (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-4">
         <div className="flex items-center gap-2">
           <Filter size={18} className="text-sage" />
           <h2 className="text-lg font-semibold text-ink">Land filters</h2>
         </div>
         <button type="button" onClick={clearFilters} className="text-xs font-bold uppercase tracking-[0.12em] text-sage">
-          Clear all
+          Reset
         </button>
       </div>
+
+      <label>
+        <span className="field-label">Property Type</span>
+        <select value={type} onChange={change(setType)} className="field-control">
+          <option value="All types">All types</option>
+          {propertyTypes.map((item) => (
+            <option key={item} value={item}>{item}</option>
+          ))}
+        </select>
+      </label>
 
       <label>
         <span className="field-label">District</span>
@@ -180,21 +216,6 @@ function BuyPage() {
           </select>
         </label>
       ) : null}
-
-      <label>
-        <span className="field-label">Property Type</span>
-        <select value={type} onChange={change(setType)} className="field-control">
-          <option value="All types">All types</option>
-          {propertyTypes.map((item) => (
-            <option key={item} value={item}>{item}</option>
-          ))}
-        </select>
-      </label>
-
-      <label className="flex items-center gap-2 rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3">
-        <input type="checkbox" checked={showSoldProperties} onChange={(event) => { setShowSoldProperties(event.target.checked); setPage(1); }} className="h-4 w-4 rounded border-slate-300 text-primary focus:ring-primary" />
-        <span className="text-sm font-medium text-slate-700">Show sold properties</span>
-      </label>
 
       <div>
         <span className="field-label">Price</span>
@@ -229,6 +250,21 @@ function BuyPage() {
           <option value="5000+ Sq Ft">5000+ Sq Ft</option>
         </select>
       </label>
+
+      <label>
+        <span className="field-label">Sort by</span>
+        <select value={sort} onChange={change(setSort)} className="field-control">
+          <option value="relevance">Relevance</option>
+          <option value="newest">Newest</option>
+          <option value="price_asc">Price: low to high</option>
+          <option value="price_desc">Price: high to low</option>
+        </select>
+      </label>
+
+      <label className="flex items-center gap-2 rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3">
+        <input type="checkbox" checked={showSoldProperties} onChange={(event) => { setShowSoldProperties(event.target.checked); setPage(1); }} className="h-4 w-4 rounded border-slate-300 text-primary focus:ring-primary" />
+        <span className="text-sm font-medium text-slate-700">Show sold properties</span>
+      </label>
     </div>
   );
 
@@ -252,32 +288,72 @@ function BuyPage() {
           </div>
         )}
 
-        <div className="mb-8 flex flex-col gap-4 border-b border-stone-200 pb-8 sm:flex-row sm:items-end sm:justify-between">
-          <div className="space-y-3">
-            <SectionHeading eyebrow="Land listings" title="Property collection" description="Filter by city, property type, budget, and land area." />
+        <div className="mb-8 space-y-6 border-b border-stone-200 pb-8">
+          <div className="grid gap-4 sm:grid-cols-[1.4fr_auto] sm:items-end">
+            <div>
+              <p className="eyebrow text-sage">Find Your Land</p>
+              <h2 className="mt-3 text-3xl font-semibold text-ink sm:text-4xl">Search verified agricultural and non-agricultural land.</h2>
+              <p className="mt-3 max-w-2xl text-sm leading-7 text-muted">Use filters to narrow down by district, taluka, village, price, and land area.</p>
+            </div>
+            <div className="flex flex-wrap gap-3">
+              <button
+                type="button"
+                onClick={() => setMobileFilters(true)}
+                className="inline-flex min-h-[46px] items-center justify-center rounded-full border border-stone-200 bg-white px-5 py-3 text-sm font-semibold text-slate-800 transition hover:bg-slate-50 lg:hidden"
+              >
+                <SlidersHorizontal size={18} className="mr-2" /> Filters
+              </button>
+              <button
+                type="button"
+                onClick={() => setMobileFilters(true)}
+                className="hidden min-h-[46px] items-center justify-center rounded-full border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-800 transition hover:bg-slate-50 lg:inline-flex"
+              >
+                Sort
+                <ChevronDown size={16} className="ml-2" />
+              </button>
+            </div>
           </div>
-          <button
-            type="button"
-            onClick={() => setMobileFilters(true)}
-            className="rounded-full border border-stone-200 px-5 py-3.5 text-sm font-semibold lg:hidden"
-          >
-            <SlidersHorizontal size={17} className="inline" /> Filters
-          </button>
+
+          <div className="grid gap-3 sm:grid-cols-[1fr_auto]">
+            <label className="flex items-center gap-3 rounded-3xl border border-slate-200 bg-white px-4 py-3 text-sm shadow-sm">
+              <Search size={18} className="text-sage" />
+              <input
+                aria-label="Search land by village taluka or district"
+                value={query}
+                onChange={change(setQuery)}
+                placeholder="Search by village, taluka or district"
+                className="min-w-0 flex-1 border-0 bg-transparent text-sm text-slate-800 outline-none"
+              />
+            </label>
+            <div className="flex gap-3">
+              <button type="button" onClick={() => setMobileFilters(true)} className="inline-flex min-h-[46px] items-center justify-center rounded-full border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-800 transition hover:bg-slate-50 lg:hidden">
+                Filters
+              </button>
+              <button type="button" className="hidden min-h-[46px] items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-800 transition hover:bg-slate-50 lg:inline-flex">
+                Sort
+                <ChevronDown size={16} />
+              </button>
+            </div>
+          </div>
         </div>
 
         {mobileFilters ? (
-          <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-950/70 px-3 py-4 sm:px-6">
-            <div className="mx-auto max-w-md rounded-[32px] bg-white p-4 shadow-xl sm:p-6">
-              <div className="flex items-center justify-between gap-4">
-                <div>
-                  <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-800">Filters</p>
-                  <p className="text-sm text-slate-600">Refine your search before browsing listings.</p>
+          <div className="fixed inset-0 z-50 overflow-hidden bg-slate-950/70 px-3 py-4 sm:px-6">
+            <div className="absolute inset-0 overflow-y-auto">
+              <div className="mx-auto mt-16 max-w-md rounded-[32px] bg-white p-4 shadow-xl sm:p-6">
+                <div className="flex items-center justify-between gap-4">
+                  <div>
+                    <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-800">Filters</p>
+                    <p className="text-sm text-slate-600">Refine your search before browsing listings.</p>
+                  </div>
+                  <button type="button" onClick={() => setMobileFilters(false)} className="rounded-full border border-slate-200 bg-slate-50 p-3.5 text-slate-700 transition hover:bg-slate-100">Close</button>
                 </div>
-                <button type="button" onClick={() => setMobileFilters(false)} className="rounded-full border border-slate-200 bg-slate-50 p-3.5 text-slate-700 transition hover:bg-slate-100">Close</button>
-              </div>
-              <div className="mt-6">{filters}</div>
-              <div className="mt-6 flex justify-end">
-                <button type="button" onClick={() => setMobileFilters(false)} className="w-full rounded-full bg-primary px-5 py-3.5 text-sm font-semibold text-white transition hover:bg-primary-dark sm:w-auto">Apply filters</button>
+                <div className="mt-6">{filters}</div>
+                <div className="sticky bottom-0 left-0 right-0 mt-6 bg-white pt-4">
+                  <button type="button" onClick={() => setMobileFilters(false)} className="w-full rounded-full bg-primary px-5 py-3.5 text-sm font-semibold text-white transition hover:bg-primary-dark">
+                    Apply filters
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -342,20 +418,6 @@ function BuyPage() {
       </main>
 
       <ContactModal open={Boolean(contactModal)} onClose={() => setContactModal(null)} data={contactModal || {}} title="Contact Seller" />
-
-      {mobileFilters && (
-        <div className="fixed inset-0 z-50 bg-ink/40 lg:hidden">
-          <div className="absolute inset-x-0 bottom-0 max-h-[85vh] overflow-auto bg-cream p-6">
-            <button type="button" onClick={() => setMobileFilters(false)} className="float-right">
-              <X size={20} />
-            </button>
-            {filters}
-            <button type="button" onClick={() => setMobileFilters(false)} className="mt-8 w-full rounded-full bg-sage py-3 text-white">
-              Show {filtered.length} listings
-            </button>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

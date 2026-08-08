@@ -3,7 +3,7 @@ import logo from '../assets/images/logo.png';
 
 function Footer() {
   return (
-    <footer className="border-t border-slate-200/70 bg-white px-4 py-8 sm:px-6 lg:px-8">
+    <footer className="border-t border-slate-200/70 bg-white px-4 py-8 pb-[calc(4rem+env(safe-area-inset-bottom))] sm:px-6 lg:px-8">
       <div className="mx-auto flex max-w-7xl flex-col gap-8 lg:flex-row lg:items-start lg:justify-between">
         <div className="max-w-sm text-center sm:text-left">
           <Link to="/home" className="inline-flex items-center gap-3">
