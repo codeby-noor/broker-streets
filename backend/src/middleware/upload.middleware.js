@@ -143,6 +143,74 @@ const uploadListingFiles = (req, res, next) => {
   });
 };
 
+const uploadBuyerLeadFilesMulter = multer({
+  storage,
+  limits: { fileSize: env.uploadMaxAudioSizeMb * 1024 * 1024 },
+  fileFilter: (req, file, cb) => {
+    const allAllowed = [
+      ...env.uploadAllowedImageTypes,
+      ...env.uploadAllowedAudioTypes,
+    ];
+    if (allAllowed.includes(file.mimetype)) {
+      cb(null, true);
+    } else {
+      cb(
+        new ApiError(
+          HTTP_STATUS.UNSUPPORTED_MEDIA_TYPE,
+          `Invalid file type: ${file.mimetype}`
+        ),
+        false
+      );
+    }
+  },
+}).fields([
+  { name: 'audio', maxCount: 1 },
+  { name: 'images', maxCount: 10 },
+]);
+
+const validateBuyerLeadFileSizes = (req, res, next) => {
+  if (!req.files) return next();
+
+  const maxImageBytes = env.uploadMaxImageSizeMb * 1024 * 1024;
+  const maxAudioBytes = env.uploadMaxAudioSizeMb * 1024 * 1024;
+
+  if (req.files.images) {
+    for (const file of req.files.images) {
+      const fileSize = file.size || (file.buffer ? file.buffer.length : 0);
+      if (fileSize > maxImageBytes) {
+        return next(
+          new ApiError(
+            HTTP_STATUS.PAYLOAD_TOO_LARGE,
+            `Image file ${file.originalname} exceeds max size limit of ${env.uploadMaxImageSizeMb}MB`
+          )
+        );
+      }
+    }
+  }
+
+  if (req.files.audio && req.files.audio[0]) {
+    const file = req.files.audio[0];
+    const fileSize = file.size || (file.buffer ? file.buffer.length : 0);
+    if (fileSize > maxAudioBytes) {
+      return next(
+        new ApiError(
+          HTTP_STATUS.PAYLOAD_TOO_LARGE,
+          `Audio file ${file.originalname} exceeds max size limit of ${env.uploadMaxAudioSizeMb}MB`
+        )
+      );
+    }
+  }
+
+  next();
+};
+
+const uploadBuyerLeadFiles = (req, res, next) => {
+  uploadBuyerLeadFilesMulter(req, res, (err) => {
+    if (err) return next(err);
+    validateBuyerLeadFileSizes(req, res, next);
+  });
+};
+
 module.exports = {
   uploadImages,
   uploadVideos,
@@ -150,4 +218,5 @@ module.exports = {
   uploadAudio,
   uploadProfileImage,
   uploadListingFiles,
+  uploadBuyerLeadFiles,
 };
