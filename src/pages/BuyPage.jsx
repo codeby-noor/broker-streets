@@ -8,6 +8,7 @@ import Pagination from '../components/Pagination';
 import ContactModal from '../components/ContactModal';
 import PropertyCard from '../components/PropertyCard';
 import SectionHeading from '../components/SectionHeading';
+import { useLanguage } from '../i18n/LanguageContext';
 
 const locationGroups = {
   Surat: ['Vesu', 'Adajan', 'Pal', 'Piplod', 'Dumas', 'Althan', 'VIP Road', 'City Light'],
@@ -27,14 +28,15 @@ const landSizeInSqFt = (value) => {
 
 function BuyPage() {
   const location = useLocation();
+  const { t } = useLanguage();
   const [query, setQuery] = useState('');
-  const [selectedDistrict, setSelectedDistrict] = useState('All districts');
-  const [selectedTaluka, setSelectedTaluka] = useState('All talukas');
-  const [selectedVillage, setSelectedVillage] = useState('All villages');
-  const [type, setType] = useState('All types');
+  const [selectedDistrict, setSelectedDistrict] = useState(t('buy.allDistricts') || 'All districts');
+  const [selectedTaluka, setSelectedTaluka] = useState(t('buy.allTalukas') || 'All talukas');
+  const [selectedVillage, setSelectedVillage] = useState(t('buy.allVillages') || 'All villages');
+  const [type, setType] = useState(t('buy.allTypes') || 'All types');
   const [minPrice, setMinPrice] = useState('');
   const [maxPrice, setMaxPrice] = useState('');
-  const [landArea, setLandArea] = useState('Any area');
+  const [landArea, setLandArea] = useState(t('buy.allAreas') || 'Any area');
   const [showSoldProperties, setShowSoldProperties] = useState(false);
   const [sort, setSort] = useState('relevance');
   const [page, setPage] = useState(1);
@@ -80,18 +82,18 @@ function BuyPage() {
     const talukaParam = params.get('taluka')?.trim();
 
     const validDistrict = districtParam
-      ? districtOptions.find((district) => district.toLowerCase() === districtParam.toLowerCase()) || 'All districts'
-      : 'All districts';
+      ? districtOptions.find((district) => district.toLowerCase() === districtParam.toLowerCase()) || t('buy.allDistricts') || 'All districts'
+      : t('buy.allDistricts') || 'All districts';
 
-    const validTaluka = talukaParam && validDistrict !== 'All districts'
-      ? (gujaratSubDistricts[validDistrict] || []).find((taluka) => taluka.toLowerCase() === talukaParam.toLowerCase()) || 'All talukas'
-      : 'All talukas';
+    const validTaluka = talukaParam && validDistrict !== (t('buy.allDistricts') || 'All districts')
+      ? (gujaratSubDistricts[validDistrict] || []).find((taluka) => taluka.toLowerCase() === talukaParam.toLowerCase()) || t('buy.allTalukas') || 'All talukas'
+      : t('buy.allTalukas') || 'All talukas';
 
     setSelectedDistrict(validDistrict);
     setSelectedTaluka(validTaluka);
-    setSelectedVillage('All villages');
+    setSelectedVillage(t('buy.allVillages') || 'All villages');
     setPage(1);
-  }, [location.search]);
+  }, [location.search, t]);
 
   const filtered = useMemo(() => {
     const normalized = query.trim().toLowerCase();
@@ -272,9 +274,9 @@ function BuyPage() {
     <div className="min-h-screen w-full overflow-x-clip bg-[#FFFEFE] pb-20">
       <section className="bg-ink px-4 py-10 text-white sm:px-10 sm:py-14 lg:px-12">
         <div className="mx-auto max-w-7xl">
-          <p className="eyebrow text-blue-100">Gujarat land collection</p>
-          <h1 className="display-heading mt-4 text-3xl leading-tight sm:text-6xl">Find land with confidence.</h1>
-          <p className="mt-5 max-w-xl text-sm leading-6 text-white/65 sm:text-lg">Browse verified agricultural and non-agricultural land listings.</p>
+          <p className="eyebrow text-blue-100">{t('buy.heroCollection')}</p>
+          <h1 className="display-heading mt-4 text-3xl leading-tight sm:text-6xl">{t('buy.pageTitle')}</h1>
+          <p className="mt-5 max-w-xl text-sm leading-6 text-white/65 sm:text-lg">{t('buy.subtitle')}</p>
         </div>
       </section>
 
@@ -291,9 +293,9 @@ function BuyPage() {
         <div className="mb-8 space-y-6 border-b border-stone-200 pb-8">
           <div className="grid gap-4 sm:grid-cols-[1.4fr_auto] sm:items-end">
             <div>
-              <p className="eyebrow text-sage">Find Your Land</p>
-              <h2 className="mt-3 text-2xl font-semibold text-ink sm:text-4xl">Search verified agricultural and non-agricultural land.</h2>
-              <p className="mt-3 max-w-2xl text-sm leading-6 text-muted sm:leading-7">Use filters to narrow down by district, taluka, village, price, and land area.</p>
+              <p className="eyebrow text-sage">{t('buy.findYourLandTitle')}</p>
+              <h2 className="mt-3 text-2xl font-semibold text-ink sm:text-4xl">{t('buy.findYourLandHeading')}</h2>
+              <p className="mt-3 max-w-2xl text-sm leading-6 text-muted sm:leading-7">{t('buy.findYourLandDescription')}</p>
             </div>
             <div className="flex flex-wrap gap-3">
               <button
@@ -301,14 +303,14 @@ function BuyPage() {
                 onClick={() => setMobileFilters(true)}
                 className="inline-flex min-h-[46px] items-center justify-center rounded-full border border-stone-200 bg-white px-5 py-3 text-sm font-semibold text-slate-800 transition hover:bg-slate-50 lg:hidden"
               >
-                <SlidersHorizontal size={18} className="mr-2" /> Filters
+                <SlidersHorizontal size={18} className="mr-2" /> {t('buy.filterButton')}
               </button>
               <button
                 type="button"
                 onClick={() => setMobileFilters(true)}
                 className="hidden min-h-[46px] items-center justify-center rounded-full border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-800 transition hover:bg-slate-50 lg:inline-flex"
               >
-                Sort
+                {t('buy.sortButton')}
                 <ChevronDown size={16} className="ml-2" />
               </button>
             </div>
@@ -318,19 +320,19 @@ function BuyPage() {
             <label className="flex items-center gap-3 rounded-3xl border border-slate-200 bg-white px-4 py-3 text-sm shadow-sm">
               <Search size={18} className="text-sage" />
               <input
-                aria-label="Search land by village taluka or district"
+                aria-label={t('buy.searchTitle')}
                 value={query}
                 onChange={change(setQuery)}
-                placeholder="Search by village, taluka or district"
+                placeholder={t('buy.searchAll')}
                 className="min-w-0 flex-1 border-0 bg-transparent text-sm text-slate-800 outline-none"
               />
             </label>
             <div className="flex gap-3">
               <button type="button" onClick={() => setMobileFilters(true)} className="inline-flex min-h-[46px] items-center justify-center rounded-full border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-800 transition hover:bg-slate-50 lg:hidden">
-                Filters
+                {t('buy.filterButton')}
               </button>
               <button type="button" className="hidden min-h-[46px] items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-800 transition hover:bg-slate-50 lg:inline-flex">
-                Sort
+                {t('buy.sortButton')}
                 <ChevronDown size={16} />
               </button>
             </div>
@@ -343,15 +345,15 @@ function BuyPage() {
               <div className="mx-auto mt-12 max-w-md max-h-[85vh] overflow-y-auto rounded-[32px] bg-white p-4 shadow-xl sm:p-6">
                 <div className="flex items-center justify-between gap-4">
                   <div>
-                    <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-800">Filters</p>
-                    <p className="text-sm text-slate-600">Refine your search before browsing listings.</p>
+                    <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-800">{t('buy.filters')}</p>
+                    <p className="text-sm text-slate-600">{t('buy.mobileFilters')}</p>
                   </div>
-                  <button type="button" onClick={() => setMobileFilters(false)} className="rounded-full border border-slate-200 bg-slate-50 p-3.5 text-slate-700 transition hover:bg-slate-100">Close</button>
+                  <button type="button" onClick={() => setMobileFilters(false)} className="rounded-full border border-slate-200 bg-slate-50 p-3.5 text-slate-700 transition hover:bg-slate-100">{t('buy.close')}</button>
                 </div>
                 <div className="mt-6">{filters}</div>
                 <div className="sticky bottom-0 left-0 right-0 mt-6 bg-white pt-4">
                   <button type="button" onClick={() => setMobileFilters(false)} className="w-full rounded-full bg-primary px-5 py-3.5 text-sm font-semibold text-white transition hover:bg-primary-dark">
-                    Apply filters
+                    {t('buy.applyFilters')}
                   </button>
                 </div>
               </div>
@@ -363,15 +365,15 @@ function BuyPage() {
           <aside className="hidden self-start border border-stone-200 bg-white p-6 shadow-card lg:sticky lg:top-24 lg:block">{filters}</aside>
           <div className="space-y-7">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-              <p className="text-sm font-semibold text-ink">{filtered.length} land listings found</p>
+              <p className="text-sm font-semibold text-ink">{filtered.length} {t('buy.propertyResultLabel')}</p>
               <div className="flex flex-wrap gap-3">
                 <label className="flex min-w-0 flex-1 items-center gap-2 border border-stone-200 bg-white px-4 py-2.5 sm:min-w-[210px]">
                   <Search size={17} className="text-sage" />
                   <input
-                    aria-label="Search land"
+                    aria-label={t('buy.searchTitle')}
                     value={query}
                     onChange={change(setQuery)}
-                    placeholder="Search by property name, city, or area"
+                    placeholder={t('buy.searchAll')}
                     className="min-w-0 flex-1 border-0 bg-transparent text-sm outline-none"
                   />
                 </label>
@@ -404,10 +406,10 @@ function BuyPage() {
                 <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-sage/10 text-sage">
                   <Search size={28} />
                 </div>
-                <h2 className="mt-6 text-2xl font-semibold text-ink">No land listings match these filters</h2>
-                <p className="mt-3 text-sm text-muted">Try a broader search or reset the filters to explore available agricultural and non-agricultural land.</p>
+                <h2 className="mt-6 text-2xl font-semibold text-ink">{t('buy.noResults')}</h2>
+                <p className="mt-3 text-sm text-muted">{t('buy.noResultsDetail')}</p>
                 <button type="button" onClick={clearFilters} className="mt-6 rounded-full bg-sage px-5 py-3 text-sm font-semibold text-white">
-                  Clear Filters
+                  {t('buy.clearFilters')}
                 </button>
               </div>
             )}
@@ -417,7 +419,7 @@ function BuyPage() {
         </div>
       </main>
 
-      <ContactModal open={Boolean(contactModal)} onClose={() => setContactModal(null)} data={contactModal || {}} title="Contact Seller" />
+      <ContactModal open={Boolean(contactModal)} onClose={() => setContactModal(null)} data={contactModal || {}} title={t('buy.contactSeller')} />
     </div>
   );
 }
