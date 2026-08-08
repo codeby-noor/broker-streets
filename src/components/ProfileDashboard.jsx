@@ -909,6 +909,11 @@ function ProfileDashboard() {
                   <span className="inline-flex items-center gap-2"><FileText size={14} /> Member ID {profile.memberId || user?.id || 'BS-1001'}</span>
                   <span className="inline-flex items-center gap-2"><House size={14} /> Role {roleLabel}</span>
                 </div>
+                <div className="mt-4 grid gap-3 sm:grid-cols-3">
+                  <button type="button" onClick={() => setActiveSection('properties')} className="rounded-3xl border border-slate-200 bg-white px-4 py-4 text-left text-sm font-semibold text-slate-900 shadow-sm transition hover:-translate-y-0.5">My Listings</button>
+                  <button type="button" onClick={() => setActiveSection('saved')} className="rounded-3xl border border-slate-200 bg-white px-4 py-4 text-left text-sm font-semibold text-slate-900 shadow-sm transition hover:-translate-y-0.5">Saved Properties</button>
+                  <button type="button" onClick={() => setActiveSection('buyers')} className="rounded-3xl border border-slate-200 bg-white px-4 py-4 text-left text-sm font-semibold text-slate-900 shadow-sm transition hover:-translate-y-0.5">Buyer Requests</button>
+                </div>
               </div>
             </div>
             <div className="flex flex-wrap gap-2">

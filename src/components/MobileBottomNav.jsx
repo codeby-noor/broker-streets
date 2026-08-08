@@ -1,12 +1,12 @@
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Home, Search, PlusCircle, ClipboardList, User } from 'lucide-react';
+import { Home, Search, PlusCircle, Mail, User } from 'lucide-react';
 import { getSubmissionDestination } from '../utils/formNavigation';
 
 const items = [
   { label: 'Home', to: '/home', icon: Home },
   { label: 'Buy', to: '/buy', icon: Search, action: 'buy' },
   { label: 'Sell', to: '/sell', icon: PlusCircle, action: 'sell' },
-  { label: 'Requirements', to: '/buyer-requirements', icon: ClipboardList },
+  { label: 'Contact', to: '/contact', icon: Mail },
   { label: 'Profile', to: '/profile', icon: User },
 ];
 

@@ -233,28 +233,28 @@ function HomePage() {
           <p className="mt-4 text-sm leading-7 text-muted">Discover verified listings in the most active land markets with premium infrastructure, strong connectivity, and investment momentum.</p>
         </div>
 
-        <div className="-mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-6 sm:-mx-6 sm:px-6 lg:hidden">
+        <div className="grid grid-cols-2 gap-4 lg:hidden">
           {popularLandLocations.map((location) => (
             <button
               key={location.slug}
               type="button"
               aria-label={`Explore ${location.name} in ${location.district}`}
               onClick={() => navigate(`/buy?district=${encodeURIComponent(location.district)}&taluka=${encodeURIComponent(location.name)}`)}
-              className="group min-w-[84%] snap-start overflow-hidden rounded-[28px] border border-slate-200 bg-white text-left shadow-sm transition duration-300 hover:-translate-y-1 hover:border-emerald-300 hover:shadow-card-hover"
+              className="group overflow-hidden rounded-[28px] border border-slate-200 bg-white text-left shadow-sm transition duration-300 hover:-translate-y-1 hover:border-emerald-300 hover:shadow-card-hover"
             >
-              <div className="relative h-64 overflow-hidden">
+              <div className="relative h-44 overflow-hidden">
                 <img src={location.image} alt={location.name} className="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/20 to-transparent" />
-                <div className="absolute left-5 top-5 rounded-full border border-white/20 bg-white/15 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-white backdrop-blur-sm">
+                <div className="absolute left-4 top-4 rounded-full border border-white/20 bg-white/15 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-white backdrop-blur-sm">
                   {location.district}
                 </div>
-                <div className="absolute inset-x-0 bottom-0 p-6">
-                  <h3 className="text-2xl font-semibold text-white">{location.name}</h3>
-                  <p className="mt-2 text-sm text-slate-200">{location.activeListings} Properties</p>
+                <div className="absolute inset-x-0 bottom-0 p-4">
+                  <h3 className="text-xl font-semibold text-white">{location.name}</h3>
+                  <p className="mt-1 text-sm text-slate-200">{location.activeListings} active listings</p>
                 </div>
               </div>
-              <div className="space-y-4 p-6">
-                <p className="text-sm leading-7 text-slate-600">{location.description}</p>
+              <div className="space-y-3 p-4">
+                <p className="text-sm leading-6 text-slate-600">{location.description}</p>
                 <div className="flex items-center justify-between gap-3">
                   <span className="text-sm font-semibold text-slate-700">{location.district} District</span>
                   <span className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1.5 text-sm font-semibold text-primary">Explore <ArrowRight size={14} /></span>
