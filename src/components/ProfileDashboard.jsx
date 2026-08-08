@@ -796,7 +796,7 @@ function ProfileDashboard() {
             </button>
             <div>
               <p className="text-sm font-semibold text-primary">Broker Streets</p>
-              <h1 className="text-xl font-semibold text-slate-900">User Profile Dashboard</h1>
+              <h1 className="text-xl font-semibold text-slate-900">Profile</h1>
             </div>
           </div>
           <div className="flex items-center gap-3">
