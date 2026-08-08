@@ -19,20 +19,31 @@ import ProfileSettingsPage from '../pages/ProfileSettingsPage';
 import NotFoundPage from '../pages/NotFoundPage';
 import BuyerForm from '../pages/BuyerForm';
 import SellerForm from '../pages/SellerForm';
-import AddPropertyPage from '../pages/AddPropertyPage';
 import SellerDashboard from '../pages/SellerDashboard';
 import BuyerRequirementsPage from '../pages/BuyerRequirementsPage';
 import LocationDetailsPage from '../pages/LocationDetailsPage';
 import FormGuard from '../components/FormGuard';
 import ProtectedRoute from './ProtectedRoute';
 import AdminApp from '../admin/AdminApp';
+import LanguageSelectionPage from '../pages/LanguageSelectionPage';
+import { useLanguage } from '../i18n/LanguageContext';
 
 function AppRoutes() {
+  const { language } = useLanguage();
+
+  if (!language) {
+    return (
+      <Routes>
+        <Route path="/" element={<LanguageSelectionPage />} />
+        <Route path="*" element={<LanguageSelectionPage />} />
+      </Routes>
+    );
+  }
+
   return (
     <Routes>
       <Route path="/admin/*" element={<AdminApp />} />
       <Route path="/" element={<Layout />}>
-        <Route index element={<RegisterPage />} />
         <Route path="register" element={<RegisterPage />} />
         <Route path="login" element={<LoginPage />} />
         <Route path="otp" element={<OTPPage />} />

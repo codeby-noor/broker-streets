@@ -77,7 +77,7 @@ function PropertyCard({ property, compact = false, onContact }) {
   };
 
   return (
-    <article className={`group flex h-full w-full flex-col overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-[0_16px_40px_rgba(15,23,42,0.07)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_22px_50px_rgba(15,23,42,0.13)] ${compact ? '' : ''}`}>
+    <article className={`group flex h-full w-full flex-col overflow-hidden rounded-[22px] border border-slate-200 bg-white shadow-[0_16px_40px_rgba(15,23,42,0.07)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_22px_50px_rgba(15,23,42,0.13)] ${compact ? '' : ''}`}>
       <div className="relative overflow-hidden bg-slate-200">
         <div className="aspect-[4/3] w-full overflow-hidden">
           <AsyncImage src={cardImage} alt={propertyTitle} className="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
@@ -92,11 +92,11 @@ function PropertyCard({ property, compact = false, onContact }) {
             ) : null}
           </div>
           <div className="flex items-center gap-2">
-            <button type="button" aria-label={`Share ${propertyTitle}`} onClick={handleShare} className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-white/95 text-slate-700 shadow-sm transition hover:bg-white">
-              <Share2 size={16} />
+            <button type="button" aria-label={`Share ${propertyTitle}`} onClick={handleShare} className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/95 text-slate-700 shadow-sm transition hover:bg-white">
+              <Share2 size={15} />
             </button>
-            <button type="button" aria-label={`Save ${propertyTitle}`} onClick={handleFavorite} className={`inline-flex h-11 w-11 items-center justify-center rounded-full bg-white/95 shadow-sm transition hover:bg-white ${favorited ? 'text-rose-600' : 'text-slate-700'}`}>
-              <Heart size={16} fill={favorited ? 'currentColor' : 'none'} />
+            <button type="button" aria-label={`Save ${propertyTitle}`} onClick={handleFavorite} className={`inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/95 shadow-sm transition hover:bg-white ${favorited ? 'text-rose-600' : 'text-slate-700'}`}>
+              <Heart size={15} fill={favorited ? 'currentColor' : 'none'} />
             </button>
           </div>
         </div>
@@ -109,21 +109,21 @@ function PropertyCard({ property, compact = false, onContact }) {
 
       <div className="flex flex-1 flex-col gap-4 p-4 sm:p-5">
         <div className="space-y-3">
-          <h3 className="break-words text-xl font-semibold leading-tight text-slate-900">{propertyTitle}</h3>
-          <p className="break-words text-sm text-slate-500">
+          <h3 className="break-words text-base font-semibold leading-tight text-slate-900 sm:text-lg">{propertyTitle}</h3>
+          <p className="break-words text-sm leading-5 text-slate-500">
             <span className="inline-flex items-center gap-2 text-slate-500">
               <MapPin size={14} className="text-sage" />
               <span className="break-words">{locationLine || 'Location details pending'}</span>
             </span>
           </p>
-          <div className="grid gap-3 sm:grid-cols-2">
+          <div className="grid grid-cols-2 gap-3">
             <div className="rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3 text-sm text-slate-700">
               <p className="font-semibold text-slate-900">Area</p>
-              <p className="mt-1">{propertyArea}</p>
+              <p className="mt-1 break-words">{propertyArea}</p>
             </div>
             <div className="rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3 text-sm text-slate-700">
               <p className="font-semibold text-slate-900">Price</p>
-              <p className="mt-1">{propertyPrice}</p>
+              <p className="mt-1 break-words">{propertyPrice}</p>
               {priceUnit ? <span className="text-xs text-slate-500">{priceUnit}</span> : null}
             </div>
           </div>

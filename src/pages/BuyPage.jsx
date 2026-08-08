@@ -269,16 +269,16 @@ function BuyPage() {
   );
 
   return (
-    <div className="-mx-4 -mt-8 min-h-screen bg-[#FFFEFE] pb-20 sm:-mx-6 lg:-mx-8">
-      <section className="bg-ink px-4 py-12 text-white sm:px-10 sm:py-16 lg:px-12">
+    <div className="min-h-screen w-full overflow-x-clip bg-[#FFFEFE] pb-20">
+      <section className="bg-ink px-4 py-10 text-white sm:px-10 sm:py-14 lg:px-12">
         <div className="mx-auto max-w-7xl">
           <p className="eyebrow text-blue-100">Gujarat land collection</p>
-          <h1 className="display-heading mt-4 text-4xl sm:text-6xl">Find land with confidence.</h1>
-          <p className="mt-5 max-w-xl text-base text-white/65 sm:text-lg">Browse verified agricultural and non-agricultural land listings.</p>
+          <h1 className="display-heading mt-4 text-3xl leading-tight sm:text-6xl">Find land with confidence.</h1>
+          <p className="mt-5 max-w-xl text-sm leading-6 text-white/65 sm:text-lg">Browse verified agricultural and non-agricultural land listings.</p>
         </div>
       </section>
 
-      <main className="mx-auto max-w-7xl px-4 py-8 sm:px-10 sm:py-10 lg:px-12">
+      <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-10 lg:px-12">
         {location.state?.justSubmitted && (
           <div className="mb-8 flex items-center justify-between border border-blue-200 bg-blue-50 px-5 py-4 text-sm font-semibold text-primary">
             <span>Your land preference has been received.</span>
@@ -292,8 +292,8 @@ function BuyPage() {
           <div className="grid gap-4 sm:grid-cols-[1.4fr_auto] sm:items-end">
             <div>
               <p className="eyebrow text-sage">Find Your Land</p>
-              <h2 className="mt-3 text-3xl font-semibold text-ink sm:text-4xl">Search verified agricultural and non-agricultural land.</h2>
-              <p className="mt-3 max-w-2xl text-sm leading-7 text-muted">Use filters to narrow down by district, taluka, village, price, and land area.</p>
+              <h2 className="mt-3 text-2xl font-semibold text-ink sm:text-4xl">Search verified agricultural and non-agricultural land.</h2>
+              <p className="mt-3 max-w-2xl text-sm leading-6 text-muted sm:leading-7">Use filters to narrow down by district, taluka, village, price, and land area.</p>
             </div>
             <div className="flex flex-wrap gap-3">
               <button
@@ -340,7 +340,7 @@ function BuyPage() {
         {mobileFilters ? (
           <div className="fixed inset-0 z-50 overflow-hidden bg-slate-950/70 px-3 py-4 sm:px-6">
             <div className="absolute inset-0 overflow-y-auto">
-              <div className="mx-auto mt-16 max-w-md rounded-[32px] bg-white p-4 shadow-xl sm:p-6">
+              <div className="mx-auto mt-12 max-w-md max-h-[85vh] overflow-y-auto rounded-[32px] bg-white p-4 shadow-xl sm:p-6">
                 <div className="flex items-center justify-between gap-4">
                   <div>
                     <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-800">Filters</p>
@@ -359,20 +359,20 @@ function BuyPage() {
           </div>
         ) : null}
 
-        <div className="grid gap-10 lg:grid-cols-[280px_1fr]">
+        <div className="grid gap-6 lg:grid-cols-[280px_1fr]">
           <aside className="hidden self-start border border-stone-200 bg-white p-6 shadow-card lg:sticky lg:top-24 lg:block">{filters}</aside>
           <div className="space-y-7">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <p className="text-sm font-semibold text-ink">{filtered.length} land listings found</p>
-              <div className="flex gap-3">
-                <label className="flex items-center gap-2 border border-stone-200 bg-white px-4 py-2.5">
+              <div className="flex flex-wrap gap-3">
+                <label className="flex min-w-0 flex-1 items-center gap-2 border border-stone-200 bg-white px-4 py-2.5 sm:min-w-[210px]">
                   <Search size={17} className="text-sage" />
                   <input
                     aria-label="Search land"
                     value={query}
                     onChange={change(setQuery)}
                     placeholder="Search by property name, city, or area"
-                    className="min-w-0 border-0 bg-transparent text-sm outline-none"
+                    className="min-w-0 flex-1 border-0 bg-transparent text-sm outline-none"
                   />
                 </label>
                 <label className="flex items-center gap-1 border border-stone-200 bg-white px-3">
@@ -388,13 +388,13 @@ function BuyPage() {
             </div>
 
             {loading ? (
-              <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
                 {Array.from({ length: 6 }).map((_, index) => (
                   <div key={index} className="h-80 animate-pulse bg-slate-200" />
                 ))}
               </div>
             ) : paged.length ? (
-              <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
                 {paged.map((property) => (
                   <PropertyCard key={property.id} property={property} onContact={setContactModal} />
                 ))}

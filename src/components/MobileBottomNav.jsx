@@ -1,19 +1,21 @@
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Home, Search, PlusCircle, Mail, User } from 'lucide-react';
 import { getSubmissionDestination } from '../utils/formNavigation';
-
-const items = [
-  { label: 'Home', to: '/home', icon: Home },
-  { label: 'Buy', to: '/buy', icon: Search, action: 'buy' },
-  { label: 'Sell', to: '/sell', icon: PlusCircle, action: 'sell' },
-  { label: 'Contact', to: '/contact', icon: Mail },
-  { label: 'Profile', to: '/profile', icon: User },
-];
+import { useLanguage } from '../i18n/LanguageContext';
 
 function MobileBottomNav() {
   const location = useLocation();
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const hideRoutes = ['/', '/otp'];
+
+  const items = [
+    { label: t('nav.home'), to: '/home', icon: Home },
+    { label: t('nav.buy'), to: '/buy', icon: Search, action: 'buy' },
+    { label: t('nav.sell'), to: '/sell', icon: PlusCircle, action: 'sell' },
+    { label: t('nav.contact'), to: '/contact', icon: Mail },
+    { label: t('nav.profile'), to: '/profile', icon: User },
+  ];
 
   if (hideRoutes.includes(location.pathname)) {
     return null;

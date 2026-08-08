@@ -3,20 +3,22 @@ import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 import logo from '../assets/images/logo.png';
 import { getSubmissionDestination } from '../utils/formNavigation';
-
-const navItems = [
-  { label: 'Home', to: '/home' },
-  { label: 'Buy', to: '/buy' },
-  { label: 'Sell', to: '/sell' },
-  { label: 'About', to: '/about' },
-  { label: 'Contact', to: '/contact' },
-];
+import { useLanguage } from '../i18n/LanguageContext';
 
 function Navbar() {
   const location = useLocation();
   const navigate = useNavigate();
+  const { t, language, setLanguage } = useLanguage();
   const [menuOpen, setMenuOpen] = useState(false);
   const hideNav = ['/', '/otp'].includes(location.pathname);
+
+  const navItems = [
+    { label: t('nav.home'), to: '/home' },
+    { label: t('nav.buy'), to: '/buy' },
+    { label: t('nav.sell'), to: '/sell' },
+    { label: t('nav.about'), to: '/about' },
+    { label: t('nav.contact'), to: '/contact' },
+  ];
 
   const navigateBuy = () => {
     setMenuOpen(false);
@@ -50,17 +52,17 @@ function Navbar() {
         {!hideNav && (
           <nav className="hidden items-center gap-8 md:flex">
             {navItems.map((item) => {
-              if (item.label === 'Buy') {
+              if (item.label === t('nav.buy')) {
                 return (
                   <button key={item.to} type="button" onClick={navigateBuy} className="text-base font-medium text-slate-700 transition hover:text-primary">
-                    Buy
+                    {t('nav.buy')}
                   </button>
                 );
               }
-              if (item.label === 'Sell') {
+              if (item.label === t('nav.sell')) {
                 return (
                   <button key={item.to} type="button" onClick={navigateSell} className="text-base font-medium text-slate-700 transition hover:text-primary">
-                    Sell
+                    {t('nav.sell')}
                   </button>
                 );
               }
@@ -82,8 +84,12 @@ function Navbar() {
         {!hideNav ? (
           <>
             <div className="hidden items-center gap-3 md:flex">
+              <div className="flex items-center gap-2 rounded-full border border-slate-200 bg-white px-2 py-1">
+                <button type="button" onClick={() => setLanguage('en')} className={`rounded-full px-2 py-1 text-xs font-semibold ${language === 'en' ? 'bg-sage text-white' : 'text-slate-700'}`}>EN</button>
+                <button type="button" onClick={() => setLanguage('gu')} className={`rounded-full px-2 py-1 text-xs font-semibold ${language === 'gu' ? 'bg-sage text-white' : 'text-slate-700'}`}>ગુજરાતી</button>
+              </div>
               <Link to="/profile" className="inline-flex h-12 items-center justify-center rounded-full border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-800 shadow-sm transition hover:bg-slate-50">
-                Profile
+                {t('nav.profile')}
               </Link>
             </div>
 
@@ -112,8 +118,8 @@ function Navbar() {
                     type="button"
                     onClick={() => {
                       setMenuOpen(false);
-                      if (item.label === 'Buy') return navigateBuy();
-                      if (item.label === 'Sell') return navigateSell();
+                      if (item.label === t('nav.buy')) return navigateBuy();
+                      if (item.label === t('nav.sell')) return navigateSell();
                       return navigate(item.to);
                     }}
                     className="w-full rounded-2xl px-4 py-3.5 text-left text-base font-semibold text-slate-800 transition hover:bg-slate-50"
@@ -121,12 +127,18 @@ function Navbar() {
                     {item.label}
                   </button>
                 ))}
+                <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
+                  <div className="flex items-center justify-center gap-2">
+                    <button type="button" onClick={() => { setLanguage('en'); setMenuOpen(false); }} className={`rounded-full px-3 py-2 text-sm font-semibold ${language === 'en' ? 'bg-sage text-white' : 'text-slate-700'}`}>EN</button>
+                    <button type="button" onClick={() => { setLanguage('gu'); setMenuOpen(false); }} className={`rounded-full px-3 py-2 text-sm font-semibold ${language === 'gu' ? 'bg-sage text-white' : 'text-slate-700'}`}>ગુજરાતી</button>
+                  </div>
+                </div>
                 <Link
                   to="/profile"
                   onClick={() => setMenuOpen(false)}
                   className="block rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3.5 text-center text-base font-semibold text-slate-900 transition hover:bg-slate-100"
                 >
-                  Profile
+                  {t('nav.profile')}
                 </Link>
               </div>
             </div>
