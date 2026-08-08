@@ -37,10 +37,9 @@ const authenticateToken = require('./middleware/auth.middleware');
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// Serve uploaded files statically (protected by auth middleware)
+// Serve uploaded files statically
 app.use(
   '/uploads',
-  authenticateToken,
   express.static(path.join(__dirname, '../uploads'), {
     dotfiles: 'ignore',
     index: false,

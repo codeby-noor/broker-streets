@@ -23,9 +23,38 @@ const getAdminPropertyById = asyncHandler(async (req, res) => {
   );
 });
 
+function parseUrlArray(input) {
+  if (!input) return [];
+  if (Array.isArray(input)) return input.filter((item) => typeof item === 'string' && item.trim() !== '');
+  if (typeof input === 'string') {
+    try {
+      const parsed = JSON.parse(input);
+      if (Array.isArray(parsed)) return parsed.filter((item) => typeof item === 'string' && item.trim() !== '');
+    } catch (e) {
+      return [input.trim()];
+    }
+  }
+  return [];
+}
+
 const createAdminProperty = asyncHandler(async (req, res) => {
   const processedFiles = await uploadService.processListingFiles(req.files);
-  const listingData = { ...req.body, ...processedFiles };
+  const listingData = { ...req.body };
+
+  const keepImages = parseUrlArray(req.body.keepImages || req.body.images);
+  const keepVideos = parseUrlArray(req.body.keepVideos || req.body.videos);
+
+  if (processedFiles.images || keepImages.length > 0) {
+    listingData.images = [...keepImages, ...(processedFiles.images || [])];
+  }
+  if (processedFiles.videos || keepVideos.length > 0) {
+    listingData.videos = [...keepVideos, ...(processedFiles.videos || [])];
+  }
+  if (processedFiles.propertyDocument) {
+    listingData.propertyDocument = processedFiles.propertyDocument;
+  }
+  delete listingData.keepImages;
+  delete listingData.keepVideos;
 
   const listing = await listingService.createListing(listingData, req.user);
   return res.status(HTTP_STATUS.CREATED).json(
@@ -35,7 +64,22 @@ const createAdminProperty = asyncHandler(async (req, res) => {
 
 const updateAdminProperty = asyncHandler(async (req, res) => {
   const processedFiles = await uploadService.processListingFiles(req.files);
-  const listingData = { ...req.body, ...processedFiles };
+  const listingData = { ...req.body };
+
+  const keepImages = parseUrlArray(req.body.keepImages || req.body.images);
+  const keepVideos = parseUrlArray(req.body.keepVideos || req.body.videos);
+
+  if (processedFiles.images || keepImages.length > 0) {
+    listingData.images = [...keepImages, ...(processedFiles.images || [])];
+  }
+  if (processedFiles.videos || keepVideos.length > 0) {
+    listingData.videos = [...keepVideos, ...(processedFiles.videos || [])];
+  }
+  if (processedFiles.propertyDocument) {
+    listingData.propertyDocument = processedFiles.propertyDocument;
+  }
+  delete listingData.keepImages;
+  delete listingData.keepVideos;
 
   const updated = await listingService.updateListing(req.params.id, listingData, req.user);
   return res.status(HTTP_STATUS.OK).json(

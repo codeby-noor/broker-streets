@@ -11,11 +11,16 @@
 }
 
 
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
 body {
   margin: 0;
   min-height: 100vh;
   background: #F5F6F7;
   font-size: 16px;
+  padding-bottom: env(safe-area-inset-bottom);
 }
 
 
@@ -24,6 +29,29 @@ input,
 select,
 textarea {
   font: inherit;
+}
+
+@media (max-width: 767px) {
+  body {
+    font-size: 15px;
+  }
+
+  button,
+  input,
+  select,
+  textarea {
+    min-height: 44px;
+  }
+
+  .field-control {
+    padding: 14px 16px;
+    border-radius: 20px;
+    font-size: 16px;
+  }
+
+  .eyebrow {
+    font-size: 0.68rem;
+  }
 }
 
 

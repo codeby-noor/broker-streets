@@ -75,15 +75,15 @@ function SellerDashboard() {
   };
 
   return (
-    <div className="-mx-4 -mt-8 min-h-screen bg-[#FFFEFE] px-4 pb-20 pt-10 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
+    <div className="-mx-4 -mt-8 min-h-screen bg-[#FFFEFE] px-3 pb-20 pt-6 sm:-mx-6 sm:px-6 sm:pt-10 lg:-mx-8 lg:px-8">
       <div className="mx-auto max-w-6xl">
-        <section className="rounded-[32px] bg-ink p-8 text-white shadow-card sm:p-10">
+        <section className="rounded-[32px] bg-ink p-5 text-white shadow-card sm:p-10">
           <p className="eyebrow text-blue-100">Seller dashboard</p>
-          <h1 className="mt-3 text-4xl font-bold">Your listings remain in motion.</h1>
-          <p className="mt-4 max-w-2xl leading-7 text-white/70">Every listing is now stored in localStorage and can be edited, deleted, or previewed from this polished dashboard.</p>
+          <h1 className="mt-3 text-3xl font-bold sm:text-4xl">Your listings remain in motion.</h1>
+          <p className="mt-4 max-w-2xl text-sm leading-7 text-white/70 sm:text-base">Every listing is now stored in localStorage and can be edited, deleted, or previewed from this polished dashboard.</p>
         </section>
 
-        <section className="mt-8 grid gap-5 sm:grid-cols-4">
+        <section className="mt-8 grid gap-3 sm:grid-cols-4">
           {[
             { label: 'Total Properties', value: stats.total },
             { label: 'Available', value: stats.available },
@@ -97,9 +97,9 @@ function SellerDashboard() {
           ))}
         </section>
 
-        <div className="mt-8 flex items-center justify-between">
+        <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <h2 className="text-2xl font-semibold text-ink">Your listings</h2>
-          <button type="button" onClick={() => navigate('/seller-form')} className="inline-flex items-center gap-2 rounded-full border border-primary px-5 py-3 font-semibold text-primary hover:bg-blue-50"><Plus size={18} /> Add Property</button>
+          <button type="button" onClick={() => navigate('/seller-form')} className="inline-flex items-center justify-center gap-2 rounded-full border border-primary px-5 py-3 font-semibold text-primary hover:bg-blue-50"><Plus size={18} /> Add Property</button>
         </div>
 
         <div className="mt-6 grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
@@ -107,7 +107,7 @@ function SellerDashboard() {
             {listings.map((listing) => (
               <article key={listing.id} className="rounded-[24px] border border-slate-200 bg-white p-5 shadow-card">
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-                  <div className="flex gap-4">
+                  <div className="flex flex-col gap-3 sm:flex-row">
                     <AsyncImage property={listing} alt={listing.title} className="h-20 w-24 rounded-2xl object-cover" containerClassName="h-20 w-24 overflow-hidden rounded-2xl" />
                     <div>
                       <div className="flex items-center gap-2">
@@ -119,11 +119,11 @@ function SellerDashboard() {
                     </div>
                   </div>
                   <div className="flex flex-wrap gap-2">
-                    <button type="button" onClick={() => navigate(`/property/${listing.id}`)} className="inline-flex items-center gap-2 rounded-full border border-slate-200 px-3 py-2 text-sm font-semibold text-ink"><Eye size={16} /> View</button>
-                    <button type="button" onClick={() => navigate('/seller-form')} className="inline-flex items-center gap-2 rounded-full border border-slate-200 px-3 py-2 text-sm font-semibold text-ink"><Pencil size={16} /> Edit</button>
-                    <button type="button" onClick={() => handleDuplicate(listing)} className="inline-flex items-center gap-2 rounded-full border border-slate-200 px-3 py-2 text-sm font-semibold text-ink">Duplicate</button>
-                    <button type="button" onClick={() => handleToggleStatus(listing)} className="inline-flex items-center gap-2 rounded-full border border-slate-200 px-3 py-2 text-sm font-semibold text-ink">{listing.status === 'Sold' ? 'Mark Available' : 'Mark Sold'}</button>
-                    <button type="button" onClick={() => setDeleteTarget(listing)} className="inline-flex items-center gap-2 rounded-full border border-red-200 px-3 py-2 text-sm font-semibold text-danger"><Trash2 size={16} /> Delete</button>
+                    <button type="button" onClick={() => navigate(`/property/${listing.id}`)} className="inline-flex min-h-[42px] items-center justify-center gap-2 rounded-full border border-slate-200 px-3 py-2 text-sm font-semibold text-ink sm:min-h-auto"><Eye size={16} /> View</button>
+                    <button type="button" onClick={() => navigate('/seller-form')} className="inline-flex min-h-[42px] items-center justify-center gap-2 rounded-full border border-slate-200 px-3 py-2 text-sm font-semibold text-ink sm:min-h-auto"><Pencil size={16} /> Edit</button>
+                    <button type="button" onClick={() => handleDuplicate(listing)} className="inline-flex min-h-[42px] items-center justify-center gap-2 rounded-full border border-slate-200 px-3 py-2 text-sm font-semibold text-ink sm:min-h-auto">Duplicate</button>
+                    <button type="button" onClick={() => handleToggleStatus(listing)} className="inline-flex min-h-[42px] items-center justify-center gap-2 rounded-full border border-slate-200 px-3 py-2 text-sm font-semibold text-ink sm:min-h-auto">{listing.status === 'Sold' ? 'Mark Available' : 'Mark Sold'}</button>
+                    <button type="button" onClick={() => setDeleteTarget(listing)} className="inline-flex min-h-[42px] items-center justify-center gap-2 rounded-full border border-red-200 px-3 py-2 text-sm font-semibold text-danger sm:min-h-auto"><Trash2 size={16} /> Delete</button>
                   </div>
                 </div>
               </article>

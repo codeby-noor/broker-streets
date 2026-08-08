@@ -20,6 +20,8 @@ const createListingSchema = Joi.object({
   additionalDetails: Joi.string().trim().max(2000).allow('').optional(),
   images: Joi.array().items(Joi.string()).optional(),
   videos: Joi.array().items(Joi.string()).optional(),
+  keepImages: Joi.alternatives().try(Joi.array().items(Joi.string()), Joi.string()).optional(),
+  keepVideos: Joi.alternatives().try(Joi.array().items(Joi.string()), Joi.string()).optional(),
   propertyDocument: Joi.object({
     name: Joi.string().allow('').optional(),
     url: Joi.string().allow('').optional(),
@@ -51,6 +53,8 @@ const updateListingSchema = Joi.object({
   additionalDetails: Joi.string().trim().max(2000).allow('').optional(),
   images: Joi.array().items(Joi.string()).optional(),
   videos: Joi.array().items(Joi.string()).optional(),
+  keepImages: Joi.alternatives().try(Joi.array().items(Joi.string()), Joi.string()).optional(),
+  keepVideos: Joi.alternatives().try(Joi.array().items(Joi.string()), Joi.string()).optional(),
   propertyDocument: Joi.object({
     name: Joi.string().allow('').optional(),
     url: Joi.string().allow('').optional(),

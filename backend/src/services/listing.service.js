@@ -239,28 +239,39 @@ class ListingService {
       updateData.subDistrict = updateData.taluka;
     }
 
-    // Clean up replaced files from storage
-    const uploadService = require('./upload.service');
-    if (updateData.images && Array.isArray(updateData.images) && listing.images) {
-      const removedImages = listing.images.filter((oldUrl) => !updateData.images.includes(oldUrl));
-      if (removedImages.length > 0) {
-        await uploadService.deleteFiles(removedImages);
-      }
-    }
-    if (updateData.videos && Array.isArray(updateData.videos) && listing.videos) {
-      const removedVideos = listing.videos.filter((oldUrl) => !updateData.videos.includes(oldUrl));
-      if (removedVideos.length > 0) {
-        await uploadService.deleteFiles(removedVideos);
-      }
-    }
-    if (updateData.propertyDocument && listing.propertyDocument && listing.propertyDocument.url) {
-      if (listing.propertyDocument.url !== updateData.propertyDocument.url) {
-        await uploadService.deleteFile(listing.propertyDocument.url);
-      }
-    }
+    // Identify replaced files to clean up after successful DB save
+    const removedImages =
+      updateData.images && Array.isArray(updateData.images) && listing.images
+        ? listing.images.filter((oldUrl) => !updateData.images.includes(oldUrl))
+        : [];
+    const removedVideos =
+      updateData.videos && Array.isArray(updateData.videos) && listing.videos
+        ? listing.videos.filter((oldUrl) => !updateData.videos.includes(oldUrl))
+        : [];
+    const removedDocUrl =
+      updateData.propertyDocument && listing.propertyDocument && listing.propertyDocument.url && listing.propertyDocument.url !== updateData.propertyDocument.url
+        ? listing.propertyDocument.url
+        : null;
 
     Object.assign(listing, updateData);
     await listing.save();
+
+    // Best-effort file cleanup after DB save has succeeded
+    const uploadService = require('./upload.service');
+    try {
+      if (removedImages.length > 0) {
+        await uploadService.deleteFiles(removedImages);
+      }
+      if (removedVideos.length > 0) {
+        await uploadService.deleteFiles(removedVideos);
+      }
+      if (removedDocUrl) {
+        await uploadService.deleteFile(removedDocUrl);
+      }
+    } catch (cleanupErr) {
+      console.warn(`Failed to clean up old files after listing update ${id}:`, cleanupErr.message);
+    }
+
     return listing;
   }
 
@@ -291,23 +302,34 @@ class ListingService {
 
     this.assertOwnerOrAdmin(listing, user, 'delete');
 
-    const uploadService = require('./upload.service');
-    if (listing.images && listing.images.length > 0) {
-      await uploadService.deleteFiles(listing.images);
-    }
-    if (listing.videos && listing.videos.length > 0) {
-      await uploadService.deleteFiles(listing.videos);
-    }
-    if (listing.propertyDocument && listing.propertyDocument.url) {
-      await uploadService.deleteFile(listing.propertyDocument.url);
-    }
+    const imagesToDelete = listing.images || [];
+    const videosToDelete = listing.videos || [];
+    const docToDelete = listing.propertyDocument?.url || null;
 
-    return await this.runTransaction(async (session) => {
+    const result = await this.runTransaction(async (session) => {
       const sessionOpt = session ? { session } : {};
       await Listing.findByIdAndDelete(id, sessionOpt);
       await SellerLead.deleteMany({ listingId: id }, sessionOpt);
       return true;
     });
+
+    // Best-effort file cleanup after DB transaction has succeeded
+    const uploadService = require('./upload.service');
+    try {
+      if (imagesToDelete.length > 0) {
+        await uploadService.deleteFiles(imagesToDelete);
+      }
+      if (videosToDelete.length > 0) {
+        await uploadService.deleteFiles(videosToDelete);
+      }
+      if (docToDelete) {
+        await uploadService.deleteFile(docToDelete);
+      }
+    } catch (cleanupErr) {
+      console.warn(`Failed to clean up files after listing deletion ${id}:`, cleanupErr.message);
+    }
+
+    return result;
   }
 
   /**
@@ -332,6 +354,22 @@ class ListingService {
     listingObj.verified = false;
     listingObj.featured = false;
     listingObj.status = 'Available';
+
+    // Copy underlying media files so original and copy don't share file references
+    const uploadService = require('./upload.service');
+    if (listingObj.images && listingObj.images.length > 0) {
+      listingObj.images = await uploadService.copyFiles(listingObj.images, 'properties');
+    }
+    if (listingObj.videos && listingObj.videos.length > 0) {
+      listingObj.videos = await uploadService.copyFiles(listingObj.videos, 'videos');
+    }
+    if (listingObj.propertyDocument && listingObj.propertyDocument.url) {
+      const newDocUrl = await uploadService.copyFile(listingObj.propertyDocument.url, 'documents');
+      listingObj.propertyDocument = {
+        ...listingObj.propertyDocument,
+        url: newDocUrl,
+      };
+    }
 
     const duplicate = new Listing(listingObj);
     await duplicate.save();
@@ -388,15 +426,38 @@ class ListingService {
   }
 
   /**
-   * Bulk delete listings atomically (Admin)
+   * Bulk delete listings atomically (Admin) and clean up media files
    */
   async bulkDeleteListings(ids) {
-    return await this.runTransaction(async (session) => {
+    const listings = await Listing.find({ _id: { $in: ids } })
+      .select('images videos propertyDocument')
+      .lean();
+
+    const result = await this.runTransaction(async (session) => {
       const sessionOpt = session ? { session } : {};
       await Listing.deleteMany({ _id: { $in: ids } }, sessionOpt);
       await SellerLead.deleteMany({ listingId: { $in: ids } }, sessionOpt);
       return true;
     });
+
+    const uploadService = require('./upload.service');
+    for (const listing of listings) {
+      try {
+        if (listing.images && listing.images.length > 0) {
+          await uploadService.deleteFiles(listing.images);
+        }
+        if (listing.videos && listing.videos.length > 0) {
+          await uploadService.deleteFiles(listing.videos);
+        }
+        if (listing.propertyDocument && listing.propertyDocument.url) {
+          await uploadService.deleteFile(listing.propertyDocument.url);
+        }
+      } catch (cleanupErr) {
+        console.warn(`Failed to cleanup files for listing ${listing._id}:`, cleanupErr.message);
+      }
+    }
+
+    return result;
   }
 
   /**

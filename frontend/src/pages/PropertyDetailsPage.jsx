@@ -202,18 +202,18 @@ function PropertyDetailsPage() {
 
   return (
     <div className="-mx-4 -mt-8 bg-[#FFFEFE] pb-24 sm:-mx-6 lg:-mx-8">
-      <div className="mx-auto max-w-7xl px-6 py-8 lg:px-12">
+      <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-12">
         <button type="button" onClick={() => navigate(getSubmissionDestination('buyerFormSubmitted', '/buyer-form', '/buy'))} className="inline-flex items-center gap-2 text-sm font-semibold text-muted hover:text-primary">
           <ArrowLeft size={17} /> Back to properties
         </button>
       </div>
 
-      <main className="mx-auto max-w-7xl space-y-10 px-6 lg:px-12">
+      <main className="mx-auto max-w-7xl space-y-10 px-4 sm:px-6 lg:px-12">
         <section className="overflow-hidden rounded-[32px] border border-slate-200 bg-white shadow-card">
           <div className="grid gap-8 lg:grid-cols-[1.2fr_0.8fr]">
             <div className="p-4 sm:p-6">
               <div className="relative overflow-hidden rounded-[28px] bg-slate-200" onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
-                <AsyncImage src={galleryImages[activeIndex] || galleryImages[0]} alt={propertyTitle} className="h-[360px] w-full cursor-zoom-in object-cover sm:h-[500px]" onClick={() => setZoomOpen(true)} />
+                <AsyncImage src={galleryImages[activeIndex] || galleryImages[0]} alt={propertyTitle} className="h-[300px] w-full cursor-zoom-in object-cover sm:h-[500px]" onClick={() => setZoomOpen(true)} />
                 <div className="absolute inset-x-0 top-0 flex items-center justify-between p-4 sm:p-6">
                   <div className="flex flex-wrap items-center gap-2">
                     <span className="rounded-full bg-white/95 px-3 py-1.5 text-xs font-semibold text-ink shadow-sm">{propertyTypeLabel}</span>
@@ -247,7 +247,7 @@ function PropertyDetailsPage() {
                   <span className={`rounded-full px-3 py-1.5 text-xs font-semibold ${propertyTypeLabel.toLowerCase().includes('agricultural') ? 'bg-emerald-100 text-emerald-700' : 'bg-sky-100 text-sky-700'}`}>{propertyTypeLabel}</span>
                   <span className={`rounded-full px-3 py-1.5 text-xs font-semibold ${property.status === 'Sold' ? 'bg-amber-500/90 text-white' : 'bg-slate-800/90 text-white'}`}>{property.status || 'Available'}</span>
                 </div>
-                <h1 className="mt-5 text-3xl font-semibold text-ink sm:text-4xl">{propertyTitle}</h1>
+                <h1 className="mt-5 text-2xl font-semibold text-ink sm:text-4xl">{propertyTitle}</h1>
                 <div className="mt-4 flex items-center gap-2 text-sm text-slate-600">
                   <MapPin size={16} className="text-sage" />
                   <span>{propertyLocationLabel}</span>
@@ -256,7 +256,7 @@ function PropertyDetailsPage() {
                   <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">Land price</p>
                   <div className="mt-2 flex items-end justify-between gap-3">
                     <div>
-                      <p className="text-3xl font-semibold text-ink">{formatPrice(property.priceAmount || property.price)}</p>
+                      <p className="text-2xl font-semibold text-ink sm:text-3xl">{formatPrice(property.priceAmount || property.price)}</p>
                       <p className="mt-1 text-sm text-slate-600">{property.priceUnit || 'Price unit not provided'}</p>
                     </div>
                     <div className="rounded-full bg-white px-3 py-2 text-sm font-semibold text-slate-700 shadow-sm">{property?.landArea || property?.area || 'Land area'}</div>

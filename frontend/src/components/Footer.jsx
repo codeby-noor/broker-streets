@@ -3,9 +3,9 @@ import logo from '../assets/images/logo.png';
 
 function Footer() {
   return (
-    <footer className="border-t border-slate-200/70 bg-white px-4 py-10 sm:px-6 lg:px-8">
+    <footer className="border-t border-slate-200/70 bg-white px-4 py-8 sm:px-6 lg:px-8">
       <div className="mx-auto flex max-w-7xl flex-col gap-8 lg:flex-row lg:items-start lg:justify-between">
-        <div className="max-w-sm">
+        <div className="max-w-sm text-center sm:text-left">
           <Link to="/home" className="inline-flex items-center gap-3">
             <img src={logo} alt="Broker Streets logo" className="h-10 w-auto object-contain" />
           </Link>
@@ -13,7 +13,7 @@ function Footer() {
             Broker Streets helps people buy and sell property with a simple, trustworthy experience.
           </p>
         </div>
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-6 text-center sm:grid-cols-2 sm:text-left lg:grid-cols-3">
           <div>
             <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-800">Support</p>
             <p className="mt-3 text-sm text-slate-600">help@brokerstreets.com</p>

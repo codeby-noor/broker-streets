@@ -150,9 +150,9 @@ function SellerForm() {
   };
 
   return <div className="-mx-4 -mt-8 bg-[#FFFEFE] pb-20 sm:-mx-6 lg:-mx-8">
-    <section className="bg-ink px-6 py-16 text-white sm:px-10 lg:px-12"><div className="mx-auto max-w-5xl"><p className="eyebrow text-blue-200">Sell land with Broker Streets</p><h1 className="mt-4 text-4xl font-bold sm:text-6xl">List your land with confidence.</h1><p className="mt-4 max-w-2xl text-white/70">Your authenticated profile is attached securely to this listing.</p></div></section>
-    <section className="mx-auto -mt-8 max-w-4xl px-6">
-      <form onSubmit={handleSubmit(submit)} className="space-y-6 rounded-[32px] bg-white p-8 shadow-xl sm:p-10">
+    <section className="bg-ink px-4 py-12 text-white sm:px-10 sm:py-16 lg:px-12"><div className="mx-auto max-w-5xl"><p className="eyebrow text-blue-200">Sell land with Broker Streets</p><h1 className="mt-4 text-3xl font-bold sm:text-6xl">List your land with confidence.</h1><p className="mt-4 max-w-2xl text-sm text-white/70 sm:text-base">Your authenticated profile is attached securely to this listing.</p></div></section>
+    <section className="mx-auto -mt-8 max-w-4xl px-4 sm:px-6">
+      <form onSubmit={handleSubmit(submit)} className="space-y-6 rounded-[32px] bg-white p-4 shadow-xl sm:p-10">
         <div>
           <p className="eyebrow">Land details</p>
           <h2 className="mt-2 text-3xl font-bold text-ink">Tell us about your land</h2>

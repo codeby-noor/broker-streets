@@ -5,12 +5,16 @@ import { toast } from 'react-toastify';
 import useCountdown from '../hooks/useCountdown';
 import { useUserStore } from '../store/useUserStore';
 import { findUserByMobile, readPendingOtpMobile, STORAGE_KEYS, writePendingOtpMobile } from '../utils/storage';
-import { getOtpSessionKey, normalizeMobile, resendOTP, verifyOTP } from '../utils/otpService';
+import { getDebugOtpForMobile, normalizeMobile, resendOTP, verifyOTP } from '../utils/otpService';
 
 function OTPPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const [verifying, setVerifying] = useState(false);
+  const [devOtp, setDevOtp] = useState(() => {
+    const initialPhone = location.state?.phone || readPendingOtpMobile();
+    return initialPhone ? getDebugOtpForMobile(initialPhone) : null;
+  });
   const pendingPhone = readPendingOtpMobile();
   const phone = location.state?.phone || pendingPhone;
   const user = location.state?.user || (phone ? findUserByMobile(phone) : null);
@@ -30,6 +34,12 @@ function OTPPage() {
       navigate('/login');
     }
   }, [phone, navigate]);
+
+  useEffect(() => {
+    if (phone) {
+      setDevOtp(getDebugOtpForMobile(phone));
+    }
+  }, [phone]);
 
   useEffect(() => {
     const firstEmpty = digits.findIndex((d) => d === '');
@@ -105,6 +115,8 @@ function OTPPage() {
       return;
     }
 
+    setDevOtp(null);
+
     const authenticatedUser = user || { mobile: phone };
     const normalizedMobile = normalizeMobile(authenticatedUser.mobile || phone || '');
     setUser(authenticatedUser);
@@ -128,10 +140,13 @@ function OTPPage() {
 
     reset();
     setDigits(['', '', '', '', '', '']);
-    resendOTP(phone);
+    const result = resendOTP(phone);
+    if (result.success && result.otp) {
+      setDevOtp(result.otp);
+    }
     writePendingOtpMobile(phone);
     inputsRef.current[0]?.focus();
-    toast.info('A new OTP has been sent');
+    toast.success('A new OTP has been generated. Use the displayed code to verify.');
   };
 
   return (
@@ -150,8 +165,15 @@ function OTPPage() {
         </span>
       </p>
 
+      {devOtp ? (
+        <div className="mt-6 rounded-[24px] border border-slate-200 bg-slate-50 px-4 py-4 text-slate-900 shadow-sm sm:px-5 sm:py-4" role="status" aria-live="polite">
+          <p className="font-semibold text-slate-900">Development OTP: <span className="font-mono text-base tracking-[0.2em] sm:text-lg">{devOtp}</span></p>
+          <p className="mt-1 text-sm text-slate-600">Use this OTP to complete verification.</p>
+        </div>
+      ) : null}
+
       <form onSubmit={onSubmit} className="mt-8 space-y-6">
-        <div className="grid grid-cols-6 gap-3">
+        <div className="grid grid-cols-3 gap-3 sm:grid-cols-6">
           {digits.map((digit, index) => (
             <input
               key={index}
@@ -164,7 +186,7 @@ function OTPPage() {
               }
               onKeyDown={(e) => handleKeyDown(index, e)}
               onPaste={handlePaste}
-              className="h-16 rounded-3xl border border-slate-200 bg-slate-50 text-center text-2xl font-semibold text-slate-900 outline-none focus:border-primary"
+              className="h-16 w-full min-w-0 rounded-3xl border border-slate-200 bg-slate-50 text-center text-2xl font-semibold text-slate-900 outline-none focus:border-primary"
             />
           ))}
         </div>

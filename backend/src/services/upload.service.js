@@ -91,6 +91,31 @@ class LocalUploadProvider {
       console.warn(`Failed to delete local file: ${fileUrl}`, err.message);
     }
   }
+
+  async copyFile(fileUrl, subfolder = '') {
+    if (!fileUrl || typeof fileUrl !== 'string' || !fileUrl.startsWith('/uploads/')) return fileUrl;
+    try {
+      const relativePath = fileUrl.replace('/uploads/', '');
+      const oldPath = path.join(UPLOADS_DIR, relativePath);
+      if (!fs.existsSync(oldPath)) return fileUrl;
+
+      const ext = path.extname(oldPath);
+      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+      const newFilename = `copy-${uniqueSuffix}${ext}`;
+
+      const targetFolder = subfolder ? path.join(UPLOADS_DIR, subfolder) : path.dirname(oldPath);
+      if (!fs.existsSync(targetFolder)) {
+        fs.mkdirSync(targetFolder, { recursive: true });
+      }
+      const newPath = path.join(targetFolder, newFilename);
+      await fs.promises.copyFile(oldPath, newPath);
+
+      return subfolder ? `/uploads/${subfolder}/${newFilename}` : `/uploads/${newFilename}`;
+    } catch (err) {
+      console.warn(`Failed to copy local file ${fileUrl}:`, err.message);
+      return fileUrl;
+    }
+  }
 }
 
 class CloudinaryUploadProvider {
@@ -130,17 +155,57 @@ class CloudinaryUploadProvider {
   async deleteFile(fileUrl) {
     if (!fileUrl || typeof fileUrl !== 'string' || !fileUrl.includes('cloudinary.com')) return;
     try {
-      // Extract public_id from Cloudinary secure_url
-      // Example: https://res.cloudinary.com/demo/image/upload/v123456/broker-streets/properties/sample.jpg
+      let resourceType = 'image';
+      if (fileUrl.includes('/video/') || fileUrl.includes('/broker-streets/videos/')) {
+        resourceType = 'video';
+      } else if (fileUrl.includes('/raw/') || fileUrl.includes('/broker-streets/audio/') || fileUrl.includes('/broker-streets/documents/')) {
+        resourceType = 'raw';
+      }
+
       const urlParts = fileUrl.split('/upload/');
       if (urlParts.length < 2) return;
       const pathWithVersion = urlParts[1];
       const pathWithoutVersion = pathWithVersion.replace(/^v\d+\//, '');
-      const publicId = pathWithoutVersion.substring(0, pathWithoutVersion.lastIndexOf('.'));
 
-      await cloudinary.uploader.destroy(publicId);
+      let publicId = pathWithoutVersion;
+      if (resourceType !== 'raw') {
+        const lastDotIndex = publicId.lastIndexOf('.');
+        if (lastDotIndex > 0) {
+          publicId = publicId.substring(0, lastDotIndex);
+        }
+      }
+
+      const res = await cloudinary.uploader.destroy(publicId, { resource_type: resourceType });
+      if (res && res.result !== 'ok') {
+        console.warn(`Cloudinary destroy returned result '${res.result}' for public_id: ${publicId} (resource_type: ${resourceType})`);
+      }
     } catch (err) {
       console.warn(`Failed to delete Cloudinary file: ${fileUrl}`, err.message);
+    }
+  }
+
+  async copyFile(fileUrl, subfolder = '') {
+    if (!fileUrl || typeof fileUrl !== 'string' || !fileUrl.includes('cloudinary.com')) return fileUrl;
+    try {
+      let resourceType = 'image';
+      if (fileUrl.includes('/video/') || fileUrl.includes('/broker-streets/videos/')) {
+        resourceType = 'video';
+      } else if (fileUrl.includes('/raw/') || fileUrl.includes('/broker-streets/audio/') || fileUrl.includes('/broker-streets/documents/')) {
+        resourceType = 'raw';
+      }
+
+      const folderPath = subfolder ? `broker-streets/${subfolder}` : 'broker-streets';
+      const result = await cloudinary.uploader.upload(fileUrl, {
+        folder: folderPath,
+        resource_type: resourceType,
+        use_filename: true,
+        unique_filename: true,
+      });
+
+      return result.secure_url;
+    } catch (err) {
+      console.warn(`Failed to copy Cloudinary file ${fileUrl}:`, err.message);
+      return fileUrl;
     }
   }
 }
@@ -257,6 +322,32 @@ class UploadService {
       await this.deleteFile(url);
     }
   }
+
+  /**
+   * Copy an existing file URL to a new URL
+   */
+  async copyFile(fileUrl, subfolder = '') {
+    if (!fileUrl) return null;
+    if (fileUrl.startsWith('http://') || fileUrl.startsWith('https://')) {
+      return await this.cloudinaryProvider.copyFile(fileUrl, subfolder);
+    } else if (fileUrl.startsWith('/uploads/')) {
+      return await this.localProvider.copyFile(fileUrl, subfolder);
+    }
+    return fileUrl;
+  }
+
+  /**
+   * Copy an array of file URLs
+   */
+  async copyFiles(fileUrls = [], subfolder = '') {
+    if (!fileUrls || !Array.isArray(fileUrls)) return [];
+    const results = [];
+    for (const url of fileUrls) {
+      const copied = await this.copyFile(url, subfolder);
+      if (copied) results.push(copied);
+    }
+    return results;
+  }
 }
 
-module.exports = new UploadService();
+module.exports = new UploadService();;

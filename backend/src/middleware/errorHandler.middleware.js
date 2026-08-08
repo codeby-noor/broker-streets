@@ -13,6 +13,8 @@ const errorHandler = (err, req, res, next) => {
       statusCode = HTTP_STATUS.PAYLOAD_TOO_LARGE;
     }
     error = new ApiError(statusCode, `Upload error: ${err.message}`);
+  } else if (err.name === 'CastError') {
+    error = new ApiError(HTTP_STATUS.BAD_REQUEST, `Invalid ${err.path || 'resource ID'}`);
   } else if (!(error instanceof ApiError)) {
     const statusCode = error.statusCode || (error.name === 'ValidationError' ? HTTP_STATUS.BAD_REQUEST : HTTP_STATUS.INTERNAL_SERVER_ERROR);
     const message = error.message || 'Internal Server Error';

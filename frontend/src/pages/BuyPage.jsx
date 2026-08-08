@@ -234,15 +234,15 @@ function BuyPage() {
 
   return (
     <div className="-mx-4 -mt-8 min-h-screen bg-[#FFFEFE] pb-20 sm:-mx-6 lg:-mx-8">
-      <section className="bg-ink px-6 py-16 text-white sm:px-10 lg:px-12">
+      <section className="bg-ink px-4 py-12 text-white sm:px-10 sm:py-16 lg:px-12">
         <div className="mx-auto max-w-7xl">
           <p className="eyebrow text-blue-100">Gujarat land collection</p>
-          <h1 className="display-heading mt-4 text-5xl sm:text-6xl">Find land with confidence.</h1>
-          <p className="mt-5 max-w-xl text-lg text-white/65">Browse verified agricultural and non-agricultural land listings.</p>
+          <h1 className="display-heading mt-4 text-4xl sm:text-6xl">Find land with confidence.</h1>
+          <p className="mt-5 max-w-xl text-base text-white/65 sm:text-lg">Browse verified agricultural and non-agricultural land listings.</p>
         </div>
       </section>
 
-      <main className="mx-auto max-w-7xl px-6 py-10 sm:px-10 lg:px-12">
+      <main className="mx-auto max-w-7xl px-4 py-8 sm:px-10 sm:py-10 lg:px-12">
         {location.state?.justSubmitted && (
           <div className="mb-8 flex items-center justify-between border border-blue-200 bg-blue-50 px-5 py-4 text-sm font-semibold text-primary">
             <span>Your land preference has been received.</span>
@@ -259,25 +259,25 @@ function BuyPage() {
           <button
             type="button"
             onClick={() => setMobileFilters(true)}
-            className="rounded-full border border-stone-200 px-5 py-3 text-sm font-semibold lg:hidden"
+            className="rounded-full border border-stone-200 px-5 py-3.5 text-sm font-semibold lg:hidden"
           >
             <SlidersHorizontal size={17} className="inline" /> Filters
           </button>
         </div>
 
         {mobileFilters ? (
-          <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-950/70 px-4 py-6 sm:px-6">
-            <div className="mx-auto max-w-md rounded-[32px] bg-white p-6 shadow-xl">
+          <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-950/70 px-3 py-4 sm:px-6">
+            <div className="mx-auto max-w-md rounded-[32px] bg-white p-4 shadow-xl sm:p-6">
               <div className="flex items-center justify-between gap-4">
                 <div>
                   <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-800">Filters</p>
                   <p className="text-sm text-slate-600">Refine your search before browsing listings.</p>
                 </div>
-                <button type="button" onClick={() => setMobileFilters(false)} className="rounded-full border border-slate-200 bg-slate-50 p-3 text-slate-700 transition hover:bg-slate-100">Close</button>
+                <button type="button" onClick={() => setMobileFilters(false)} className="rounded-full border border-slate-200 bg-slate-50 p-3.5 text-slate-700 transition hover:bg-slate-100">Close</button>
               </div>
               <div className="mt-6">{filters}</div>
               <div className="mt-6 flex justify-end">
-                <button type="button" onClick={() => setMobileFilters(false)} className="rounded-full bg-primary px-5 py-3 text-sm font-semibold text-white transition hover:bg-primary-dark">Apply filters</button>
+                <button type="button" onClick={() => setMobileFilters(false)} className="w-full rounded-full bg-primary px-5 py-3.5 text-sm font-semibold text-white transition hover:bg-primary-dark sm:w-auto">Apply filters</button>
               </div>
             </div>
           </div>

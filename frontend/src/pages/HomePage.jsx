@@ -87,15 +87,15 @@ function HomePage() {
     <div className="space-y-24 pb-20 bg-background text-text">
       <section className="relative overflow-hidden bg-[url('https://images.unsplash.com/photo-1517816743773-6e0fd518b4a6?auto=format&fit=crop&w=1800&q=85')] bg-cover bg-center text-white">
         <div className="absolute inset-0 bg-gradient-to-b from-slate-950/80 via-slate-950/20 to-slate-950/90" />
-        <div className="relative mx-auto max-w-7xl px-6 py-24 sm:px-10 lg:px-12">
+        <div className="relative mx-auto max-w-7xl px-4 py-16 sm:px-10 sm:py-24 lg:px-12">
           <div className="grid gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:items-end">
             <div className="max-w-2xl">
               <p className="eyebrow text-accentSoft">Invest in land. Invest in the future.</p>
-              <h1 className="mt-5 text-4xl font-semibold leading-tight tracking-tight sm:text-5xl lg:text-6xl">Gujarat's Trusted Agricultural & Non-Agricultural Land Marketplace</h1>
-              <p className="mt-6 max-w-2xl text-lg leading-8 text-white/80">Discover verified farmland, investment plots, and non-agricultural land across Surat, Navsari, and Gujarat. Buy and sell with confidence.</p>
-              <div className="mt-10 flex flex-wrap gap-4">
-                <button type="button" onClick={goToBuy} className="inline-flex items-center justify-center rounded-full bg-primary px-6 py-3.5 text-sm font-semibold text-white transition hover:bg-primary-dark">Buy Properties</button>
-                <button type="button" onClick={goToSell} className="inline-flex items-center justify-center rounded-full border border-white/30 bg-white/10 px-6 py-3.5 text-sm font-semibold text-white transition hover:bg-white/20">Sell Your Land</button>
+              <h1 className="mt-5 text-3xl font-semibold leading-tight tracking-tight sm:text-5xl lg:text-6xl">Gujarat's Trusted Agricultural & Non-Agricultural Land Marketplace</h1>
+              <p className="mt-6 max-w-2xl text-base leading-8 text-white/80 sm:text-lg">Discover verified farmland, investment plots, and non-agricultural land across Surat, Navsari, and Gujarat. Buy and sell with confidence.</p>
+              <div className="mt-8 flex flex-col gap-3 sm:mt-10 sm:flex-row sm:flex-wrap">
+                <button type="button" onClick={goToBuy} className="inline-flex min-h-[48px] items-center justify-center rounded-full bg-primary px-6 py-3.5 text-sm font-semibold text-white transition hover:bg-primary-dark sm:w-auto">Buy Properties</button>
+                <button type="button" onClick={goToSell} className="inline-flex min-h-[48px] items-center justify-center rounded-full border border-white/30 bg-white/10 px-6 py-3.5 text-sm font-semibold text-white transition hover:bg-white/20 sm:w-auto">Sell Your Land</button>
               </div>
             </div>
             <div className="rounded-[32px] border border-white/10 bg-white/10 p-8 shadow-glass backdrop-blur-xl">
@@ -111,7 +111,7 @@ function HomePage() {
       </section>
 
       <section className="mx-auto max-w-7xl px-6 lg:px-12">
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {[
             { label: 'Verified Land Listings', value: '500+' },
             { label: 'Happy Buyers', value: '1200+' },
@@ -135,8 +135,8 @@ function HomePage() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-6 lg:px-12">
-        <div className="rounded-[32px] border border-slate-200 bg-white p-8 shadow-card">
+      <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-12">
+        <div className="rounded-[32px] border border-slate-200 bg-white p-5 shadow-card sm:p-8">
           <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
             <div className="max-w-2xl">
               <p className="eyebrow">Latest Buyer Requirements</p>

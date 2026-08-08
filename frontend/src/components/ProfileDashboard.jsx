@@ -935,6 +935,8 @@ function ProfileDashboard() {
         {renderSection()}
       </main>
 
+      {sidebarOpen ? <div className="dashboard-sidebar-backdrop" onClick={() => setSidebarOpen(false)} /> : null}
+
       <AnimatePresence>
         {confirmAction ? (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="dashboard-modal-backdrop">
