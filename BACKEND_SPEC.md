@@ -473,7 +473,6 @@ Collection: buyerLeads
 | `preferredVillages` | [String] | ✅ | `[]` | Min 2 villages |
 | `propertyType` | String | ✅ | — | Enum: `['Agricultural Land', 'Non-Agricultural Land']` |
 | `purpose` | String | ✅ | — | Enum: `['Investment', 'Project', 'Personal Farm', 'Other']` |
-| `purposeOther` | String | — | `''` | Required if purpose = 'Other' |
 | `requirements` | String | — | `''` | Free-text additional requirements |
 | `voiceRecording` | String | — | `''` | URL to uploaded audio file |
 | `status` | String | — | `'New'` | Enum: `['New', 'Hot', 'Contacted', 'Closed']` |
@@ -738,7 +737,7 @@ Collection: adminSettings
 | `GET` | `/api/buyer-leads` | ✅ | Query: `district, propertyType, purpose, sort, page, limit, search` | `{ data: [BuyerLead], meta }` | Paginated |
 | `GET` | `/api/buyer-leads/me` | ✅ | — | `{ data: [BuyerLead] }` | Current user's buyer leads |
 | `GET` | `/api/buyer-leads/:id` | ✅ | — | `{ data: BuyerLead }` | |
-| `POST` | `/api/buyer-leads` | ✅ | `multipart: { state, district, taluka, preferredVillages[], propertyType, purpose, purposeOther?, requirements?, voiceRecording? }` | `{ data: BuyerLead }` | Creates buyer lead + notification |
+| `POST` | `/api/buyer-leads` | ✅ | `multipart: { state, district, taluka, preferredVillages[], propertyType, purpose, requirements?, voiceRecording? }` | `{ data: BuyerLead }` | Creates buyer lead + notification |
 | `PUT` | `/api/buyer-leads/:id` | ✅ | Same as POST | `{ data: BuyerLead }` | Owner only |
 | `DELETE` | `/api/buyer-leads/:id` | ✅ | — | `204` | Owner only |
 
@@ -950,7 +949,6 @@ taluka: string, required
 preferredVillages: array of strings, required, min length 2
 propertyType: string, required, enum ['Agricultural Land', 'Non-Agricultural Land']
 purpose: string, required, enum ['Investment', 'Project', 'Personal Farm', 'Other']
-purposeOther: string, required if purpose === 'Other', max 500
 requirements: string, optional, max 2000
 ```
 

@@ -29,8 +29,12 @@ class BuyerLeadService {
 
     const savedLead = await buyerLead.save();
 
-    // Mark buyerFormSubmitted flag on User per BACKEND_SPEC.md §7.1
-    await User.findByIdAndUpdate(user._id, { buyerFormSubmitted: true });
+    // Best-effort update of buyerFormSubmitted flag on User per BACKEND_SPEC.md §7.1
+    try {
+      await User.findByIdAndUpdate(user._id, { buyerFormSubmitted: true });
+    } catch (err) {
+      console.warn(`Failed to update buyerFormSubmitted flag for user ${user._id}:`, err.message);
+    }
 
     // Conditionally create notification if Notification model is available
     try {
@@ -51,7 +55,7 @@ class BuyerLeadService {
   /**
    * Query buyer leads with filtering, search, sorting, and single-facet pagination
    */
-  async getBuyerLeads(queryParams = {}, isAdmin = false, currentUserId = null) {
+  async getBuyerLeads(queryParams = {}, isAdmin = false) {
     const {
       district,
       propertyType,
@@ -64,10 +68,6 @@ class BuyerLeadService {
     } = queryParams;
 
     const matchStage = {};
-
-    if (currentUserId) {
-      matchStage.userId = currentUserId;
-    }
 
     if (district) {
       matchStage.district = { $regex: escapeRegex(district.trim()), $options: 'i' };
@@ -110,10 +110,15 @@ class BuyerLeadService {
     const total = facetResult.totalCount[0] ? facetResult.totalCount[0].count : 0;
     const totalPages = Math.ceil(total / limitNum) || 1;
 
-    const formattedData = rawData.map((item) => ({
-      ...item,
-      id: item._id.toString(),
-    }));
+    const formattedData = rawData.map((item) => {
+      const doc = {
+        ...item,
+        id: item._id.toString(),
+      };
+      delete doc._id;
+      delete doc.__v;
+      return doc;
+    });
 
     return {
       data: formattedData,
@@ -129,13 +134,10 @@ class BuyerLeadService {
   /**
    * Get single buyer lead by ID
    */
-  async getBuyerLeadById(id, user = null) {
+  async getBuyerLeadById(id) {
     const lead = await BuyerLead.findById(id);
     if (!lead) {
       throw new ApiError(HTTP_STATUS.NOT_FOUND, 'Buyer lead not found');
-    }
-    if (user) {
-      this.assertOwnerOrAdmin(lead, user, 'view');
     }
     return lead;
   }
@@ -164,18 +166,11 @@ class BuyerLeadService {
     delete updateData.userMobile;
     delete updateData.userEmail;
 
-    // Non-admin users cannot update status
-    if (user.role !== 'admin') {
-      delete updateData.status;
-    }
-
-    // Identify replaced media files to clean up after successful DB save
-    const removedImages =
-      updateData.images && Array.isArray(updateData.images) && lead.images
-        ? lead.images.filter((oldUrl) => !updateData.images.includes(oldUrl))
-        : [];
+    // Identify replaced voice recording to clean up after successful DB save
     const removedAudioUrl =
-      updateData.voiceRecording && lead.voiceRecording && lead.voiceRecording !== updateData.voiceRecording
+      updateData.voiceRecording !== undefined &&
+      lead.voiceRecording &&
+      lead.voiceRecording !== updateData.voiceRecording
         ? lead.voiceRecording
         : null;
 
@@ -183,16 +178,13 @@ class BuyerLeadService {
     await lead.save();
 
     // Best-effort file cleanup after DB save has succeeded
-    const uploadService = require('./upload.service');
-    try {
-      if (removedImages.length > 0) {
-        await uploadService.deleteFiles(removedImages);
-      }
-      if (removedAudioUrl) {
+    if (removedAudioUrl) {
+      const uploadService = require('./upload.service');
+      try {
         await uploadService.deleteFile(removedAudioUrl);
+      } catch (cleanupErr) {
+        console.warn(`Failed to clean up old voice recording after buyer lead update ${id}:`, cleanupErr.message);
       }
-    } catch (cleanupErr) {
-      console.warn(`Failed to clean up old files after buyer lead update ${id}:`, cleanupErr.message);
     }
 
     return lead;
@@ -209,22 +201,18 @@ class BuyerLeadService {
 
     this.assertOwnerOrAdmin(lead, user, 'delete');
 
-    const imagesToDelete = lead.images || [];
     const audioToDelete = lead.voiceRecording || null;
 
     await BuyerLead.findByIdAndDelete(id);
 
     // Best-effort file cleanup after DB operation has succeeded
-    const uploadService = require('./upload.service');
-    try {
-      if (imagesToDelete.length > 0) {
-        await uploadService.deleteFiles(imagesToDelete);
-      }
-      if (audioToDelete) {
+    if (audioToDelete) {
+      const uploadService = require('./upload.service');
+      try {
         await uploadService.deleteFile(audioToDelete);
+      } catch (cleanupErr) {
+        console.warn(`Failed to clean up audio file after buyer lead deletion ${id}:`, cleanupErr.message);
       }
-    } catch (cleanupErr) {
-      console.warn(`Failed to clean up files after buyer lead deletion ${id}:`, cleanupErr.message);
     }
 
     return true;

@@ -41,6 +41,10 @@ const buyerLeadSchema = new mongoose.Schema(
     preferredVillages: {
       type: [String],
       required: [true, 'Preferred villages are required'],
+      validate: {
+        validator: (arr) => Array.isArray(arr) && arr.length >= 2,
+        message: 'At least two preferred villages are required',
+      },
       default: [],
     },
     propertyType: {
@@ -53,11 +57,6 @@ const buyerLeadSchema = new mongoose.Schema(
       required: [true, 'Purpose is required'],
       enum: ['Investment', 'Project', 'Personal Farm', 'Other'],
     },
-    purposeOther: {
-      type: String,
-      default: '',
-      trim: true,
-    },
     requirements: {
       type: String,
       default: '',
@@ -68,10 +67,6 @@ const buyerLeadSchema = new mongoose.Schema(
       type: String,
       default: '',
       trim: true,
-    },
-    images: {
-      type: [String],
-      default: [],
     },
     status: {
       type: String,
