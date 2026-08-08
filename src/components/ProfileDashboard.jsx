@@ -760,86 +760,7 @@ function ProfileDashboard() {
       );
     }
 
-    return (
-      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
-        <div className="grid gap-4 lg:grid-cols-[1.2fr,0.8fr]">
-          <div className="dashboard-card">
-            <div className="dashboard-card__header">
-              <div>
-                <p className="eyebrow">Dashboard Overview</p>
-                <h2 className="text-2xl font-semibold text-slate-900">Welcome back, {profile.name || 'there'}.</h2>
-              </div>
-              <button type="button" onClick={() => navigate('/seller-form')} className="dashboard-action-btn bg-primary text-white flex items-center gap-2">
-                <PlusCircle size={16} /> New Listing
-              </button>
-            </div>
-            <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-              {statConfigs.map((stat) => {
-                const Icon = stat.icon;
-                const count = summary[stat.countKey];
-                return (
-                  <div key={stat.key} className="dashboard-stat-card" style={{ background: stat.gradient }}>
-                    <div className="flex items-center justify-between">
-                      <div className="dashboard-stat-card__icon"><Icon size={20} /></div>
-                      <Sparkles size={18} />
-                    </div>
-                    <div>
-                      <p className="text-sm font-medium text-white/80">{stat.label}</p>
-                      <p className="mt-2 text-3xl font-semibold">{count}</p>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-          <div className="dashboard-card">
-            <div className="dashboard-card__header">
-              <div>
-                <p className="eyebrow">Account Snapshot</p>
-                <h2 className="text-xl font-semibold text-slate-900">Profile details</h2>
-              </div>
-            </div>
-            <div className="space-y-3 text-sm text-slate-700">
-              <div className="flex items-center gap-2"><UserCircle2 size={16} /> {profile.name || 'Broker Streets User'}</div>
-              <div className="flex items-center gap-2"><Mail size={16} /> {profile.email || 'No email added'}</div>
-              <div className="flex items-center gap-2"><Phone size={16} /> {profile.mobile || 'No mobile added'}</div>
-              <div className="flex items-center gap-2"><MapPin size={16} /> {profile.district || 'District not set'}, {profile.subDistrict || 'Taluka not set'}</div>
-              <div className="flex items-center gap-2"><CalendarDays size={16} /> Joined {profile.joinedDate || '2026-01-15'}</div>
-            </div>
-          </div>
-        </div>
-
-        <div className="dashboard-card">
-          <div className="dashboard-card__header">
-            <div>
-              <p className="eyebrow">Property Analytics</p>
-              <h2 className="text-2xl font-semibold text-slate-900">Performance across your listings</h2>
-            </div>
-          </div>
-          <div className="space-y-4">
-            {listings.map((listing) => (
-              <div key={listing.id} className="rounded-[24px] border border-slate-200 bg-slate-50 p-4">
-                <div className="flex flex-wrap items-center justify-between gap-3">
-                  <div>
-                    <p className="font-semibold text-slate-900">{listing.title}</p>
-                    <p className="text-sm text-slate-600">Last updated {formatDate(listing.updatedAt || listing.submittedAt)}</p>
-                  </div>
-                  <span className="rounded-full bg-primary/10 px-3 py-1 text-sm font-semibold text-primary">{listing.status}</span>
-                </div>
-                <div className="mt-4 grid gap-4 md:grid-cols-4">
-                  {[['Views', listing.views || 0], ['Enquiries', listing.enquiries || 0], ['Favorites', listing.favorites || 0], ['Price', formatCurrency(listing.price || listing.priceAmount || 0)]].map(([label, value]) => (
-                    <div key={label} className="rounded-2xl border border-slate-200 bg-white p-3">
-                      <p className="text-sm text-slate-600">{label}</p>
-                      <p className="mt-1 text-xl font-semibold text-slate-900">{value}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </motion.div>
-    );
+    return null;
   };
 
   return (
@@ -898,26 +819,17 @@ function ProfileDashboard() {
               <div>
                 <div className="flex flex-wrap items-center gap-2">
                   <h2 className="text-2xl font-semibold text-slate-900">{profile.name || 'Broker Streets User'}</h2>
-                  <span className="rounded-full bg-emerald-100 px-3 py-1 text-sm font-semibold text-emerald-700">Verified</span>
+                  {user?.verified || profile?.verified ? <span className="rounded-full bg-emerald-100 px-3 py-1 text-sm font-semibold text-emerald-700">Verified</span> : null}
                 </div>
                 <div className="mt-2 flex flex-wrap gap-2 text-sm text-slate-600">
-                  <span className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1"><Phone size={14} /> {profile.mobile || 'Add mobile'}</span>
-                  <span className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1"><Mail size={14} /> {profile.email || 'Add email'}</span>
-                </div>
-                <div className="mt-3 flex flex-wrap gap-2 text-sm text-slate-600">
-                  <span className="inline-flex items-center gap-2"><CalendarDays size={14} /> Joined {profile.joinedDate || '2026-01-15'}</span>
-                  <span className="inline-flex items-center gap-2"><FileText size={14} /> Member ID {profile.memberId || user?.id || 'BS-1001'}</span>
-                  <span className="inline-flex items-center gap-2"><House size={14} /> Role {roleLabel}</span>
-                </div>
-                <div className="mt-4 grid gap-3 sm:grid-cols-3">
-                  <button type="button" onClick={() => setActiveSection('properties')} className="rounded-3xl border border-slate-200 bg-white px-4 py-4 text-left text-sm font-semibold text-slate-900 shadow-sm transition hover:-translate-y-0.5">My Listings</button>
-                  <button type="button" onClick={() => setActiveSection('saved')} className="rounded-3xl border border-slate-200 bg-white px-4 py-4 text-left text-sm font-semibold text-slate-900 shadow-sm transition hover:-translate-y-0.5">Saved Properties</button>
-                  <button type="button" onClick={() => setActiveSection('buyers')} className="rounded-3xl border border-slate-200 bg-white px-4 py-4 text-left text-sm font-semibold text-slate-900 shadow-sm transition hover:-translate-y-0.5">Buyer Requests</button>
+                  <span className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1">
+                    <House size={14} /> {roleLabel}
+                  </span>
                 </div>
               </div>
             </div>
             <div className="flex flex-wrap gap-2">
-              <button type="button" onClick={() => setActiveSection('settings')} className="dashboard-action-btn bg-white text-slate-700">Profile Settings</button>
+              <button type="button" onClick={() => { setIsEditingProfile(true); setActiveSection('settings'); }} className="dashboard-action-btn bg-white text-slate-700">Edit Profile</button>
               <button type="button" onClick={() => navigate('/seller-form')} className="dashboard-action-btn bg-primary text-white">Add Listing</button>
             </div>
           </div>
@@ -949,9 +861,9 @@ function ProfileDashboard() {
           </div>
           {[
             { key: 'properties', icon: Building2, title: 'My Properties', description: 'Manage your listed land', action: () => setActiveSection('properties') },
-            { key: 'saved', icon: Bookmark, title: 'Saved Properties', description: 'Keep your shortlist ready', action: () => setActiveSection('saved') },
-            { key: 'buyers', icon: BadgeCheck, title: 'Buyer Requirements', description: 'Track active land searches', action: () => setActiveSection('buyers') },
-            { key: 'recent', icon: Eye, title: 'Recently Viewed', description: 'Return to your latest visits', action: () => setActiveSection('recent') },
+            { key: 'saved', icon: Bookmark, title: 'Saved Properties', description: 'Your shortlisted properties', action: () => setActiveSection('saved') },
+            { key: 'buyers', icon: BadgeCheck, title: 'Buyer Requirements', description: 'Manage your land requirements', action: () => setActiveSection('buyers') },
+            { key: 'recent', icon: Eye, title: 'Recently Viewed', description: 'Your recently viewed properties', action: () => setActiveSection('recent') },
             { key: 'notifications', icon: Bell, title: 'Notifications', description: 'Updates and account activity', action: () => setActiveSection('notifications') },
           ].map((item) => {
             const Icon = item.icon;
@@ -966,6 +878,39 @@ function ProfileDashboard() {
               </button>
             );
           })}
+        </section>
+
+        <section className="dashboard-mobile-account-list">
+          <div className="dashboard-mobile-section-title">
+            <span>Account</span>
+          </div>
+          <button type="button" onClick={() => setActiveSection('settings')} className="dashboard-mobile-account-row">
+            <span className="dashboard-mobile-account-icon"><Settings size={18} /></span>
+            <span className="dashboard-mobile-account-copy">
+              <span className="dashboard-mobile-account-title">Profile Settings</span>
+            </span>
+            <span className="dashboard-mobile-action-chevron"><ChevronRight size={17} /></span>
+          </button>
+          <button type="button" onClick={() => setActiveSection('help')} className="dashboard-mobile-account-row">
+            <span className="dashboard-mobile-account-icon"><LifeBuoy size={18} /></span>
+            <span className="dashboard-mobile-account-copy">
+              <span className="dashboard-mobile-account-title">Help &amp; Support</span>
+            </span>
+            <span className="dashboard-mobile-action-chevron"><ChevronRight size={17} /></span>
+          </button>
+          <button type="button" onClick={() => navigate('/about')} className="dashboard-mobile-account-row">
+            <span className="dashboard-mobile-account-icon"><UserCircle2 size={18} /></span>
+            <span className="dashboard-mobile-account-copy">
+              <span className="dashboard-mobile-account-title">About Broker Streets</span>
+            </span>
+            <span className="dashboard-mobile-action-chevron"><ChevronRight size={17} /></span>
+          </button>
+          <button type="button" onClick={handleLogout} className="dashboard-mobile-logout-row">
+            <span className="dashboard-mobile-account-icon"><LogOut size={18} /></span>
+            <span className="dashboard-mobile-account-copy">
+              <span className="dashboard-mobile-account-title">Logout</span>
+            </span>
+          </button>
         </section>
 
         {renderSection()}
