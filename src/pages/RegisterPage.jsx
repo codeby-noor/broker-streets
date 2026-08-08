@@ -103,7 +103,18 @@ function RegisterPage() {
             <label className="mb-2 block text-sm font-semibold text-slate-800">Mobile Number *</label>
             <input
               type="tel"
+              autoComplete="tel"
+              inputMode="numeric"
+              pattern="[0-9]*"
+              maxLength={10}
               {...register('mobile', { required: 'Mobile is required', pattern: { value: /^[0-9]{10}$/, message: 'Enter a valid 10-digit mobile number' } })}
+              onChange={(event) => {
+                const digits = String(event.target.value || '').replace(/\D/g, '').slice(0, 10);
+                event.target.value = digits;
+                const field = event.target.name;
+                const next = { target: { name: field, value: digits } };
+                register('mobile').onChange(next);
+              }}
               className="w-full min-h-[56px] rounded-3xl border border-slate-200 bg-slate-50 px-4 py-4 text-base text-slate-900 outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10"
             />
             {errors.mobile && <p className="mt-2 text-sm text-red-600">{errors.mobile.message}</p>}

@@ -775,8 +775,18 @@ function ProfileDashboard() {
         </div>
         {sidebarItems.map((item) => {
           const Icon = item.icon;
+          const navMap = {
+            properties: '/profile/properties',
+            saved: '/profile/saved',
+            buyers: '/profile/requirements',
+            recent: '/profile/recent',
+            notifications: '/profile/notifications',
+            settings: '/profile/settings',
+            help: '/contact',
+            password: '/profile/settings',
+          };
           return (
-            <button key={item.key} type="button" onClick={() => { if (item.key === 'logout') { handleLogout(); return; } setActiveSection(item.key); setSidebarOpen(false); }} className={`dashboard-sidebar__link ${activeSection === item.key ? 'active' : ''}`}>
+            <button key={item.key} type="button" onClick={() => { if (item.key === 'logout') { handleLogout(); return; } if (item.key === 'overview') { navigate('/profile'); } else { navigate(navMap[item.key] || '/profile'); } setSidebarOpen(false); }} className={`dashboard-sidebar__link ${activeSection === item.key ? 'active' : ''}`}>
               <Icon size={18} />
               <span>{item.label}</span>
             </button>
@@ -829,7 +839,7 @@ function ProfileDashboard() {
               </div>
             </div>
             <div className="flex flex-wrap gap-2">
-              <button type="button" onClick={() => { setIsEditingProfile(true); setActiveSection('settings'); }} className="dashboard-action-btn bg-white text-slate-700">Edit Profile</button>
+              <button type="button" onClick={() => { setIsEditingProfile(true); navigate('/profile/settings'); }} className="dashboard-action-btn bg-white text-slate-700">Edit Profile</button>
               <button type="button" onClick={() => navigate('/seller-form')} className="dashboard-action-btn bg-primary text-white">Add Listing</button>
             </div>
           </div>
@@ -860,15 +870,15 @@ function ProfileDashboard() {
             <span>My Activity</span>
           </div>
           {[
-            { key: 'properties', icon: Building2, title: 'My Properties', description: 'Manage your listed land', action: () => setActiveSection('properties') },
-            { key: 'saved', icon: Bookmark, title: 'Saved Properties', description: 'Your shortlisted properties', action: () => setActiveSection('saved') },
-            { key: 'buyers', icon: BadgeCheck, title: 'Buyer Requirements', description: 'Manage your land requirements', action: () => setActiveSection('buyers') },
-            { key: 'recent', icon: Eye, title: 'Recently Viewed', description: 'Your recently viewed properties', action: () => setActiveSection('recent') },
-            { key: 'notifications', icon: Bell, title: 'Notifications', description: 'Updates and account activity', action: () => setActiveSection('notifications') },
+            { key: 'properties', icon: Building2, title: 'My Properties', description: 'Manage your listed land', to: '/profile/properties' },
+            { key: 'saved', icon: Bookmark, title: 'Saved Properties', description: 'Your shortlisted properties', to: '/profile/saved' },
+            { key: 'buyers', icon: BadgeCheck, title: 'Buyer Requirements', description: 'Manage your land requirements', to: '/profile/requirements' },
+            { key: 'recent', icon: Eye, title: 'Recently Viewed', description: 'Your recently viewed properties', to: '/profile/recent' },
+            { key: 'notifications', icon: Bell, title: 'Notifications', description: 'Updates and account activity', to: '/profile/notifications' },
           ].map((item) => {
             const Icon = item.icon;
             return (
-              <button key={item.key} type="button" onClick={item.action} className="dashboard-mobile-action-row">
+              <button key={item.key} type="button" onClick={() => navigate(item.to)} className="dashboard-mobile-action-row">
                 <span className="dashboard-mobile-action-icon"><Icon size={18} /></span>
                 <span className="dashboard-mobile-action-copy">
                   <span className="dashboard-mobile-action-title">{item.title}</span>
@@ -884,14 +894,14 @@ function ProfileDashboard() {
           <div className="dashboard-mobile-section-title">
             <span>Account</span>
           </div>
-          <button type="button" onClick={() => setActiveSection('settings')} className="dashboard-mobile-account-row">
+          <button type="button" onClick={() => navigate('/profile/settings')} className="dashboard-mobile-account-row">
             <span className="dashboard-mobile-account-icon"><Settings size={18} /></span>
             <span className="dashboard-mobile-account-copy">
               <span className="dashboard-mobile-account-title">Profile Settings</span>
             </span>
             <span className="dashboard-mobile-action-chevron"><ChevronRight size={17} /></span>
           </button>
-          <button type="button" onClick={() => setActiveSection('help')} className="dashboard-mobile-account-row">
+          <button type="button" onClick={() => navigate('/contact')} className="dashboard-mobile-account-row">
             <span className="dashboard-mobile-account-icon"><LifeBuoy size={18} /></span>
             <span className="dashboard-mobile-account-copy">
               <span className="dashboard-mobile-account-title">Help &amp; Support</span>
@@ -912,8 +922,6 @@ function ProfileDashboard() {
             </span>
           </button>
         </section>
-
-        {renderSection()}
       </main>
 
       {sidebarOpen ? <div className="dashboard-sidebar-backdrop" onClick={() => setSidebarOpen(false)} /> : null}

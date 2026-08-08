@@ -8,7 +8,7 @@ import { gujaratDistricts, gujaratSubDistricts, gujaratVillages } from '../utils
 import { appendStorageArray, readStorage, writeStorage, STORAGE_KEYS } from '../utils/storage';
 
 const propertyTypes = ['Agricultural Land', 'Non-Agricultural Land'];
-const priceUnits = ['Vigha', 'Sq.Yard (Var)', 'Sq.Ft'];
+const priceUnits = ['Vigha', 'sq.yard (var)', 'Sq.Ft'];
 const fallbackPropertyImage = 'https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=1400&q=85';
 const metadata = (files) => Array.from(files || []).map((file) => ({ name: file.name, type: file.type, size: file.size, lastModified: file.lastModified }));
 

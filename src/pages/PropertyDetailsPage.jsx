@@ -435,16 +435,16 @@ function PropertyDetailsPage() {
       </main>
 
       {sellerCall || sellerWhatsApp || sellerMail ? (
-        <div className="fixed inset-x-0 bottom-0 z-60 border-t border-slate-200 bg-white/95 px-4 py-3 pb-[calc(1rem+env(safe-area-inset-bottom))] shadow-[0_-8px_30px_rgba(15,23,42,0.08)] backdrop-blur lg:hidden">
-          <div className="mx-auto flex max-w-7xl flex-wrap items-center gap-2">
+        <div className="fixed inset-x-0 bottom-0 z-[60] border-t border-slate-200 bg-white/95 px-4 py-3 pb-[calc(1rem+env(safe-area-inset-bottom))] shadow-[0_-8px_30px_rgba(15,23,42,0.08)] backdrop-blur lg:hidden">
+          <div className="mx-auto grid max-w-7xl grid-cols-1 gap-2 sm:grid-cols-3">
             {sellerCall ? (
-              <a href={sellerCall} className="flex-1 min-w-[140px] rounded-full bg-sage px-4 py-3 text-center text-sm font-semibold text-white">Call</a>
+              <a href={sellerCall} className="min-h-[46px] rounded-full bg-sage px-4 py-3 text-center text-sm font-semibold text-white">Call</a>
             ) : null}
             {sellerWhatsApp ? (
-              <a href={sellerWhatsApp} target="_blank" rel="noreferrer" className="flex-1 min-w-[140px] rounded-full border border-slate-200 bg-white px-4 py-3 text-center text-sm font-semibold text-slate-700">WhatsApp</a>
+              <a href={sellerWhatsApp} target="_blank" rel="noreferrer" className="min-h-[46px] rounded-full border border-slate-200 bg-white px-4 py-3 text-center text-sm font-semibold text-slate-700">WhatsApp</a>
             ) : null}
             {sellerMail ? (
-              <a href={sellerMail} className="flex-1 min-w-[140px] rounded-full border border-slate-200 bg-white px-4 py-3 text-center text-sm font-semibold text-slate-700">Email</a>
+              <a href={sellerMail} className="min-h-[46px] rounded-full border border-slate-200 bg-white px-4 py-3 text-center text-sm font-semibold text-slate-700">Email</a>
             ) : null}
           </div>
         </div>

@@ -174,7 +174,7 @@ function OTPPage() {
       ) : null}
 
       <form onSubmit={onSubmit} className="mt-8 space-y-6">
-        <div className="grid grid-cols-6 gap-2">
+        <div className="otp-input-grid">
           {digits.map((digit, index) => (
             <input
               key={index}
@@ -182,12 +182,13 @@ function OTPPage() {
               value={digit}
               maxLength={1}
               inputMode="numeric"
+              pattern="[0-9]*"
               onChange={(e) =>
                 updateDigit(index, e.target.value.replace(/\D/g, ''))
               }
               onKeyDown={(e) => handleKeyDown(index, e)}
               onPaste={handlePaste}
-              className="min-h-[56px] min-w-[48px] rounded-3xl border border-slate-200 bg-slate-50 text-center text-2xl font-semibold text-slate-900 outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10"
+              className="otp-input-box"
             />
           ))}
         </div>

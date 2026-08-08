@@ -10,6 +10,12 @@ import PropertyDetailsPage from '../pages/PropertyDetailsPage';
 import AboutPage from '../pages/AboutPage';
 import ContactPage from '../pages/ContactPage';
 import ProfilePage from '../pages/ProfilePage';
+import ProfilePropertiesPage from '../pages/ProfilePropertiesPage';
+import ProfileSavedPage from '../pages/ProfileSavedPage';
+import ProfileRequirementsPage from '../pages/ProfileRequirementsPage';
+import ProfileRecentPage from '../pages/ProfileRecentPage';
+import ProfileNotificationsPage from '../pages/ProfileNotificationsPage';
+import ProfileSettingsPage from '../pages/ProfileSettingsPage';
 import NotFoundPage from '../pages/NotFoundPage';
 import BuyerForm from '../pages/BuyerForm';
 import SellerForm from '../pages/SellerForm';
@@ -88,6 +94,12 @@ function AppRoutes() {
           <Route path="about" element={<AboutPage />} />
           <Route path="contact" element={<ContactPage />} />
           <Route path="profile" element={<ProfilePage />} />
+          <Route path="profile/properties" element={<ProfilePropertiesPage />} />
+          <Route path="profile/saved" element={<ProfileSavedPage />} />
+          <Route path="profile/requirements" element={<ProfileRequirementsPage />} />
+          <Route path="profile/recent" element={<ProfileRecentPage />} />
+          <Route path="profile/notifications" element={<ProfileNotificationsPage />} />
+          <Route path="profile/settings" element={<ProfileSettingsPage />} />
           <Route path="buyer-requirements" element={<BuyerRequirementsPage />} />
         </Route>
         <Route path="*" element={<NotFoundPage />} />
