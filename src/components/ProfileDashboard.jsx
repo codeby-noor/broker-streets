@@ -921,21 +921,52 @@ function ProfileDashboard() {
               <button type="button" onClick={() => navigate('/seller-form')} className="dashboard-action-btn bg-primary text-white">Add Listing</button>
             </div>
           </div>
-          <div className="mt-6 grid gap-3 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5">
+          <div className="dashboard-stat-summary-grid mt-6 grid gap-3 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5">
             {[
-              { label: 'Properties Listed', value: summary.listed },
-              { label: 'Properties Sold', value: summary.sold },
-              { label: 'Saved Properties', value: summary.saved },
-              { label: 'Buyer Requirements', value: summary.requests },
-              { label: 'Recently Viewed', value: summary.recent },
-            ].map((item) => (
-              <div key={item.label} className="rounded-[20px] border border-slate-200 bg-slate-50/80 px-4 py-5 text-sm shadow-sm">
-                <p className="text-slate-500">{item.label}</p>
-                <p className="mt-2 text-3xl font-semibold text-slate-900">{item.value}</p>
-              </div>
-            ))}
+              { label: 'Properties Listed', value: summary.listed, icon: Building2 },
+              { label: 'Properties Sold', value: summary.sold, icon: House },
+              { label: 'Saved Properties', value: summary.saved, icon: Bookmark },
+              { label: 'Buyer Requirements', value: summary.requests, icon: BadgeCheck },
+              { label: 'Recently Viewed', value: summary.recent, icon: Eye },
+            ].map((item) => {
+              const Icon = item.icon;
+              return (
+                <div key={item.label} className="dashboard-summary-card rounded-[20px] border border-slate-200 bg-slate-50/80 px-4 py-5 text-sm shadow-sm">
+                  <div className="flex items-center gap-2 text-slate-500">
+                    <Icon size={15} className="text-primary" />
+                    <span>{item.label}</span>
+                  </div>
+                  <p className="mt-2 text-3xl font-semibold text-slate-900">{item.value}</p>
+                </div>
+              );
+            })}
           </div>
         </motion.div>
+
+        <section className="dashboard-mobile-action-list">
+          <div className="dashboard-mobile-section-title">
+            <span>My Activity</span>
+          </div>
+          {[
+            { key: 'properties', icon: Building2, title: 'My Properties', description: 'Manage your listed land', action: () => setActiveSection('properties') },
+            { key: 'saved', icon: Bookmark, title: 'Saved Properties', description: 'Keep your shortlist ready', action: () => setActiveSection('saved') },
+            { key: 'buyers', icon: BadgeCheck, title: 'Buyer Requirements', description: 'Track active land searches', action: () => setActiveSection('buyers') },
+            { key: 'recent', icon: Eye, title: 'Recently Viewed', description: 'Return to your latest visits', action: () => setActiveSection('recent') },
+            { key: 'notifications', icon: Bell, title: 'Notifications', description: 'Updates and account activity', action: () => setActiveSection('notifications') },
+          ].map((item) => {
+            const Icon = item.icon;
+            return (
+              <button key={item.key} type="button" onClick={item.action} className="dashboard-mobile-action-row">
+                <span className="dashboard-mobile-action-icon"><Icon size={18} /></span>
+                <span className="dashboard-mobile-action-copy">
+                  <span className="dashboard-mobile-action-title">{item.title}</span>
+                  <span className="dashboard-mobile-action-description">{item.description}</span>
+                </span>
+                <span className="dashboard-mobile-action-chevron"><ChevronRight size={17} /></span>
+              </button>
+            );
+          })}
+        </section>
 
         {renderSection()}
       </main>
