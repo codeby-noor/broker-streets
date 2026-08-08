@@ -34,8 +34,19 @@ const authRateLimiter = rateLimit({
   },
 });
 
+const uploadRateLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 20,
+  standardHeaders: true,
+  legacyHeaders: false,
+  handler: (req, res, next) => {
+    next(new ApiError(HTTP_STATUS.TOO_MANY_REQUESTS, 'Too many upload attempts. Please try again after 15 minutes.'));
+  },
+});
+
 module.exports = {
   apiRateLimiter,
   otpRateLimiter,
   authRateLimiter,
+  uploadRateLimiter,
 };

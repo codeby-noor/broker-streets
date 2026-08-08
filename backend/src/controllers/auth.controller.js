@@ -122,6 +122,17 @@ const getMe = asyncHandler(async (req, res) => {
   );
 });
 
+// Item: /logout endpoint (per BACKEND_SPEC.md) — bumping tokenVersion invalidates
+// every access/refresh token issued before this point, since auth.middleware.js
+// and refreshAccessToken both reject tokens whose tokenVersion doesn't match.
+const logout = asyncHandler(async (req, res) => {
+  await User.findByIdAndUpdate(req.user._id, { $inc: { tokenVersion: 1 } });
+
+  return res.status(HTTP_STATUS.OK).json(
+    new ApiResponse(HTTP_STATUS.OK, {}, 'Logged out successfully.')
+  );
+});
+
 const refreshAccessToken = asyncHandler(async (req, res) => {
   const { refreshToken } = req.body;
 
@@ -163,5 +174,6 @@ module.exports = {
   sendOtp,
   verifyOtp: verifyOtpController,
   getMe,
+  logout,
   refreshAccessToken,
 };

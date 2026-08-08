@@ -55,6 +55,9 @@ const verifyOtpSchema = Joi.object({
   name: Joi.string().trim().min(2).max(100).optional(),
   city: Joi.string().trim().optional(),
   email: Joi.string().trim().email().allow('').optional(),
+  state: Joi.string().trim().optional(),
+  district: Joi.string().trim().allow('').optional(),
+  subDistrict: Joi.string().trim().allow('').optional(),
 });
 
 const refreshTokenSchema = Joi.object({

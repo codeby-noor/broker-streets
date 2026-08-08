@@ -104,21 +104,27 @@ const verifyOtp = async (mobile, inputOtp) => {
   const isValid = await bcrypt.compare(inputOtp, session.otp);
 
   if (!isValid) {
-    // Item 5: Atomic increment of failed attempts using $inc
-    const nextAttempts = session.attempts + 1;
-    const isLockingOut = nextAttempts >= env.otpMaxAttempts;
-    const lockedUntilDate = isLockingOut ? new Date(Date.now() + env.otpLockMinutes * 60 * 1000) : null;
+    // Item 5 (fixed): increment atomically first, then decide lockout from the
+    // returned post-increment count — never from a value read before the $inc,
+    // which is what let two concurrent invalid attempts both slip past the cap.
+    const incremented = await OtpSession.findByIdAndUpdate(
+      session._id,
+      { $inc: { attempts: 1 } },
+      { new: true }
+    );
 
-    // Item 9: Ensure expiresAt extends to cover lockedUntil so MongoDB TTL index won't delete locked session early
-    const updatePayload = {
-      $inc: { attempts: 1 },
-      ...(isLockingOut && {
-        lockedUntil: lockedUntilDate,
-        expiresAt: lockedUntilDate,
-      }),
-    };
+    const isLockingOut = incremented.attempts >= env.otpMaxAttempts;
 
-    await OtpSession.findByIdAndUpdate(session._id, updatePayload);
+    // Item 9: Ensure expiresAt extends to cover lockedUntil so MongoDB TTL index won't delete locked session early.
+    // Only set on the request that actually crosses the threshold, so concurrent
+    // requests that also cross it don't keep pushing lockedUntil further out.
+    if (isLockingOut && !incremented.lockedUntil) {
+      const lockedUntilDate = new Date(Date.now() + env.otpLockMinutes * 60 * 1000);
+      await OtpSession.updateOne(
+        { _id: session._id },
+        { $set: { lockedUntil: lockedUntilDate, expiresAt: lockedUntilDate } }
+      );
+    }
 
     if (isLockingOut) {
       throw new ApiError(
@@ -127,7 +133,7 @@ const verifyOtp = async (mobile, inputOtp) => {
       );
     }
 
-    const remainingAttempts = env.otpMaxAttempts - nextAttempts;
+    const remainingAttempts = env.otpMaxAttempts - incremented.attempts;
     throw new ApiError(HTTP_STATUS.BAD_REQUEST, `Invalid OTP. ${remainingAttempts} attempt(s) remaining.`);
   }
 

@@ -4,6 +4,7 @@ const {
   sendOtp,
   verifyOtp,
   getMe,
+  logout,
   refreshAccessToken,
 } = require('../controllers/auth.controller');
 const validate = require('../middleware/validate.middleware');
@@ -17,6 +18,7 @@ router.post('/register', authRateLimiter, validate(registerSchema), register);
 router.post('/send-otp', otpRateLimiter, validate(sendOtpSchema), sendOtp);
 router.post('/verify-otp', authRateLimiter, validate(verifyOtpSchema), verifyOtp);
 router.get('/me', authenticateToken, getMe);
+router.post('/logout', authenticateToken, logout);
 router.post('/refresh-token', validate(refreshTokenSchema), refreshAccessToken);
 
 module.exports = router;

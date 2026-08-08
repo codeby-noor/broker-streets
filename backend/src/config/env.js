@@ -21,6 +21,19 @@ const env = {
   smsApiKey: process.env.SMS_API_KEY || '',
   smsSenderId: process.env.SMS_SENDER_ID || 'BRKRST',
   smsTemplateId: process.env.SMS_TEMPLATE_ID || '',
+  uploadProvider: process.env.UPLOAD_PROVIDER || 'local',
+  uploadMaxImageSizeMb: parseInt(process.env.UPLOAD_MAX_IMAGE_SIZE_MB || '5', 10),
+  uploadMaxVideoSizeMb: parseInt(process.env.UPLOAD_MAX_VIDEO_SIZE_MB || '50', 10),
+  uploadMaxDocumentSizeMb: parseInt(process.env.UPLOAD_MAX_DOCUMENT_SIZE_MB || '10', 10),
+  uploadMaxAudioSizeMb: parseInt(process.env.UPLOAD_MAX_AUDIO_SIZE_MB || '10', 10),
+  uploadMaxProfileImageSizeMb: parseInt(process.env.UPLOAD_MAX_PROFILE_IMAGE_SIZE_MB || '2', 10),
+  uploadAllowedImageTypes: (process.env.UPLOAD_ALLOWED_IMAGE_TYPES || 'image/jpeg,image/png,image/webp').split(','),
+  uploadAllowedVideoTypes: (process.env.UPLOAD_ALLOWED_VIDEO_TYPES || 'video/mp4,video/webm').split(','),
+  uploadAllowedDocumentTypes: (process.env.UPLOAD_ALLOWED_DOCUMENT_TYPES || 'application/pdf,image/jpeg,image/png,image/webp').split(','),
+  uploadAllowedAudioTypes: (process.env.UPLOAD_ALLOWED_AUDIO_TYPES || 'audio/webm,audio/mp3,audio/mpeg,audio/wav').split(','),
+  cloudinaryCloudName: process.env.CLOUDINARY_CLOUD_NAME || '',
+  cloudinaryApiKey: process.env.CLOUDINARY_API_KEY || '',
+  cloudinaryApiSecret: process.env.CLOUDINARY_API_SECRET || '',
 };
 
 
