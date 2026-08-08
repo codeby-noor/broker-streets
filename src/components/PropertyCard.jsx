@@ -76,7 +76,7 @@ function PropertyCard({ property, compact = false, onContact }) {
 
   return (
     <article className={`group flex h-full flex-col overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-[0_16px_40px_rgba(15,23,42,0.07)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_22px_50px_rgba(15,23,42,0.13)] ${compact ? '' : ''}`}>
-      <div className="relative h-[250px] overflow-hidden bg-slate-200">
+      <div className="relative h-[220px] overflow-hidden bg-slate-200 sm:h-[250px]">
         <AsyncImage src={cardImage} alt={propertyTitle} className="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
 
         <div className="absolute inset-x-4 top-4 flex items-start justify-between gap-3">
@@ -103,7 +103,7 @@ function PropertyCard({ property, compact = false, onContact }) {
         </div>
       </div>
 
-      <div className="flex flex-1 flex-col p-6">
+      <div className="flex flex-1 flex-col p-4 sm:p-6">
         <div className="space-y-2">
           <h3 className="text-[22px] font-semibold leading-tight text-slate-900">{propertyTitle}</h3>
           <p className="flex items-center gap-1.5 text-[15px] text-slate-500">

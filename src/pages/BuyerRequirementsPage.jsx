@@ -84,8 +84,14 @@ function BuyerRequirementsPage() {
 
         <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-sm font-semibold text-ink">{filteredLeads.length} buyer requirements found</p>
-          <div className="relative inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-sm text-slate-600 shadow-sm"><Search size={16} />
-            <input value={query} onChange={(event) => { setQuery(event.target.value); setPage(1); }} placeholder="Search requirements" className="border-0 bg-transparent p-0 text-sm outline-none" />
+          <div className="relative inline-flex min-w-0 items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-sm text-slate-600 shadow-sm">
+            <Search size={16} />
+            <input
+              value={query}
+              onChange={(event) => { setQuery(event.target.value); setPage(1); }}
+              placeholder="Search requirements"
+              className="min-w-0 flex-1 border-0 bg-transparent p-0 text-sm outline-none"
+            />
           </div>
         </div>
 

@@ -151,7 +151,7 @@ function OTPPage() {
       </p>
 
       <form onSubmit={onSubmit} className="mt-8 space-y-6">
-        <div className="grid grid-cols-6 gap-3">
+        <div className="grid grid-cols-3 gap-3 sm:grid-cols-6">
           {digits.map((digit, index) => (
             <input
               key={index}
@@ -164,7 +164,7 @@ function OTPPage() {
               }
               onKeyDown={(e) => handleKeyDown(index, e)}
               onPaste={handlePaste}
-              className="h-16 rounded-3xl border border-slate-200 bg-slate-50 text-center text-2xl font-semibold text-slate-900 outline-none focus:border-primary"
+              className="h-16 w-full min-w-0 rounded-3xl border border-slate-200 bg-slate-50 text-center text-2xl font-semibold text-slate-900 outline-none focus:border-primary"
             />
           ))}
         </div>
