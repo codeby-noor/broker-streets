@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import LargeButton from '../components/LargeButton';
-import logo from '../assets/images/logo.png';
 import { toast } from 'react-toastify';
 import { useForm } from 'react-hook-form';
+import { User, Phone, Mail, MapPin, UserPlus } from 'lucide-react';
+import AuthHeader from '../components/AuthHeader';
 import { useUserStore } from '../store/useUserStore';
 import { readUsers, writeUsers, STORAGE_KEYS, writePendingOtpMobile } from '../utils/storage';
 import { sendOTP } from '../utils/otpService';
@@ -42,7 +42,9 @@ function RegisterPage() {
       whatsapp: '',
       email: data.email || '',
       city: data.city,
-      state: 'Gujarat', district: '', subDistrict: '',
+      state: 'Gujarat',
+      district: '',
+      subDistrict: '',
       profileImage: '',
       createdAt: new Date().toISOString(),
     };
@@ -69,84 +71,119 @@ function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FAFAFB] px-4 py-8 sm:px-6">
-      <div className="mx-auto w-full max-w-md rounded-[32px] border border-slate-200 bg-white p-6 shadow-sm sm:max-w-2xl sm:p-8">
-        <div className="mx-auto mb-6 h-14 w-14 overflow-hidden rounded-3xl bg-slate-100">
-          <img src={logo} alt="Broker Streets logo" className="h-full w-full object-contain" />
+    <div className="flex min-h-screen flex-col bg-[#F8FAFC] text-slate-900">
+      <AuthHeader />
+
+      <main className="flex flex-1 items-center justify-center px-4 py-8 sm:px-6">
+        <div className="w-full max-w-md rounded-[28px] border border-slate-200/80 bg-white p-6 shadow-[0_10px_35px_rgba(15,23,42,0.05)] sm:p-8">
+          <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-50 text-sage">
+            <UserPlus size={24} />
+          </div>
+
+          <div className="space-y-1">
+            <h1 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+              {t('auth.registerHeading')}
+            </h1>
+            <p className="text-sm leading-relaxed text-slate-500">
+              {t('auth.registerDescription')}
+            </p>
+          </div>
+
+          <form onSubmit={handleSubmit(onSubmit)} className="mt-6 space-y-4">
+            <div>
+              <label className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-700">
+                {t('auth.fullName')} *
+              </label>
+              <div className="relative flex items-center">
+                <User size={18} className="absolute left-3.5 text-slate-400" />
+                <input
+                  type="text"
+                  {...register('name', { required: t('auth.fullNameRequired') })}
+                  className="min-h-[48px] w-full rounded-2xl border border-slate-200 bg-slate-50/50 pl-10 pr-4 text-sm font-medium text-slate-900 outline-none transition focus:border-sage focus:bg-white focus:ring-2 focus:ring-sage/20"
+                />
+              </div>
+              {errors.name && <p className="mt-1.5 text-xs font-medium text-red-600">{errors.name.message}</p>}
+            </div>
+
+            <div>
+              <label className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-700">
+                {t('auth.mobileNumber')} *
+              </label>
+              <div className="relative flex items-center">
+                <Phone size={18} className="absolute left-3.5 text-slate-400" />
+                <input
+                  type="tel"
+                  autoComplete="tel"
+                  inputMode="numeric"
+                  pattern="[0-9]*"
+                  maxLength={10}
+                  {...register('mobile', {
+                    required: t('auth.mobileRequired'),
+                    pattern: { value: /^[0-9]{10}$/, message: t('auth.validMobile') },
+                  })}
+                  onChange={(event) => {
+                    const digits = String(event.target.value || '').replace(/\D/g, '').slice(0, 10);
+                    event.target.value = digits;
+                    register('mobile').onChange({ target: { name: 'mobile', value: digits } });
+                  }}
+                  className="min-h-[48px] w-full rounded-2xl border border-slate-200 bg-slate-50/50 pl-10 pr-4 text-sm font-medium text-slate-900 outline-none transition focus:border-sage focus:bg-white focus:ring-2 focus:ring-sage/20"
+                />
+              </div>
+              {errors.mobile && <p className="mt-1.5 text-xs font-medium text-red-600">{errors.mobile.message}</p>}
+            </div>
+
+            <div>
+              <label className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-700">
+                {t('auth.emailAddress')} ({t('common.optional')})
+              </label>
+              <div className="relative flex items-center">
+                <Mail size={18} className="absolute left-3.5 text-slate-400" />
+                <input
+                  type="email"
+                  {...register('email', {
+                    pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: t('auth.validEmail') },
+                  })}
+                  className="min-h-[48px] w-full rounded-2xl border border-slate-200 bg-slate-50/50 pl-10 pr-4 text-sm font-medium text-slate-900 outline-none transition focus:border-sage focus:bg-white focus:ring-2 focus:ring-sage/20"
+                />
+              </div>
+              {errors.email && <p className="mt-1.5 text-xs font-medium text-red-600">{errors.email.message}</p>}
+            </div>
+
+            <div>
+              <label className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-700">
+                {t('auth.city')} *
+              </label>
+              <div className="relative flex items-center">
+                <MapPin size={18} className="absolute left-3.5 text-slate-400" />
+                <input
+                  type="text"
+                  {...register('city', { required: t('auth.cityRequired') })}
+                  className="min-h-[48px] w-full rounded-2xl border border-slate-200 bg-slate-50/50 pl-10 pr-4 text-sm font-medium text-slate-900 outline-none transition focus:border-sage focus:bg-white focus:ring-2 focus:ring-sage/20"
+                />
+              </div>
+              {errors.city && <p className="mt-1.5 text-xs font-medium text-red-600">{errors.city.message}</p>}
+            </div>
+
+            <button
+              type="submit"
+              disabled={submitting}
+              className="mt-3 inline-flex min-h-[50px] w-full items-center justify-center rounded-2xl bg-sage px-6 py-3.5 text-base font-bold text-white shadow-md shadow-sage/20 transition hover:bg-sage-dark focus:outline-none focus:ring-2 focus:ring-sage/30 disabled:opacity-50"
+            >
+              {submitting ? t('auth.registering') : t('auth.registerButton')}
+            </button>
+          </form>
+
+          <div className="mt-6 border-t border-slate-100 pt-4 text-center">
+            <button
+              type="button"
+              onClick={() => navigate('/login')}
+              className="text-sm font-semibold text-sage hover:underline"
+            >
+              {t('auth.alreadyHave')}
+            </button>
+          </div>
         </div>
-        <div className="flex flex-col gap-3 text-center sm:text-left">
-          <h1 className="text-3xl font-semibold text-slate-900">{t('auth.registerHeading')}</h1>
-          <p className="mx-auto max-w-xs text-sm leading-6 text-slate-600 sm:mx-0">{t('auth.registerDescription')}</p>
-        </div>
-        <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <button
-            type="button"
-            onClick={() => navigate('/admin/login')}
-            className="inline-flex items-center justify-center rounded-full border border-primary/20 px-4 py-2 text-sm font-semibold text-primary transition hover:border-primary hover:bg-primary/5"
-          >
-            {t('auth.adminLoginButton')}
-          </button>
-        </div>
-        <form onSubmit={handleSubmit(onSubmit)} className="mt-8 space-y-6">
-          <div>
-            <label className="mb-2 block text-sm font-semibold text-slate-800">{t('auth.fullName')} *</label>
-            <input
-              type="text"
-              {...register('name', { required: t('auth.fullNameRequired') })}
-              className="w-full min-h-[56px] rounded-3xl border border-slate-200 bg-slate-50 px-4 py-4 text-base text-slate-900 outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10"
-            />
-            {errors.name && <p className="mt-2 text-sm text-red-600">{errors.name.message}</p>}
-          </div>
-
-          <div>
-            <label className="mb-2 block text-sm font-semibold text-slate-800">{t('auth.mobileNumber')} *</label>
-            <input
-              type="tel"
-              autoComplete="tel"
-              inputMode="numeric"
-              pattern="[0-9]*"
-              maxLength={10}
-              {...register('mobile', { required: t('auth.mobileRequired'), pattern: { value: /^[0-9]{10}$/, message: t('auth.validMobile') } })}
-              onChange={(event) => {
-                const digits = String(event.target.value || '').replace(/\D/g, '').slice(0, 10);
-                event.target.value = digits;
-                const field = event.target.name;
-                const next = { target: { name: field, value: digits } };
-                register('mobile').onChange(next);
-              }}
-              className="w-full min-h-[56px] rounded-3xl border border-slate-200 bg-slate-50 px-4 py-4 text-base text-slate-900 outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10"
-            />
-            {errors.mobile && <p className="mt-2 text-sm text-red-600">{errors.mobile.message}</p>}
-          </div>
-
-          <div>
-            <label className="mb-2 block text-sm font-semibold text-slate-800">{t('auth.emailAddress')} ({t('common.optional')})</label>
-            <input
-              type="email"
-              {...register('email', { pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: t('auth.validEmail') } })}
-              className="w-full min-h-[56px] rounded-3xl border border-slate-200 bg-slate-50 px-4 py-4 text-base text-slate-900 outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10"
-            />
-            {errors.email && <p className="mt-2 text-sm text-red-600">{errors.email.message}</p>}
-          </div>
-
-          <div>
-            <label className="mb-2 block text-sm font-semibold text-slate-800">{t('auth.city')} *</label>
-            <input
-              type="text"
-              {...register('city', { required: t('auth.cityRequired') })}
-              className="w-full min-h-[56px] rounded-3xl border border-slate-200 bg-slate-50 px-4 py-4 text-base text-slate-900 outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10"
-            />
-            {errors.city && <p className="mt-2 text-sm text-red-600">{errors.city.message}</p>}
-          </div>
-
-          <div className="flex flex-col gap-4 pt-2 text-sm text-slate-600">
-            <button type="button" onClick={() => navigate('/login')} className="font-semibold text-primary text-left">{t('auth.alreadyHave')}</button>
-            <button type="button" onClick={() => navigate('/admin/login')} className="font-semibold text-primary text-left">{t('auth.adminLogin')}</button>
-          </div>
-
-          <LargeButton type="submit" disabled={submitting}>{submitting ? t('auth.registering') : t('auth.registerButton')}</LargeButton>
-        </form>
-      </div>
+      </main>
     </div>
   );
 }

@@ -7,7 +7,7 @@ function MobileBottomNav() {
   const location = useLocation();
   const navigate = useNavigate();
   const { t } = useLanguage();
-  const hideRoutes = ['/', '/otp'];
+  const hideRoutes = ['/', '/login', '/register', '/otp'];
 
   const items = [
     { label: t('nav.home'), to: '/home', icon: Home },

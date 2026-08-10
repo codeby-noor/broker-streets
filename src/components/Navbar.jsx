@@ -12,7 +12,7 @@ function Navbar() {
   const { t, language, setLanguage } = useLanguage();
   const isAuthenticated = useUserStore((state) => state.isAuthenticated);
   const [menuOpen, setMenuOpen] = useState(false);
-  const hideNav = ['/otp'].includes(location.pathname);
+  const hideNav = ['/', '/login', '/register', '/otp'].includes(location.pathname);
 
   const navItems = [
     { label: t('nav.home'), to: '/home' },
