@@ -8,7 +8,7 @@ export function LanguageProvider({ children }) {
     if (typeof window === 'undefined') return null;
     const saved = localStorage.getItem(languageStorageKey);
     if (saved === 'en' || saved === 'gu') return saved;
-    return null;
+    return defaultLanguage;
   });
 
   useEffect(() => {
@@ -21,16 +21,19 @@ export function LanguageProvider({ children }) {
     const activeLanguage = language || defaultLanguage;
     const translation = translations[activeLanguage] || translations[defaultLanguage];
 
+    const resolve = (dictionary, path) => String(path).split('.').reduce(
+      (current, key) => (current && typeof current === 'object' ? current[key] : undefined),
+      dictionary,
+    );
+
     const t = (path) => {
-      const keys = String(path).split('.');
-      let current = translation;
-      for (const key of keys) {
-        if (!current || typeof current !== 'object' || !(key in current)) {
-          return path;
-        }
-        current = current[key];
-      }
-      return current;
+      const localizedValue = resolve(translation, path);
+      if (typeof localizedValue === 'string' && localizedValue.trim()) return localizedValue;
+
+      const defaultValue = resolve(translations[defaultLanguage], path);
+      if (typeof defaultValue === 'string' && defaultValue.trim()) return defaultValue;
+
+      return '—';
     };
 
     return {

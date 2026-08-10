@@ -44,6 +44,8 @@ function AppRoutes() {
     <Routes>
       <Route path="/admin/*" element={<AdminApp />} />
       <Route path="/" element={<Layout />}>
+        <Route index element={<HomePage />} />
+        <Route path="home" element={<HomePage />} />
         <Route path="register" element={<RegisterPage />} />
         <Route path="login" element={<LoginPage />} />
         <Route path="otp" element={<OTPPage />} />
@@ -56,8 +58,9 @@ function AppRoutes() {
             </FormGuard>
           }
         />
+        <Route path="about" element={<AboutPage />} />
+        <Route path="contact" element={<ContactPage />} />
         <Route element={<ProtectedRoute />}>
-          <Route path="home" element={<HomePage />} />
           <Route
             path="buyer-form"
             element={
@@ -102,8 +105,6 @@ function AppRoutes() {
               </FormGuard>
             }
           />
-          <Route path="about" element={<AboutPage />} />
-          <Route path="contact" element={<ContactPage />} />
           <Route path="profile" element={<ProfilePage />} />
           <Route path="profile/properties" element={<ProfilePropertiesPage />} />
           <Route path="profile/saved" element={<ProfileSavedPage />} />

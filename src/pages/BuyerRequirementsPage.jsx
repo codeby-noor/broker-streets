@@ -5,6 +5,7 @@ import { readStorage, STORAGE_KEYS } from '../utils/storage';
 import SectionHeading from '../components/SectionHeading';
 import Pagination from '../components/Pagination';
 import ContactModal from '../components/ContactModal';
+import { useLanguage } from '../i18n/LanguageContext';
 
 const landTypes = ['All types', 'Agricultural Land', 'Non-Agricultural Land'];
 const sortOptions = [
@@ -13,6 +14,7 @@ const sortOptions = [
 ];
 
 function BuyerRequirementsPage() {
+  const { t } = useLanguage();
   const navigate = useNavigate();
   const [buyerLeads, setBuyerLeads] = useState(() => readStorage(STORAGE_KEYS.buyerLeads, []));
   const [query, setQuery] = useState('');
@@ -79,8 +81,8 @@ function BuyerRequirementsPage() {
             </div>
 
             <div className="grid gap-4">
-              <label className="block"><span className="field-label">Land sector</span><select value={landType} onChange={(event) => setLandType(event.target.value)} className="field-control"><option>All types</option>{landTypes.filter((item) => item !== 'All types').map((item) => <option key={item}>{item}</option>)}</select></label>
-              <label className="block"><span className="field-label">Sort by</span><div className="relative"><select value={sort} onChange={(event) => setSort(event.target.value)} className="field-control pr-10"><option value="newest">Newest</option><option value="oldest">Oldest</option></select><ChevronDown size={16} className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-slate-400" /></div></label>
+              <label className="block"><span className="field-label">{t('dropdown.landSector')}</span><select value={landType} onChange={(event) => setLandType(event.target.value)} className="field-control"><option value="All types">{t('buy.allTypes')}</option><option value="Agricultural Land">{t('buyerForm.agriculturalLand')}</option><option value="Non-Agricultural Land">{t('buyerForm.nonAgriculturalLand')}</option></select></label>
+              <label className="block"><span className="field-label">{t('dropdown.sortBy')}</span><div className="relative"><select value={sort} onChange={(event) => setSort(event.target.value)} className="field-control pr-10"><option value="newest">{t('dropdown.newest')}</option><option value="oldest">{t('dropdown.oldest')}</option></select><ChevronDown size={16} className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-slate-400" /></div></label>
             </div>
           </div>
         <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">

@@ -252,6 +252,9 @@ export const translations = {
       project: 'Project',
       personalFarm: 'Personal Farm',
       other: 'Other',
+      propertyType: 'Property Type',
+      purpose: 'Purpose',
+      additionalRequirements: 'Additional Requirements',
     },
     propertyDetails: {
       notFound: 'Property not found',
@@ -731,3 +734,325 @@ export const translations = {
 
 export const defaultLanguage = 'en';
 export const languageStorageKey = 'brokerStreetsLanguage';
+
+const batchOneTranslations = {
+  en: {
+    buyerForm: {
+      propertyType: 'Property Type',
+      purpose: 'Purpose',
+      additionalRequirements: 'Additional Requirements',
+    },
+  },
+  gu: {
+    buy: {
+      allDistricts: 'બધા જિલ્લાઓ', allTalukas: 'બધા તાલુકાઓ', allVillages: 'બધા ગામો', allTypes: 'બધા પ્રકાર', allAreas: 'કોઈપણ વિસ્તાર',
+      heroCollection: 'ગુજરાત જમીન સંગ્રહ', findYourLandTitle: 'તમારી જમીન શોધો', findYourLandHeading: 'ચકાસેલી કૃષિ અને બિન-કૃષિ જમીન શોધો',
+      findYourLandDescription: 'જિલ્લો, તાલુકો, ગામ, કિંમત અને વિસ્તાર મુજબ શોધને મર્યાદિત કરવા ફિલ્ટર વાપરો.', searchTitle: 'ગામ, તાલુકો અથવા જિલ્લા દ્વારા જમીન શોધો',
+      searchAll: 'ગામ, તાલુકો અથવા જિલ્લા દ્વારા શોધો', filters: 'ફિલ્ટર', mobileFilters: 'લિસ્ટિંગ જોતા પહેલાં તમારી શોધને વધુ ચોક્કસ બનાવો.', close: 'બંધ કરો',
+      applyFilters: 'ફિલ્ટર લાગુ કરો', propertyResultLabel: 'જમીન લિસ્ટિંગ મળ્યા', noResultsDetail: 'ઉપલબ્ધ જમીન જોવા માટે વધુ વ્યાપક શોધ કરો અથવા ફિલ્ટર રીસેટ કરો.',
+      contactSeller: 'વેચનારનો સંપર્ક કરો', location: 'સ્થાન', taluka: 'તાલુકો',
+    },
+    buyerForm: {
+      agriculturalLand: 'કૃષિ જમીન', nonAgriculturalLand: 'બિન-કૃષિ જમીન', investment: 'રોકાણ', project: 'પ્રોજેક્ટ', personalFarm: 'વ્યક્તિગત ફાર્મ', other: 'અન્ય',
+      stateRequired: 'કૃપા કરીને રાજ્ય પસંદ કરો.', districtRequired: 'કૃપા કરીને જિલ્લો પસંદ કરો.', talukaRequired: 'કૃપા કરીને તાલુકો પસંદ કરો.',
+      propertyTypeRequired: 'કૃપા કરીને જમીનનો પ્રકાર પસંદ કરો.', purposeRequired: 'કૃપા કરીને હેતુ પસંદ કરો.', eyebrow: 'ખરીદદારની પસંદગી',
+      description: 'જરૂરી વિગતો આપો અને અમે તમને યોગ્ય જમીનના વિકલ્પો સૂચવશું.', selectDistrict: 'જિલ્લો પસંદ કરો', selectTaluka: 'તાલુકો પસંદ કરો',
+      selectDistrictFirst: 'પહેલા જિલ્લો પસંદ કરો', selectVillagesHint: 'ઓછામાં ઓછા 2 ગામ પસંદ કરો', searchVillages: 'ગામ શોધો...', selectAll: 'બધા પસંદ કરો',
+      clearAll: 'બધું સાફ કરો', noVillagesMatch: 'તમારી શોધ સાથે કોઈ ગામ મેળ ખાતું નથી.', noVillagesAvailable: 'આ તાલુકા માટે કોઈ ગામ ઉપલબ્ધ નથી.',
+      selectPropertyType: 'જમીનનો પ્રકાર પસંદ કરો', selectPurpose: 'હેતુ પસંદ કરો', requirementsPlaceholder: 'રસ્તાની સુવિધા, પાણીનો સ્ત્રોત, પસંદગીનો વિસ્તાર...',
+      recordingInProgress: 'રેકોર્ડિંગ ચાલુ છે...', removeRecording: 'રેકોર્ડિંગ દૂર કરો', microphoneDenied: 'માઇક્રોફોનની પરવાનગી નકારી દેવામાં આવી.',
+    },
+  },
+};
+
+const addMissingTranslations = (target, additions) => {
+  Object.entries(additions).forEach(([key, value]) => {
+    if (value && typeof value === 'object') {
+      target[key] ||= {};
+      addMissingTranslations(target[key], value);
+    } else if (!(key in target)) {
+      target[key] = value;
+    }
+  });
+};
+
+addMissingTranslations(translations.en, batchOneTranslations.en);
+addMissingTranslations(translations.gu, batchOneTranslations.gu);
+
+const batchTwoTranslations = {
+  en: {
+    contact: { heading: 'Contact Broker Streets', description: 'Speak with our team for help with land buying and selling.', phone: 'Phone', email: 'Email', headOffice: 'Head Office', officeLocation: 'Surat, Gujarat' },
+    home: {
+      buyerContactTitle: 'Contact Buyer', buyerLeadTitle: 'Helping buyers connect with trusted land owners across Gujarat.', buyerLeadDescription: 'Connect directly with verified buyers looking for agricultural and non-agricultural land.',
+      directContactTitle: 'Direct Contact', directContactDescription: 'Speak directly with sellers and verified buyers.', explore: 'Explore', featured: 'Featured', featuredTitle: 'Featured Land Opportunities',
+      featuredDescriptionLong: 'Hand-picked agricultural and non-agricultural land with verified details.',
+      hero: { browse: 'Browse Properties', buyLand: 'Buy Land', buyLandDesc: 'Browse verified land listings', curated: 'Curated opportunities for agricultural and non-agricultural land investors.', description: 'Discover verified farmland, investment plots, and non-agricultural land across Surat, Navsari, and Gujarat. Buy and sell with confidence.', eyebrow: 'Invest in land. Invest in the future.', marketplace: 'Premium Land Marketplace', postLand: 'Post Your Land' },
+    },
+  },
+  gu: {
+    buyerForm: { submitSuccess: 'તમારી ખરીદદાર પ્રોફાઇલ સફળતાપૂર્વક સબમિટ થઈ છે.', submitting: 'સબમિટ થઈ રહ્યું છે...', validationError: 'આગળ વધતા પહેલાં દર્શાવેલ વિગતો સુધારો.', villageSelectionRequired: 'ઓછામાં ઓછું 1 ગામ પસંદ કરો.', villageSelectionRequiredPlural: 'ઓછામાં ઓછા 2 ગામ પસંદ કરો.' },
+    common: { back: 'પાછળ', cancel: 'રદ કરો', clear: 'સાફ કરો', confirm: 'પુષ્ટિ કરો', delete: 'કાઢી નાખો', duplicate: 'નકલ કરો', edit: 'ફેરફાર કરો', markAvailable: 'ઉપલબ્ધ તરીકે ચિહ્નિત કરો', markSold: 'વેચાયેલ તરીકે ચિહ્નિત કરો', notAvailable: 'ઉપલબ્ધ નથી', notProvided: 'આપેલ નથી', optional: 'વૈકલ્પિક', ready: 'તૈયાર', remove: 'દૂર કરો', view: 'જુઓ', viewAgain: 'ફરી જુઓ' },
+    contact: { heading: 'Broker Streets નો સંપર્ક કરો', description: 'જમીન ખરીદવા અથવા વેચવા માટે મદદ જોઈએ તો અમારી ટીમ સાથે વાત કરો.', phone: 'ફોન', email: 'ઈમેલ', headOffice: 'મુખ્ય કાર્યાલય', officeLocation: 'સુરત, ગુજરાત', modalDescription: 'સંપર્કની વિગતો નીચે આપેલ છે.', modalEmail: 'ઈમેલ', modalMobile: 'મોબાઇલ નંબર', modalName: 'નામ', modalNoContact: 'કોઈ સંપર્ક વિગતો ઉપલબ્ધ નથી.', modalProperty: 'પ્રોપર્ટી' },
+    home: {
+      buyerContactTitle: 'ખરીદદારનો સંપર્ક કરો', buyerLeadTitle: 'ગુજરાતભરના વિશ્વસનીય જમીન માલિકો સાથે ખરીદદારોને જોડીએ છીએ.', buyerLeadDescription: 'કૃષિ અને બિન-કૃષિ જમીન શોધતા ચકાસેલા ખરીદદારો સાથે સીધો સંપર્ક કરો.',
+      directContactTitle: 'સીધો સંપર્ક', directContactDescription: 'વેચનાર અને ચકાસેલા ખરીદદારો સાથે સીધી વાત કરો.', explore: 'શોધો', featured: 'વિશેષ', featuredTitle: 'વિશેષ જમીન તકો',
+      featuredDescriptionLong: 'ચકાસેલી વિગતો સાથે પસંદ કરેલી કૃષિ અને બિન-કૃષિ જમીન.',
+      hero: { browse: 'પ્રોપર્ટીઓ જુઓ', buyLand: 'જમીન ખરીદો', buyLandDesc: 'ચકાસેલી જમીન લિસ્ટિંગ જુઓ', curated: 'કૃષિ અને બિન-કૃષિ જમીન રોકાણકારો માટે પસંદ કરેલી તકો.', description: 'સુરત, નવસારી અને ગુજરાતભરમાં ચકાસેલી ખેતીની જમીન, રોકાણ પ્લોટ અને બિન-કૃષિ જમીન શોધો. વિશ્વાસ સાથે ખરીદો અને વેચો.', eyebrow: 'જમીનમાં રોકાણ કરો. ભવિષ્યમાં રોકાણ કરો.', marketplace: 'પ્રિમિયમ જમીન માર્કેટપ્લેસ', postLand: 'તમારી જમીન લિસ્ટ કરો' },
+    },
+  },
+};
+
+addMissingTranslations(translations.en, batchTwoTranslations.en);
+addMissingTranslations(translations.gu, batchTwoTranslations.gu);
+
+const batchThreeTranslations = {
+  en: {
+    contact: { modalDescription: 'Contact details are provided below.', modalEmail: 'Email', modalMobile: 'Mobile Number', modalName: 'Name', modalNoContact: 'No contact details are available.', modalProperty: 'Property' },
+    home: { hero: { sellLand: 'Sell Land', sellLandDesc: 'List your land with confidence', support: 'Support for Surat and Navsari property transactions.', title: "Gujarat's trusted agricultural and non-agricultural land marketplace", verified: 'Verified listings, local context, and transparent land details.' }, localExpertiseTitle: 'Local Expertise', localExpertiseDescription: 'Surat and Navsari focused land coverage with trusted routes.', locationDescription: 'Explore high-demand agricultural and non-agricultural land locations across Surat and Navsari.', premiumPresentationTitle: 'Premium Presentation', premiumPresentationDescription: 'Professional listing cards and trusted market insights.', whyBrokerTitle: 'A premium platform for land buyers and sellers in Gujarat.', whyBrokerDescription: 'Browse verified land opportunities, connect directly with sellers, and access local market clarity for Surat and Navsari.' },
+  },
+  gu: {
+    contact: { modalDescription: 'સંપર્કની વિગતો નીચે આપેલી છે.', modalEmail: 'ઈમેલ', modalMobile: 'મોબાઇલ નંબર', modalName: 'નામ', modalNoContact: 'કોઈ સંપર્ક વિગતો ઉપલબ્ધ નથી.', modalProperty: 'પ્રોપર્ટી' },
+    home: {
+      hero: { sellLand: 'જમીન વેચો', sellLandDesc: 'વિશ્વાસ સાથે તમારી જમીન લિસ્ટ કરો', support: 'સુરત અને નવસારીની પ્રોપર્ટી લેવડદેવડ માટે સહાય.', title: 'ગુજરાતનું વિશ્વસનીય કૃષિ અને બિન-કૃષિ જમીન માર્કેટપ્લેસ', verified: 'ચકાસેલી લિસ્ટિંગ, સ્થાનિક માહિતી અને પારદર્શક જમીન વિગતો.' },
+      localExpertiseTitle: 'સ્થાનિક નિષ્ણાતી', localExpertiseDescription: 'સુરત અને નવસારી કેન્દ્રિત જમીન કવરેજ સાથે વિશ્વસનીય માર્ગદર્શન.', locationDescription: 'સુરત અને નવસારીમાં વધુ માંગ ધરાવતા કૃષિ અને બિન-કૃષિ જમીન સ્થાનો શોધો.',
+      premiumPresentationTitle: 'ઉત્તમ રજૂઆત', premiumPresentationDescription: 'વ્યાવસાયિક લિસ્ટિંગ કાર્ડ અને વિશ્વસનીય બજાર માહિતી.', quoteTitle: 'વ્યાવસાયિક પસંદગી', quoteText: 'ગંભીર ખરીદદારો માટે પસંદ કરેલી પ્રિમિયમ કૃષિ અને બિન-કૃષિ જમીન.', quoteDescription: 'અમારી ટીમ સ્થાનિક સ્પષ્ટતા, મજબૂત દસ્તાવેજીકરણ અને સાર્થક રોકાણ ક્ષમતા પર ધ્યાન આપે છે.',
+      readyTitle: 'યોગ્ય જમીન શોધવા તૈયાર છો?', readySubtitle: 'પ્રોપર્ટીઓ જુઓ અથવા આજે તમારી જરૂરિયાત પોસ્ટ કરો.', sellerSectionTitle: 'વેચનાર વિભાગ', sellerHeading: 'આજે તમારી જમીન લિસ્ટ કરો અને સાચા ખરીદદારો સુધી પહોંચો.', sellerStats: '250થી વધુ વેચનાર', sellerText: 'ગંભીર ખરીદદારોને આકર્ષવા માટે વેચનારની લિસ્ટિંગમાં સ્પષ્ટ જમીન વિગતો, ચકાસેલી માહિતી અને સ્થાનિક બજાર સંદર્ભ આપવામાં આવે છે.', sellerTrusted: 'વિશ્વસનીય પહોંચ', sellerVerifDesc: 'સ્પષ્ટ પ્રોપર્ટી સમીક્ષાઓ', sellerVerified: 'ચકાસેલી પ્રક્રિયા',
+      submit: 'જરૂરિયાત સબમિટ કરો', submitDesc: 'તમે શું ખરીદવા માંગો છો તે જણાવો', verifiedListingTitle: 'ચકાસેલી લિસ્ટિંગ', verifiedListingDescription: 'દરેક લિસ્ટિંગમાં સ્પષ્ટ જમીન વિગતો અને વેચનારની વિશ્વસનીયતા.', viewRequirements: 'બધી જરૂરિયાતો જુઓ', whyBrokerTitle: 'ગુજરાતમાં જમીન ખરીદદારો અને વેચનાર માટે પ્રિમિયમ પ્લેટફોર્મ.', whyBrokerDescription: 'ચકાસેલી જમીન તકો જુઓ, વેચનાર સાથે સીધો સંપર્ક કરો અને સ્થાનિક બજારની સ્પષ્ટ માહિતી મેળવો.',
+    },
+    profile: { aboutBrokerStreets: 'Broker Streets વિશે', accountDashboard: 'એકાઉન્ટ ડેશબોર્ડ', addListing: 'લિસ્ટિંગ ઉમેરો', addProperty: 'પ્રોપર્ટી ઉમેરો', available: 'ઉપલબ્ધ', cancelEdit: 'ફેરફાર રદ કરો', changePassword: 'પાસવર્ડ બદલો', clearAll: 'બધું સાફ કરો', confirmPassword: 'પાસવર્ડની પુષ્ટિ કરો', contactBuyer: 'ખરીદદારનો સંપર્ક કરો', contactSupport: 'સહાયનો સંપર્ક કરો', currentPassword: 'હાલનો પાસવર્ડ', deleteRequirementDescription: 'શું તમે આ ખરીદદારની જરૂરિયાત દૂર કરવા માંગો છો?', deleteRequirementTitle: 'જરૂરિયાત દૂર કરવી છે?', editProfile: 'પ્રોફાઇલમાં ફેરફાર કરો' },
+  },
+};
+
+addMissingTranslations(translations.en, batchThreeTranslations.en);
+addMissingTranslations(translations.gu, batchThreeTranslations.gu);
+
+const batchFourATranslations = {
+  en: {
+    home: {
+      submitDesc: 'Share what you want to buy',
+      verifiedListingTitle: 'Verified Listings',
+      verifiedListingDescription: 'Clear land details and seller credibility on every listing.',
+    },
+  },
+  gu: {
+    profile: {
+      faqDescription: 'Broker Streets અને જમીન સંબંધિત સામાન્ય પ્રશ્નોના જવાબો જુઓ.',
+      faqSoon: 'વારંવાર પૂછાતા પ્રશ્નો ટૂંક સમયમાં ઉપલબ્ધ થશે.',
+      faqs: 'વારંવાર પૂછાતા પ્રશ્નો',
+      helpSupport: 'મદદ અને સહાય',
+      helpTitle: 'અમારી સહાય કેવી રીતે મળી શકે?',
+      listingMarked: 'લિસ્ટિંગને ચિહ્નિત કરવામાં આવી છે:',
+      loggedOut: 'તમે સફળતાપૂર્વક લૉગ આઉટ થયા છો.',
+      logoutConfirm: 'શું તમે ખરેખર લૉગ આઉટ કરવા માંગો છો?',
+      manageLandRequirements: 'જમીનની જરૂરિયાતો સંચાલિત કરો',
+      manageListedLand: 'લિસ્ટ કરેલી જમીન સંચાલિત કરો',
+      manageListings: 'મારી લિસ્ટિંગ સંચાલિત કરો',
+      markAllRead: 'બધાને વાંચેલ તરીકે ચિહ્નિત કરો',
+      markRead: 'વાંચેલ તરીકે ચિહ્નિત કરો',
+      newPassword: 'નવો પાસવર્ડ',
+      notificationsCleared: 'બધી સૂચનાઓ સાફ કરવામાં આવી છે.',
+      notificationsDescription: 'તમારા એકાઉન્ટ અને લિસ્ટિંગ સંબંધિત નવીનતમ માહિતી જુઓ.',
+      notificationsMarkedRead: 'સૂચનાઓને વાંચેલ તરીકે ચિહ્નિત કરવામાં આવી છે.',
+      notificationsTitle: 'સૂચનાઓ',
+      passwordLength: 'પાસવર્ડ ઓછામાં ઓછા 6 અક્ષરનો હોવો જોઈએ.',
+      passwordMismatch: 'બંને પાસવર્ડ મેળ ખાતા નથી.',
+      passwordTitle: 'પાસવર્ડ બદલો',
+      passwordUpdated: 'પાસવર્ડ સફળતાપૂર્વક બદલવામાં આવ્યો છે.',
+      privacyDescription: 'તમારી માહિતી કેવી રીતે સુરક્ષિત રાખીએ છીએ તે જાણો.',
+      privacyPolicy: 'ગોપનીયતા નીતિ',
+      privacySoon: 'ગોપનીયતા નીતિ ટૂંક સમયમાં ઉપલબ્ધ થશે.',
+      profileSettings: 'પ્રોફાઇલ સેટિંગ્સ',
+      profileSettingsTitle: 'તમારી પ્રોફાઇલ સેટિંગ્સ સંચાલિત કરો',
+      profileUpdated: 'પ્રોફાઇલ સફળતાપૂર્વક અપડેટ થઈ છે.',
+      propertiesListed: 'લિસ્ટ કરેલી પ્રોપર્ટીઓ',
+      propertiesSold: 'વેચાયેલી પ્રોપર્ટીઓ',
+      propertyDuplicated: 'પ્રોપર્ટીની નકલ બનાવવામાં આવી છે.',
+      propertyRemoved: 'પ્રોપર્ટી દૂર કરવામાં આવી છે.',
+      recentRemoved: 'તાજેતરમાં જોવાયેલી પ્રોપર્ટી દૂર કરવામાં આવી છે.',
+      recentVisitsTitle: 'તાજેતરમાં જોવાયેલી પ્રોપર્ટીઓ',
+      recentlyViewedDescription: 'તમે તાજેતરમાં જોયેલી પ્રોપર્ટીઓ અહીં જુઓ.',
+      requirementDeleted: 'ખરીદદારની જરૂરિયાત દૂર કરવામાં આવી છે.',
+      requirementLabel: 'ખરીદદારની જરૂરિયાત',
+      saveChanges: 'ફેરફારો સાચવો',
+      savePassword: 'પાસવર્ડ સાચવો',
+      savedAdded: 'પ્રોપર્ટી સાચવેલી યાદીમાં ઉમેરાઈ છે.',
+    },
+  },
+};
+
+addMissingTranslations(translations.en, batchFourATranslations.en);
+addMissingTranslations(translations.gu, batchFourATranslations.gu);
+
+const batchFourBTranslations = {
+  gu: {
+    profile: {
+      savedListingsTitle: 'સાચવેલી પ્રોપર્ટીઓ',
+      savedRemoved: 'પ્રોપર્ટી સાચવેલી યાદીમાંથી દૂર કરવામાં આવી છે.',
+      searchProperties: 'પ્રોપર્ટીઓ શોધો',
+      shortlistedProperties: 'પસંદ કરેલી પ્રોપર્ટીઓ',
+      sold: 'વેચાયેલ',
+      supportDescription: 'અમારી ટીમ જમીન ખરીદવા અને વેચવામાં તમારી મદદ માટે ઉપલબ્ધ છે.',
+      termsConditions: 'નિયમો અને શરતો',
+      termsDescription: 'Broker Streets વાપરવા માટેના નિયમો અને શરતો વાંચો.',
+      termsSoon: 'નિયમો અને શરતો ટૂંક સમયમાં ઉપલબ્ધ થશે.',
+      verifiedAccount: 'ચકાસેલ એકાઉન્ટ',
+    },
+    propertyDetails: {
+      backToListings: 'લિસ્ટિંગ પર પાછા જાઓ',
+      backToProperties: 'પ્રોપર્ટીઓ પર પાછા જાઓ',
+      borewell: 'બોરવેલ',
+      boundaryWall: 'સીમા દિવાલ',
+      callSeller: 'વેચનારને કૉલ કરો',
+      cornerPlot: 'કોર્નર પ્લોટ',
+      downloadDocument: 'દસ્તાવેજ ડાઉનલોડ કરો',
+      electricityConnection: 'વીજળી જોડાણ',
+      emailSeller: 'વેચનારને ઈમેલ કરો',
+      facingDirection: 'દિશા',
+      fencing: 'વાડબંધી',
+      irrigationFacility: 'સિંચાઈ સુવિધા',
+      landPrice: 'જમીનની કિંમત',
+      locationNotAvailable: 'સ્થાન ઉપલબ્ધ નથી.',
+      no: 'ના',
+      noDocumentUploaded: '7/12 નો કોઈ દસ્તાવેજ અપલોડ કરેલ નથી.',
+      noSimilarListings: 'હાલમાં સમાન જમીન લિસ્ટિંગ ઉપલબ્ધ નથી.',
+      notFound: 'પ્રોપર્ટી મળી નથી',
+      notUploaded: 'અપલોડ કરેલ નથી',
+      openInGoogleMaps: 'Google Maps માં ખોલો',
+      ownershipStatus: 'માલિકી સ્થિતિ',
+      posted: 'પોસ્ટ કરેલ',
+      priceUnitFallback: 'કિંમત એકમ ઉપલબ્ધ નથી',
+      propertyDocuments: 'પ્રોપર્ટીના દસ્તાવેજો',
+      propertyFeatures: 'પ્રોપર્ટીની સુવિધાઓ',
+      propertyLinkCopied: 'પ્રોપર્ટીની લિંક કૉપી થઈ છે.',
+      propertyLocation: 'પ્રોપર્ટીનું સ્થાન',
+      propertyNotUploaded: 'પ્રોપર્ટી અપલોડ કરેલ નથી',
+      propertyTitleFallback: 'જમીન પ્રોપર્ટી',
+      propertyTypeFallback: 'પ્રોપર્ટીનો પ્રકાર ઉપલબ્ધ નથી',
+    },
+  },
+};
+
+addMissingTranslations(translations.gu, batchFourBTranslations.gu);
+
+const batchFourCTranslations = {
+  gu: {
+    propertyDetails: {
+      quickOverview: 'ઝડપી ઝાંખી',
+      recentlyListed: 'તાજેતરમાં લિસ્ટ કરેલ',
+      roadAccess: 'રસ્તાની સુવિધા',
+      sellerInformation: 'વેચનારની માહિતી',
+      sellerLocation: 'વેચનારનું સ્થાન',
+      sellerMobile: 'વેચનારનો મોબાઇલ નંબર',
+      sellerNameFallback: 'વેચનારનું નામ ઉપલબ્ધ નથી',
+      shareUnavailable: 'હાલમાં શેર કરવાની સુવિધા ઉપલબ્ધ નથી.',
+      soilType: 'માટીનો પ્રકાર',
+      stateFallback: 'ગુજરાત',
+      unavailable: 'તમે માંગેલી લિસ્ટિંગ ઉપલબ્ધ નથી. કૃપા કરીને ફરી પ્રોપર્ટીઓ જુઓ.',
+      verified: 'ચકાસેલ',
+      waterAvailability: 'પાણીની ઉપલબ્ધતા',
+      yes: 'હા',
+    },
+    sellerForm: {
+      additionalPlaceholder: 'જમીન વિશે વધુ માહિતી લખો...',
+      agriculturalLand: 'કૃષિ જમીન',
+      authMessage: 'તમારી પ્રમાણિત પ્રોફાઇલ આ લિસ્ટિંગ સાથે સુરક્ષિત રીતે જોડવામાં આવી છે.',
+      districtRequired: 'જિલ્લો પસંદ કરવો જરૂરી છે.',
+      documentHint: 'તમારો 7/12 દસ્તાવેજ PDF, ઇમેજ અથવા માન્ય ફોર્મેટમાં અપલોડ કરો.',
+      documentReady: 'અપલોડની સ્થિતિ: તૈયાર',
+      documentRequired: 'કૃપા કરીને પ્રોપર્ટીનો 7/12 દસ્તાવેજ અપલોડ કરો.',
+      imageHint: 'પ્રોપર્ટીની તસવીરો અપલોડ કરો. સબમિટ કરતાં પહેલાં તેનું પૂર્વાવલોકન કરી શકો છો.',
+      imageLabel: 'તસવીર',
+      mapLinkInvalid: 'માન્ય URL દાખલ કરો.',
+      mapLinkRequired: 'Google Maps લિંક જરૂરી છે.',
+      mapPlaceholder: 'Google Maps લિંક અહીં મૂકો',
+      nonAgriculturalLand: 'બિન-કૃષિ જમીન',
+      pricePlaceholder: 'પ્રોપર્ટીની કિંમત દાખલ કરો',
+      priceUnitRequired: 'કિંમતનો એકમ પસંદ કરો.',
+      propertyTypeRequired: 'જમીનનો પ્રકાર પસંદ કરો.',
+      saveError: 'પ્રોપર્ટીની વિગતો સાચવી શકાઈ નથી.',
+      sectionEyebrow: 'જમીનની વિગતો',
+      selectDistrict: 'જિલ્લો પસંદ કરો',
+      selectDistrictFirst: 'પહેલા જિલ્લો પસંદ કરો',
+      selectPriceUnit: 'કિંમતનો એકમ પસંદ કરો',
+      selectPropertyType: 'જમીનનો પ્રકાર પસંદ કરો',
+      selectTaluka: 'તાલુકો પસંદ કરો',
+      selectTalukaFirst: 'પહેલા તાલુકો પસંદ કરો',
+      selectVillage: 'ગામ પસંદ કરો',
+      sqFt: 'ચોરસ ફૂટ',
+    },
+  },
+};
+
+addMissingTranslations(translations.gu, batchFourCTranslations.gu);
+
+const finalDictionaryTranslations = {
+  gu: {
+    sellerForm: {
+      sqYard: 'ચોરસ વાર',
+      stateRequired: 'રાજ્ય પસંદ કરવું જરૂરી છે.',
+      submitSuccess: 'તમારી પ્રોપર્ટીની વિગતો સફળતાપૂર્વક સબમિટ થઈ છે.',
+      submitting: 'સબમિટ થઈ રહ્યું છે...',
+      talukaRequired: 'તાલુકો પસંદ કરવો જરૂરી છે.',
+      videoLabel: 'વિડિયો',
+      vigha: 'વિઘા',
+      villageRequired: 'ગામ પસંદ કરવું જરૂરી છે.',
+    },
+  },
+};
+
+addMissingTranslations(translations.gu, finalDictionaryTranslations.gu);
+
+const sellPageTranslations = {
+  en: { sell: { pageEyebrow: 'Sell with Broker Streets', requestReceived: 'Thank you — your property request has been received.', heroTitle: 'A clearer way to sell your property.', heroDescription: 'Share the essentials and let our local team help your property reach the right buyers.', ctaTitle: 'Ready to take the first step?', ctaDescription: 'Tell us about your property and our team will be in touch.', startSelling: 'Start Selling' } },
+  gu: { sell: { pageEyebrow: 'Broker Streets સાથે વેચો', requestReceived: 'આભાર — તમારી પ્રોપર્ટી વિનંતી મળી ગઈ છે.', heroTitle: 'તમારી પ્રોપર્ટી વેચવાની વધુ સ્પષ્ટ રીત.', heroDescription: 'જરૂરી વિગતો આપો અને અમારી સ્થાનિક ટીમ તમારી પ્રોપર્ટીને યોગ્ય ખરીદદારો સુધી પહોંચાડશે.', ctaTitle: 'પહેલું પગલું ભરવા તૈયાર છો?', ctaDescription: 'તમારી પ્રોપર્ટી વિશે જણાવો અને અમારી ટીમ તમારો સંપર્ક કરશે.', startSelling: 'વેચાણ શરૂ કરો' } },
+};
+
+addMissingTranslations(translations.en, sellPageTranslations.en);
+addMissingTranslations(translations.gu, sellPageTranslations.gu);
+
+const sellPageCompletionTranslations = {
+  en: { sell: { propertyEnquiries: 'property enquiries', averageFirstResponse: 'average first response', sellerSatisfaction: 'seller satisfaction', submissionReceived: 'Submission received', submissionDescription: 'Thanks. We will review your property details and reach out by phone within 1 business day.', addAnotherProperty: 'Add Another Property', contactSupport: 'Contact Support', backToHome: 'Back to Home' } },
+  gu: { sell: { propertyEnquiries: 'પ્રોપર્ટી પૂછપરછ', averageFirstResponse: 'સરેરાશ પ્રથમ પ્રતિસાદ', sellerSatisfaction: 'વેચનાર સંતોષ', submissionReceived: 'સબમિશન મળી ગયું', submissionDescription: 'આભાર. અમે તમારી પ્રોપર્ટીની વિગતોની સમીક્ષા કરી એક કાર્યદિવસમાં ફોન દ્વારા સંપર્ક કરીશું.', addAnotherProperty: 'બીજી પ્રોપર્ટી ઉમેરો', contactSupport: 'સહાયનો સંપર્ક કરો', backToHome: 'હોમ પર પાછા જાઓ' } },
+};
+
+addMissingTranslations(translations.en, sellPageCompletionTranslations.en);
+addMissingTranslations(translations.gu, sellPageCompletionTranslations.gu);
+
+const sellPageFinalTranslations = {
+  en: { sell: { benefitsEyebrow: 'Why sellers choose us', benefitsTitle: 'Support that keeps the process moving', reachBuyersTitle: 'Reach serious buyers', reachBuyersDescription: 'Put your property in front of people who have already shared what they need.', nextStepsTitle: 'Clear next steps', nextStepsDescription: 'Get practical guidance on information, viewings, and buyer conversations.', localContextTitle: 'Local context', localContextDescription: 'Use our understanding of Gujarat markets to position your listing well.', owner: 'Owner', mobile: 'Mobile', city: 'City', type: 'Type', notesEyebrow: 'Seller notes', notesTitle: 'Small details make a big difference', notePrice: 'Keep your expected price realistic for the neighbourhood.', noteMap: 'Add a clear map link so buyers can understand the location.', noteFeatures: 'Share the strongest features of the property in your notes.', recentlySold: 'Recently sold', localResults: 'Local results' } },
+  gu: { sell: { benefitsEyebrow: 'વેચનાર અમને કેમ પસંદ કરે છે', benefitsTitle: 'પ્રક્રિયાને આગળ ધપાવતી સહાય', reachBuyersTitle: 'ગંભીર ખરીદદારો સુધી પહોંચો', reachBuyersDescription: 'તમારી પ્રોપર્ટીને એવા લોકો સમક્ષ રજૂ કરો જેમણે તેમની જરૂરિયાતો પહેલેથી જણાવી છે.', nextStepsTitle: 'સ્પષ્ટ આગળના પગલાં', nextStepsDescription: 'માહિતી, મુલાકાત અને ખરીદદાર સાથેની વાતચીત માટે વ્યવહારુ માર્ગદર્શન મેળવો.', localContextTitle: 'સ્થાનિક સમજ', localContextDescription: 'તમારી લિસ્ટિંગને યોગ્ય રીતે રજૂ કરવા ગુજરાતના બજારો વિશેની અમારી સમજનો ઉપયોગ કરો.', owner: 'માલિક', mobile: 'મોબાઇલ', city: 'શહેર', type: 'પ્રકાર', notesEyebrow: 'વેચનાર માટે નોંધો', notesTitle: 'નાની વિગતો મોટો ફરક પાડે છે', notePrice: 'તમારા વિસ્તાર માટે અપેક્ષિત કિંમત વાસ્તવિક રાખો.', noteMap: 'ખરીદદારો સ્થાન સમજી શકે તે માટે સ્પષ્ટ નકશાની લિંક ઉમેરો.', noteFeatures: 'તમારી નોંધમાં પ્રોપર્ટીની શ્રેષ્ઠ સુવિધાઓ જણાવો.', recentlySold: 'તાજેતરમાં વેચાયેલ', localResults: 'સ્થાનિક પરિણામો' } },
+};
+
+addMissingTranslations(translations.en, sellPageFinalTranslations.en);
+addMissingTranslations(translations.gu, sellPageFinalTranslations.gu);
+
+const sellerDashboardTranslations = {
+  en: { sellerDashboard: { listingDeleted: 'Listing deleted.', listingDuplicated: 'Listing duplicated.', listingMarked: 'Listing marked', eyebrow: 'Seller dashboard', title: 'Your listings remain in motion.', description: 'Manage, edit, delete, or preview your listings from one dashboard.', totalProperties: 'Total Properties', pending: 'Pending', yourListings: 'Your listings' } },
+  gu: { sellerDashboard: { listingDeleted: 'લિસ્ટિંગ દૂર કરવામાં આવી છે.', listingDuplicated: 'લિસ્ટિંગની નકલ બનાવવામાં આવી છે.', listingMarked: 'લિસ્ટિંગને ચિહ્નિત કરવામાં આવી છે', eyebrow: 'વેચનાર ડેશબોર્ડ', title: 'તમારી લિસ્ટિંગ સતત સક્રિય છે.', description: 'એક જ ડેશબોર્ડમાંથી તમારી લિસ્ટિંગ સંચાલિત કરો, ફેરફાર કરો, દૂર કરો અથવા પૂર્વાવલોકન કરો.', totalProperties: 'કુલ પ્રોપર્ટીઓ', pending: 'બાકી', yourListings: 'તમારી લિસ્ટિંગ' } },
+};
+
+addMissingTranslations(translations.en, sellerDashboardTranslations.en);
+addMissingTranslations(translations.gu, sellerDashboardTranslations.gu);
+
+const sellerDashboardCompletionTranslations = {
+  en: { sellerDashboard: { selectedListing: 'Selected listing', status: 'Status', location: 'Location', selectListingHint: 'Choose a listing to preview its details.', deleteTitle: 'Delete this listing?', deleteDescription: 'This will remove the listing from your dashboard.' } },
+  gu: { sellerDashboard: { selectedListing: 'પસંદ કરેલી લિસ્ટિંગ', status: 'સ્થિતિ', location: 'સ્થાન', selectListingHint: 'તેની વિગતો જોવા માટે લિસ્ટિંગ પસંદ કરો.', deleteTitle: 'આ લિસ્ટિંગ દૂર કરવી છે?', deleteDescription: 'આ લિસ્ટિંગ તમારા ડેશબોર્ડમાંથી દૂર કરવામાં આવશે.' } },
+};
+
+addMissingTranslations(translations.en, sellerDashboardCompletionTranslations.en);
+addMissingTranslations(translations.gu, sellerDashboardCompletionTranslations.gu);
+
+const sellerDashboardStatusTranslations = {
+  en: { sellerDashboard: { copySuffix: '(Copy)' } },
+  gu: { sellerDashboard: { copySuffix: '(નકલ)' } },
+};
+
+addMissingTranslations(translations.en, sellerDashboardStatusTranslations.en);
+addMissingTranslations(translations.gu, sellerDashboardStatusTranslations.gu);
+
+const dropdownTranslations = {
+  en: { dropdown: { landSector: 'Land sector', sortBy: 'Sort by', newest: 'Newest', oldest: 'Oldest' } },
+  gu: { dropdown: { landSector: 'જમીન ક્ષેત્ર', sortBy: 'ક્રમબદ્ધ કરો', newest: 'નવા પહેલા', oldest: 'જૂના પહેલા' } },
+};
+addMissingTranslations(translations.en, dropdownTranslations.en);
+addMissingTranslations(translations.gu, dropdownTranslations.gu);
