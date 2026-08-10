@@ -15,6 +15,7 @@ router.use(authenticateToken);
 router.use(adminMiddleware);
 
 router.get('/', validate({ query: queryEnquirySchema }), adminEnquiryController.getAdminEnquiries);
+router.get('/:id', validate({ params: idParamSchema }), adminEnquiryController.getAdminEnquiryById);
 router.patch(
   '/:id/status',
   validate({ params: idParamSchema, body: updateStatusSchema }),

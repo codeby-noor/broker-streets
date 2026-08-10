@@ -3,9 +3,8 @@ const Listing = require('../models/Listing');
 const SellerLead = require('../models/SellerLead');
 const User = require('../models/User');
 const ApiError = require('../utils/ApiError');
+const escapeRegex = require('../utils/escapeRegex');
 const { HTTP_STATUS } = require('../utils/constants');
-
-const escapeRegex = (str) => (str ? String(str).replace(/[.*+?^${}()|[\]\\]/g, '\\$&') : '');
 
 class ListingService {
   /**

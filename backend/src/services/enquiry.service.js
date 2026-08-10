@@ -1,8 +1,7 @@
 const Enquiry = require('../models/Enquiry');
 const ApiError = require('../utils/ApiError');
+const escapeRegex = require('../utils/escapeRegex');
 const { HTTP_STATUS } = require('../utils/constants');
-
-const escapeRegex = (str) => (str ? String(str).replace(/[.*+?^${}()|[\]\\]/g, '\\$&') : '');
 
 class EnquiryService {
   /**
@@ -13,6 +12,13 @@ class EnquiryService {
     const listing = await Listing.findById(data.listingId);
     if (!listing) {
       throw new ApiError(HTTP_STATUS.NOT_FOUND, 'Listing not found');
+    }
+
+    if (listing.status && listing.status !== 'Available') {
+      throw new ApiError(
+        HTTP_STATUS.BAD_REQUEST,
+        'Cannot submit an enquiry for a listing that is not available'
+      );
     }
 
     if (listing.userId && listing.userId.toString() === user._id.toString()) {
@@ -43,7 +49,11 @@ class EnquiryService {
         category: 'enquiry',
       });
     } catch (e) {
-      // Notification model not implemented yet — ignore gracefully
+      if (e.code === 'MODULE_NOT_FOUND' || (e.message && e.message.includes('Cannot find module'))) {
+        // Notification model not implemented yet — ignore gracefully
+      } else {
+        console.error(`Failed to create notification for enquiry ${savedEnquiry._id}:`, e);
+      }
     }
 
     return savedEnquiry;

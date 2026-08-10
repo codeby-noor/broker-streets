@@ -11,8 +11,17 @@ const createEnquirySchema = Joi.object({
     'string.max': 'Message cannot exceed 2000 characters',
     'any.required': 'Message is required',
   }),
-  phone: Joi.string().trim().allow('').optional(),
-  email: Joi.string().trim().email().allow('').optional(),
+  phone: Joi.string()
+    .trim()
+    .pattern(/^[0-9]{10}$/)
+    .allow('')
+    .optional()
+    .messages({
+      'string.pattern.base': 'Enter a valid 10-digit mobile number',
+    }),
+  email: Joi.string().trim().email().allow('').optional().messages({
+    'string.email': 'Enter a valid email address',
+  }),
 });
 
 const queryEnquirySchema = Joi.object({

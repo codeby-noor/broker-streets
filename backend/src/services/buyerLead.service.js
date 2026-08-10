@@ -1,9 +1,8 @@
 const BuyerLead = require('../models/BuyerLead');
 const User = require('../models/User');
 const ApiError = require('../utils/ApiError');
+const escapeRegex = require('../utils/escapeRegex');
 const { HTTP_STATUS } = require('../utils/constants');
-
-const escapeRegex = (str) => (str ? String(str).replace(/[.*+?^${}()|[\]\\]/g, '\\$&') : '');
 
 class BuyerLeadService {
   /**
@@ -46,7 +45,11 @@ class BuyerLeadService {
         category: 'buyer',
       });
     } catch (e) {
-      // Notification model not implemented yet — ignore gracefully
+      if (e.code === 'MODULE_NOT_FOUND' || (e.message && e.message.includes('Cannot find module'))) {
+        // Notification model not implemented yet — ignore gracefully
+      } else {
+        console.error(`Failed to create notification for buyer lead ${savedLead._id}:`, e);
+      }
     }
 
     return savedLead;

@@ -866,9 +866,10 @@ All admin endpoints are prefixed with `/api/admin` and require admin authenticat
 
 | Method | Path | Auth | Notes |
 |---|---|---|---|
-| `GET` | `/api/admin/enquiries` | Admin | |
-| `PATCH` | `/api/admin/enquiries/:id/status` | Admin | |
-| `DELETE` | `/api/admin/enquiries/:id` | Admin | |
+| `GET` | `/api/admin/enquiries` | Admin | Paginated with search/filter |
+| `GET` | `/api/admin/enquiries/:id` | Admin | Enquiry details |
+| `PATCH` | `/api/admin/enquiries/:id/status` | Admin | Update status |
+| `DELETE` | `/api/admin/enquiries/:id` | Admin | Hard delete |
 
 #### Admin Categories
 

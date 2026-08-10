@@ -10,6 +10,13 @@ const getAdminEnquiries = asyncHandler(async (req, res) => {
   );
 });
 
+const getAdminEnquiryById = asyncHandler(async (req, res) => {
+  const enquiry = await enquiryService.getEnquiryById(req.params.id);
+  return res.status(HTTP_STATUS.OK).json(
+    new ApiResponse(HTTP_STATUS.OK, enquiry, 'Enquiry details retrieved successfully')
+  );
+});
+
 const updateAdminEnquiryStatus = asyncHandler(async (req, res) => {
   const { status } = req.body;
   const updated = await enquiryService.updateEnquiryStatus(req.params.id, status);
@@ -25,6 +32,7 @@ const deleteAdminEnquiry = asyncHandler(async (req, res) => {
 
 module.exports = {
   getAdminEnquiries,
+  getAdminEnquiryById,
   updateAdminEnquiryStatus,
   deleteAdminEnquiry,
 };
