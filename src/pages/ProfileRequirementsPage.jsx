@@ -1,20 +1,15 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { BadgeCheck, MapPin, PlusCircle } from 'lucide-react';
+import { BadgeCheck, PlusCircle } from 'lucide-react';
 import ProfileSubPageShell from '../components/ProfileSubPageShell';
 import { getBuyerLeads, onBuyerLeadsChanged } from '../utils/storage';
+import { useLanguage } from '../i18n/LanguageContext';
 
 const sampleBuyerRequests = [{ id: 'b1', preferredState: 'Gujarat', preferredDistrict: 'Vadodara', preferredTaluka: 'Waghodia', preferredVillages: ['Nadiad'], propertyType: 'Agricultural Land', purpose: 'Investment', requirements: 'Near school and metro connectivity.', createdAt: '2026-08-01' }];
 
-const formatDate = (value) => {
-  if (!value) return 'Recently updated';
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return value;
-  return date.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
-};
-
 function ProfileRequirementsPage() {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const [buyerRequests, setBuyerRequests] = useState(() => getBuyerLeads() || sampleBuyerRequests);
 
   useEffect(() => {
@@ -22,11 +17,18 @@ function ProfileRequirementsPage() {
     return cleanup;
   }, []);
 
+  const formatDate = (value) => {
+    if (!value) return t('profile.recentlyUpdated');
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return value;
+    return date.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+  };
+
   return (
-    <ProfileSubPageShell title="Buyer Requirements" description="Requirements captured from your buyers">
+    <ProfileSubPageShell title={t('profile.buyerRequirements')} description={t('profile.manageLandRequirements')}>
       <div className="profile-subpage-actions">
         <button type="button" onClick={() => navigate('/buyer-form')} className="profile-subpage-primary-button">
-          <PlusCircle size={16} /> Create Requirement
+          <PlusCircle size={16} /> {t('profile.submitRequirement')}
         </button>
       </div>
 
@@ -37,43 +39,43 @@ function ProfileRequirementsPage() {
               <div className="profile-subpage-card-body">
                 <div className="profile-subpage-card-head">
                   <div>
-                    <p className="profile-subpage-kicker">Requirement #{request.id}</p>
-                    <h3>{request.propertyType || 'Land requirement'}</h3>
+                    <p className="profile-subpage-kicker">{t('profile.requirementLabel')} #{request.id}</p>
+                    <h3>{request.propertyType === 'Agricultural Land' ? t('buyerForm.agriculturalLand') : request.propertyType === 'Non-Agricultural Land' ? t('buyerForm.nonAgriculturalLand') : request.propertyType || t('profile.landRequirementFallback')}</h3>
                   </div>
-                  <span className="profile-status-badge active">{request.purpose || 'Ready'}</span>
+                  <span className="profile-status-badge active">{request.purpose || t('common.ready')}</span>
                 </div>
 
                 <div className="profile-subpage-meta-grid">
                   <div>
-                    <span className="profile-subpage-label">Property Type</span>
-                    <span className="profile-subpage-value">{request.propertyType || '—'}</span>
+                    <span className="profile-subpage-label">{t('common.propertyType')}</span>
+                    <span className="profile-subpage-value">{request.propertyType === 'Agricultural Land' ? t('buyerForm.agriculturalLand') : request.propertyType === 'Non-Agricultural Land' ? t('buyerForm.nonAgriculturalLand') : request.propertyType || '—'}</span>
                   </div>
                   <div>
-                    <span className="profile-subpage-label">Purpose</span>
+                    <span className="profile-subpage-label">{t('buyerForm.purpose')}</span>
                     <span className="profile-subpage-value">{request.purpose || '—'}</span>
                   </div>
                   <div>
-                    <span className="profile-subpage-label">District</span>
+                    <span className="profile-subpage-label">{t('profile.districtLabel')}</span>
                     <span className="profile-subpage-value">{request.preferredDistrict || '—'}</span>
                   </div>
                   <div>
-                    <span className="profile-subpage-label">Taluka</span>
+                    <span className="profile-subpage-label">{t('profile.talukaLabel')}</span>
                     <span className="profile-subpage-value">{request.preferredTaluka || '—'}</span>
                   </div>
                   <div className="profile-subpage-wide">
-                    <span className="profile-subpage-label">Selected Villages</span>
+                    <span className="profile-subpage-label">{t('profile.villagesLabel')}</span>
                     <span className="profile-subpage-value">{Array.isArray(request.preferredVillages) ? request.preferredVillages.join(', ') : request.preferredVillages || '—'}</span>
                   </div>
                   <div className="profile-subpage-wide">
-                    <span className="profile-subpage-label">Additional Requirements</span>
+                    <span className="profile-subpage-label">{t('profile.requirementsLabel')}</span>
                     <span className="profile-subpage-value">{request.requirements || '—'}</span>
                   </div>
                   <div>
-                    <span className="profile-subpage-label">Status</span>
-                    <span className="profile-subpage-value">{request.status || 'Open'}</span>
+                    <span className="profile-subpage-label">{t('common.status')}</span>
+                    <span className="profile-subpage-value">{request.status || t('dropdown.available')}</span>
                   </div>
                   <div>
-                    <span className="profile-subpage-label">Submitted</span>
+                    <span className="profile-subpage-label">{t('profile.postedDateLabel')}</span>
                     <span className="profile-subpage-value">{formatDate(request.createdAt)}</span>
                   </div>
                 </div>
@@ -84,8 +86,8 @@ function ProfileRequirementsPage() {
       ) : (
         <div className="profile-empty-state">
           <BadgeCheck size={28} />
-          <p>No buyer requirements yet</p>
-          <button type="button" onClick={() => navigate('/buyer-form')} className="profile-subpage-primary-button">Create Requirement</button>
+          <p>{t('profile.noBuyerRequirementsYet')}</p>
+          <button type="button" onClick={() => navigate('/buyer-form')} className="profile-subpage-primary-button">{t('profile.submitRequirement')}</button>
         </div>
       )}
     </ProfileSubPageShell>

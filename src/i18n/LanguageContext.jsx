@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
-import { defaultLanguage, languageStorageKey, translations } from './translations';
+import { defaultLanguage, getPropertyDisplayTitle, languageStorageKey, locationTranslationsGu, translations } from './translations';
 
 const LanguageContext = createContext(null);
 
@@ -27,20 +27,31 @@ export function LanguageProvider({ children }) {
     );
 
     const t = (path) => {
+      if (!path && path !== 0) return '';
       const localizedValue = resolve(translation, path);
       if (typeof localizedValue === 'string' && localizedValue.trim()) return localizedValue;
 
       const defaultValue = resolve(translations[defaultLanguage], path);
       if (typeof defaultValue === 'string' && defaultValue.trim()) return defaultValue;
 
-      return '—';
+      if (activeLanguage === 'gu' && locationTranslationsGu[path]) {
+        return locationTranslationsGu[path];
+      }
+
+      if (typeof path === 'string' && path.includes('.')) {
+        const lastKey = path.split('.').pop();
+        return lastKey.replace(/([A-Z])/g, ' $1').replace(/^./, (str) => str.toUpperCase()).trim();
+      }
+
+      return String(path);
     };
 
     return {
-      language,
+      language: activeLanguage,
       setLanguage,
       t,
-      isGujarati: language === 'gu',
+      getPropertyDisplayTitle: (title) => getPropertyDisplayTitle(title, activeLanguage),
+      isGujarati: activeLanguage === 'gu',
       translate: translations,
     };
   }, [language]);

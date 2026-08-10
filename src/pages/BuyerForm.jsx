@@ -177,8 +177,8 @@ function BuyerForm() {
         userEmail: currentUser?.email || '',
         ...form,
         preferredVillages: form.preferredVillages || [],
-        audio: audioUrl,
-        voiceRecording: audioUrl,
+        audio: '',
+        voiceRecording: '',
         createdAt: new Date().toISOString(),
       };
 
@@ -227,7 +227,7 @@ function BuyerForm() {
               >
                 {gujaratStateOptions.map((option) => (
                   <option key={option.value} value={option.value}>
-                    {option.label}
+                    {t(option.label)}
                   </option>
                 ))}
               </select>
@@ -245,7 +245,7 @@ function BuyerForm() {
                 <option value="">{t('buyerForm.selectDistrict')}</option>
                 {gujaratDistricts.map((district) => (
                   <option key={district} value={district}>
-                    {district}
+                    {t(district)}
                   </option>
                 ))}
               </select>
@@ -264,7 +264,7 @@ function BuyerForm() {
                 <option value="">{form.district ? t('buyerForm.selectTaluka') : t('buyerForm.selectDistrictFirst')}</option>
                 {talukaOptions.map((taluka) => (
                   <option key={taluka} value={taluka}>
-                    {taluka}
+                    {t(taluka)}
                   </option>
                 ))}
               </select>
@@ -319,7 +319,7 @@ function BuyerForm() {
                               <span className={`mt-0.5 inline-flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full border ${isSelected ? 'border-sage bg-sage text-white' : 'border-slate-300 bg-white text-transparent'}`}>
                                 <span className="text-xs font-semibold">✓</span>
                               </span>
-                              <span className="leading-6">{village}</span>
+                              <span className="leading-6">{t(village)}</span>
                             </button>
                           );
                         })

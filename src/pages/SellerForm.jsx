@@ -6,9 +6,10 @@ import LargeButton from '../components/LargeButton';
 import { useUserStore } from '../store/useUserStore';
 import { gujaratDistricts, gujaratSubDistricts, gujaratVillages } from '../utils/data';
 import { appendStorageArray, readStorage, writeStorage, STORAGE_KEYS } from '../utils/storage';
+import logo from '../assets/images/logo.png';
 import { useLanguage } from '../i18n/LanguageContext';
 
-const fallbackPropertyImage = 'https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=1400&q=85';
+const fallbackPropertyImage = logo;
 const metadata = (files) => Array.from(files || []).map((file) => ({ name: file.name, type: file.type, size: file.size, lastModified: file.lastModified }));
 
 function SellerForm() {
@@ -123,11 +124,11 @@ function SellerForm() {
       description: data.additionalDetails || 'Verified land listing with clear location and pricing details.',
       status: 'Available',
       verified: true,
-      image: imageUrls[0] || fallbackPropertyImage,
-      gallery: imageUrls.length ? imageUrls : [fallbackPropertyImage],
-      images: imageUrls.length ? imageUrls : [fallbackPropertyImage],
-      propertyDocument: pdf ? { name: pdf.name, type: pdf.type, size: pdf.size, lastModified: pdf.lastModified, url: pdfUrl } : null,
-      documentUrl: pdfUrl,
+      image: fallbackPropertyImage,
+      gallery: [fallbackPropertyImage],
+      images: [fallbackPropertyImage],
+      propertyDocument: pdf ? { name: pdf.name, type: pdf.type, size: pdf.size, lastModified: pdf.lastModified, url: '#' } : null,
+      documentUrl: '#',
       mapLink: data.mapLink || '',
       mapUrl: data.mapLink || '',
       googleMaps: data.mapLink || '',
@@ -171,7 +172,8 @@ function SellerForm() {
           <label className="block">
             <span className="field-label">{t('sellerForm.state')} *</span>
             <input
-              value="Gujarat"
+              type="text"
+              value={t('Gujarat')}
               readOnly
               disabled
               className="field-control w-full bg-slate-100 text-slate-600"
@@ -185,7 +187,7 @@ function SellerForm() {
               <option value="">{t('sellerForm.selectDistrict')}</option>
               {gujaratDistricts.map((district) => (
                 <option key={district} value={district}>
-                  {district}
+                  {t(district)}
                 </option>
               ))}
             </select>
@@ -202,7 +204,7 @@ function SellerForm() {
               <option value="">{selectedDistrict ? t('sellerForm.selectTaluka') : t('sellerForm.selectDistrictFirst')}</option>
               {subDistrictOptions.map((subDistrict) => (
                 <option key={subDistrict} value={subDistrict}>
-                  {subDistrict}
+                  {t(subDistrict)}
                 </option>
               ))}
             </select>
@@ -224,7 +226,7 @@ function SellerForm() {
               <option value="">{selectedTaluka ? t('sellerForm.selectVillage') : t('sellerForm.selectTalukaFirst')}</option>
               {villageOptions.map((village) => (
                 <option key={village} value={village}>
-                  {village}
+                  {t(village)}
                 </option>
               ))}
             </select>

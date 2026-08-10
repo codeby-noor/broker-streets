@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Bell, CheckCheck, Trash2 } from 'lucide-react';
 import ProfileSubPageShell from '../components/ProfileSubPageShell';
 import { getNotifications, onNotificationsChanged, writeStorage } from '../utils/storage';
+import { useLanguage } from '../i18n/LanguageContext';
 
 const sampleNotifications = [
   { id: 'n1', type: 'Property Approved', message: 'Your flat listing was approved by admin.', read: false, createdAt: 'Today' },
@@ -10,6 +11,7 @@ const sampleNotifications = [
 ];
 
 function ProfileNotificationsPage() {
+  const { t } = useLanguage();
   const [notifications, setNotifications] = useState(() => getNotifications() || sampleNotifications);
 
   useEffect(() => {
@@ -35,9 +37,9 @@ function ProfileNotificationsPage() {
   };
 
   return (
-    <ProfileSubPageShell title="Notifications" description="Updates and account activity">
+    <ProfileSubPageShell title={t('profile.notifications')} description={t('profile.notificationsDescription')}>
       <div className="profile-subpage-actions">
-        <button type="button" onClick={handleClearNotifications} className="profile-subpage-secondary-button">Clear All</button>
+        <button type="button" onClick={handleClearNotifications} className="profile-subpage-secondary-button">{t('profile.clearAll')}</button>
       </div>
 
       {notifications.length ? (
@@ -47,20 +49,20 @@ function ProfileNotificationsPage() {
               <div className="profile-subpage-card-body">
                 <div className="profile-subpage-card-head compact-head">
                   <div>
-                    <p className="profile-subpage-kicker">{item.createdAt || 'Update'}</p>
+                    <p className="profile-subpage-kicker">{item.createdAt || t('profile.recentlyUpdated')}</p>
                     <h3>{item.type}</h3>
                   </div>
-                  <span className={`profile-status-badge ${item.read ? 'inactive' : 'active'}`}>{item.read ? 'Read' : 'New'}</span>
+                  <span className={`profile-status-badge ${item.read ? 'inactive' : 'active'}`}>{item.read ? t('profile.markRead') : t('profile.newBadge')}</span>
                 </div>
                 <p className="profile-subpage-copy">{item.message}</p>
                 <div className="profile-subpage-actions-row">
                   {!item.read ? (
                     <button type="button" onClick={() => markNotificationRead(item.id)} className="profile-subpage-row-button">
-                      <CheckCheck size={15} /> Mark Read
+                      <CheckCheck size={15} /> {t('profile.markRead')}
                     </button>
                   ) : null}
                   <button type="button" onClick={() => deleteNotification(item.id)} className="profile-subpage-row-button danger">
-                    <Trash2 size={15} /> Delete
+                    <Trash2 size={15} /> {t('common.delete')}
                   </button>
                 </div>
               </div>
@@ -70,7 +72,7 @@ function ProfileNotificationsPage() {
       ) : (
         <div className="profile-empty-state">
           <Bell size={28} />
-          <p>No notifications</p>
+          <p>{t('profile.noNotificationsYet')}</p>
         </div>
       )}
     </ProfileSubPageShell>

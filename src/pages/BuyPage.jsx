@@ -171,38 +171,44 @@ function BuyPage() {
       <div className="flex items-center justify-between gap-4">
         <div className="flex items-center gap-2">
           <Filter size={18} className="text-sage" />
-          <h2 className="text-lg font-semibold text-ink">Land filters</h2>
+          <h2 className="text-lg font-semibold text-ink">{t('buy.filterHeading')}</h2>
         </div>
         <button type="button" onClick={clearFilters} className="text-xs font-bold uppercase tracking-[0.12em] text-sage">
-          Reset
+          {t('buy.reset')}
         </button>
       </div>
 
       <label>
-        <span className="field-label">Property Type</span>
+        <span className="field-label">{t('buy.propertyType')}</span>
         <select value={type} onChange={change(setType)} className="field-control">
-          <option value="All types">All types</option>
+          <option value="All types">{t('buy.allTypes')}</option>
           {propertyTypes.map((item) => (
-            <option key={item} value={item}>{item}</option>
+            <option key={item} value={item}>
+              {item === 'Agricultural Land' ? t('buyerForm.agriculturalLand') : item === 'Non-Agricultural Land' ? t('buyerForm.nonAgriculturalLand') : item}
+            </option>
           ))}
         </select>
       </label>
 
       <label>
-        <span className="field-label">District</span>
+        <span className="field-label">{t('buy.district')}</span>
         <select value={selectedDistrict} onChange={(event) => { setSelectedDistrict(event.target.value); setPage(1); }} className="field-control">
           {districtOptions.map((district) => (
-            <option key={district} value={district}>{district}</option>
+            <option key={district} value={district}>
+              {district === 'All districts' ? t('buy.allDistricts') : t(district)}
+            </option>
           ))}
         </select>
       </label>
 
       {selectedDistrict !== 'All districts' ? (
         <label>
-          <span className="field-label">Taluka</span>
+          <span className="field-label">{t('common.taluka')}</span>
           <select value={selectedTaluka} onChange={(event) => { setSelectedTaluka(event.target.value); setPage(1); }} className="field-control">
             {talukaOptions.map((taluka) => (
-              <option key={taluka} value={taluka}>{taluka}</option>
+              <option key={taluka} value={taluka}>
+                {taluka === 'All talukas' ? t('buy.allTalukas') : t(taluka)}
+              </option>
             ))}
           </select>
         </label>
@@ -210,62 +216,64 @@ function BuyPage() {
 
       {selectedDistrict !== 'All districts' && selectedTaluka !== 'All talukas' ? (
         <label>
-          <span className="field-label">Village</span>
+          <span className="field-label">{t('buy.village')}</span>
           <select value={selectedVillage} onChange={(event) => { setSelectedVillage(event.target.value); setPage(1); }} className="field-control">
             {villageOptions.map((village) => (
-              <option key={village} value={village}>{village}</option>
+              <option key={village} value={village}>
+                {village === 'All villages' ? t('buy.allVillages') : t(village)}
+              </option>
             ))}
           </select>
         </label>
       ) : null}
 
       <div>
-        <span className="field-label">Price</span>
+        <span className="field-label">{t('buy.price')}</span>
         <div className="grid grid-cols-2 gap-3">
           <input
-            aria-label="Minimum price"
+            aria-label={t('buy.minPrice')}
             type="number"
             min="0"
             value={minPrice}
             onChange={change(setMinPrice)}
             className="field-control"
-            placeholder="Minimum"
+            placeholder={t('buy.minPrice')}
           />
           <input
-            aria-label="Maximum price"
+            aria-label={t('buy.maxPrice')}
             type="number"
             min="0"
             value={maxPrice}
             onChange={change(setMaxPrice)}
             className="field-control"
-            placeholder="Maximum"
+            placeholder={t('buy.maxPrice')}
           />
         </div>
       </div>
 
       <label>
-        <span className="field-label">Land Area</span>
+        <span className="field-label">{t('buy.landArea')}</span>
         <select value={landArea} onChange={change(setLandArea)} className="field-control">
-          <option value="Any area">Any area</option>
-          <option value="Under 1000 Sq Ft">Under 1000 Sq Ft</option>
-          <option value="1000–5000 Sq Ft">1000–5000 Sq Ft</option>
-          <option value="5000+ Sq Ft">5000+ Sq Ft</option>
+          <option value="Any area">{t('buy.allAreas')}</option>
+          <option value="Under 1000 Sq Ft">{t('dropdown.under1000SqFt')}</option>
+          <option value="1000–5000 Sq Ft">{t('dropdown.sqFt1000To5000')}</option>
+          <option value="5000+ Sq Ft">{t('dropdown.sqFt5000Plus')}</option>
         </select>
       </label>
 
       <label>
-        <span className="field-label">Sort by</span>
+        <span className="field-label">{t('buy.sortBy')}</span>
         <select value={sort} onChange={change(setSort)} className="field-control">
-          <option value="relevance">Relevance</option>
-          <option value="newest">Newest</option>
-          <option value="price_asc">Price: low to high</option>
-          <option value="price_desc">Price: high to low</option>
+          <option value="relevance">{t('dropdown.relevance')}</option>
+          <option value="newest">{t('dropdown.newest')}</option>
+          <option value="price_asc">{t('dropdown.priceLowToHigh')}</option>
+          <option value="price_desc">{t('dropdown.priceHighToLow')}</option>
         </select>
       </label>
 
       <label className="flex items-center gap-2 rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3">
         <input type="checkbox" checked={showSoldProperties} onChange={(event) => { setShowSoldProperties(event.target.checked); setPage(1); }} className="h-4 w-4 rounded border-slate-300 text-primary focus:ring-primary" />
-        <span className="text-sm font-medium text-slate-700">Show sold properties</span>
+        <span className="text-sm font-medium text-slate-700">{t('buy.showSold')}</span>
       </label>
     </div>
   );
@@ -283,7 +291,7 @@ function BuyPage() {
       <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-10 lg:px-12">
         {location.state?.justSubmitted && (
           <div className="mb-8 flex items-center justify-between border border-blue-200 bg-blue-50 px-5 py-4 text-sm font-semibold text-primary">
-            <span>Your land preference has been received.</span>
+            <span>{t('contact.modalDescription')}</span>
             <button type="button" onClick={() => window.history.replaceState({}, '', '/buy')}>
               <X size={18} />
             </button>
@@ -379,10 +387,10 @@ function BuyPage() {
                 </label>
                 <label className="flex items-center gap-1 border border-stone-200 bg-white px-3">
                   <select value={sort} onChange={change(setSort)} className="border-0 bg-transparent text-sm outline-none">
-                    <option value="relevance">Relevance</option>
-                    <option value="newest">Newest</option>
-                    <option value="price_asc">Price: low to high</option>
-                    <option value="price_desc">Price: high to low</option>
+                    <option value="relevance">{t('dropdown.relevance')}</option>
+                    <option value="newest">{t('dropdown.newest')}</option>
+                    <option value="price_asc">{t('dropdown.priceLowToHigh')}</option>
+                    <option value="price_desc">{t('dropdown.priceHighToLow')}</option>
                   </select>
                   <ChevronDown size={15} />
                 </label>

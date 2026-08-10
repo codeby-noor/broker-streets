@@ -12,7 +12,7 @@ function SellerDashboard() {
   const [listings, setListings] = useState(() => readStorage(STORAGE_KEYS.listings, []));
   const [selectedListing, setSelectedListing] = useState(location.state?.listing || null);
   const [deleteTarget, setDeleteTarget] = useState(null);
-  const { t } = useLanguage();
+  const { t, getPropertyDisplayTitle } = useLanguage();
   const statusLabel = (status) => ({
     Available: t('profile.available'),
     Sold: t('profile.sold'),
@@ -118,7 +118,7 @@ function SellerDashboard() {
                     <AsyncImage property={listing} alt={listing.title} className="h-20 w-24 rounded-2xl object-cover" containerClassName="h-20 w-24 overflow-hidden rounded-2xl" />
                     <div>
                       <div className="flex items-center gap-2">
-                        <h3 className="text-lg font-semibold text-ink">{listing.title}</h3>
+                        <h3 className="text-lg font-semibold text-ink">{getPropertyDisplayTitle(listing.title)}</h3>
                         <span className={`rounded-full px-3 py-1 text-xs font-semibold ${listing.status === 'Sold' ? 'bg-amber-500/15 text-amber-700' : listing.status === 'Pending' ? 'bg-slate-700/10 text-slate-700' : 'bg-success/15 text-success'}`}>{statusLabel(listing.status)}</span>
                       </div>
                       <p className="mt-2 flex items-center gap-2 text-sm text-muted"><MapPin size={14} className="text-primary" />{listing.address}, {listing.city}</p>
@@ -141,7 +141,7 @@ function SellerDashboard() {
             <p className="eyebrow">{t('sellerDashboard.selectedListing')}</p>
             {selectedListing ? (
               <>
-                <h3 className="mt-3 text-xl font-semibold text-ink">{selectedListing.title}</h3>
+                <h3 className="mt-3 text-xl font-semibold text-ink">{getPropertyDisplayTitle(selectedListing.title)}</h3>
                 <p className="mt-3 text-sm leading-7 text-muted">{selectedListing.description}</p>
                 <div className="mt-6 space-y-3 rounded-[24px] border border-slate-200 bg-slate-50 p-4 text-sm text-slate-700">
                   <div className="flex items-center justify-between"><span>{t('common.price')}</span><strong>{selectedListing.price}</strong></div>

@@ -48,9 +48,6 @@ function RegisterPage() {
     };
 
     writeUsers([...(Array.isArray(existingUsers) ? existingUsers : []), userRecord]);
-    setUser(userRecord);
-    localStorage.setItem(STORAGE_KEYS.currentUserMobile, normalizedMobile);
-    localStorage.setItem(STORAGE_KEYS.currentUserId, userRecord.id);
 
     setSubmitting(true);
     const otpResult = sendOTP(normalizedMobile);

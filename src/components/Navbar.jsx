@@ -4,13 +4,15 @@ import { Menu, X } from 'lucide-react';
 import logo from '../assets/images/logo.png';
 import { getSubmissionDestination } from '../utils/formNavigation';
 import { useLanguage } from '../i18n/LanguageContext';
+import { useUserStore } from '../store/useUserStore';
 
 function Navbar() {
   const location = useLocation();
   const navigate = useNavigate();
   const { t, language, setLanguage } = useLanguage();
+  const isAuthenticated = useUserStore((state) => state.isAuthenticated);
   const [menuOpen, setMenuOpen] = useState(false);
-  const hideNav = ['/', '/otp'].includes(location.pathname);
+  const hideNav = ['/otp'].includes(location.pathname);
 
   const navItems = [
     { label: t('nav.home'), to: '/home' },
@@ -44,7 +46,7 @@ function Navbar() {
   return (
     <header className="sticky top-0 z-50 border-b border-slate-200/70 bg-background/95 backdrop-blur-sm supports-[backdrop-filter]:bg-background/90">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-3 py-3 sm:px-6 lg:px-8">
-        <Link to={hideNav ? '/' : '/home'} className="flex items-center gap-3">
+        <Link to="/home" className="flex items-center gap-3">
           <img src={logo} alt="Broker Streets logo" className="h-9 w-auto object-contain sm:h-12" />
           <span className="hidden text-lg font-semibold tracking-tight text-ink sm:inline-block">Broker Streets</span>
         </Link>
@@ -88,9 +90,20 @@ function Navbar() {
                 <button type="button" onClick={() => setLanguage('en')} className={`rounded-full px-2 py-1 text-xs font-semibold ${language === 'en' ? 'bg-sage text-white' : 'text-slate-700'}`}>EN</button>
                 <button type="button" onClick={() => setLanguage('gu')} className={`rounded-full px-2 py-1 text-xs font-semibold ${language === 'gu' ? 'bg-sage text-white' : 'text-slate-700'}`}>ગુજરાતી</button>
               </div>
-              <Link to="/profile" className="inline-flex h-12 items-center justify-center rounded-full border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-800 shadow-sm transition hover:bg-slate-50">
-                {t('nav.profile')}
-              </Link>
+              {isAuthenticated ? (
+                <Link to="/profile" className="inline-flex h-12 items-center justify-center rounded-full border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-800 shadow-sm transition hover:bg-slate-50">
+                  {t('nav.profile')}
+                </Link>
+              ) : (
+                <div className="flex items-center gap-2">
+                  <Link to="/login" className="inline-flex h-10 items-center justify-center rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-800 shadow-sm transition hover:bg-slate-50">
+                    {t('auth.login')}
+                  </Link>
+                  <Link to="/register" className="inline-flex h-10 items-center justify-center rounded-full bg-sage px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-sage-dark">
+                    {t('auth.register')}
+                  </Link>
+                </div>
+              )}
             </div>
 
             <button
@@ -133,13 +146,32 @@ function Navbar() {
                     <button type="button" onClick={() => { setLanguage('gu'); setMenuOpen(false); }} className={`rounded-full px-3 py-2 text-sm font-semibold ${language === 'gu' ? 'bg-sage text-white' : 'text-slate-700'}`}>ગુજરાતી</button>
                   </div>
                 </div>
-                <Link
-                  to="/profile"
-                  onClick={() => setMenuOpen(false)}
-                  className="block rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3.5 text-center text-base font-semibold text-slate-900 transition hover:bg-slate-100"
-                >
-                  {t('nav.profile')}
-                </Link>
+                {isAuthenticated ? (
+                  <Link
+                    to="/profile"
+                    onClick={() => setMenuOpen(false)}
+                    className="block rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3.5 text-center text-base font-semibold text-slate-900 transition hover:bg-slate-100"
+                  >
+                    {t('nav.profile')}
+                  </Link>
+                ) : (
+                  <div className="grid grid-cols-2 gap-2 pt-1">
+                    <Link
+                      to="/login"
+                      onClick={() => setMenuOpen(false)}
+                      className="block rounded-2xl border border-slate-200 bg-white px-4 py-3 text-center text-base font-semibold text-slate-900 transition hover:bg-slate-50"
+                    >
+                      {t('auth.login')}
+                    </Link>
+                    <Link
+                      to="/register"
+                      onClick={() => setMenuOpen(false)}
+                      className="block rounded-2xl bg-sage px-4 py-3 text-center text-base font-semibold text-white transition hover:bg-sage-dark"
+                    >
+                      {t('auth.register')}
+                    </Link>
+                  </div>
+                )}
               </div>
             </div>
           </div>

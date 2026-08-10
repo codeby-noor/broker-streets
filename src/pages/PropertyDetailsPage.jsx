@@ -1,4 +1,4 @@
-﻿import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { ArrowLeft, ChevronLeft, ChevronRight, Download, ExternalLink, FileText, Heart, MapPin, Maximize2, Phone, Share2, ShieldCheck, X } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
@@ -9,22 +9,152 @@ import PropertyCard from '../components/PropertyCard';
 import AsyncImage from '../components/AsyncImage';
 import ContactModal from '../components/ContactModal';
 import SectionHeading from '../components/SectionHeading';
-import { addRecentlyViewed, isPropertySaved, toggleSavedProperty } from '../utils/storage';
 import { useLanguage } from '../i18n/LanguageContext';
+import logo from '../assets/images/logo.png';
 
-const formatPrice = (value) => {
+const formatPrice = (value, t, isGujarati) => {
   if (typeof value === 'number') return `₹${value.toLocaleString('en-IN')}`;
   if (typeof value === 'string') {
     const trimmed = value.trim();
-    if (!trimmed) return 'Not Provided';
+    if (!trimmed || trimmed.toLowerCase() === 'not provided' || trimmed.toLowerCase() === 'price on request') {
+      return isGujarati ? 'કિંમત માટે સંપર્ક કરો' : 'Price on request';
+    }
     return trimmed.startsWith('₹') ? trimmed : trimmed;
   }
-  return 'Not Provided';
+  return isGujarati ? 'કિંમત માટે સંપર્ક કરો' : 'Price on request';
+};
+
+const translateLocation = (val, t, isGujarati) => {
+  if (!val && val !== 0) return isGujarati ? 'આપેલ નથી' : 'Not provided';
+  const str = String(val).trim();
+  if (!str || str.toLowerCase() === 'not provided' || str.toLowerCase() === 'location pending') {
+    return isGujarati ? 'આપેલ નથી' : 'Not provided';
+  }
+  const translated = t(str);
+  return translated || str;
+};
+
+const translatePropertyType = (typeStr, t, isGujarati) => {
+  if (!typeStr) return isGujarati ? 'જમીન' : 'Land';
+  const str = String(typeStr).trim();
+  if (str === 'Agricultural Land') return isGujarati ? 'ખેતીની જમીન' : 'Agricultural Land';
+  if (str === 'Non-Agricultural Land') return isGujarati ? 'બિનખેતી જમીન' : 'Non-Agricultural Land';
+  if (str === 'Residential') return isGujarati ? 'રહેણાંક' : 'Residential';
+  if (str === 'Commercial') return isGujarati ? 'વ્યાવસાયિક' : 'Commercial';
+  if (str === 'Villa') return isGujarati ? 'વિલા' : 'Villa';
+  if (str === 'Apartment') return isGujarati ? 'એપાર્ટમેન્ટ' : 'Apartment';
+  if (str === 'House') return isGujarati ? 'મકાન' : 'House';
+  if (str === 'Plot') return isGujarati ? 'પ્લોટ' : 'Plot';
+  if (str === 'Farm House') return isGujarati ? 'ફાર્મ હાઉસ' : 'Farm House';
+  if (str === 'Office') return isGujarati ? 'ઓફિસ' : 'Office';
+  if (str === 'Industrial') return isGujarati ? 'ઔદ્યોગિક' : 'Industrial';
+  const lookedUp = t(str);
+  if (lookedUp && lookedUp !== str) return lookedUp;
+  return str;
+};
+
+const translateStatus = (statusStr, isGujarati) => {
+  if (!statusStr) return isGujarati ? 'ઉપલબ્ધ' : 'Available';
+  const str = String(statusStr).trim();
+  if (str === 'Sold' || str.toLowerCase() === 'sold') return isGujarati ? 'વેચાયેલ' : 'Sold';
+  if (str === 'Pending' || str.toLowerCase() === 'pending') return isGujarati ? 'બાકી' : 'Pending';
+  if (str === 'Available' || str.toLowerCase() === 'available') return isGujarati ? 'ઉપલબ્ધ' : 'Available';
+  return str;
+};
+
+const translatePriceUnit = (unitStr, isGujarati) => {
+  if (!unitStr || String(unitStr).trim() === '') {
+    return isGujarati ? 'કિંમત એકમ ઉપલબ્ધ નથી' : 'Price unit not available';
+  }
+  const str = String(unitStr).trim();
+  if (isGujarati) {
+    if (/sq\.?yard\s*\(var\)/i.test(str) || /sq\.?yard/i.test(str) || /var/i.test(str)) return 'ચોરસ વાર';
+    if (/sq\.?ft/i.test(str) || /sqft/i.test(str)) return 'ચોરસ ફૂટ';
+    if (/acre/i.test(str)) return 'એકર';
+    if (/vigha/i.test(str) || /bigha/i.test(str)) return 'વીઘા';
+    if (/total/i.test(str)) return 'કુલ કિંમત';
+  }
+  return str;
+};
+
+const translateArea = (areaStr, isGujarati) => {
+  if (!areaStr || String(areaStr).trim() === '' || String(areaStr).toLowerCase() === 'area not specified') {
+    return isGujarati ? 'વિસ્તાર ઉપલબ્ધ નથી' : 'Area not specified';
+  }
+  const str = String(areaStr).trim();
+  if (!isGujarati) return str;
+
+  let translated = str
+    .replace(/Sq\.Yard\s*\(Var\)/gi, 'ચોરસ વાર')
+    .replace(/sq\.yard\s*\(var\)/gi, 'ચોરસ વાર')
+    .replace(/sq\.?yard/gi, 'ચોરસ વાર')
+    .replace(/sq\s*yd/gi, 'ચોરસ વાર')
+    .replace(/Sq\.Ft/gi, 'ચોરસ ફૂટ')
+    .replace(/sq\.?ft/gi, 'ચોરસ ફૂટ')
+    .replace(/sqft/gi, 'ચોરસ ફૂટ')
+    .replace(/Acres?/gi, 'એકર')
+    .replace(/acre/gi, 'એકર')
+    .replace(/Vigha/gi, 'વીઘા')
+    .replace(/vigha/gi, 'વીઘા')
+    .replace(/Bigha/gi, 'વીઘા')
+    .replace(/bigha/gi, 'વીઘા')
+    .replace(/Hectares?/gi, 'હેક્ટર');
+
+  return translated;
+};
+
+const translateValueOrFallback = (val, t, isGujarati) => {
+  if (val === true) return isGujarati ? 'હા' : 'Yes';
+  if (val === false) return isGujarati ? 'ના' : 'No';
+  if (val === undefined || val === null) return isGujarati ? 'આપેલ નથી' : 'Not provided';
+  const str = String(val).trim();
+  if (!str) return isGujarati ? 'આપેલ નથી' : 'Not provided';
+
+  const lower = str.toLowerCase();
+  if (lower === 'yes') return isGujarati ? 'હા' : 'Yes';
+  if (lower === 'no') return isGujarati ? 'ના' : 'No';
+  if (lower === 'available') return isGujarati ? 'ઉપલબ્ધ' : 'Available';
+  if (lower === 'sold') return isGujarati ? 'વેચાયેલ' : 'Sold';
+  if (lower === 'pending') return isGujarati ? 'બાકી' : 'Pending';
+  if (lower === 'not provided') return isGujarati ? 'આપેલ નથી' : 'Not provided';
+  if (lower === 'not available') return isGujarati ? 'ઉપલબ્ધ નથી' : 'Not available';
+  if (lower === 'area not specified') return isGujarati ? 'વિસ્તાર ઉપલબ્ધ નથી' : 'Area not specified';
+  if (lower === 'price on request') return isGujarati ? 'કિંમત માટે સંપર્ક કરો' : 'Price on request';
+  if (lower === 'unknown' || lower === 'n/a') return isGujarati ? 'આપેલ નથી' : 'Not provided';
+
+  if (lower === 'road access' || lower === 'tar road' || lower === 'paved') return isGujarati ? 'પાકો રસ્તો' : str;
+  if (lower === 'highway touch') return isGujarati ? 'હાઇવે ટચ' : str;
+  if (lower === 'north') return isGujarati ? 'ઉત્તર' : 'North';
+  if (lower === 'south') return isGujarati ? 'દક્ષિણ' : 'South';
+  if (lower === 'east') return isGujarati ? 'પૂર્વ' : 'East';
+  if (lower === 'west') return isGujarati ? 'પશ્ચિમ' : 'West';
+  if (lower === 'north-east' || lower === 'northeast') return isGujarati ? 'ઉત્તર-પૂર્વ' : str;
+  if (lower === 'north-west' || lower === 'northwest') return isGujarati ? 'ઉત્તર-પશ્ચિમ' : str;
+  if (lower === 'south-east' || lower === 'southeast') return isGujarati ? 'દક્ષિણ-પૂર્વ' : str;
+  if (lower === 'south-west' || lower === 'southwest') return isGujarati ? 'દક્ષિણ-પશ્ચિમ' : str;
+  if (lower === 'black soil') return isGujarati ? 'કાળી માટી' : str;
+  if (lower === 'red soil') return isGujarati ? 'લાલ માટી' : str;
+  if (lower === 'alluvial soil') return isGujarati ? 'કાંપની માટી' : str;
+  if (lower === 'freehold') return isGujarati ? 'ફ્રીહોલ્ડ' : str;
+  if (lower === 'leasehold') return isGujarati ? 'લીઝહોલ્ડ' : str;
+  if (lower === 'single owner') return isGujarati ? 'એકલ માલિક' : str;
+
+  const locOrDict = t(str);
+  if (locOrDict && locOrDict !== str) return locOrDict;
+
+  return str;
+};
+
+const translateDocumentName = (docName, isGujarati) => {
+  if (!docName || docName === '7/12 Document' || docName.includes('7/12')) {
+    return isGujarati ? '૭/૧૨ દસ્તાવેજ' : '7/12 Document';
+  }
+  return docName;
 };
 
 function PropertyDetailsPage() {
   const navigate = useNavigate();
-  const { t } = useLanguage();
+  const { t, getPropertyDisplayTitle, isGujarati } = useLanguage();
   const { id } = useParams();
   const [property, setProperty] = useState(null);
   const [sourceProperties, setSourceProperties] = useState([]);
@@ -91,37 +221,35 @@ function PropertyDetailsPage() {
     candidates.forEach((entry) => {
       if (Array.isArray(entry)) {
         entry.forEach((item) => {
-          if (typeof item === 'string' && item) normalized.push(item);
+          if (typeof item === 'string' && item && !item.toLowerCase().startsWith('blob:')) normalized.push(item);
         });
       }
     });
 
-    if (!normalized.length && property?.image) normalized.push(property.image);
-    if (!normalized.length) normalized.push('https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=1400&q=85');
+    if (!normalized.length && property?.image && !property.image.toLowerCase().startsWith('blob:')) normalized.push(property.image);
+    if (!normalized.length) normalized.push(logo);
     return normalized.filter((item, index, array) => array.indexOf(item) === index);
   }, [property]);
 
   const overviewItems = useMemo(() => {
     const items = [];
-    const addItem = (label, value, fallback) => {
-      const resolved = value ?? fallback;
-      if (resolved === undefined || resolved === null || resolved === '') return;
-      if (typeof resolved === 'string' && resolved.trim() === '') return;
-      if (typeof resolved === 'string' && resolved.toLowerCase() === 'not provided') return;
-      items.push({ label, value: resolved });
+    const addItem = (label, value) => {
+      if (value === undefined || value === null || value === '') return;
+      if (typeof value === 'string' && value.trim() === '') return;
+      items.push({ label, value });
     };
 
-    addItem(t('common.propertyType'), property?.type || property?.propertyType);
-    addItem(t('common.area'), property?.landArea || property?.area);
-    addItem(t('common.price'), formatPrice(property?.priceAmount || property?.price));
-    addItem(t('common.priceUnit'), property?.priceUnit);
-    addItem(t('common.district'), property?.district || property?.location);
-    addItem(t('common.taluka'), property?.subDistrict || property?.taluka);
-    addItem(t('common.village'), property?.village);
-    addItem(t('common.state'), property?.state || t('propertyDetails.stateFallback'));
+    addItem(t('common.propertyType'), translatePropertyType(property?.type || property?.propertyType, t, isGujarati));
+    addItem(t('common.area'), translateArea(property?.landArea || property?.area, isGujarati));
+    addItem(t('common.price'), formatPrice(property?.priceAmount || property?.price, t, isGujarati));
+    addItem(t('common.priceUnit'), translatePriceUnit(property?.priceUnit, isGujarati));
+    addItem(t('common.district'), translateLocation(property?.district || property?.location, t, isGujarati));
+    addItem(t('common.taluka'), translateLocation(property?.subDistrict || property?.taluka, t, isGujarati));
+    addItem(t('common.village'), translateLocation(property?.village, t, isGujarati));
+    addItem(t('common.state'), translateLocation(property?.state || t('propertyDetails.stateFallback'), t, isGujarati));
 
     return items;
-  }, [property]);
+  }, [property, t, isGujarati]);
 
   const featureItems = useMemo(() => {
     if (!property) return [];
@@ -141,13 +269,14 @@ function PropertyDetailsPage() {
 
     return featureMap.map((item) => ({
       label: item.label,
-      value: item.value || t('common.notProvided'),
+      value: translateValueOrFallback(item.value, t, isGujarati),
       available: Boolean(item.value),
     }));
-  }, [property]);
+  }, [property, t, isGujarati]);
 
   const documentItems = useMemo(() => {
     const documents = [];
+    const cleanUrl = (u) => (typeof u === 'string' && u.toLowerCase().startsWith('blob:') ? '#' : u || '');
     const pushDocument = (entry) => {
       if (!entry) return;
       if (Array.isArray(entry)) {
@@ -155,13 +284,20 @@ function PropertyDetailsPage() {
         return;
       }
       if (typeof entry === 'string') {
-        documents.push({ name: '7/12 Document', url: entry, type: entry.toLowerCase().endsWith('.pdf') ? 'application/pdf' : 'image/*' });
+        documents.push({
+          rawName: entry,
+          displayName: '7/12 Document',
+          url: cleanUrl(entry),
+          type: entry.toLowerCase().endsWith('.pdf') ? 'application/pdf' : 'image/*'
+        });
         return;
       }
       if (entry && typeof entry === 'object') {
+        const docUrl = cleanUrl(entry.url || entry.href || entry.link || entry.fileUrl);
         documents.push({
-          name: entry.name || '7/12 Document',
-          url: entry.url || entry.href || entry.link || entry.fileUrl || '',
+          rawName: entry.name || '7/12 Document',
+          displayName: entry.name || '7/12 Document',
+          url: docUrl,
           type: entry.type || 'application/pdf',
         });
       }
@@ -175,7 +311,13 @@ function PropertyDetailsPage() {
     pushDocument(property?.documents);
 
     if (!documents.length && (property?.documentUrl || property?.pdf || property?.propertyDocument)) {
-      documents.push({ name: '7/12 Document', url: property.documentUrl || property.pdf || property.propertyDocument?.url || '', type: 'application/pdf' });
+      const docUrl = cleanUrl(property.documentUrl || property.pdf || property.propertyDocument?.url);
+      documents.push({
+        rawName: '7/12 Document',
+        displayName: '7/12 Document',
+        url: docUrl,
+        type: 'application/pdf'
+      });
     }
 
     return documents.slice(0, 1);
@@ -209,12 +351,29 @@ function PropertyDetailsPage() {
   };
 
   if (!property) {
-    return <div className="border border-slate-200 bg-white p-8 shadow-card"><h1 className="text-3xl font-semibold text-ink">{t('propertyDetails.notFound')}</h1><p className="mt-3 text-muted">{t('propertyDetails.unavailable')}</p><button type="button" onClick={() => navigate(getSubmissionDestination('buyerFormSubmitted', '/buyer-form', '/buy'))} className="mt-6 rounded-full bg-primary px-5 py-3 text-sm font-semibold text-white">{t('propertyDetails.backToListings')}</button></div>;
+    return (
+      <div className="border border-slate-200 bg-white p-8 shadow-card">
+        <h1 className="text-3xl font-semibold text-ink">{t('propertyDetails.notFound')}</h1>
+        <p className="mt-3 text-muted">{t('propertyDetails.unavailable')}</p>
+        <button type="button" onClick={() => navigate(getSubmissionDestination('buyerFormSubmitted', '/buyer-form', '/buy'))} className="mt-6 rounded-full bg-primary px-5 py-3 text-sm font-semibold text-white">
+          {t('propertyDetails.backToListings')}
+        </button>
+      </div>
+    );
   }
 
-  const propertyTitle = property.title || property.name || t('propertyDetails.propertyTitleFallback');
+  const propertyTitle = getPropertyDisplayTitle(property.title || property.name || t('propertyDetails.propertyTitleFallback'));
   const propertyTypeLabel = property.type || property.propertyType || t('propertyDetails.propertyTypeFallback');
-  const propertyLocationLabel = [property?.state || t('propertyDetails.stateFallback'), property?.district || property?.location || '', property?.subDistrict || property?.taluka || '', property?.village || ''].filter(Boolean).join(' • ');
+  
+  const locationParts = [
+    property?.state || t('propertyDetails.stateFallback'),
+    property?.district || property?.location || '',
+    property?.subDistrict || property?.taluka || '',
+    property?.village || '',
+  ].filter(Boolean).map((part) => translateLocation(part, t, isGujarati));
+
+  const propertyLocationLabel = locationParts.join(' • ');
+
   const postedDate = property.uploadedDate || property.submittedAt || property.createdAt || property.updatedAt || t('propertyDetails.recentlyListed');
   const sellerName = property.seller?.name || property.sellerName || property.owner || property.ownerName || t('propertyDetails.sellerNameFallback');
   const sellerPhone = property.seller?.phone || property.sellerPhone || property.ownerMobile || property.mobile || '';
@@ -240,12 +399,23 @@ function PropertyDetailsPage() {
                   <AsyncImage src={galleryImages[activeIndex] || galleryImages[0]} alt={propertyTitle} className="h-full w-full object-cover" onClick={() => setZoomOpen(true)} />
                   <div className="absolute inset-x-0 top-0 flex items-center justify-between p-4 sm:p-6">
                     <div className="flex flex-wrap items-center gap-2">
-                      <span className="rounded-full bg-white/95 px-3 py-1.5 text-xs font-semibold text-ink shadow-sm">{propertyTypeLabel}</span>
-                      {property?.verified ? <span className="rounded-full bg-emerald-600/90 px-3 py-1.5 text-xs font-semibold text-white shadow-sm"><ShieldCheck size={13} className="mr-1 inline" />Verified listing</span> : null}
+                      <span className="rounded-full bg-white/95 px-3 py-1.5 text-xs font-semibold text-ink shadow-sm">
+                        {translatePropertyType(propertyTypeLabel, t, isGujarati)}
+                      </span>
+                      {property?.verified ? (
+                        <span className="rounded-full bg-emerald-600/90 px-3 py-1.5 text-xs font-semibold text-white shadow-sm">
+                          <ShieldCheck size={13} className="mr-1 inline" />
+                          {t('propertyDetails.verifiedListing')}
+                        </span>
+                      ) : null}
                     </div>
                     <div className="flex items-center gap-2">
-                      <button type="button" aria-label="Share property" onClick={handleShare} className="rounded-full bg-white/95 p-3 text-ink shadow-sm transition hover:bg-white"><Share2 size={17} /></button>
-                      <button type="button" aria-label="Save property" onClick={() => { const next = toggleSavedProperty(property); setIsSaved(next.some((item) => String(item.id) === String(property.id))); }} className="rounded-full bg-white/95 p-3 text-ink shadow-sm transition hover:bg-white">{isSaved ? <Heart size={17} className="text-rose-600" /> : <Heart size={17} />}</button>
+                      <button type="button" aria-label={t('propertyDetails.shareProperty')} onClick={handleShare} className="rounded-full bg-white/95 p-3 text-ink shadow-sm transition hover:bg-white">
+                        <Share2 size={17} />
+                      </button>
+                      <button type="button" aria-label={t('propertyDetails.saveProperty')} onClick={() => { const next = toggleSavedProperty(property); setIsSaved(next.some((item) => String(item.id) === String(property.id))); }} className="rounded-full bg-white/95 p-3 text-ink shadow-sm transition hover:bg-white">
+                        {isSaved ? <Heart size={17} className="text-rose-600" /> : <Heart size={17} />}
+                      </button>
                     </div>
                   </div>
                   <div className="absolute inset-x-0 bottom-4 flex items-center justify-between px-4 sm:px-6">
@@ -270,8 +440,12 @@ function PropertyDetailsPage() {
             <div className="flex flex-col justify-between border-t border-slate-200 p-4 sm:p-6 lg:border-l lg:border-t-0">
               <div>
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className={`rounded-full px-3 py-1.5 text-xs font-semibold ${propertyTypeLabel.toLowerCase().includes('agricultural') ? 'bg-emerald-100 text-emerald-700' : 'bg-sky-100 text-sky-700'}`}>{propertyTypeLabel}</span>
-                  <span className={`rounded-full px-3 py-1.5 text-xs font-semibold ${property.status === 'Sold' ? 'bg-amber-500/90 text-white' : 'bg-slate-800/90 text-white'}`}>{property.status || 'Available'}</span>
+                  <span className={`rounded-full px-3 py-1.5 text-xs font-semibold ${propertyTypeLabel.toLowerCase().includes('agricultural') ? 'bg-emerald-100 text-emerald-700' : 'bg-sky-100 text-sky-700'}`}>
+                    {translatePropertyType(propertyTypeLabel, t, isGujarati)}
+                  </span>
+                  <span className={`rounded-full px-3 py-1.5 text-xs font-semibold ${property.status === 'Sold' ? 'bg-amber-500/90 text-white' : 'bg-slate-800/90 text-white'}`}>
+                    {translateStatus(property.status, isGujarati)}
+                  </span>
                 </div>
                 <h1 className="mt-5 text-2xl font-semibold text-ink sm:text-4xl">{propertyTitle}</h1>
                 <div className="mt-4 flex items-center gap-2 text-sm text-slate-600">
@@ -282,27 +456,39 @@ function PropertyDetailsPage() {
                   <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">{t('propertyDetails.landPrice')}</p>
                   <div className="mt-2 flex items-end justify-between gap-3">
                     <div>
-                      <p className="text-2xl font-semibold text-ink sm:text-3xl">{formatPrice(property.priceAmount || property.price)}</p>
-                      <p className="mt-1 text-sm text-slate-600">{property.priceUnit || t('propertyDetails.priceUnitFallback')}</p>
+                      <p className="text-2xl font-semibold text-ink sm:text-3xl">{formatPrice(property.priceAmount || property.price, t, isGujarati)}</p>
+                      <p className="mt-1 text-sm text-slate-600">{translatePriceUnit(property.priceUnit, isGujarati)}</p>
                     </div>
-                    <div className="rounded-full bg-white px-3 py-2 text-sm font-semibold text-slate-700 shadow-sm">{property?.landArea || property?.area || 'Land area'}</div>
+                    <div className="rounded-full bg-white px-3 py-2 text-sm font-semibold text-slate-700 shadow-sm">
+                      {translateArea(property?.landArea || property?.area, isGujarati)}
+                    </div>
                   </div>
                 </div>
                 <div className="mt-5 flex flex-wrap gap-2 text-sm text-slate-600">
-                  <span className="rounded-full border border-slate-200 bg-white px-3 py-2">{t('propertyDetails.posted')}: {postedDate}</span>
-                  <span className="rounded-full border border-slate-200 bg-white px-3 py-2">{t('propertyDetails.verified')}: {property.verified ? t('propertyDetails.yes') : t('propertyDetails.no')}</span>
+                  <span className="rounded-full border border-slate-200 bg-white px-3 py-2">
+                    {t('propertyDetails.posted')}: {postedDate === 'Recently Listed' || postedDate === 'recently listed' ? t('propertyDetails.recentlyListed') : postedDate}
+                  </span>
+                  <span className="rounded-full border border-slate-200 bg-white px-3 py-2">
+                    {t('propertyDetails.verified')}: {property.verified ? t('propertyDetails.yes') : t('propertyDetails.no')}
+                  </span>
                 </div>
               </div>
 
               <div className="mt-6 flex flex-col gap-3 border-t border-slate-200 pt-6">
                 {sellerCall ? (
-                  <a href={sellerCall} className="inline-flex items-center justify-center gap-2 rounded-full bg-sage px-5 py-3 text-sm font-semibold text-white transition hover:bg-sage-dark"><Phone size={16} /> {t('propertyDetails.callSeller')}</a>
+                  <a href={sellerCall} className="inline-flex items-center justify-center gap-2 rounded-full bg-sage px-5 py-3 text-sm font-semibold text-white transition hover:bg-sage-dark">
+                    <Phone size={16} /> {t('propertyDetails.callSeller')}
+                  </a>
                 ) : null}
                 {sellerWhatsApp ? (
-                  <a href={sellerWhatsApp} target="_blank" rel="noreferrer" className="inline-flex items-center justify-center gap-2 rounded-full border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"><ExternalLink size={16} /> {t('common.whatsapp')}</a>
+                  <a href={sellerWhatsApp} target="_blank" rel="noreferrer" className="inline-flex items-center justify-center gap-2 rounded-full border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50">
+                    <ExternalLink size={16} /> {t('common.whatsapp')}
+                  </a>
                 ) : null}
                 {sellerMail ? (
-                  <a href={sellerMail} className="inline-flex items-center justify-center gap-2 rounded-full border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"><Download size={16} /> {t('propertyDetails.emailSeller')}</a>
+                  <a href={sellerMail} className="inline-flex items-center justify-center gap-2 rounded-full border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50">
+                    <Download size={16} /> {t('propertyDetails.emailSeller')}
+                  </a>
                 ) : null}
               </div>
             </div>
@@ -317,7 +503,7 @@ function PropertyDetailsPage() {
                 {overviewItems.map((item) => (
                   <div key={item.label} className="rounded-[20px] border border-slate-200 bg-slate-50 p-4">
                     <p className="text-[11px] font-semibold uppercase tracking-[0.3em] text-slate-500">{item.label}</p>
-                    <p className={`mt-2 text-sm font-semibold ${item.available ? 'text-ink' : 'text-slate-500'}`}>{item.value}</p>
+                    <p className="mt-2 text-sm font-semibold text-ink">{item.value}</p>
                   </div>
                 ))}
               </div>
@@ -342,15 +528,15 @@ function PropertyDetailsPage() {
                   <div className="grid gap-3 rounded-[20px] border border-slate-200 bg-slate-50 p-4 sm:grid-cols-3">
                     <div>
                       <p className="text-xs uppercase tracking-[0.2em] text-slate-500">{t('common.district')}</p>
-                      <p className="mt-1 font-semibold text-ink">{property.district || property.location || t('common.notProvided')}</p>
+                      <p className="mt-1 font-semibold text-ink">{translateLocation(property.district || property.location, t, isGujarati)}</p>
                     </div>
                     <div>
                       <p className="text-xs uppercase tracking-[0.2em] text-slate-500">{t('common.taluka')}</p>
-                      <p className="mt-1 font-semibold text-ink">{property.subDistrict || property.taluka || t('common.notProvided')}</p>
+                      <p className="mt-1 font-semibold text-ink">{translateLocation(property.subDistrict || property.taluka, t, isGujarati)}</p>
                     </div>
                     <div>
                       <p className="text-xs uppercase tracking-[0.2em] text-slate-500">{t('common.village')}</p>
-                      <p className="mt-1 font-semibold text-ink">{property.village || t('common.notProvided')}</p>
+                      <p className="mt-1 font-semibold text-ink">{translateLocation(property.village, t, isGujarati)}</p>
                     </div>
                   </div>
                   <a href={property.mapUrl || property.googleMaps || property.mapLink} target="_blank" rel="noreferrer" className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-primary bg-primary/10 px-4 py-3 text-sm font-semibold text-primary transition hover:bg-primary/15">
@@ -366,29 +552,35 @@ function PropertyDetailsPage() {
               <h2 className="text-2xl font-semibold text-ink">{t('propertyDetails.propertyDocuments')}</h2>
               <div className="mt-5 space-y-3">
                 {documentItems.length ? documentItems.map((document, index) => {
-                  const isImage = document.type?.startsWith('image') || /\.(png|jpg|jpeg|webp)$/i.test(document.name || '');
+                  const isImage = document.type?.startsWith('image') || /\.(png|jpg|jpeg|webp)$/i.test(document.rawName || '');
                   return (
-                    <div key={`${document.name}-${index}`} className="flex flex-col gap-3 rounded-[20px] border border-slate-200 bg-slate-50 p-4 sm:flex-row sm:items-center sm:justify-between">
+                    <div key={`${document.rawName}-${index}`} className="flex flex-col gap-3 rounded-[20px] border border-slate-200 bg-slate-50 p-4 sm:flex-row sm:items-center sm:justify-between">
                       <div className="flex items-center gap-3">
                         {isImage ? <Maximize2 size={18} className="text-sage" /> : <FileText size={18} className="text-sage" />}
                         <div>
-                          <p className="font-semibold text-ink">{document.name || '7/12 Document'}</p>
-                          <p className="text-sm text-slate-500">7/12 Document</p>
+                          <p className="font-semibold text-ink">{translateDocumentName(document.displayName, isGujarati)}</p>
+                          <p className="text-sm text-slate-500">{isGujarati ? '૭/૧૨ દસ્તાવેજ' : '7/12 Document'}</p>
                         </div>
                       </div>
                       <div className="flex flex-wrap gap-2">
-                        {isImage && document.url ? <a href={document.url} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700">View</a> : null}
+                        {isImage && document.url ? (
+                          <a href={document.url} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700">
+                            {t('propertyDetails.view')}
+                          </a>
+                        ) : null}
                         {document.url ? (
-                  <a href={document.url} download={document.name || '712-document'} className="inline-flex items-center gap-2 rounded-full bg-sage px-4 py-2 text-sm font-semibold text-white">
-                    {t('propertyDetails.downloadDocument')}
-                  </a>
-                ) : (
-                  <span className="text-sm text-slate-500">{t('propertyDetails.notUploaded')}</span>
-                )}
+                          <a href={document.url} download={document.rawName || '712-document'} className="inline-flex items-center gap-2 rounded-full bg-sage px-4 py-2 text-sm font-semibold text-white">
+                            {t('propertyDetails.downloadDocument')}
+                          </a>
+                        ) : (
+                          <span className="text-sm text-slate-500">{t('propertyDetails.notUploaded')}</span>
+                        )}
                       </div>
                     </div>
                   );
-                }) : <div className="rounded-[20px] border border-dashed border-slate-200 bg-slate-50 p-6 text-sm text-slate-600">{t('propertyDetails.noDocumentUploaded')}</div>}
+                }) : (
+                  <div className="rounded-[20px] border border-dashed border-slate-200 bg-slate-50 p-6 text-sm text-slate-600">{t('propertyDetails.noDocumentUploaded')}</div>
+                )}
               </div>
             </div>
           </div>
@@ -398,25 +590,27 @@ function PropertyDetailsPage() {
               <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">{t('propertyDetails.sellerInformation')}</p>
               <div className="mt-4 rounded-[24px] bg-slate-50 p-4">
                 <div className="flex items-center gap-4">
-                  <div className="flex h-16 w-16 items-center justify-center rounded-3xl bg-sage text-xl font-semibold text-white">{sellerName?.split(' ').map((part) => part[0]).slice(0, 2).join('') || 'S'}</div>
+                  <div className="flex h-16 w-16 items-center justify-center rounded-3xl bg-sage text-xl font-semibold text-white">
+                    {sellerName?.split(' ').map((part) => part[0]).slice(0, 2).join('') || 'S'}
+                  </div>
                   <div>
                     <p className="text-lg font-semibold text-ink">{sellerName}</p>
-                    <p className="mt-1 text-sm text-slate-600">{property?.district || property?.location || t('propertyDetails.sellerLocation')}</p>
+                    <p className="mt-1 text-sm text-slate-600">{translateLocation(property?.district || property?.location, t, isGujarati)}</p>
                   </div>
                 </div>
                 <div className="mt-4 grid gap-2 text-sm text-slate-700">
                   <div className="rounded-2xl bg-white p-3 shadow-sm">
-                    <p className="text-xs uppercase tracking-[0.2em] text-slate-500">District</p>
-                    <p className="mt-1 font-semibold text-ink">{property?.district || property?.location || 'Not provided'}</p>
+                    <p className="text-xs uppercase tracking-[0.2em] text-slate-500">{t('propertyDetails.sellerDistrict')}</p>
+                    <p className="mt-1 font-semibold text-ink">{translateLocation(property?.district || property?.location, t, isGujarati)}</p>
                   </div>
                   <div className="rounded-2xl bg-white p-3 shadow-sm">
-                    <p className="text-xs uppercase tracking-[0.2em] text-slate-500">Taluka</p>
-                    <p className="mt-1 font-semibold text-ink">{property?.subDistrict || property?.taluka || 'Not provided'}</p>
+                    <p className="text-xs uppercase tracking-[0.2em] text-slate-500">{t('propertyDetails.sellerTaluka')}</p>
+                    <p className="mt-1 font-semibold text-ink">{translateLocation(property?.subDistrict || property?.taluka, t, isGujarati)}</p>
                   </div>
                 </div>
                 <div className="mt-4 rounded-2xl bg-white p-4 shadow-sm">
                   <p className="text-xs uppercase tracking-[0.2em] text-slate-500">{t('propertyDetails.sellerMobile')}</p>
-                  <p className="mt-1 font-semibold text-ink">{sellerPhone || t('common.notProvided')}</p>
+                  <p className="mt-1 font-semibold text-ink">{sellerPhone || translateLocation('', t, isGujarati)}</p>
                 </div>
               </div>
               <div className="mt-5 grid gap-3">
@@ -429,7 +623,7 @@ function PropertyDetailsPage() {
         </section>
 
         <section className="rounded-[28px] border border-slate-200 bg-white p-5 shadow-card sm:p-6">
-          <SectionHeading eyebrow={t('propertyDetails.recentlyListed')} title={t('propertyDetails.noSimilarListings')} />
+          <SectionHeading eyebrow={t('propertyDetails.recentlyListed')} title={similarProperties.length ? (isGujarati ? 'સંબંધિત પ્રોપર્ટીઓ' : 'Related Properties') : t('propertyDetails.noSimilarListings')} />
           <div className="mt-6 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
             {similarProperties.length ? similarProperties.map((item) => <PropertyCard key={item.id} property={item} onContact={setContactModal} />) : <div className="rounded-[20px] border border-dashed border-slate-200 bg-slate-50 p-6 text-sm text-slate-600">{t('propertyDetails.noSimilarListings')}</div>}
           </div>
@@ -440,13 +634,13 @@ function PropertyDetailsPage() {
         <div className="fixed inset-x-0 bottom-0 z-[60] border-t border-slate-200 bg-white/95 px-4 py-3 pb-[calc(1rem+env(safe-area-inset-bottom))] shadow-[0_-8px_30px_rgba(15,23,42,0.08)] backdrop-blur lg:hidden">
           <div className="mx-auto grid max-w-7xl grid-cols-1 gap-2 sm:grid-cols-3">
             {sellerCall ? (
-              <a href={sellerCall} className="min-h-[46px] rounded-full bg-sage px-4 py-3 text-center text-sm font-semibold text-white">Call</a>
+              <a href={sellerCall} className="min-h-[46px] rounded-full bg-sage px-4 py-3 text-center text-sm font-semibold text-white">{t('propertyDetails.callSeller')}</a>
             ) : null}
             {sellerWhatsApp ? (
-              <a href={sellerWhatsApp} target="_blank" rel="noreferrer" className="min-h-[46px] rounded-full border border-slate-200 bg-white px-4 py-3 text-center text-sm font-semibold text-slate-700">WhatsApp</a>
+              <a href={sellerWhatsApp} target="_blank" rel="noreferrer" className="min-h-[46px] rounded-full border border-slate-200 bg-white px-4 py-3 text-center text-sm font-semibold text-slate-700">{t('common.whatsapp')}</a>
             ) : null}
             {sellerMail ? (
-              <a href={sellerMail} className="min-h-[46px] rounded-full border border-slate-200 bg-white px-4 py-3 text-center text-sm font-semibold text-slate-700">Email</a>
+              <a href={sellerMail} className="min-h-[46px] rounded-full border border-slate-200 bg-white px-4 py-3 text-center text-sm font-semibold text-slate-700">{t('propertyDetails.emailSeller')}</a>
             ) : null}
           </div>
         </div>
@@ -471,9 +665,10 @@ function PropertyDetailsPage() {
         </div>
       ) : null}
 
-      <ContactModal open={Boolean(contactModal)} onClose={() => setContactModal(null)} data={contactModal || {}} title={t('contact.modalTitle')} />
+      <ContactModal open={Boolean(contactModal)} onClose={() => setContactModal(null)} data={contactModal || {}} title={t('common.contactSeller')} />
     </div>
   );
 }
 
 export default PropertyDetailsPage;
+

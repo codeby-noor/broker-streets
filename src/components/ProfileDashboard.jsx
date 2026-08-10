@@ -177,7 +177,7 @@ const getRoleLabel = (userData, listingsData, requestsData, t) => {
 
 function ProfileDashboard() {
   const navigate = useNavigate();
-  const { t } = useLanguage();
+  const { t, getPropertyDisplayTitle } = useLanguage();
   const user = useUserStore((state) => state.user);
   const isAuthenticated = useUserStore((state) => state.isAuthenticated);
   const logout = useUserStore((state) => state.logout);
@@ -427,7 +427,7 @@ function ProfileDashboard() {
                     <div className="p-4">
                       <div className="flex items-start justify-between gap-3">
                         <div>
-                          <h3 className="text-lg font-semibold text-slate-900">{listing.title}</h3>
+                          <h3 className="text-lg font-semibold text-slate-900">{getPropertyDisplayTitle(listing.title)}</h3>
                           <p className="mt-2 text-sm text-slate-600">{listing.district || t('common.district')} • {listing.subDistrict || listing.taluka || t('common.taluka')} • {listing.village || t('common.village')}</p>
                         </div>
                         <span className={`rounded-full px-3 py-1 text-xs font-semibold ${listing.status === 'Sold' ? 'bg-amber-100 text-amber-700' : listing.status === 'Pending' ? 'bg-slate-200 text-slate-700' : 'bg-emerald-100 text-emerald-700'}`}>{listing.status}</span>
@@ -475,8 +475,8 @@ function ProfileDashboard() {
           <div className="dashboard-card">
             <div className="dashboard-card__header">
               <div>
-                <p className="eyebrow">Buyer Requirements</p>
-                <h2 className="text-2xl font-semibold text-slate-900">Requirements captured from your buyers</h2>
+                <p className="eyebrow">{t('buyerRequirements.heroTitle')}</p>
+                <h2 className="text-2xl font-semibold text-slate-900">{t('buyerRequirements.heroDescription')}</h2>
               </div>
             </div>
             {buyerRequests.length ? (
@@ -503,9 +503,9 @@ function ProfileDashboard() {
                         </div>
                       ))}
                     </div>
-                    {request.audio ? (
+                    {request.audio && typeof request.audio === 'string' && !request.audio.toLowerCase().startsWith('blob:') ? (
                       <div className="mt-4 rounded-2xl border border-slate-200 bg-white p-3">
-                        <p className="text-sm font-semibold text-slate-900">Voice recording</p>
+                        <p className="text-sm font-semibold text-slate-900">{t('buyerForm.voiceRecording')}</p>
                         <audio controls className="mt-3 w-full" ref={(el) => { if (el) audioRefs.current[request.id] = el; }}>
                           <source src={request.audio} />
                         </audio>
@@ -542,7 +542,7 @@ function ProfileDashboard() {
                   <div key={item.id} className="dashboard-property-card">
                     <AsyncImage property={item} alt={item.title} className="h-full w-full object-cover rounded-[24px]" containerClassName="h-48 w-full overflow-hidden rounded-[24px]" />
                     <div className="p-4">
-                      <h3 className="text-lg font-semibold text-slate-900">{item.title || t('profile.savedListingFallback')}</h3>
+                      <h3 className="text-lg font-semibold text-slate-900">{getPropertyDisplayTitle(item.title) || t('profile.savedListingFallback')}</h3>
                       <p className="mt-2 flex items-center gap-2 text-sm text-slate-600"><MapPin size={16} /> {item.location || item.district || t('profile.locationPending')}</p>
                       <div className="mt-4 flex items-center justify-between rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3 text-sm">
                         <div>
@@ -583,7 +583,7 @@ function ProfileDashboard() {
                     <div className="flex items-center gap-3">
                       <AsyncImage property={item} alt={item.title} className="h-14 w-14 rounded-2xl object-cover" containerClassName="h-14 w-14 overflow-hidden rounded-2xl" />
                       <div>
-                        <p className="font-semibold text-slate-900">{item.title}</p>
+                        <p className="font-semibold text-slate-900">{getPropertyDisplayTitle(item.title)}</p>
                         <p className="text-sm text-slate-600">{item.location || item.district || t('profile.locationPending')}</p>
                       </div>
                     </div>
@@ -790,13 +790,13 @@ function ProfileDashboard() {
           return (
             <button key={item.key} type="button" onClick={() => { if (item.key === 'logout') { handleLogout(); return; } if (item.key === 'overview') { navigate('/profile'); } else { navigate(navMap[item.key] || '/profile'); } setSidebarOpen(false); }} className={`dashboard-sidebar__link ${activeSection === item.key ? 'active' : ''}`}>
               <Icon size={18} />
-              <span>{item.label}</span>
+              <span>{t(item.labelKey)}</span>
             </button>
           );
         })}
         <button type="button" onClick={handleLogout} className="dashboard-sidebar__link dashboard-sidebar__link--logout">
           <LogOut size={18} />
-          <span>Logout</span>
+          <span>{t('profile.logout')}</span>
         </button>
       </aside>
 
@@ -955,8 +955,8 @@ function ProfileDashboard() {
               <div className="flex items-center gap-3">
                 <div className="rounded-2xl bg-rose-50 p-3 text-rose-600"><Trash2 size={20} /></div>
                 <div>
-                  <h3 className="text-lg font-semibold text-slate-900">Delete listing?</h3>
-                  <p className="text-sm text-slate-600">This will remove the property from your dashboard instantly.</p>
+                  <h3 className="text-lg font-semibold text-slate-900">{t('profile.deleteListingModalTitle')}</h3>
+                  <p className="text-sm text-slate-600">{t('profile.deleteListingModalDesc')}</p>
                 </div>
               </div>
               <div className="mt-5 flex justify-end gap-3">
@@ -975,7 +975,7 @@ function ProfileDashboard() {
               <div className="flex items-center justify-between gap-3">
                 <div>
                   <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">{t('profile.requirementLabel')}</p>
-                  <h3 className="text-lg font-semibold text-slate-900">{selectedBuyerRequest.propertyType || 'Requirement details'}</h3>
+                  <h3 className="text-lg font-semibold text-slate-900">{selectedBuyerRequest.propertyType || t('profile.landRequirementFallback')}</h3>
                 </div>
                 <button type="button" onClick={() => setSelectedBuyerRequest(null)} className="rounded-full bg-slate-100 p-2 text-slate-700"><XCircle size={18} /></button>
               </div>
@@ -990,7 +990,7 @@ function ProfileDashboard() {
           </motion.div>
         ) : null}
       </AnimatePresence>
-      <ContactModal open={Boolean(contactModal)} onClose={() => setContactModal(null)} data={contactModal || {}} title={contactModal?.modalTitle || 'Contact Seller'} />
+      <ContactModal open={Boolean(contactModal)} onClose={() => setContactModal(null)} data={contactModal || {}} title={contactModal?.modalTitle || t('buy.contactSeller')} />
     </div>
   );
 }

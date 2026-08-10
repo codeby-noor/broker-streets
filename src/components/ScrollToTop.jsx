@@ -6,19 +6,10 @@ function ScrollToTop() {
   const previousPathnameRef = useRef(location.pathname);
 
   useEffect(() => {
-    const nextPathname = location.pathname;
-    const changedRoute = previousPathnameRef.current !== nextPathname;
-
-    if (changedRoute && !location.hash) {
-      window.scrollTo({
-        top: 0,
-        left: 0,
-        behavior: 'auto',
-      });
+    if (!location.hash) {
+      window.scrollTo(0, 0);
     }
-
-    previousPathnameRef.current = nextPathname;
-  }, [location]);
+  }, [location.pathname, location.hash]);
 
   return null;
 }

@@ -1,3 +1,5 @@
+import generatedVillageTranslations from '../data/generated-village-translations.json';
+
 export const translations = {
   en: {
     app: {
@@ -68,6 +70,35 @@ export const translations = {
       viewAgain: 'View Again',
       uploadPhoto: 'Upload Photo',
       verified: 'Verified',
+      status: 'Status',
+      readLess: 'Read Less',
+      readMore: 'Read More',
+      backToHome: 'Back to Home',
+    },
+    dropdown: {
+      under1000SqFt: 'Under 1000 Sq Ft',
+      sqFt1000To5000: '1000–5000 Sq Ft',
+      sqFt5000Plus: '5000+ Sq Ft',
+      relevance: 'Relevance',
+      newest: 'Newest',
+      oldest: 'Oldest',
+      priceLowToHigh: 'Price: Low to High',
+      priceHighToLow: 'Price: High to Low',
+      available: 'Available',
+      sold: 'Sold',
+      pending: 'Pending',
+      parking: 'Parking',
+      yes: 'Yes',
+      no: 'No',
+      apartment: 'Apartment',
+      villa: 'Villa',
+      house: 'House',
+      plot: 'Plot',
+      farmHouse: 'Farm House',
+      commercial: 'Commercial',
+      office: 'Office',
+      landSector: 'Land Sector',
+      sortBy: 'Sort By',
     },
     home: {
       hero: {
@@ -76,6 +107,10 @@ export const translations = {
         description: 'Discover verified farmland, investment plots, and non-agricultural land across Surat, Navsari, and Gujarat. Buy and sell with confidence.',
         browse: 'Browse Properties',
         postLand: 'Post Your Land',
+        buyLand: 'Buy Land',
+        buyLandDesc: 'Browse verified land listings',
+        sellLand: 'Sell Land',
+        sellLandDesc: 'List your land with confidence',
         marketplace: 'Premium Land Marketplace',
         verified: 'Verified listings, local context, and transparent land details.',
         curated: 'Curated opportunities for agricultural and non-agricultural land investors.',
@@ -83,12 +118,27 @@ export const translations = {
       },
       browse: 'Browse Properties',
       postLand: 'Post Your Land',
+      submitDesc: 'Share what you want to buy',
       heading: 'Featured Land Opportunities',
       featuredDescription: 'Hand-picked agricultural and non-agricultural land with verified details.',
       viewAll: 'View All Properties',
       buyerRequirements: 'Latest Buyer Requirements',
+      noBuyerRequirements: 'No buyer requirements currently posted.',
       locations: 'Popular Investment Locations',
+      locationDescription: 'Discover high-demand agricultural and non-agricultural land locations in Surat and Navsari.',
+      explore: 'Explore',
+      verifiedBuyer: 'Verified Buyer',
       whyBroker: 'Why Broker Streets',
+      whyBrokerTitle: 'A premium platform for land buyers and sellers in Gujarat.',
+      whyBrokerDescription: 'Browse verified land opportunities, connect directly with sellers, and access local market clarity for Surat and Navsari.',
+      verifiedListingTitle: 'Verified Listings',
+      verifiedListingDescription: 'Clear land details and seller credibility on every listing.',
+      localExpertiseTitle: 'Local Expertise',
+      localExpertiseDescription: 'Surat and Navsari focused land coverage with trusted routes.',
+      directContactTitle: 'Direct Contact',
+      directContactDescription: 'Speak directly to sellers and verified buyers.',
+      premiumPresentationTitle: 'Premium Presentation',
+      premiumPresentationDescription: 'Professional listing cards and trusted market insights.',
       cta: 'Browse properties or post your requirement today.',
       featured: 'Featured',
       featuredTitle: 'Featured Land Opportunities',
@@ -120,6 +170,7 @@ export const translations = {
       searchPlaceholder: 'Search by village, taluka or district',
       countFound: 'land listings found',
       noResults: 'No land listings match these filters',
+      noProperties: 'No properties found matching your search.',
       clearFilters: 'Clear Filters',
       heroCollection: 'Gujarat land collection',
       findYourLandTitle: 'Find Your Land',
@@ -206,6 +257,17 @@ export const translations = {
       priceUnitRequired: 'Select a price unit',
       mapLinkRequired: 'Google Maps link is required',
       mapLinkInvalid: 'Enter a valid URL',
+    },
+    sell: {
+      submissionReceived: 'Submission Received',
+      submissionDescription: 'Your listing has been submitted for review. Our team will verify the details.',
+      addAnotherProperty: 'Add Another Property',
+      backToHome: 'Back to Home',
+      sellerVerified: 'Verified Seller',
+    },
+    buyerRequirements: {
+      heroTitle: 'Buyer Requirements',
+      heroDescription: 'Connect directly with verified buyers looking for land across Gujarat.',
     },
     buyerForm: {
       eyebrow: 'Buyer preference',
@@ -332,6 +394,11 @@ export const translations = {
       about: 'About',
       logout: 'Logout',
       dashboard: 'Dashboard',
+      addListing: 'List Property',
+      searchProperties: 'Search Properties',
+      verifiedAccount: 'Verified Account',
+      accountDashboard: 'Account Dashboard',
+      helpSupport: 'Help & Support',
       recentlyUpdated: 'Recently updated',
       roleBuyerAndSeller: 'Buyer & Seller',
       roleSeller: 'Seller',
@@ -367,6 +434,14 @@ export const translations = {
       deleteListingTitle: 'Delete listing?',
       deleteListingDescription: 'This will remove the property from your dashboard instantly.',
       uploadPhotoLabel: 'Upload Photo',
+      deleteListingModalTitle: 'Delete Land Listing',
+      deleteListingModalDesc: 'Are you sure you want to delete this listing? This action cannot be undone.',
+      newBadge: 'New',
+      postedDateLabel: 'Posted Date',
+      fullNameLabel: 'Full Name',
+      mobileLabel: 'Mobile Number',
+      emailLabel: 'Email Address',
+      addressLabel: 'Address',
       profileFallbackName: 'Broker Streets User',
       profileFallbackEmail: 'Add an email to personalise your profile.',
       verifiedBadge: 'Verified',
@@ -554,17 +629,81 @@ export const translations = {
       email: 'ઈમેલ',
       loading: 'લોડ થાય છે...',
       languageSwitcher: 'EN | ગુજરાતી',
+      status: 'સ્થિતિ',
+      readLess: 'ઓછું વાંચો',
+      readMore: 'વધુ વાંચો',
+      backToHome: 'હોમ પર પાછા જાઓ',
+      view: 'જુઓ',
+      edit: 'ફેરફાર કરો',
+      delete: 'કાઢી નાખો',
+      markAvailable: 'ઉપલબ્ધ તરીકે ચિહ્નિત કરો',
+      markSold: 'વેચાયેલ તરીકે ચિહ્નિત કરો',
+      cancel: 'રદ કરો',
+    },
+    dropdown: {
+      under1000SqFt: '1000 ચોરસ ફૂટથી ઓછું',
+      sqFt1000To5000: '1000–5000 ચોરસ ફૂટ',
+      sqFt5000Plus: '5000+ ચોરસ ફૂટ',
+      relevance: 'સંબંધિતતા',
+      newest: 'નવીનતમ',
+      oldest: 'જૂનું',
+      priceLowToHigh: 'કિંમત: ઓછી થી વધુ',
+      priceHighToLow: 'કિંમત: વધુ થી ઓછી',
+      available: 'ઉપલબ્ધ',
+      sold: 'વેચાયેલ',
+      pending: 'પેન્ડિંગ (બાકી)',
+      parking: 'પાર્કિંગ',
+      yes: 'હા',
+      no: 'ના',
+      apartment: 'એપાર્ટમેન્ટ',
+      villa: 'વિલા',
+      house: 'મકાન',
+      plot: 'પ્લોટ',
+      farmHouse: 'ફાર્મ હાઉસ',
+      commercial: 'વ્યાવસાયિક',
+      office: 'ઓફિસ',
+      landSector: 'લેન્ડ સેક્ટર',
+      sortBy: 'ક્રમબદ્ધ કરો',
     },
     home: {
-      heroTitle: 'ગુજરાતનું વિશ્વસનીય કૃષિ અને નોન-એગ્રિકલ્ચરલ લેન્ડ માર્કેટપ્લેસ',
-      heroSubtitle: 'સુરત, નવસારી અને ગુજરાતમાં ચકાસેલ ફાર્મલ Yard, રોકાણ પ્લોટ અને નોન-એગ્રિકલ્ચરલ લેન્ડ શોધો.',
+      hero: {
+        buyLand: 'જમીન ખરીદો',
+        buyLandDesc: 'ચકાસેલી જમીનની યાદીઓ જુઓ',
+        sellLand: 'જમીન વેચો',
+        sellLandDesc: 'વિશ્વાસ સાથે તમારી જમીન લિસ્ટ કરો',
+        browse: 'પ્રોપર્ટી જુઓ',
+      },
+      heroTitle: 'ગુજરાતનું વિશ્વસનીય કૃષિ અને બિન-કૃષિ જમીન માર્કેટપ્લેસ',
+      heroSubtitle: 'સુરત, નવસારી અને ગુજરાતમાં ચકાસેલ ફાર્મલૅન્ડ, રોકાણ પ્લોટ અને બિન-કૃષિ જમીન શોધો.',
       browse: 'પ્રોપર્ટી જુઓ',
       postLand: 'તમારું લેન્ડ પોસ્ટ કરો',
+      submitDesc: 'તમે શું ખરીદવા માગો છો તે જણાવો',
       heading: 'ફીચર્ડ લેન્ડ ઓપરચ્યુનિટીઝ',
-      featuredDescription: 'ચકાસેલ કૃષિ અને નોન-એગ્રિકલ્ચરલ લેન્ડ પસંદ કરેલ છે.',
+      featuredDescription: 'ચકાસેલ કૃષિ અને બિન-કૃષિ જમીન પસંદ કરેલ છે.',
       viewAll: 'બધા પ્રોપર્ટી જુઓ',
       buyerRequirements: 'લેટેસ્ટ બાયર રિક્વાયરમેન્ટ્સ',
-      locations: 'પોપ્યુલર ઇન્વેસ્ટમેન્ટ લોકેશન્સ',
+      noBuyerRequirements: 'હાલમાં કોઈ બાયર રિક્વાયરમેન્ટ પોસ્ટ કરેલ નથી.',
+      locations: 'લોકપ્રિય રોકાણના સ્થળો',
+      locationDescription: 'સુરત અને નવસારીમાં વધુ માંગ ધરાવતા કૃષિ અને બિન-કૃષિ જમીન સ્થાનો શોધો.',
+      explore: 'શોધો',
+      verifiedBuyer: 'ચકાસાયેલ ખરીદદાર',
+      whyBroker: 'બ્રોકર સ્ટ્રીટ્સ શા માટે',
+      whyBrokerTitle: 'ગુજરાતમાં જમીન ખરીદદારો અને વેચનારાઓ માટે પ્રીમિયમ પ્લેટફોર્મ.',
+      whyBrokerDescription: 'ચકાસેલી જમીનની તકો જુઓ, વેચનારાઓ સાથે સીધો સંપર્ક કરો અને સુરત તથા નવસારી માટે સ્થાનિક બજારની સ્પષ્ટતા મેળવો.',
+      verifiedListingTitle: 'ચકાસેલી લિસ્ટિંગ્સ',
+      verifiedListingDescription: 'દરેક લિસ્ટિંગ પર જમીનની સ્પષ્ટ વિગતો અને વેચનારની વિશ્વસનીયતા.',
+      localExpertiseTitle: 'સ્થાનિક નિષ્ણાતતા',
+      localExpertiseDescription: 'સુરત અને નવસારી પર ધ્યાન કેન્દ્રિત જમીન કવરેજ અને વિશ્વાસપાત્ર માહિતી.',
+      directContactTitle: 'સીધો સંપર્ક',
+      directContactDescription: 'વેચનારાઓ અને ચકાસેલા ખરીદદારો સાથે સીધી વાતચીત કરો.',
+      premiumPresentationTitle: 'પ્રીમિયમ રજૂઆત',
+      premiumPresentationDescription: 'પ્રોફેશનલ લિસ્ટિંગ કાર્ડ્સ અને વિશ્વાસપાત્ર બજાર માહિતી.',
+      buyerLeadTitle: 'ગુજરાતભરના વિશ્વસનીય જમીન માલિકો સાથે ખરીદદારોને જોડીએ છીએ.',
+      buyerLeadDescription: 'કૃષિ અને બિન-કૃષિ જમીન શોધતા ચકાસેલા ખરીદદારો સાથે સીધો સંપર્ક કરો.',
+      requirements: 'બધી જરૂરિયાતો જુઓ',
+      viewRequirements: 'બધી જરૂરિયાતો જુઓ',
+      submit: 'જરૂરિયાત સબમિટ કરો',
+      buyerContactTitle: 'ખરીદદારનો સંપર્ક કરો',
       whyBroker: 'બ્રોકર સ્ટ્રીટ્સ શા માટે',
       cta: 'પ્રોપર્ટી જુઓ અથવા તમારી રિક્વાયરમેન્ટ પોસ્ટ કરો.',
     },
@@ -576,6 +715,7 @@ export const translations = {
       searchPlaceholder: 'ગામ, તલુકો અથવા જિલ્લો શોધો',
       countFound: 'લેન્ડ લિસ્ટિંગ્સ મળ્યા',
       noResults: 'આ ફિલ્ટર્સ સાથે કોઈ લેન્ડ મળ્યું નથી',
+      noProperties: 'તમારી શોધ મુજબ કોઈ પ્રોપર્ટી મળી નથી.',
       clearFilters: 'ફિલ્ટર્સ ક્લિયર કરો',
     },
     sellerForm: {
@@ -612,8 +752,25 @@ export const translations = {
       stopRecording: 'રેકોર્ડિંગ બંધ કરો',
       submit: 'સબમિટ કરો',
     },
+    sell: {
+      submissionReceived: 'સબમિશન પ્રાપ્ત થયું',
+      submissionDescription: 'તમારી લિસ્ટિંગ સમીક્ષા માટે સબમિટ કરવામાં આવી છે. અમારી ટીમ વિગતો ચકાસશે.',
+      addAnotherProperty: 'બીજી પ્રોપર્ટી ઉમેરો',
+      backToHome: 'હોમ પર પાછા જાઓ',
+      sellerVerified: 'ચકાસેલ વેચનાર',
+    },
+    buyerRequirements: {
+      heroTitle: 'ખરીદદારની જરૂરિયાતો',
+      heroDescription: 'ગુજરાતભરમાં જમીન શોધતા ચકાસેલા ખરીદદારો સાથે સીધો સંપર્ક કરો.',
+    },
     profile: {
       title: 'પ્રોફાઇલ',
+      dashboard: 'ડેશબોર્ડ',
+      addListing: 'જમીન લિસ્ટ કરો',
+      searchProperties: 'પ્રોપર્ટીઓ શોધો',
+      verifiedAccount: 'ચકાસેલ એકાઉન્ટ',
+      accountDashboard: 'એકાઉન્ટ ડેશબોર્ડ',
+      helpSupport: 'મદદ અને સહાય',
       overview: 'ઓવરવ્યુ',
       myActivity: 'મારી પ્રવૃત્તિ',
       account: 'એકાઉન્ટ',
@@ -665,16 +822,16 @@ export const translations = {
       profileFallbackEmail: 'તમારું પ્રોફાઇલ પર્સનલાઇઝ કરવા માટે ઈમેલ ઉમેરો.',
       verifiedBadge: 'ચકાસેલ',
       buyerRequirementSuffix: 'બાયર જરૂરિયાત પૂર્વાવલોકન',
-    },    footer: {
+    }, footer: {
       support: 'સપોર્ટ',
       company: 'કંપની',
-      legal: 'લ(gc)ક',
-      privacy: 'પાયાવરી',
+      legal: 'કાનૂની',
+      privacy: 'પ્રાઈવસી',
       terms: 'શરતો',
       about: 'અમારા વિશે',
       contact: 'સંપર્ક',
       description: 'બ્રોકર સ્ટ્રીટ્સ લોકોને સાદા અને વિશ્વાસપાત્ર અનુભવ સાથે પ્રોપર્ટી ખરીદી અને વેચાણ કરવામાં મદદ કરે છે.',
-    },    contact: {
+    }, contact: {
       title: 'સંપર્ક કરો',
       modalTitle: 'વેચનારનો સંપર્ક કરો',
     },
@@ -876,6 +1033,14 @@ const batchFourATranslations = {
       saveChanges: 'ફેરફારો સાચવો',
       savePassword: 'પાસવર્ડ સાચવો',
       savedAdded: 'પ્રોપર્ટી સાચવેલી યાદીમાં ઉમેરાઈ છે.',
+      deleteListingModalTitle: 'લેન્ડ લિસ્ટિંગ કાઢી નાખો',
+      deleteListingModalDesc: 'શું તમે ખરેખર આ લિસ્ટિંગ કાઢી નાખવા માગો છો? આ ક્રિયા રદ કરી શકાતી નથી.',
+      newBadge: 'નવું',
+      postedDateLabel: 'પોસ્ટ કરવાની તારીખ',
+      fullNameLabel: 'પૂરું નામ',
+      mobileLabel: 'મોબાઇલ નંબર',
+      emailLabel: 'ઈમેલ એડ્રેસ',
+      addressLabel: 'સરનામું',
     },
   },
 };
@@ -1051,8 +1216,502 @@ addMissingTranslations(translations.en, sellerDashboardStatusTranslations.en);
 addMissingTranslations(translations.gu, sellerDashboardStatusTranslations.gu);
 
 const dropdownTranslations = {
-  en: { dropdown: { landSector: 'Land sector', sortBy: 'Sort by', newest: 'Newest', oldest: 'Oldest' } },
-  gu: { dropdown: { landSector: 'જમીન ક્ષેત્ર', sortBy: 'ક્રમબદ્ધ કરો', newest: 'નવા પહેલા', oldest: 'જૂના પહેલા' } },
+  en: {
+    dropdown: {
+      landSector: 'Land sector',
+      sortBy: 'Sort by',
+      newest: 'Newest',
+      oldest: 'Oldest',
+      available: 'Available',
+      sold: 'Sold',
+      pending: 'Pending',
+      apartment: 'Apartment',
+      villa: 'Villa',
+      house: 'House',
+      plot: 'Plot',
+      farmHouse: 'Farm House',
+      commercial: 'Commercial',
+      office: 'Office',
+      agriculturalLand: 'Agricultural Land',
+      nonAgriculturalLand: 'Non-Agricultural Land',
+      yes: 'Yes',
+      no: 'No',
+      east: 'East',
+      west: 'West',
+      north: 'North',
+      south: 'South',
+      lift: 'Lift',
+      parking: 'Parking',
+      powerBackup: 'Power Backup',
+      security: 'Security',
+      garden: 'Garden',
+      clubhouse: 'Clubhouse',
+      balcony: 'Balcony',
+      cctv: 'CCTV',
+      under1000SqFt: 'Under 1000 Sq Ft',
+      sqFt1000To5000: '1000–5000 Sq Ft',
+      sqFt5000Plus: '5000+ Sq Ft',
+      relevance: 'Relevance',
+      priceLowToHigh: 'Price: low to high',
+      priceHighToLow: 'Price: high to low',
+    },
+  },
+  gu: {
+    dropdown: {
+      landSector: 'જમીન ક્ષેત્ર',
+      sortBy: 'ક્રમબદ્ધ કરો',
+      newest: 'નવા પહેલા',
+      oldest: 'જૂના પહેલા',
+      available: 'ઉપલબ્ધ',
+      sold: 'વેચાયેલ',
+      pending: 'બાકી',
+      apartment: 'એપાર્ટમેન્ટ',
+      villa: 'વિલા',
+      house: 'મકાન',
+      plot: 'પ્લોટ',
+      farmHouse: 'ફાર્મ હાઉસ',
+      commercial: 'કોમર્શિયલ',
+      office: 'ઓફિસ',
+      agriculturalLand: 'કૃષિ જમીન',
+      nonAgriculturalLand: 'બિન-કૃષિ જમીન',
+      yes: 'હા',
+      no: 'ના',
+      east: 'પૂર્વ',
+      west: 'પશ્ચિમ',
+      north: 'ઉત્તર',
+      south: 'દક્ષિણ',
+      lift: 'લિફ્ટ',
+      parking: 'પાર્કિંગ',
+      powerBackup: 'પાવર બેકઅપ',
+      security: 'સિક્યુરિટી',
+      garden: 'ગાર્ડન',
+      clubhouse: 'ક્લબહાઉસ',
+      balcony: 'બાલકની',
+      cctv: 'સીસીટીવી',
+      under1000SqFt: '1000 ચોરસ ફૂટથી ઓછું',
+      sqFt1000To5000: '1000–5000 ચોરસ ફૂટ',
+      sqFt5000Plus: '5000+ ચોરસ ફૂટ',
+      relevance: 'સંદર્ભપૂર્વક',
+      priceLowToHigh: 'કિંમત: ઓછી થી વધુ',
+      priceHighToLow: 'કિંમત: વધુ થી ઓછી',
+    },
+  },
 };
 addMissingTranslations(translations.en, dropdownTranslations.en);
 addMissingTranslations(translations.gu, dropdownTranslations.gu);
+
+const missingKeysFix = {
+  en: {
+    home: {
+      heroTitle: "Gujarat's trusted agricultural and non-agricultural land marketplace",
+      heroSubtitle: 'Discover verified farmland, investment plots, and non-agricultural land across Surat, Navsari, and Gujarat. Buy and sell with confidence.',
+    },
+  },
+  gu: {
+    common: {
+      save: 'સાચવો',
+      uploadPhoto: 'ફોટો અપલોડ કરો',
+      verified: 'ચકાસેલ',
+    },
+    home: {
+      requirements: 'બધી જરૂરિયાતો જુઓ',
+    },
+    buy: {
+      filterHeading: 'લેન્ડ ફિલ્ટર્સ',
+      sortBy: 'ક્રમબદ્ધ કરો',
+      propertyType: 'પ્રોપર્ટી પ્રકાર',
+      district: 'જિલ્લો',
+      village: 'ગામ',
+      price: 'કિંમત',
+      landArea: 'જમીન ક્ષેત્ર',
+      reset: 'રીસેટ',
+      minPrice: 'ન્યૂનતમ',
+      maxPrice: 'મહત્તમ',
+      showSold: 'વેચાયેલી પ્રોપર્ટીઓ બતાવો',
+      viewDetails: 'વિગતો જુઓ',
+      clearSearch: 'ફિલ્ટર્સ ક્લિયર કરો',
+    },
+    propertyDetails: {
+      shareProperty: 'પ્રોપર્ટી શેર કરો',
+      saveProperty: 'પ્રોપર્ટી સાચવો',
+      propertyStatusAvailable: 'ઉપલબ્ધ',
+      propertyStatusSold: 'વેચાયેલ',
+      propertyStatusPending: 'બાકી',
+      verifiedListing: 'ચકાસેલ લિસ્ટિંગ',
+      sellerLabel: 'વેચનાર',
+      sellerDistrict: 'જિલ્લો',
+      sellerTaluka: 'તાલુકો',
+      locationFallback: 'આપેલ નથી',
+      landAreaFallback: 'જમીન ક્ષેત્ર',
+      noContactDetails: 'કોઈ સંપર્ક વિગતો ઉપલબ્ધ નથી.',
+      contactModalTitle: 'વેચનારનો સંપર્ક કરો',
+      view: 'જુઓ',
+      documentNameFallback: '7/12 દસ્તાવેજ',
+    },
+    profile: {
+      dashboard: 'ડેશબોર્ડ',
+      buyerRequirementsTitle: 'ખરીદદારો તરફથી મેળવેલ જરૂરિયાતો',
+    },
+  },
+};
+addMissingTranslations(translations.en, missingKeysFix.en);
+addMissingTranslations(translations.gu, missingKeysFix.gu);
+
+const aboutPageTranslations = {
+  en: {
+    aboutPage: {
+      title: 'About Broker Streets',
+      description: 'Broker Streets is built for home buyers and sellers who want a calm, clear experience. We focus on Gujarat cities and deliver property information in a way that is easy to read and act on.',
+      missionTitle: 'Our mission',
+      missionDescription: 'Provide a trustworthy property search for mature buyers and sellers, with precise details, simple navigation, and local support.',
+      whyChooseTitle: 'Why choose us',
+      verifiedInfo: 'Verified property information',
+      easyFilters: 'Easy filters and clear results',
+      friendlySupport: 'Friendly support for every step',
+      readyTitle: 'Ready to get started?',
+      readySubtitle: 'Find a home or list your property in minutes.',
+      browseHomes: 'Browse homes',
+      sellNow: 'Sell now',
+    },
+  },
+  gu: {
+    aboutPage: {
+      title: 'Broker Streets વિશે',
+      description: 'Broker Streets એ પ્રોપર્ટી ખરીદદારો અને વેચનાર માટે શાંતિપૂર્ણ અને સ્પષ્ટ અનુભવ આપવા માટે બનાવવામાં આવ્યું છે. અમે ગુજરાતના શહેરો પર ધ્યાન કેન્દ્રિત કરીએ છીએ અને પ્રોપર્ટીની માહિતી સરળતાથી વાંચી શકાય તે રીતે પહોંચાડીએ છીએ.',
+      missionTitle: 'અમારો હેતુ',
+      missionDescription: 'ચોક્કસ વિગતો, સરળ નેવિગેશન અને સ્થાનિક સપોર્ટ સાથે અનુભવી ખરીદદારો અને વેચનાર માટે વિશ્વસનીય પ્રોપર્ટી શોધ પૂરી પાડવી.',
+      whyChooseTitle: 'અમને કેમ પસંદ કરવા',
+      verifiedInfo: 'ચકાસેલી પ્રોપર્ટી માહિતી',
+      easyFilters: 'સરળ ફિલ્ટર્સ અને સ્પષ્ટ પરિણામો',
+      friendlySupport: 'દરેક પગલે મૈત્રીપૂર્ણ સહાય',
+      readyTitle: 'શરૂ કરવા તૈયાર છો?',
+      readySubtitle: 'મિનિટોમાં પ્રોપર્ટી શોધો અથવા તમારી પ્રોપર્ટી લિસ્ટ કરો.',
+      browseHomes: 'પ્રોપર્ટી જુઓ',
+      sellNow: 'હવે વેચો',
+    },
+  },
+};
+addMissingTranslations(translations.en, aboutPageTranslations.en);
+addMissingTranslations(translations.gu, aboutPageTranslations.gu);
+
+const homeExtraTranslations = {
+  en: {
+    home: {
+      verifiedBuyer: 'Verified Buyer',
+      noBuyerRequirements: 'No buyer requirements available right now.',
+    },
+    common: {
+      readLess: 'Read Less',
+      readMore: 'Read More',
+    },
+    profile: {
+      newBadge: 'New',
+    },
+  },
+  gu: {
+    home: {
+      verifiedBuyer: 'ચકાસેલ ખરીદદાર',
+      noBuyerRequirements: 'હાલમાં કોઈ ખરીદદારની જરૂરિયાત ઉપલબ્ધ નથી.',
+    },
+    common: {
+      readLess: 'ઓછું વાંચો',
+      readMore: 'વધુ વાંચો',
+    },
+    profile: {
+      newBadge: 'નવું',
+    },
+  },
+};
+const locationExtraTranslations = {
+  en: {
+    sellerForm: {
+      facing: 'Facing',
+      bedrooms: 'Bedrooms / BHK',
+      bathrooms: 'Bathrooms',
+      amenities: 'Amenities',
+    },
+    location: {
+      notFound: 'Location not found',
+      notFoundDesc: 'This location isn’t available right now.',
+      overview: 'Location Overview',
+      whyActive: 'Why buyers and sellers are active here',
+      totalListings: 'Total Listings',
+      agriListings: 'Agricultural Listings',
+      nonAgriListings: 'Non-Agricultural Listings',
+      avgPrice: 'Average Price',
+      highPrice: 'Highest Price',
+      lowPrice: 'Lowest Price',
+      quickStats: 'Quick Statistics',
+      activeBuyers: 'Active Buyers',
+      activeListings: 'Available Listings',
+      findLandIn: 'Find land in location',
+      whyInvest: 'Why Invest in This Location',
+      investDesc: 'A premium address for agricultural and non-agricultural growth',
+      highlights: 'Location Highlights',
+      connectWith: 'Connect with serious buyers and sellers',
+      relatedLocations: 'Related Locations',
+    },
+  },
+  gu: {
+    sellerForm: {
+      facing: 'દિશા (Facing)',
+      bedrooms: 'બેડરૂમ / BHK',
+      bathrooms: 'બાથરૂમ',
+      amenities: 'સગવડો (Amenities)',
+    },
+    location: {
+      notFound: 'સ્થળ મળ્યું નથી',
+      notFoundDesc: 'આ સ્થળ હાલમાં ઉપલબ્ધ નથી.',
+      overview: 'સ્થળની સમીક્ષા',
+      whyActive: 'શા માટે ખરીદદારો અને વેચનાર અહીં સક્રિય છે',
+      totalListings: 'કુલ લિસ્ટિંગ્સ',
+      agriListings: 'ખેતીની જમીન લિસ્ટિંગ્સ',
+      nonAgriListings: 'બિનખેતી જમીન લિસ્ટિંગ્સ',
+      avgPrice: 'સરેરાશ કિંમત',
+      highPrice: 'સૌથી વધુ કિંમત',
+      lowPrice: 'સૌથી ઓછી કિંમત',
+      quickStats: 'ઝડપી આંકડા',
+      activeBuyers: 'સક્રિય ખરીદદારો',
+      activeListings: 'ઉપલબ્ધ લિસ્ટિંગ્સ',
+      findLandIn: 'જમીન શોધો',
+      whyInvest: 'આ સ્થળે રોકાણ કેમ કરવું',
+      investDesc: 'ખેતી અને બિનખેતી વિકાસ માટે પ્રીમિયમ સ્થળ',
+      highlights: 'સ્થળની મુખ્ય વિશેષતાઓ',
+      connectWith: 'ગંભીર ખરીદદારો અને વેચનાર સાથે જોડાઓ',
+      relatedLocations: 'સંબંધિત સ્થળો',
+    },
+  },
+};
+addMissingTranslations(translations.en, locationExtraTranslations.en);
+addMissingTranslations(translations.gu, locationExtraTranslations.gu);
+
+export const locationTranslationsGu = {
+  ...generatedVillageTranslations,
+  // State
+  'Gujarat': 'ગુજરાત',
+
+  // Districts
+  'Ahmedabad': 'અમદાવાદ',
+  'Amreli': 'અમરેલી',
+  'Anand': 'આણંદ',
+  'Aravalli': 'અરવલ્લી',
+  'Banaskantha': 'બનાસકાંઠા',
+  'Bharuch': 'ભરૂચ',
+  'Bhavnagar': 'ભાવનગર',
+  'Botad': 'બોટાદ',
+  'Chhota Udaipur': 'છોટા ઉદેપુર',
+  'Dahod': 'દાહોદ',
+  'Dang': 'ડાંગ',
+  'Devbhumi Dwarka': 'દેવભૂમિ દ્વારકા',
+  'Gandhinagar': 'ગાંધીનગર',
+  'Gir Somnath': 'ગીર સોમનાથ',
+  'Jamnagar': 'જામનગર',
+  'Junagadh': 'જૂનાગઢ',
+  'Kheda': 'ખેડા',
+  'Kutch': 'કચ્છ',
+  'Mahisagar': 'મહીસાગર',
+  'Mehsana': 'મહેસાણા',
+  'Morbi': 'મોરબી',
+  'Narmada': 'નર્મદા',
+  'Navsari': 'નવસારી',
+  'Panchmahal': 'પંચમહાલ',
+  'Patan': 'પાટણ',
+  'Porbandar': 'પોરબંદર',
+  'Rajkot': 'રાજકોટ',
+  'Sabarkantha': 'સાબરકાંઠા',
+  'Surat': 'સુરત',
+  'Surendranagar': 'સુરેન્દ્રનગર',
+  'Tapi': 'તાપી',
+  'Vadodara': 'વડોદરા',
+  'Valsad': 'વલસાડ',
+
+  // Sub-Districts / Talukas / Towns / Villages
+  'Dhamdachha': 'ધામડાછા',
+  'Jalalpore': 'જલાલપોર',
+  'Jalalpor': 'જલાલપોર',
+  'Gandevi': 'ગણદેવી',
+  'Chikhli': 'ચીખલી',
+  'Vansda': 'વાંસદા',
+  'Bansda': 'વાંસદા',
+  'Khergam': 'ખેરગામ',
+  'Bardoli': 'બારડોલી',
+  'Kamrej': 'કામરેજ',
+  'Palsana': 'પલસાણા',
+  'Olpad': 'ઓલપાડ',
+  'Mandvi': 'માંડવી',
+  'Mahuva': 'મહુવા',
+  'Mangrol': ' માંગરોળ',
+  'Umarpada': 'ઉમરપાડા',
+  'Chorasi': 'ચોર્યાસી',
+  'Surat City': 'સુરત શહેર',
+  'Ahmedabad City': 'અમદાવાદ શહેર',
+  'Daskroi': 'દસક્રોઈ',
+  'Sanand': 'સાણંદ',
+  'Bavla': 'બાવળા',
+  'Dholka': 'ધોળકા',
+  'Dhandhuka': 'ધંધુકા',
+  'Mandal': 'માંડલ',
+  'Detroj-Rampura': 'દેત્રોજ-રામપુરા',
+  'Viramgam': 'વિરમગામ',
+  'Waghodia': 'વાઘોડિયા',
+  'Dabhoi': 'ડભોઈ',
+  'Padra': 'પાદરા',
+  'Karjan': 'કરજણ',
+  'Sinor': 'સિનોર',
+  'Savli': 'સાવલી',
+  'Desar': 'દેસર',
+  'Gondal': 'ગોંડલ',
+  'Jetpur': 'જેતપુર',
+  'Dhoraji': 'ધોરાજી',
+  'Upleta': 'ઉપલેટા',
+  'Jasdan': 'જસદણ',
+  'Kotda Sangani': 'કોટડા સાંગાણી',
+  'Lodhika': 'લોધિકા',
+  'Paddhari': 'પડધરી',
+  'Vinchhiya': 'વીંછિયા',
+  'Adajan': 'અડાજણ',
+  'Bilimora': 'બીલીમોરા',
+  'Amalsad': 'અમલસાડ',
+  'Prahlad Nagar': 'પ્રહલાદ નગર',
+  'Vesu': 'વેસુ',
+  'Alkapuri': 'અલકાપુરી',
+  'Kalawad Road': 'કાલાવડ રોડ',
+  'Satellite': 'સેટેલાઇટ',
+
+  // Dropdown terms & units
+  'All': 'બધા',
+  'All types': 'બધા પ્રકારો',
+  'All districts': 'બધા જિલ્લાઓ',
+  'All talukas': 'બધા તાલુકાઓ',
+  'All villages': 'બધા ગામો',
+  'Agricultural Land': 'ખેતીની જમીન',
+  'Non-Agricultural Land': 'બિનખેતી જમીન',
+  'Residential': 'રહેણાંક',
+  'Commercial': 'વ્યાવસાયિક',
+  'Industrial': 'ઔદ્યોગિક',
+  'Plot': 'પ્લોટ',
+  'Farm House': 'ફાર્મ હાઉસ',
+  'Villa': 'વિલા',
+  'Apartment': 'એપાર્ટમેન્ટ',
+  'House': 'મકાન',
+  'Office': 'ઓફિસ',
+  'Available': 'ઉપલબ્ધ',
+  'Sold': 'વેચાયેલ',
+  'Pending': 'બાકી',
+  'Newest': 'નવીનતમ',
+  'latest': 'નવીનતમ',
+  'Oldest': 'જૂનું',
+  'Price': 'કિંમત',
+  'North': 'ઉત્તર',
+  'South': 'દક્ષિણ',
+  'East': 'પૂર્વ',
+  'West': 'પશ્ચિમ',
+  'Yes': 'હા',
+  'No': 'ના',
+  'Investment': 'રોકાણ',
+  'Project': 'પ્રોજેક્ટ',
+  'Personal Farm': 'વ્યક્તિગત ફાર્મ',
+  'Other': 'અન્ય',
+  'Sq.Yard (Var)': 'ચોરસ વાર',
+  'sq.yard (var)': 'ચોરસ વાર',
+  'Sq.Yard': 'ચોરસ વાર',
+  'Sq.Ft': 'ચોરસ ફૂટ',
+  'Acre': 'એકર',
+  'Acres': 'એકર',
+  'Vigha': 'વીઘા',
+};
+
+export const propertyTitleTranslationsGu = {
+  'Mango Farm': 'કેરીનું ખેતર',
+  'Sugarcane Farm': 'શેરડીનું ખેતર',
+  'Banana Farm': 'કેળાનું ખેતર',
+  'Cotton Farm': 'કપાસનું ખેતર',
+  'Agricultural Plot': 'કૃષિ પ્લોટ',
+  'Residential NA Plot': 'રહેણાંક બિન-કૃષિ પ્લોટ',
+  'Commercial NA Plot': 'વ્યાવસાયિક બિન-કૃષિ પ્લોટ',
+  'Industrial NA Plot': 'ઔદ્યોગિક બિન-કૃષિ પ્લોટ',
+  'Investment NA Plot': 'રોકાણ બિન-કૃષિ પ્લોટ',
+  'Modern Villa with Garden View': 'બગીચાના દૃશ્ય સાથેનો આધુનિક વિલા',
+  'Non-Agricultural Land in Dhamdachha': 'ધામડાછામાં બિનખેતી જમીન',
+  'Spacious Flat': 'મોટો ફ્લેટ',
+  'Sea-facing Penthouse': 'દરિયા કિનારે પેન્ટહાઉસ',
+  'Premium Office Space': 'પ્રિમિયમ ઓફિસ સ્પેસ',
+  'Luxury 3BHK Waterfront Apartment': 'લક્ઝરી 3BHK વોટરફ્રન્ટ એપાર્ટમેન્ટ',
+  'Agricultural Farm Land': 'કૃષિ ફાર્મ જમીન',
+  'Riverside Farmland': 'નદી કિનારે આવેલી ખેતીની જમીન',
+  'Highway Touch Plot': 'હાઇવે ટચ પ્લોટ',
+  'Commercial Land Plot': 'વ્યાવસાયિક જમીન પ્લોટ',
+  'Green Valley Farm': 'ગ્રીન વેલી ફાર્મ',
+  'Orchard Plot': 'ફળોની વાડીનો પ્લોટ',
+  'Fertile Farmland': 'ફળદ્રુપ ખેતીની જમીન',
+};
+
+export function getPropertyDisplayTitle(title, language) {
+  if (!title && title !== 0) return '';
+  const rawStr = String(title).trim();
+  if (!rawStr) return '';
+  if (language !== 'gu') return rawStr;
+
+  if (propertyTitleTranslationsGu[rawStr]) {
+    return propertyTitleTranslationsGu[rawStr];
+  }
+
+  const foundKey = Object.keys(propertyTitleTranslationsGu).find(
+    (k) => k.toLowerCase() === rawStr.toLowerCase()
+  );
+  if (foundKey) {
+    return propertyTitleTranslationsGu[foundKey];
+  }
+
+  const inMatch = rawStr.match(/^(.*?)\s+in\s+(.*)$/i);
+  if (inMatch) {
+    const typePart = inMatch[1].trim();
+    const locPart = inMatch[2].trim();
+    const translatedLoc = locationTranslationsGu[locPart] || locPart;
+    let translatedType = typePart;
+    if (typePart.toLowerCase() === 'non-agricultural land') translatedType = 'બિનખેતી જમીન';
+    else if (typePart.toLowerCase() === 'agricultural land') translatedType = 'ખેતીની જમીન';
+    else if (typePart.toLowerCase() === 'residential') translatedType = 'રહેણાંક';
+    else if (typePart.toLowerCase() === 'commercial') translatedType = 'વ્યાવસાયિક';
+    else if (typePart.toLowerCase() === 'villa') translatedType = 'વિલા';
+    else if (typePart.toLowerCase() === 'apartment') translatedType = 'એપાર્ટમેન્ટ';
+    else if (typePart.toLowerCase() === 'plot') translatedType = 'પ્લોટ';
+    else if (typePart.toLowerCase() === 'farm house') translatedType = 'ફાર્મ હાઉસ';
+    else {
+      translatedType = getPropertyDisplayTitle(typePart, 'gu');
+    }
+    return `${translatedLoc}માં ${translatedType}`;
+  }
+
+  let translated = rawStr
+    .replace(/Non-Agricultural Land/gi, 'બિનખેતી જમીન')
+    .replace(/Agricultural Land/gi, 'ખેતીની જમીન')
+    .replace(/Agricultural/gi, 'ખેતીની')
+    .replace(/Non-Agricultural/gi, 'બિનખેતી')
+    .replace(/Farm House/gi, 'ફાર્મ હાઉસ')
+    .replace(/Farm/gi, 'ખેતર')
+    .replace(/Land/gi, 'જમીન')
+    .replace(/Plot/gi, 'પ્લોટ')
+    .replace(/Apartment/gi, 'એપાર્ટમેન્ટ')
+    .replace(/Villa/gi, 'વિલા')
+    .replace(/House/gi, 'મકાન')
+    .replace(/Commercial/gi, 'વ્યાવસાયિક')
+    .replace(/Office/gi, 'ઓફિસ')
+    .replace(/\bin\b/gi, 'માં');
+
+  if (locationTranslationsGu && typeof locationTranslationsGu === 'object') {
+    Object.keys(locationTranslationsGu).forEach((locKey) => {
+      if (locKey.length > 2 && translated.includes(locKey)) {
+        translated = translated.replaceAll(locKey, locationTranslationsGu[locKey]);
+      }
+    });
+  }
+
+  return translated;
+}
+
+
+
+
+
+

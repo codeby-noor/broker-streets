@@ -4,6 +4,7 @@ import { Heart, MapPin, Share2, ShieldCheck } from 'lucide-react';
 import { toast } from 'react-toastify';
 import AsyncImage from './AsyncImage';
 import { isPropertySaved, onSavedPropertiesChanged, toggleSavedProperty } from '../utils/storage';
+import { useLanguage } from '../i18n/LanguageContext';
 
 const getLandImage = (property) => {
   const title = String(property?.title || property?.name || '').toLowerCase();
@@ -22,6 +23,7 @@ const getLandImage = (property) => {
 };
 
 function PropertyCard({ property, compact = false, onContact }) {
+  const { t, language, getPropertyDisplayTitle } = useLanguage();
   const [favorited, setFavorited] = useState(() => isPropertySaved(property?.id));
 
   useEffect(() => {
@@ -39,35 +41,72 @@ function PropertyCard({ property, compact = false, onContact }) {
       property?.media?.[0],
     ];
 
-    return candidates.find((item) => typeof item === 'string' && item.trim()) || getLandImage(property);
+    return candidates.find((item) => typeof item === 'string' && item.trim() && !item.trim().toLowerCase().startsWith('blob:')) || getLandImage(property);
   }, [property]);
 
   const locationLine = useMemo(() => {
     const parts = [property?.village, property?.subDistrict || property?.taluka, property?.district || property?.location || property?.city];
-    return parts.filter(Boolean).join(' • ');
-  }, [property]);
+    return parts.filter(Boolean).map((part) => t(part)).join(' • ');
+  }, [property, t]);
 
-  const propertyType = property?.type || property?.propertyType || 'Land';
-  const propertyTitle = property?.title || property?.name || 'Land Listing';
+  const rawPropertyType = property?.type || property?.propertyType || 'Land';
+  const propertyTitle = getPropertyDisplayTitle(property?.title || property?.name || t('propertyDetails.propertyTitleFallback'), language);
   const rawPrice = property?.priceAmount || property?.price;
-  const propertyPrice = rawPrice ? (typeof rawPrice === 'number' ? `₹${rawPrice.toLocaleString('en-IN')}` : rawPrice) : 'Price on request';
-  const propertyArea = property?.landArea || property?.area || 'Area not specified';
-  const propertyStatus = property?.status || 'Available';
+  const rawArea = property?.landArea || property?.area;
+  const rawStatus = property?.status || 'Available';
   const priceUnit = property?.priceUnit;
-  const postedDate = property?.uploadedDate || property?.submittedAt || property?.createdAt || property?.updatedAt || 'Recently listed';
+
+  const statusText = useMemo(() => {
+    if (rawStatus === 'Sold') return t('dropdown.sold');
+    if (rawStatus === 'Pending') return t('dropdown.pending');
+    if (rawStatus === 'Available') return t('dropdown.available');
+    return rawStatus;
+  }, [rawStatus, t]);
+
+  const typeText = useMemo(() => {
+    if (rawPropertyType === 'Agricultural Land') return t('buyerForm.agriculturalLand');
+    if (rawPropertyType === 'Non-Agricultural Land') return t('buyerForm.nonAgriculturalLand');
+    if (rawPropertyType === 'Apartment') return t('dropdown.apartment');
+    if (rawPropertyType === 'Villa') return t('dropdown.villa');
+    if (rawPropertyType === 'House') return t('dropdown.house');
+    if (rawPropertyType === 'Plot') return t('dropdown.plot');
+    if (rawPropertyType === 'Farm House') return t('dropdown.farmHouse');
+    if (rawPropertyType === 'Commercial') return t('dropdown.commercial');
+    if (rawPropertyType === 'Office') return t('dropdown.office');
+    return rawPropertyType;
+  }, [rawPropertyType, t]);
+
+  const displayArea = useMemo(() => {
+    if (!rawArea || rawArea === 'Area not specified') return t('propertyDetails.landAreaFallback');
+    return rawArea;
+  }, [rawArea, t]);
+
+  const displayPrice = useMemo(() => {
+    if (!rawPrice || rawPrice === 'Price on request') return t('common.notAvailable');
+    return typeof rawPrice === 'number' ? `₹${rawPrice.toLocaleString('en-IN')}` : rawPrice;
+  }, [rawPrice, t]);
+
+  const displayPriceUnit = useMemo(() => {
+    if (!priceUnit) return null;
+    const lower = priceUnit.toLowerCase();
+    if (lower.includes('vigha')) return t('sellerForm.vigha');
+    if (lower.includes('yard') || lower.includes('var')) return t('sellerForm.sqYard');
+    if (lower.includes('ft')) return t('sellerForm.sqFt');
+    return priceUnit;
+  }, [priceUnit, t]);
 
   const handleShare = async () => {
     const shareUrl = `${window.location.origin}/property/${property.id}`;
-    const shareText = `${propertyTitle} • ${propertyPrice} • ${property?.location || property?.district || 'Land'}`;
+    const shareText = `${propertyTitle} • ${displayPrice} • ${property?.location || property?.district || ''}`;
     try {
       if (navigator.share) {
         await navigator.share({ title: propertyTitle, text: shareText, url: shareUrl });
       } else if (navigator.clipboard) {
         await navigator.clipboard.writeText(shareUrl);
-        toast.info('Property link copied.');
+        toast.info(t('propertyDetails.propertyLinkCopied'));
       }
     } catch (error) {
-      toast.error('Sharing is unavailable right now.');
+      toast.error(t('propertyDetails.shareUnavailable'));
     }
   };
 
@@ -87,7 +126,7 @@ function PropertyCard({ property, compact = false, onContact }) {
           <div className="flex items-center">
             {property?.verified ? (
               <div className="inline-flex items-center gap-2 rounded-full bg-white/95 px-3 py-1.5 text-[11px] font-semibold text-slate-800 shadow-sm">
-                <ShieldCheck size={13} className="text-sage" /> Verified
+                <ShieldCheck size={13} className="text-sage" /> {t('common.verified')}
               </div>
             ) : null}
           </div>
@@ -102,8 +141,8 @@ function PropertyCard({ property, compact = false, onContact }) {
         </div>
 
         <div className="absolute bottom-4 left-4 flex flex-wrap gap-2">
-          <span className={`rounded-full px-3 py-1.5 text-[11px] font-semibold ${propertyStatus === 'Sold' ? 'bg-amber-500/90 text-white' : 'bg-emerald-600/90 text-white'}`}>{propertyStatus}</span>
-          <span className="rounded-full bg-slate-900/80 px-3 py-1.5 text-[11px] font-semibold text-white">{propertyType}</span>
+          <span className={`rounded-full px-3 py-1.5 text-[11px] font-semibold ${rawStatus === 'Sold' ? 'bg-amber-500/90 text-white' : 'bg-emerald-600/90 text-white'}`}>{statusText}</span>
+          <span className="rounded-full bg-slate-900/80 px-3 py-1.5 text-[11px] font-semibold text-white">{typeText}</span>
         </div>
       </div>
 
@@ -113,28 +152,28 @@ function PropertyCard({ property, compact = false, onContact }) {
           <p className="break-words text-sm leading-5 text-slate-500">
             <span className="inline-flex items-center gap-2 text-slate-500">
               <MapPin size={14} className="text-sage" />
-              <span className="break-words">{locationLine || 'Location details pending'}</span>
+              <span className="break-words">{locationLine || t('profile.locationPending')}</span>
             </span>
           </p>
           <div className="grid grid-cols-2 gap-3">
             <div className="rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3 text-sm text-slate-700">
-              <p className="font-semibold text-slate-900">Area</p>
-              <p className="mt-1 break-words">{propertyArea}</p>
+              <p className="font-semibold text-slate-900">{t('common.area')}</p>
+              <p className="mt-1 break-words">{displayArea}</p>
             </div>
             <div className="rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3 text-sm text-slate-700">
-              <p className="font-semibold text-slate-900">Price</p>
-              <p className="mt-1 break-words">{propertyPrice}</p>
-              {priceUnit ? <span className="text-xs text-slate-500">{priceUnit}</span> : null}
+              <p className="font-semibold text-slate-900">{t('common.price')}</p>
+              <p className="mt-1 break-words">{displayPrice}</p>
+              {displayPriceUnit ? <span className="text-xs text-slate-500">{displayPriceUnit}</span> : null}
             </div>
           </div>
         </div>
 
         <div className="mt-auto flex flex-col gap-3 sm:flex-row">
           <Link to={`/property/${property.id}`} className="flex min-h-[46px] flex-1 items-center justify-center rounded-[16px] bg-sage px-4 py-3 text-sm font-semibold text-white transition hover:bg-sage-dark">
-            View Details
+            {t('common.viewDetails')}
           </Link>
           <button type="button" onClick={() => onContact?.(property)} className="flex min-h-[46px] flex-1 items-center justify-center rounded-[16px] border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50">
-            Contact Seller
+            {t('common.contactSeller')}
           </button>
         </div>
       </div>

@@ -29,22 +29,11 @@ import LanguageSelectionPage from '../pages/LanguageSelectionPage';
 import { useLanguage } from '../i18n/LanguageContext';
 
 function AppRoutes() {
-  const { language } = useLanguage();
-
-  if (!language) {
-    return (
-      <Routes>
-        <Route path="/" element={<LanguageSelectionPage />} />
-        <Route path="*" element={<LanguageSelectionPage />} />
-      </Routes>
-    );
-  }
-
   return (
     <Routes>
       <Route path="/admin/*" element={<AdminApp />} />
       <Route path="/" element={<Layout />}>
-        <Route index element={<HomePage />} />
+        <Route index element={<RegisterPage />} />
         <Route path="home" element={<HomePage />} />
         <Route path="register" element={<RegisterPage />} />
         <Route path="login" element={<LoginPage />} />

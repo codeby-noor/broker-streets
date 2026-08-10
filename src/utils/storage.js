@@ -1,3 +1,5 @@
+import logo from '../assets/images/logo.png';
+
 export const STORAGE_KEYS = {
   buyerLeads: 'broker-streets-buyer-leads',
   buyerSubmitted: 'buyerFormSubmitted',
@@ -15,11 +17,58 @@ export const STORAGE_KEYS = {
   otpSession: 'broker-streets-otp-session',
 };
 
+const FALLBACK_LAND_IMAGE = logo;
+
+const isBlobUrl = (url) => typeof url === 'string' && url.trim().toLowerCase().startsWith('blob:');
+
+const sanitizeListingObject = (item) => {
+  if (!item || typeof item !== 'object') return item;
+  const copy = { ...item };
+
+  if (isBlobUrl(copy.image)) {
+    copy.image = FALLBACK_LAND_IMAGE;
+  }
+  if (Array.isArray(copy.gallery)) {
+    copy.gallery = copy.gallery.map((url) => (isBlobUrl(url) ? FALLBACK_LAND_IMAGE : url));
+  }
+  if (Array.isArray(copy.images)) {
+    copy.images = copy.images.map((url) => (isBlobUrl(url) ? FALLBACK_LAND_IMAGE : url));
+  }
+  if (isBlobUrl(copy.documentUrl)) {
+    copy.documentUrl = '#';
+  }
+  if (isBlobUrl(copy.pdf)) {
+    copy.pdf = '#';
+  }
+  if (copy.propertyDocument && typeof copy.propertyDocument === 'object' && isBlobUrl(copy.propertyDocument.url)) {
+    copy.propertyDocument = { ...copy.propertyDocument, url: '#' };
+  }
+  if (isBlobUrl(copy.audio)) {
+    copy.audio = '';
+  }
+  if (isBlobUrl(copy.voiceRecording)) {
+    copy.voiceRecording = '';
+  }
+  return copy;
+};
+
+export function sanitizeStorageData(key, data) {
+  if (!data) return data;
+  if (Array.isArray(data)) {
+    return data.map(sanitizeListingObject);
+  }
+  if (typeof data === 'object') {
+    return sanitizeListingObject(data);
+  }
+  return data;
+}
+
 export function readStorage(key, fallback = null) {
   try {
     const stored = window.localStorage.getItem(key);
     if (stored === null) return fallback;
-    return JSON.parse(stored);
+    const parsed = JSON.parse(stored);
+    return sanitizeStorageData(key, parsed);
   } catch (error) {
     return fallback;
   }

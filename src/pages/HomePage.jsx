@@ -1,4 +1,4 @@
-﻿import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { ArrowRight, MapPin, ShieldCheck, Sparkles, Users } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { getSubmissionDestination } from '../utils/formNavigation';
@@ -165,60 +165,51 @@ function HomePage() {
                         <p className="mt-2 text-sm text-slate-500">{formatSubmittedDate(lead)}</p>
                       </div>
                       <span className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-emerald-700">
-                        <span className="h-2 w-2 rounded-full bg-emerald-500" /> Verified Buyer
+                        <span className="h-2 w-2 rounded-full bg-emerald-500" /> {t('home.verifiedBuyer')}
                       </span>
                     </div>
 
                     <div className="flex flex-wrap gap-2">
                       <span className={`rounded-full border px-3 py-1 text-xs font-semibold ${getPropertyTypeBadgeClass(lead.propertyType)}`}>
-                        {lead.propertyType || 'Land'}
+                        {lead.propertyType === 'Agricultural Land' ? t('buyerForm.agriculturalLand') : lead.propertyType === 'Non-Agricultural Land' ? t('buyerForm.nonAgriculturalLand') : lead.propertyType || t('propertyDetails.propertyTypeFallback')}
                       </span>
                       <span className={`rounded-full border px-3 py-1 text-xs font-semibold ${getPurposeBadgeClass(lead.purpose)}`}>
-                        {lead.purpose || 'Other'}
+                        {lead.purpose === 'Investment' ? t('buyerForm.investment') : lead.purpose === 'Project' ? t('buyerForm.project') : lead.purpose === 'Personal Farm' ? t('buyerForm.personalFarm') : lead.purpose === 'Other' ? t('buyerForm.other') : lead.purpose || t('buyerForm.other')}
                       </span>
                     </div>
 
                     <div className="rounded-[20px] bg-white p-4">
-<p className="text-sm font-semibold uppercase tracking-[0.16em] text-slate-500">{t('buy.location') || 'Location'}</p>
-                      <p className="mt-2 text-sm text-slate-700">{lead.district || t('common.district') || 'District'} • {lead.taluka || t('buy.taluka') || 'Taluka'}</p>
+                      <p className="text-sm font-semibold uppercase tracking-[0.16em] text-slate-500">{t('buy.location')}</p>
+                      <p className="mt-2 text-sm text-slate-700">{lead.district || t('common.district')} • {lead.taluka || t('common.taluka')}</p>
                     </div>
 
-                    {visibleVillages.length ? (
-                      <div>
-                        <p className="text-sm font-semibold uppercase tracking-[0.16em] text-slate-500">{t('buyerForm.preferredVillages') || 'Preferred Villages'}</p>
-                        <div className="mt-3 flex flex-wrap gap-2">
-                          {visibleVillages.map((village) => (
-                            <span key={village} className="rounded-full border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium text-slate-700">{village}</span>
-                          ))}
-                          {preferredVillages.length > visibleVillages.length ? (
-                            <span className="rounded-full border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium text-slate-500">+{preferredVillages.length - visibleVillages.length} more</span>
-                          ) : null}
-                        </div>
-                      </div>
-                    ) : null}
+                    <div>
+                      <p className="text-sm font-semibold uppercase tracking-[0.16em] text-slate-500">{t('buyerForm.preferredVillages')}</p>
+                      <p className="mt-2 text-sm font-medium text-slate-700">{preferredVillages.length ? preferredVillages.join(', ') : t('common.notProvided')}</p>
+                    </div>
 
                     {requirementsText ? (
                       <div>
-                        <p className="text-sm font-semibold uppercase tracking-[0.16em] text-slate-500">{t('profile.buyerRequirements') || 'Requirements'}</p>
+                        <p className="text-sm font-semibold uppercase tracking-[0.16em] text-slate-500">{t('profile.buyerRequirements')}</p>
                         <p className={`mt-3 text-sm leading-6 text-slate-600 ${shouldClamp && !isExpanded ? 'overflow-hidden' : ''}`} style={shouldClamp && !isExpanded ? { display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' } : undefined}>
                           {requirementsText}
                         </p>
                         {shouldClamp ? (
                           <button type="button" onClick={() => setExpandedRequirements((current) => ({ ...current, [lead.id]: !current[lead.id] }))} className="mt-3 text-sm font-semibold text-primary transition hover:text-primary-dark">
-                            {isExpanded ? 'Read Less' : 'Read More'}
+                            {isExpanded ? t('common.readLess') : t('common.readMore')}
                           </button>
                         ) : null}
                       </div>
                     ) : null}
 
                     <button type="button" onClick={() => setContactModal({ type: 'buyer', data: lead })} className="mt-4 flex min-h-[48px] items-center justify-center gap-2 rounded-full bg-gradient-to-r from-emerald-600 to-green-600 px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:from-emerald-700 hover:to-green-700">
-                      <span>{t('home.buyerContactTitle') || 'Contact Buyer'}</span>
+                      <span>{t('home.buyerContactTitle')}</span>
                     </button>
                   </div>
                 </article>
               );
             }) : (
-              <div className="min-w-[86%] snap-start rounded-[28px] border border-dashed border-slate-300 bg-slate-50 p-8 text-sm text-slate-600 sm:min-w-[42%]">No buyer requirements available right now.</div>
+              <div className="min-w-[86%] snap-start rounded-[28px] border border-dashed border-slate-300 bg-slate-50 p-8 text-sm text-slate-600 sm:min-w-[42%]">{t('home.noBuyerRequirements')}</div>
             )}
           </div>
         </div>
@@ -241,18 +232,18 @@ function HomePage() {
               className="group flex h-full flex-col overflow-hidden rounded-[20px] border border-slate-200 bg-white text-left shadow-sm transition duration-300 hover:-translate-y-1 hover:border-emerald-300 hover:shadow-card-hover"
             >
               <div className="relative h-48 overflow-hidden sm:h-56 lg:h-64">
-                <img src={location.image} alt={location.name} className="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
+                <img src={location.image} alt={t(location.name)} className="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
               </div>
               <div className="flex flex-1 flex-col justify-between p-4 sm:p-5">
-                <h3 className="text-base font-semibold leading-6 text-slate-900 sm:text-lg lg:text-2xl">{location.name}</h3>
+                <h3 className="text-base font-semibold leading-6 text-slate-900 sm:text-lg lg:text-2xl">{t(location.name)}</h3>
                 <div className="mt-4">
                   <button
                     type="button"
-                    aria-label={`Explore ${location.name} in ${location.district}`}
+                    aria-label={`${t('home.explore')} ${t(location.name)}`}
                     onClick={() => navigate(`/buy?district=${encodeURIComponent(location.district)}&taluka=${encodeURIComponent(location.name)}`)}
                     className="inline-flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-xs font-semibold text-white transition hover:bg-primary-dark sm:text-sm"
                   >
-                    {t('home.explore') || 'Explore'} <ArrowRight size={14} />
+                    {t('home.explore')} <ArrowRight size={14} />
                   </button>
                 </div>
               </div>

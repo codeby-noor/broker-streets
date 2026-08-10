@@ -4,6 +4,7 @@ import { CheckCircle2, Edit3, Eye, MapPin, PlusCircle, Trash2 } from 'lucide-rea
 import AsyncImage from '../components/AsyncImage';
 import ProfileSubPageShell from '../components/ProfileSubPageShell';
 import { readStorage, STORAGE_KEYS, onListingsChanged, writeStorage } from '../utils/storage';
+import { useLanguage } from '../i18n/LanguageContext';
 
 const sampleListings = [
   {
@@ -28,26 +29,31 @@ const formatCurrency = (value) => {
   return `₹${numeric.toLocaleString('en-IN')}`;
 };
 
-const formatDate = (value) => {
-  if (!value) return 'Recently updated';
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return value;
-  return date.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
-};
-
 function ProfilePropertiesPage() {
   const navigate = useNavigate();
+  const { t, getPropertyDisplayTitle } = useLanguage();
   const [listings, setListings] = useState(() => readStorage(STORAGE_KEYS.listings, sampleListings));
+  const [deleteModalTarget, setDeleteModalTarget] = useState(null);
+  const [statusFilter, setStatusFilter] = useState('All');
 
   useEffect(() => {
     const cleanup = onListingsChanged(() => setListings(readStorage(STORAGE_KEYS.listings, sampleListings)));
     return cleanup;
   }, []);
 
-  const handleDeleteListing = (listing) => {
-    const nextListings = (readStorage(STORAGE_KEYS.listings, sampleListings) || []).filter((item) => item.id !== listing.id);
+  const formatDate = (value) => {
+    if (!value) return t('profile.recentlyUpdated');
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return value;
+    return date.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+  };
+
+  const confirmDeleteListing = () => {
+    if (!deleteModalTarget) return;
+    const nextListings = (readStorage(STORAGE_KEYS.listings, sampleListings) || []).filter((item) => item.id !== deleteModalTarget.id);
     writeStorage(STORAGE_KEYS.listings, nextListings);
     setListings(nextListings);
+    setDeleteModalTarget(null);
   };
 
   const handleToggleListingStatus = (listing) => {
@@ -59,17 +65,35 @@ function ProfilePropertiesPage() {
     setListings(nextListings);
   };
 
+  const filteredListings = listings.filter((item) => {
+    if (statusFilter === 'All') return true;
+    return (item.status || 'Available').toLowerCase() === statusFilter.toLowerCase();
+  });
+
   return (
-    <ProfileSubPageShell title="My Properties" description="Your Listings">
-      <div className="profile-subpage-actions">
+    <ProfileSubPageShell title={t('profile.myProperties')} description={t('profile.manageListings')}>
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex items-center gap-2">
+          <span className="text-sm font-semibold text-slate-700">{t('common.status')}:</span>
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+            className="rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-800 outline-none"
+          >
+            <option value="All">{t('buy.allTypes')}</option>
+            <option value="Available">{t('dropdown.available')}</option>
+            <option value="Sold">{t('dropdown.sold')}</option>
+            <option value="Pending">{t('dropdown.pending')}</option>
+          </select>
+        </div>
         <button type="button" onClick={() => navigate('/seller-form')} className="profile-subpage-primary-button">
-          <PlusCircle size={16} /> Add Property
+          <PlusCircle size={16} /> {t('profile.addProperty')}
         </button>
       </div>
 
-      {listings.length ? (
+      {filteredListings.length ? (
         <div className="profile-subpage-grid">
-          {listings.map((listing) => (
+          {filteredListings.map((listing) => (
             <article key={listing.id} className="profile-subpage-card">
               <div className="profile-subpage-image-wrap">
                 <AsyncImage property={listing} alt={listing.title} className="profile-card-image" containerClassName="profile-card-image-frame" />
@@ -77,26 +101,26 @@ function ProfilePropertiesPage() {
               <div className="profile-subpage-card-body">
                 <div className="profile-subpage-card-head">
                   <div>
-                    <h3>{listing.title}</h3>
+                    <h3>{getPropertyDisplayTitle(listing.title)}</h3>
                     <p className="profile-subpage-location">
-                      <MapPin size={14} /> {listing.district || 'District'} • {listing.subDistrict || listing.taluka || 'Taluka'} • {listing.village || 'Village'}
+                      <MapPin size={14} /> {t(listing.district) || t('common.district')} • {t(listing.subDistrict || listing.taluka) || t('common.taluka')} • {t(listing.village) || t('common.village')}
                     </p>
                   </div>
-                  <span className={`profile-status-badge ${listing.status?.toLowerCase()}`}>{listing.status}</span>
+                  <span className={`profile-status-badge ${listing.status?.toLowerCase()}`}>{listing.status === 'Sold' ? t('dropdown.sold') : listing.status === 'Pending' ? t('dropdown.pending') : t('dropdown.available')}</span>
                 </div>
 
                 <div className="profile-subpage-meta-grid">
                   <div>
-                    <span className="profile-subpage-label">Price</span>
+                    <span className="profile-subpage-label">{t('buy.price')}</span>
                     <span className="profile-subpage-value">{formatCurrency(listing.price || listing.priceAmount || 0)}</span>
                   </div>
                   <div>
-                    <span className="profile-subpage-label">Area</span>
-                    <span className="profile-subpage-value">{listing.area || 'Area not specified'}</span>
+                    <span className="profile-subpage-label">{t('common.area')}</span>
+                    <span className="profile-subpage-value">{listing.area || t('common.notProvided')}</span>
                   </div>
                   <div>
-                    <span className="profile-subpage-label">Status</span>
-                    <span className="profile-subpage-value">{listing.status}</span>
+                    <span className="profile-subpage-label">{t('common.status')}</span>
+                    <span className="profile-subpage-value">{listing.status === 'Sold' ? t('dropdown.sold') : listing.status === 'Pending' ? t('dropdown.pending') : t('dropdown.available')}</span>
                   </div>
                 </div>
 
@@ -104,16 +128,16 @@ function ProfilePropertiesPage() {
                   <span className="profile-subpage-date">{formatDate(listing.updatedAt || listing.submittedAt)}</span>
                   <div className="profile-subpage-actions-row">
                     <button type="button" onClick={() => navigate(`/property/${listing.id}`)} className="profile-subpage-row-button">
-                      <Eye size={15} /> View
+                      <Eye size={15} /> {t('common.view')}
                     </button>
                     <button type="button" onClick={() => navigate('/seller-form', { state: { editProperty: listing } })} className="profile-subpage-row-button">
-                      <Edit3 size={15} /> Edit
+                      <Edit3 size={15} /> {t('common.edit')}
                     </button>
-                    <button type="button" onClick={() => handleDeleteListing(listing)} className="profile-subpage-row-button danger">
-                      <Trash2 size={15} /> Delete
+                    <button type="button" onClick={() => setDeleteModalTarget(listing)} className="profile-subpage-row-button danger">
+                      <Trash2 size={15} /> {t('common.delete')}
                     </button>
                     <button type="button" onClick={() => handleToggleListingStatus(listing)} className="profile-subpage-row-button success">
-                      <CheckCircle2 size={15} /> {listing.status === 'Sold' ? 'Mark Available' : 'Mark Sold'}
+                      <CheckCircle2 size={15} /> {listing.status === 'Sold' ? t('common.markAvailable') : t('common.markSold')}
                     </button>
                   </div>
                 </div>
@@ -123,8 +147,25 @@ function ProfilePropertiesPage() {
         </div>
       ) : (
         <div className="profile-empty-state">
-          <p>No properties yet</p>
-          <button type="button" onClick={() => navigate('/seller-form')} className="profile-subpage-primary-button">Create Listing</button>
+          <p>{t('profile.noPropertiesYet')}</p>
+          <button type="button" onClick={() => navigate('/seller-form')} className="profile-subpage-primary-button">{t('profile.createListing')}</button>
+        </div>
+      )}
+
+      {deleteModalTarget && (
+        <div role="dialog" aria-modal="true" className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4">
+          <div className="w-full max-w-md rounded-[28px] bg-white p-6 shadow-xl">
+            <h3 className="text-xl font-semibold text-slate-900">{t('profile.deleteListingModalTitle')}</h3>
+            <p className="mt-3 text-sm text-slate-600">{t('profile.deleteListingModalDesc')}</p>
+            <div className="mt-6 flex justify-end gap-3">
+              <button type="button" onClick={() => setDeleteModalTarget(null)} className="rounded-full border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50">
+                {t('common.cancel')}
+              </button>
+              <button type="button" onClick={confirmDeleteListing} className="rounded-full bg-red-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-red-700">
+                {t('common.delete')}
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </ProfileSubPageShell>

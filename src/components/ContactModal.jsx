@@ -2,8 +2,9 @@ import { useEffect } from 'react';
 import { X } from 'lucide-react';
 import { useLanguage } from '../i18n/LanguageContext';
 
-function ContactModal({ open, onClose, data = {}, title = 'Contact Seller' }) {
-  const { t } = useLanguage();
+function ContactModal({ open, onClose, data = {}, title }) {
+  const { t, getPropertyDisplayTitle } = useLanguage();
+  const displayTitle = title || t('buy.contactSeller');
   useEffect(() => {
     if (!open) return undefined;
 
@@ -41,7 +42,7 @@ function ContactModal({ open, onClose, data = {}, title = 'Contact Seller' }) {
         >
           <div className="mb-4 flex items-center justify-between">
             <div>
-              <h3 id="contact-modal-title" className="text-lg font-semibold text-ink">{title}</h3>
+              <h3 id="contact-modal-title" className="text-lg font-semibold text-ink">{displayTitle}</h3>
               <p className="mt-1 text-sm text-slate-500">{t('contact.modalDescription')}</p>
             </div>
             <button type="button" onClick={onClose} className="rounded-full bg-slate-100 p-2 text-slate-600 transition hover:bg-slate-200">
@@ -70,8 +71,8 @@ function ContactModal({ open, onClose, data = {}, title = 'Contact Seller' }) {
                 <div>
                   <p className="text-sm font-semibold text-slate-500">{t('contact.modalProperty')}</p>
                   <p className="mt-2 text-sm text-slate-700">
-                    {data.propertyTitle || data.propertyType || t('propertyDetails.propertyNotUploaded')}
-                    {data.city || data.district ? ` • ${[data.city, data.district].filter(Boolean).join(', ')}` : ''}
+                    {data.propertyTitle ? getPropertyDisplayTitle(data.propertyTitle) : (data.propertyType ? t(data.propertyType) : t('propertyDetails.propertyNotUploaded'))}
+                    {data.city || data.district ? ` • ${[t(data.city), t(data.district)].filter(Boolean).join(', ')}` : ''}
                   </p>
                 </div>
               ) : null}

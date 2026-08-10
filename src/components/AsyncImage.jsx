@@ -2,17 +2,22 @@ import { useEffect, useState } from 'react';
 import { getPropertyImage } from '../services/imageService';
 
 const FALLBACK_IMAGE = 'https://images.pexels.com/photos/259588/pexels-photo-259588.jpeg';
+const isBlobUrl = (url) => typeof url === 'string' && url.trim().toLowerCase().startsWith('blob:');
 
 function AsyncImage({ property, src, alt, className = '', containerClassName = '', ...props }) {
-  const [imageUrl, setImageUrl] = useState(src || FALLBACK_IMAGE);
+  const safeInitialSrc = isBlobUrl(src) ? FALLBACK_IMAGE : (src || FALLBACK_IMAGE);
+  const [imageUrl, setImageUrl] = useState(safeInitialSrc);
   const [loaded, setLoaded] = useState(false);
   const [isPending, setIsPending] = useState(Boolean(property));
 
   useEffect(() => {
     let isMounted = true;
+    const currentSrc = isBlobUrl(src) ? FALLBACK_IMAGE : (src || FALLBACK_IMAGE);
+
     if (!property) {
       setIsPending(false);
-      setLoaded(Boolean(src));
+      setImageUrl(currentSrc);
+      setLoaded(Boolean(currentSrc));
       return undefined;
     }
 
@@ -22,7 +27,8 @@ function AsyncImage({ property, src, alt, className = '', containerClassName = '
     getPropertyImage(property)
       .then((result) => {
         if (!isMounted) return;
-        setImageUrl(result || FALLBACK_IMAGE);
+        const validResult = isBlobUrl(result) ? FALLBACK_IMAGE : (result || FALLBACK_IMAGE);
+        setImageUrl(validResult);
         setIsPending(false);
       })
       .catch(() => {
