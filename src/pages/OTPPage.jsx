@@ -7,9 +7,11 @@ import useCountdown from '../hooks/useCountdown';
 import { useUserStore } from '../store/useUserStore';
 import { findUserByMobile, readPendingOtpMobile, STORAGE_KEYS, writePendingOtpMobile } from '../utils/storage';
 import { getDebugOtpForMobile, normalizeMobile, resendOTP, verifyOTP } from '../utils/otpService';
+import { useLanguage } from '../i18n/LanguageContext';
 
 function OTPPage() {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const location = useLocation();
   const [verifying, setVerifying] = useState(false);
   const [devOtp, setDevOtp] = useState(() => {
@@ -103,7 +105,7 @@ function OTPPage() {
 
   const verifyAndProceed = () => {
     if (code.length !== 6) {
-      toast.error('Please enter the 6-digit code');
+      toast.error(t('auth.otpRequired'));
       return;
     }
 
@@ -126,7 +128,7 @@ function OTPPage() {
     localStorage.setItem(STORAGE_KEYS.currentUserId, authenticatedUser.id || '');
     writePendingOtpMobile('');
 
-    toast.success('Login Successful');
+    toast.success(t('auth.verifySuccess'));
 
     navigate('/home');
   };
@@ -147,7 +149,7 @@ function OTPPage() {
     }
     writePendingOtpMobile(phone);
     inputsRef.current[0]?.focus();
-    toast.success('A new OTP has been generated. Use the displayed code to verify.');
+    toast.success(t('auth.resendGenerated'));
   };
 
   return (
@@ -157,19 +159,19 @@ function OTPPage() {
           <img src={logo} alt="Broker Streets logo" className="h-full w-full object-contain" />
         </div>
         <div className="space-y-3 text-center sm:text-left">
-          <h1 className="text-3xl font-semibold text-slate-900">Verify your account</h1>
+          <h1 className="text-3xl font-semibold text-slate-900">{t('auth.verifyAccount')}</h1>
           <p className="mx-auto max-w-xs text-sm leading-6 text-slate-600 sm:mx-0">
-            Enter the 6-digit code sent to your mobile number.
+            {t('auth.verifyDescription')}
           </p>
           <p className="text-sm text-slate-600">
-            OTP sent to <span className="font-semibold text-slate-900">+91 {phone}</span>
+            {t('auth.otpSentTo')} <span className="font-semibold text-slate-900">+91 {phone}</span>
           </p>
         </div>
 
       {devOtp ? (
         <div className="mt-6 rounded-[24px] border border-slate-200 bg-slate-50 px-4 py-4 text-slate-900 shadow-sm sm:px-5 sm:py-4" role="status" aria-live="polite">
-          <p className="font-semibold text-slate-900">Development OTP: <span className="font-mono text-base tracking-[0.2em] sm:text-lg">{devOtp}</span></p>
-          <p className="mt-1 text-sm text-slate-600">Use this OTP to complete verification.</p>
+          <p className="font-semibold text-slate-900">{t('auth.developmentOtp')}: <span className="font-mono text-base tracking-[0.2em] sm:text-lg">{devOtp}</span></p>
+          <p className="mt-1 text-sm text-slate-600">{t('auth.useOtpToComplete')}</p>
         </div>
       ) : null}
 
@@ -200,17 +202,17 @@ function OTPPage() {
             onClick={resendOTPHandler}
             className="font-semibold text-primary disabled:cursor-not-allowed disabled:opacity-50"
           >
-            Resend OTP
+            {t('auth.resendOtp')}
           </button>
 
           <p className="text-center sm:text-left">
-            {isComplete ? 'Ready to resend' : `Resend in ${seconds}s`}
+            {isComplete ? t('auth.readyToResend') : `${t('auth.resendIn')} ${seconds}s`}
           </p>
         </div>
 
         <div className="flex flex-col gap-3 sm:flex-row">
           <LargeButton type="submit" disabled={verifying}>
-            {verifying ? 'Verifying...' : 'Verify'}
+            {verifying ? t('auth.verifying') : t('auth.verify')}
           </LargeButton>
 
           <button
@@ -218,7 +220,7 @@ function OTPPage() {
             onClick={() => navigate(-1)}
             className="inline-flex w-full items-center justify-center rounded-3xl border border-slate-200 bg-white px-6 py-4 text-base font-semibold text-slate-900 transition hover:bg-slate-50 sm:w-auto"
           >
-            Back
+            {t('common.back')}
           </button>
         </div>
       </form>

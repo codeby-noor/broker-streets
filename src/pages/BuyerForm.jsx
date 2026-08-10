@@ -4,6 +4,7 @@ import { toast } from 'react-toastify';
 import { appendStorageArray, appendNotification, STORAGE_KEYS } from '../utils/storage';
 import { useUserStore } from '../store/useUserStore';
 import { gujaratDistricts, gujaratStateOptions, gujaratSubDistricts, gujaratVillages } from '../utils/data';
+import { useLanguage } from '../i18n/LanguageContext';
 
 const initialForm = {
   state: 'Gujarat',
@@ -14,10 +15,10 @@ const initialForm = {
   purpose: '',
   requirements: '',
 };
-const propertyTypes = ['Agricultural Land', 'Non-Agricultural Land'];
 
 function BuyerForm() {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const currentUser = useUserStore((state) => state.user);
   const [form, setForm] = useState({ ...initialForm });
   const [errors, setErrors] = useState({});
@@ -25,6 +26,16 @@ function BuyerForm() {
   const [isRecording, setIsRecording] = useState(false);
   const [audioUrl, setAudioUrl] = useState('');
   const [villageSearch, setVillageSearch] = useState('');
+  const propertyTypeOptions = useMemo(() => [
+    { value: 'Agricultural Land', label: t('buyerForm.agriculturalLand') },
+    { value: 'Non-Agricultural Land', label: t('buyerForm.nonAgriculturalLand') },
+  ], [t]);
+  const purposeOptions = useMemo(() => [
+    { value: 'Investment', label: t('buyerForm.investment') },
+    { value: 'Project', label: t('buyerForm.project') },
+    { value: 'Personal Farm', label: t('buyerForm.personalFarm') },
+    { value: 'Other', label: t('buyerForm.other') },
+  ], [t]);
 
   const mediaRecorderRef = useRef(null);
   const chunksRef = useRef([]);
@@ -65,19 +76,19 @@ function BuyerForm() {
 
   const validate = () => {
     const nextErrors = {};
-    if (!form.state) nextErrors.state = 'Please choose a state.';
-    if (!form.district) nextErrors.district = 'Please choose a district.';
-    if (!form.taluka) nextErrors.taluka = 'Please choose a taluka.';
-    if (!form.propertyType) nextErrors.propertyType = 'Please choose a property type.';
-    if (!form.purpose) nextErrors.purpose = 'Please choose a purpose.';
+    if (!form.state) nextErrors.state = t('buyerForm.stateRequired');
+    if (!form.district) nextErrors.district = t('buyerForm.districtRequired');
+    if (!form.taluka) nextErrors.taluka = t('buyerForm.talukaRequired');
+    if (!form.propertyType) nextErrors.propertyType = t('buyerForm.propertyTypeRequired');
+    if (!form.purpose) nextErrors.purpose = t('buyerForm.purposeRequired');
 
     const availableVillageCount = allVillageOptions.length;
     if (form.taluka && availableVillageCount > 0) {
       const selectedCount = form.preferredVillages?.length || 0;
       if (availableVillageCount === 1 && selectedCount < 1) {
-        nextErrors.preferredVillages = 'Please select at least 1 village.';
+        nextErrors.preferredVillages = t('buyerForm.villageSelectionRequired');
       } else if (availableVillageCount > 1 && selectedCount < 2) {
-        nextErrors.preferredVillages = 'Please select at least 2 villages.';
+        nextErrors.preferredVillages = t('buyerForm.villageSelectionRequiredPlural');
       }
     }
 
@@ -106,7 +117,7 @@ function BuyerForm() {
       recorder.start();
       setIsRecording(true);
     } catch (err) {
-      toast.error('Microphone permission denied.');
+      toast.error(t('buyerForm.microphoneDenied'));
     }
   };
 
@@ -151,7 +162,7 @@ function BuyerForm() {
 
     if (Object.keys(nextErrors).length) {
       setErrors(nextErrors);
-      toast.error('Please correct the highlighted fields before continuing.');
+      toast.error(t('buyerForm.validationError'));
       return;
     }
 
@@ -181,7 +192,7 @@ function BuyerForm() {
       });
 
       setSubmitting(false);
-      toast.success('Your buyer profile has been submitted successfully.');
+      toast.success(t('buyerForm.submitSuccess'));
 
       navigate('/buy', {
         replace: true,
@@ -197,17 +208,17 @@ function BuyerForm() {
     <div className="min-h-screen bg-[#FFFEFE] px-4 py-8 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-3xl rounded-[32px] border border-slate-200 bg-white p-8 shadow-xl sm:p-10">
         <div className="mb-8">
-          <p className="eyebrow text-blue-100">Buyer preference</p>
-          <h1 className="mt-3 text-3xl font-semibold text-ink">Tell us what land you are looking for</h1>
-          <p className="mt-3 text-sm text-slate-600">Provide the essentials and we will suggest matching agricultural and NA land options.</p>
+          <p className="eyebrow text-blue-100">{t('buyerForm.eyebrow')}</p>
+          <h1 className="mt-3 text-3xl font-semibold text-ink">{t('buyerForm.heading')}</h1>
+          <p className="mt-3 text-sm text-slate-600">{t('buyerForm.description')}</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-5 rounded-[28px] border border-slate-200 bg-slate-50 p-6">
-            <h2 className="text-xl font-semibold text-ink">Your Preference</h2>
+            <h2 className="text-xl font-semibold text-ink">{t('buyerForm.preference')}</h2>
 
             <label className="block">
-              <span className="field-label">Preferred State *</span>
+              <span className="field-label">{t('buyerForm.preferredState')} *</span>
               <select
                 name="state"
                 value={form.state}
@@ -224,14 +235,14 @@ function BuyerForm() {
             </label>
 
             <label className="block">
-              <span className="field-label">Preferred District *</span>
+              <span className="field-label">{t('buyerForm.preferredDistrict')} *</span>
               <select
                 name="district"
                 value={form.district}
                 onChange={handleChange}
                 className={`field-control w-full ${errors.district ? 'border-red-400' : ''}`}
               >
-                <option value="">Select district</option>
+                <option value="">{t('buyerForm.selectDistrict')}</option>
                 {gujaratDistricts.map((district) => (
                   <option key={district} value={district}>
                     {district}
@@ -242,7 +253,7 @@ function BuyerForm() {
             </label>
 
             <label className="block">
-              <span className="field-label">Preferred Taluka *</span>
+              <span className="field-label">{t('buyerForm.preferredTaluka')} *</span>
               <select
                 name="taluka"
                 value={form.taluka}
@@ -250,7 +261,7 @@ function BuyerForm() {
                 className={`field-control w-full ${errors.taluka ? 'border-red-400' : ''}`}
                 disabled={!form.district}
               >
-                <option value="">{form.district ? 'Select taluka' : 'Select district first'}</option>
+                <option value="">{form.district ? t('buyerForm.selectTaluka') : t('buyerForm.selectDistrictFirst')}</option>
                 {talukaOptions.map((taluka) => (
                   <option key={taluka} value={taluka}>
                     {taluka}
@@ -265,11 +276,11 @@ function BuyerForm() {
                 <div className="mb-3 space-y-3 rounded-[24px] border border-slate-200 bg-white p-4">
                   <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                     <div>
-                      <p className="field-label">Preferred Villages *</p>
-                      <p className="text-sm text-slate-500">Select at least 2 villages</p>
+                      <p className="field-label">{t('buyerForm.preferredVillages')} *</p>
+                      <p className="text-sm text-slate-500">{t('buyerForm.selectVillagesHint')}</p>
                     </div>
                     <div className="inline-flex items-center gap-2 rounded-full bg-sage/10 px-3 py-2 text-sm font-semibold text-sage">
-                      Selected: {selectedVillageCount}
+                      {t('buyerForm.selectedCount')}: {selectedVillageCount}
                     </div>
                   </div>
 
@@ -278,15 +289,15 @@ function BuyerForm() {
                       type="text"
                       value={villageSearch}
                       onChange={(event) => setVillageSearch(event.target.value)}
-                      placeholder="Search villages..."
+                      placeholder={t('buyerForm.searchVillages')}
                       className="field-control w-full sm:max-w-xs"
                     />
                     <div className="flex flex-wrap gap-2">
                       <button type="button" onClick={handleSelectAllVisible} className="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-sage hover:text-sage">
-                        Select All
+                        {t('buyerForm.selectAll')}
                       </button>
                       <button type="button" onClick={handleClearAllVisible} className="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-red-300 hover:text-red-600">
-                        Clear All
+                        {t('buyerForm.clearAll')}
                       </button>
                     </div>
                   </div>
@@ -314,14 +325,14 @@ function BuyerForm() {
                         })
                       ) : (
                         <div className="col-span-full rounded-2xl border border-dashed border-slate-200 px-4 py-4 text-sm text-slate-500">
-                          No villages match your search.
+                          {t('buyerForm.noVillagesMatch')}
                         </div>
                       )}
                     </div>
                   </div>
                 ) : (
                   <div className="rounded-[24px] border border-dashed border-slate-200 bg-white px-4 py-4 text-sm text-slate-500">
-                    No villages available for this taluka.
+                    {t('buyerForm.noVillagesAvailable')}
                   </div>
                 )}
                 {errors.preferredVillages && <p className="error-style mt-2">{errors.preferredVillages}</p>}
@@ -329,17 +340,17 @@ function BuyerForm() {
             ) : null}
 
             <label className="block">
-              <span className="field-label">Property Type *</span>
+              <span className="field-label">{t('buyerForm.propertyType')} *</span>
               <select
                 name="propertyType"
                 value={form.propertyType}
                 onChange={handleChange}
                 className={`field-control w-full ${errors.propertyType ? 'border-red-400' : ''}`}
               >
-                <option value="">Select land type</option>
-                {propertyTypes.map((option) => (
-                  <option key={option} value={option}>
-                    {option}
+                <option value="">{t('buyerForm.selectPropertyType')}</option>
+                {propertyTypeOptions.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
                   </option>
                 ))}
               </select>
@@ -347,38 +358,39 @@ function BuyerForm() {
             </label>
 
             <label className="block">
-              <span className="field-label">Purpose *</span>
+              <span className="field-label">{t('buyerForm.purpose')} *</span>
               <select
                 name="purpose"
                 value={form.purpose}
                 onChange={handleChange}
                 className={`field-control w-full ${errors.purpose ? 'border-red-400' : ''}`}
               >
-                <option value="">Select purpose</option>
-                <option value="Investment">Investment</option>
-                <option value="Project">Project</option>
-                <option value="Personal Farm">Personal Farm</option>
-                <option value="Other">Other</option>
+                <option value="">{t('buyerForm.selectPurpose')}</option>
+                {purposeOptions.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
               </select>
               {errors.purpose && <p className="error-style">{errors.purpose}</p>}
             </label>
 
             <label className="block">
-              <span className="field-label">Additional Requirements</span>
+              <span className="field-label">{t('buyerForm.additionalRequirements')}</span>
               <textarea
                 name="requirements"
                 rows="4"
                 value={form.requirements}
                 onChange={handleChange}
                 className="field-control w-full resize-y"
-                placeholder="Road access, water source, preferred locality..."
+                placeholder={t('buyerForm.requirementsPlaceholder')}
               />
             </label>
 
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <span className="field-label">Voice Recording</span>
-                <span className="text-xs text-muted">Optional</span>
+                <span className="field-label">{t('buyerForm.voiceRecording')}</span>
+                <span className="text-xs text-muted">{t('common.optional')}</span>
               </div>
               {!isRecording ? (
                 <button
@@ -386,7 +398,7 @@ function BuyerForm() {
                   onClick={startRecording}
                   className="inline-flex w-full items-center justify-center rounded-3xl bg-red-500 px-5 py-3 text-sm font-semibold text-white transition hover:bg-red-600"
                 >
-                  Start Recording
+                  {t('buyerForm.startRecording')}
                 </button>
               ) : (
                 <button
@@ -394,15 +406,15 @@ function BuyerForm() {
                   onClick={stopRecording}
                   className="inline-flex w-full items-center justify-center rounded-3xl bg-slate-700 px-5 py-3 text-sm font-semibold text-white transition hover:bg-slate-800"
                 >
-                  Stop Recording
+                  {t('buyerForm.stopRecording')}
                 </button>
               )}
-              {isRecording ? <p className="text-sm text-slate-600">Recording in progress…</p> : null}
+              {isRecording ? <p className="text-sm text-slate-600">{t('buyerForm.recordingInProgress')}</p> : null}
               {audioUrl && (
                 <div className="space-y-3 rounded-3xl border border-slate-200 bg-white p-4">
                   <audio controls src={audioUrl} className="w-full" />
                   <button type="button" onClick={() => setAudioUrl('')} className="text-sm font-semibold text-red-600">
-                    Remove recording
+                    {t('buyerForm.removeRecording')}
                   </button>
                 </div>
               )}
@@ -415,7 +427,7 @@ function BuyerForm() {
               disabled={submitting}
               className="inline-flex w-full items-center justify-center rounded-3xl bg-sage px-6 py-3 text-sm font-semibold text-white transition hover:bg-sage-dark disabled:cursor-not-allowed disabled:bg-slate-300 min-h-[48px]"
             >
-              {submitting ? 'Submitting...' : 'Submit'}
+              {submitting ? t('buyerForm.submitting') : t('buyerForm.submit')}
             </button>
           </div>
         </form>

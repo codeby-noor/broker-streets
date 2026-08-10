@@ -5,9 +5,11 @@ import LargeButton from '../components/LargeButton';
 import logo from '../assets/images/logo.png';
 import { findUserByMobile, writePendingOtpMobile } from '../utils/storage';
 import { normalizeMobile, sendOTP } from '../utils/otpService';
+import { useLanguage } from '../i18n/LanguageContext';
 
 function LoginPage() {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const [mobile, setMobile] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -16,14 +18,14 @@ function LoginPage() {
     const normalizedMobile = normalizeMobile(mobile);
 
     if (!normalizedMobile) {
-      toast.error('Please enter your mobile number');
+      toast.error(t('auth.enterMobile'));
       return;
     }
 
     const user = findUserByMobile(normalizedMobile);
 
     if (!user) {
-      toast.error('No account found. Please register first.');
+      toast.error(t('auth.accountNotFound'));
       return;
     }
 
@@ -38,7 +40,7 @@ function LoginPage() {
 
     writePendingOtpMobile(normalizedMobile);
     setLoading(false);
-    toast.success('OTP sent successfully');
+    toast.success(t('auth.otpSent'));
     navigate('/otp', {
       state: {
         phone: normalizedMobile,
@@ -54,29 +56,29 @@ function LoginPage() {
           <img src={logo} alt="Broker Streets logo" className="h-full w-full object-contain" />
         </div>
         <div className="space-y-3 text-center">
-          <h1 className="text-3xl font-semibold text-slate-900">Login</h1>
-          <p className="mx-auto max-w-xs text-sm leading-6 text-slate-600">Enter your registered mobile number to continue to Broker Streets.</p>
+          <h1 className="text-3xl font-semibold text-slate-900">{t('auth.loginHeading')}</h1>
+          <p className="mx-auto max-w-xs text-sm leading-6 text-slate-600">{t('auth.loginDescription')}</p>
         </div>
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
-            <label className="mb-2 block text-sm font-semibold text-slate-800">Mobile Number</label>
+            <label className="mb-2 block text-sm font-semibold text-slate-800">{t('auth.mobileNumber')}</label>
             <input
               type="tel"
               value={mobile}
               onChange={(event) => setMobile(event.target.value)}
               className="w-full min-h-[56px] rounded-3xl border border-slate-200 bg-slate-50 px-4 py-4 text-base text-slate-900 outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10"
-              placeholder="Enter 10-digit mobile"
+              placeholder={t('auth.placeholderMobile')}
             />
           </div>
           <div className="space-y-3">
-            <LargeButton type="submit" disabled={loading}>{loading ? 'Sending OTP...' : 'Login'}</LargeButton>
+            <LargeButton type="submit" disabled={loading}>{loading ? t('auth.sendingOtp') : t('auth.loginButton')}</LargeButton>
             <button type="button" onClick={() => navigate('/register')} className="inline-flex w-full items-center justify-center rounded-3xl border border-slate-200 bg-white px-6 py-4 text-base font-semibold text-slate-900 transition hover:bg-slate-50">
-              Create account
+              {t('auth.createAccount')}
             </button>
           </div>
         </form>
         <p className="text-center text-sm text-slate-500">
-          Don’t have an account? <button type="button" onClick={() => navigate('/register')} className="font-semibold text-primary underline-offset-4 hover:underline">Create one now</button>
+          {t('auth.noAccount')} <button type="button" onClick={() => navigate('/register')} className="font-semibold text-primary underline-offset-4 hover:underline">{t('auth.createOneNow')}</button>
         </p>
       </div>
     </div>

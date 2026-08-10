@@ -10,6 +10,7 @@ import AsyncImage from '../components/AsyncImage';
 import ContactModal from '../components/ContactModal';
 import SectionHeading from '../components/SectionHeading';
 import { addRecentlyViewed, isPropertySaved, toggleSavedProperty } from '../utils/storage';
+import { useLanguage } from '../i18n/LanguageContext';
 
 const formatPrice = (value) => {
   if (typeof value === 'number') return `₹${value.toLocaleString('en-IN')}`;
@@ -23,6 +24,7 @@ const formatPrice = (value) => {
 
 function PropertyDetailsPage() {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const { id } = useParams();
   const [property, setProperty] = useState(null);
   const [sourceProperties, setSourceProperties] = useState([]);
@@ -58,13 +60,13 @@ function PropertyDetailsPage() {
     const shareText = `${property?.title || 'Land listing'} • ${property?.price || ''}`;
     try {
       if (navigator.share) {
-        await navigator.share({ title: property?.title || 'Land listing', text: shareText, url: shareUrl });
+        await navigator.share({ title: property?.title || t('propertyDetails.propertyTitleFallback'), text: shareText, url: shareUrl });
       } else if (navigator.clipboard) {
         await navigator.clipboard.writeText(shareUrl);
-        toast.info('Property link copied.');
+        toast.info(t('propertyDetails.propertyLinkCopied'));
       }
     } catch (error) {
-      toast.error('Sharing is unavailable right now.');
+      toast.error(t('propertyDetails.shareUnavailable'));
     }
   };
 
@@ -109,14 +111,14 @@ function PropertyDetailsPage() {
       items.push({ label, value: resolved });
     };
 
-    addItem('Property Type', property?.type || property?.propertyType);
-    addItem('Land Area', property?.landArea || property?.area);
-    addItem('Price', formatPrice(property?.priceAmount || property?.price));
-    addItem('Price Unit', property?.priceUnit);
-    addItem('District', property?.district || property?.location);
-    addItem('Taluka', property?.subDistrict || property?.taluka);
-    addItem('Village', property?.village);
-    addItem('State', property?.state || 'Gujarat');
+    addItem(t('common.propertyType'), property?.type || property?.propertyType);
+    addItem(t('common.area'), property?.landArea || property?.area);
+    addItem(t('common.price'), formatPrice(property?.priceAmount || property?.price));
+    addItem(t('common.priceUnit'), property?.priceUnit);
+    addItem(t('common.district'), property?.district || property?.location);
+    addItem(t('common.taluka'), property?.subDistrict || property?.taluka);
+    addItem(t('common.village'), property?.village);
+    addItem(t('common.state'), property?.state || t('propertyDetails.stateFallback'));
 
     return items;
   }, [property]);
@@ -124,22 +126,22 @@ function PropertyDetailsPage() {
   const featureItems = useMemo(() => {
     if (!property) return [];
     const featureMap = [
-      { label: 'Road Access', value: property?.roadAccess || property?.roadConnectivity || property?.roadAccessStatus },
-      { label: 'Electricity Connection', value: property?.electricity || property?.electricityConnection || property?.electricityAvailable },
-      { label: 'Water Availability', value: property?.waterAvailability || property?.waterSource || property?.water },
-      { label: 'Borewell', value: property?.borewell || property?.hasBorewell },
-      { label: 'Irrigation Facility', value: property?.irrigation || property?.irrigationFacility },
-      { label: 'Boundary Wall', value: property?.boundaryWall || property?.boundaryFence || property?.boundary },
-      { label: 'Fencing', value: property?.fencing || property?.hasFencing },
-      { label: 'Corner Plot', value: property?.cornerPlot || property?.corner },
-      { label: 'Facing Direction', value: property?.facing || property?.direction },
-      { label: 'Soil Type', value: property?.soilType },
-      { label: 'Ownership Status', value: property?.ownershipStatus || property?.ownership },
+      { label: t('propertyDetails.roadAccess'), value: property?.roadAccess || property?.roadConnectivity || property?.roadAccessStatus },
+      { label: t('propertyDetails.electricityConnection'), value: property?.electricity || property?.electricityConnection || property?.electricityAvailable },
+      { label: t('propertyDetails.waterAvailability'), value: property?.waterAvailability || property?.waterSource || property?.water },
+      { label: t('propertyDetails.borewell'), value: property?.borewell || property?.hasBorewell },
+      { label: t('propertyDetails.irrigationFacility'), value: property?.irrigation || property?.irrigationFacility },
+      { label: t('propertyDetails.boundaryWall'), value: property?.boundaryWall || property?.boundaryFence || property?.boundary },
+      { label: t('propertyDetails.fencing'), value: property?.fencing || property?.hasFencing },
+      { label: t('propertyDetails.cornerPlot'), value: property?.cornerPlot || property?.corner },
+      { label: t('propertyDetails.facingDirection'), value: property?.facing || property?.direction },
+      { label: t('propertyDetails.soilType'), value: property?.soilType },
+      { label: t('propertyDetails.ownershipStatus'), value: property?.ownershipStatus || property?.ownership },
     ];
 
     return featureMap.map((item) => ({
       label: item.label,
-      value: item.value || 'Not Provided',
+      value: item.value || t('common.notProvided'),
       available: Boolean(item.value),
     }));
   }, [property]);
@@ -207,14 +209,14 @@ function PropertyDetailsPage() {
   };
 
   if (!property) {
-    return <div className="border border-slate-200 bg-white p-8 shadow-card"><h1 className="text-3xl font-semibold text-ink">Property not found</h1><p className="mt-3 text-muted">The listing you requested is unavailable. Please return to browsing.</p><button type="button" onClick={() => navigate(getSubmissionDestination('buyerFormSubmitted', '/buyer-form', '/buy'))} className="mt-6 rounded-full bg-primary px-5 py-3 text-sm font-semibold text-white">Back to listings</button></div>;
+    return <div className="border border-slate-200 bg-white p-8 shadow-card"><h1 className="text-3xl font-semibold text-ink">{t('propertyDetails.notFound')}</h1><p className="mt-3 text-muted">{t('propertyDetails.unavailable')}</p><button type="button" onClick={() => navigate(getSubmissionDestination('buyerFormSubmitted', '/buyer-form', '/buy'))} className="mt-6 rounded-full bg-primary px-5 py-3 text-sm font-semibold text-white">{t('propertyDetails.backToListings')}</button></div>;
   }
 
-  const propertyTitle = property.title || property.name || 'Land Listing';
-  const propertyTypeLabel = property.type || property.propertyType || 'Land';
-  const propertyLocationLabel = [property?.state || 'Gujarat', property?.district || property?.location || '', property?.subDistrict || property?.taluka || '', property?.village || ''].filter(Boolean).join(' • ');
-  const postedDate = property.uploadedDate || property.submittedAt || property.createdAt || property.updatedAt || 'Recently listed';
-  const sellerName = property.seller?.name || property.sellerName || property.owner || property.ownerName || 'Seller';
+  const propertyTitle = property.title || property.name || t('propertyDetails.propertyTitleFallback');
+  const propertyTypeLabel = property.type || property.propertyType || t('propertyDetails.propertyTypeFallback');
+  const propertyLocationLabel = [property?.state || t('propertyDetails.stateFallback'), property?.district || property?.location || '', property?.subDistrict || property?.taluka || '', property?.village || ''].filter(Boolean).join(' • ');
+  const postedDate = property.uploadedDate || property.submittedAt || property.createdAt || property.updatedAt || t('propertyDetails.recentlyListed');
+  const sellerName = property.seller?.name || property.sellerName || property.owner || property.ownerName || t('propertyDetails.sellerNameFallback');
   const sellerPhone = property.seller?.phone || property.sellerPhone || property.ownerMobile || property.mobile || '';
   const sellerEmail = property.seller?.email || property.sellerEmail || property.ownerEmail || property.email || '';
   const sellerWhatsApp = sellerPhone ? `https://wa.me/91${String(sellerPhone).replace(/\D/g, '')}` : '';
@@ -225,7 +227,7 @@ function PropertyDetailsPage() {
     <div className="-mx-4 -mt-8 bg-[#FFFEFE] pb-24 sm:-mx-6 lg:-mx-8">
       <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-12">
         <button type="button" onClick={() => navigate(getSubmissionDestination('buyerFormSubmitted', '/buyer-form', '/buy'))} className="inline-flex items-center gap-2 text-sm font-semibold text-muted hover:text-primary">
-          <ArrowLeft size={17} /> Back to properties
+          <ArrowLeft size={17} /> {t('propertyDetails.backToProperties')}
         </button>
       </div>
 
@@ -277,30 +279,30 @@ function PropertyDetailsPage() {
                   <span>{propertyLocationLabel}</span>
                 </div>
                 <div className="mt-5 rounded-[24px] border border-slate-200 bg-slate-50 p-4">
-                  <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">Land price</p>
+                  <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">{t('propertyDetails.landPrice')}</p>
                   <div className="mt-2 flex items-end justify-between gap-3">
                     <div>
                       <p className="text-2xl font-semibold text-ink sm:text-3xl">{formatPrice(property.priceAmount || property.price)}</p>
-                      <p className="mt-1 text-sm text-slate-600">{property.priceUnit || 'Price unit not provided'}</p>
+                      <p className="mt-1 text-sm text-slate-600">{property.priceUnit || t('propertyDetails.priceUnitFallback')}</p>
                     </div>
                     <div className="rounded-full bg-white px-3 py-2 text-sm font-semibold text-slate-700 shadow-sm">{property?.landArea || property?.area || 'Land area'}</div>
                   </div>
                 </div>
                 <div className="mt-5 flex flex-wrap gap-2 text-sm text-slate-600">
-                  <span className="rounded-full border border-slate-200 bg-white px-3 py-2">Posted: {postedDate}</span>
-                  <span className="rounded-full border border-slate-200 bg-white px-3 py-2">Verified: {property.verified ? 'Yes' : 'No'}</span>
+                  <span className="rounded-full border border-slate-200 bg-white px-3 py-2">{t('propertyDetails.posted')}: {postedDate}</span>
+                  <span className="rounded-full border border-slate-200 bg-white px-3 py-2">{t('propertyDetails.verified')}: {property.verified ? t('propertyDetails.yes') : t('propertyDetails.no')}</span>
                 </div>
               </div>
 
               <div className="mt-6 flex flex-col gap-3 border-t border-slate-200 pt-6">
                 {sellerCall ? (
-                  <a href={sellerCall} className="inline-flex items-center justify-center gap-2 rounded-full bg-sage px-5 py-3 text-sm font-semibold text-white transition hover:bg-sage-dark"><Phone size={16} /> Call Seller</a>
+                  <a href={sellerCall} className="inline-flex items-center justify-center gap-2 rounded-full bg-sage px-5 py-3 text-sm font-semibold text-white transition hover:bg-sage-dark"><Phone size={16} /> {t('propertyDetails.callSeller')}</a>
                 ) : null}
                 {sellerWhatsApp ? (
-                  <a href={sellerWhatsApp} target="_blank" rel="noreferrer" className="inline-flex items-center justify-center gap-2 rounded-full border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"><ExternalLink size={16} /> WhatsApp</a>
+                  <a href={sellerWhatsApp} target="_blank" rel="noreferrer" className="inline-flex items-center justify-center gap-2 rounded-full border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"><ExternalLink size={16} /> {t('common.whatsapp')}</a>
                 ) : null}
                 {sellerMail ? (
-                  <a href={sellerMail} className="inline-flex items-center justify-center gap-2 rounded-full border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"><Download size={16} /> Email Seller</a>
+                  <a href={sellerMail} className="inline-flex items-center justify-center gap-2 rounded-full border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"><Download size={16} /> {t('propertyDetails.emailSeller')}</a>
                 ) : null}
               </div>
             </div>
@@ -310,7 +312,7 @@ function PropertyDetailsPage() {
         <section className="grid gap-8 lg:grid-cols-[1.05fr_360px]">
           <div className="space-y-8">
             <div className="rounded-[28px] border border-slate-200 bg-white p-5 shadow-card sm:p-6">
-              <h2 className="text-2xl font-semibold text-ink">Quick Overview</h2>
+              <h2 className="text-2xl font-semibold text-ink">{t('propertyDetails.quickOverview')}</h2>
               <div className="mt-5 grid grid-cols-2 gap-3">
                 {overviewItems.map((item) => (
                   <div key={item.label} className="rounded-[20px] border border-slate-200 bg-slate-50 p-4">
@@ -322,7 +324,7 @@ function PropertyDetailsPage() {
             </div>
 
             <div className="rounded-[28px] border border-slate-200 bg-white p-5 shadow-card sm:p-6">
-              <h2 className="text-2xl font-semibold text-ink">Property Features</h2>
+              <h2 className="text-2xl font-semibold text-ink">{t('propertyDetails.propertyFeatures')}</h2>
               <div className="mt-5 grid grid-cols-2 gap-3">
                 {featureItems.map((feature) => (
                   <div key={feature.label} className="rounded-[20px] border border-slate-200 bg-slate-50 p-4">
@@ -334,34 +336,34 @@ function PropertyDetailsPage() {
             </div>
 
             <div className="rounded-[28px] border border-slate-200 bg-white p-5 shadow-card sm:p-6">
-              <h2 className="text-2xl font-semibold text-ink">Property Location</h2>
+              <h2 className="text-2xl font-semibold text-ink">{t('propertyDetails.propertyLocation')}</h2>
               {property?.mapUrl || property?.googleMaps || property?.mapLink ? (
                 <div className="mt-5 space-y-4">
                   <div className="grid gap-3 rounded-[20px] border border-slate-200 bg-slate-50 p-4 sm:grid-cols-3">
                     <div>
-                      <p className="text-xs uppercase tracking-[0.2em] text-slate-500">District</p>
-                      <p className="mt-1 font-semibold text-ink">{property.district || property.location || 'Not provided'}</p>
+                      <p className="text-xs uppercase tracking-[0.2em] text-slate-500">{t('common.district')}</p>
+                      <p className="mt-1 font-semibold text-ink">{property.district || property.location || t('common.notProvided')}</p>
                     </div>
                     <div>
-                      <p className="text-xs uppercase tracking-[0.2em] text-slate-500">Taluka</p>
-                      <p className="mt-1 font-semibold text-ink">{property.subDistrict || property.taluka || 'Not provided'}</p>
+                      <p className="text-xs uppercase tracking-[0.2em] text-slate-500">{t('common.taluka')}</p>
+                      <p className="mt-1 font-semibold text-ink">{property.subDistrict || property.taluka || t('common.notProvided')}</p>
                     </div>
                     <div>
-                      <p className="text-xs uppercase tracking-[0.2em] text-slate-500">Village</p>
-                      <p className="mt-1 font-semibold text-ink">{property.village || 'Not provided'}</p>
+                      <p className="text-xs uppercase tracking-[0.2em] text-slate-500">{t('common.village')}</p>
+                      <p className="mt-1 font-semibold text-ink">{property.village || t('common.notProvided')}</p>
                     </div>
                   </div>
                   <a href={property.mapUrl || property.googleMaps || property.mapLink} target="_blank" rel="noreferrer" className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-primary bg-primary/10 px-4 py-3 text-sm font-semibold text-primary transition hover:bg-primary/15">
-                    <ExternalLink size={16} /> Open in Google Maps
+                    <ExternalLink size={16} /> {t('propertyDetails.openInGoogleMaps')}
                   </a>
                 </div>
               ) : (
-                <div className="mt-5 rounded-[20px] border border-dashed border-slate-200 bg-slate-50 p-6 text-sm text-slate-600">Location not available.</div>
+                <div className="mt-5 rounded-[20px] border border-dashed border-slate-200 bg-slate-50 p-6 text-sm text-slate-600">{t('propertyDetails.locationNotAvailable')}</div>
               )}
             </div>
 
             <div className="rounded-[28px] border border-slate-200 bg-white p-5 shadow-card sm:p-6">
-              <h2 className="text-2xl font-semibold text-ink">Property Documents</h2>
+              <h2 className="text-2xl font-semibold text-ink">{t('propertyDetails.propertyDocuments')}</h2>
               <div className="mt-5 space-y-3">
                 {documentItems.length ? documentItems.map((document, index) => {
                   const isImage = document.type?.startsWith('image') || /\.(png|jpg|jpeg|webp)$/i.test(document.name || '');
@@ -378,28 +380,28 @@ function PropertyDetailsPage() {
                         {isImage && document.url ? <a href={document.url} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700">View</a> : null}
                         {document.url ? (
                   <a href={document.url} download={document.name || '712-document'} className="inline-flex items-center gap-2 rounded-full bg-sage px-4 py-2 text-sm font-semibold text-white">
-                    Download
+                    {t('propertyDetails.downloadDocument')}
                   </a>
                 ) : (
-                  <span className="text-sm text-slate-500">Not uploaded</span>
+                  <span className="text-sm text-slate-500">{t('propertyDetails.notUploaded')}</span>
                 )}
                       </div>
                     </div>
                   );
-                }) : <div className="rounded-[20px] border border-dashed border-slate-200 bg-slate-50 p-6 text-sm text-slate-600">No 7/12 document uploaded.</div>}
+                }) : <div className="rounded-[20px] border border-dashed border-slate-200 bg-slate-50 p-6 text-sm text-slate-600">{t('propertyDetails.noDocumentUploaded')}</div>}
               </div>
             </div>
           </div>
 
           <aside className="self-start lg:sticky lg:top-24">
             <div className="rounded-[28px] border border-slate-200 bg-white p-5 shadow-card sm:p-6">
-              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">Seller Information</p>
+              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">{t('propertyDetails.sellerInformation')}</p>
               <div className="mt-4 rounded-[24px] bg-slate-50 p-4">
                 <div className="flex items-center gap-4">
                   <div className="flex h-16 w-16 items-center justify-center rounded-3xl bg-sage text-xl font-semibold text-white">{sellerName?.split(' ').map((part) => part[0]).slice(0, 2).join('') || 'S'}</div>
                   <div>
                     <p className="text-lg font-semibold text-ink">{sellerName}</p>
-                    <p className="mt-1 text-sm text-slate-600">{property?.district || property?.location || 'Land seller'}</p>
+                    <p className="mt-1 text-sm text-slate-600">{property?.district || property?.location || t('propertyDetails.sellerLocation')}</p>
                   </div>
                 </div>
                 <div className="mt-4 grid gap-2 text-sm text-slate-700">
@@ -413,23 +415,23 @@ function PropertyDetailsPage() {
                   </div>
                 </div>
                 <div className="mt-4 rounded-2xl bg-white p-4 shadow-sm">
-                  <p className="text-xs uppercase tracking-[0.2em] text-slate-500">Mobile</p>
-                  <p className="mt-1 font-semibold text-ink">{sellerPhone || 'Not provided'}</p>
+                  <p className="text-xs uppercase tracking-[0.2em] text-slate-500">{t('propertyDetails.sellerMobile')}</p>
+                  <p className="mt-1 font-semibold text-ink">{sellerPhone || t('common.notProvided')}</p>
                 </div>
               </div>
               <div className="mt-5 grid gap-3">
-                {sellerCall ? <a href={sellerCall} className="inline-flex items-center justify-center gap-2 rounded-full bg-sage px-5 py-3 text-sm font-semibold text-white">Call Seller</a> : null}
-                {sellerWhatsApp ? <a href={sellerWhatsApp} target="_blank" rel="noreferrer" className="inline-flex items-center justify-center gap-2 rounded-full border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-700">WhatsApp</a> : null}
-                {sellerMail ? <a href={sellerMail} className="inline-flex items-center justify-center gap-2 rounded-full border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-700">Email Seller</a> : null}
+                {sellerCall ? <a href={sellerCall} className="inline-flex items-center justify-center gap-2 rounded-full bg-sage px-5 py-3 text-sm font-semibold text-white">{t('propertyDetails.callSeller')}</a> : null}
+                {sellerWhatsApp ? <a href={sellerWhatsApp} target="_blank" rel="noreferrer" className="inline-flex items-center justify-center gap-2 rounded-full border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-700">{t('common.whatsapp')}</a> : null}
+                {sellerMail ? <a href={sellerMail} className="inline-flex items-center justify-center gap-2 rounded-full border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-700">{t('propertyDetails.emailSeller')}</a> : null}
               </div>
             </div>
           </aside>
         </section>
 
         <section className="rounded-[28px] border border-slate-200 bg-white p-5 shadow-card sm:p-6">
-          <SectionHeading eyebrow="More land options" title="Similar Agricultural & Non-Agricultural Lands" />
+          <SectionHeading eyebrow={t('propertyDetails.recentlyListed')} title={t('propertyDetails.noSimilarListings')} />
           <div className="mt-6 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
-            {similarProperties.length ? similarProperties.map((item) => <PropertyCard key={item.id} property={item} onContact={setContactModal} />) : <div className="rounded-[20px] border border-dashed border-slate-200 bg-slate-50 p-6 text-sm text-slate-600">No similar land listings available right now.</div>}
+            {similarProperties.length ? similarProperties.map((item) => <PropertyCard key={item.id} property={item} onContact={setContactModal} />) : <div className="rounded-[20px] border border-dashed border-slate-200 bg-slate-50 p-6 text-sm text-slate-600">{t('propertyDetails.noSimilarListings')}</div>}
           </div>
         </section>
       </main>
@@ -469,7 +471,7 @@ function PropertyDetailsPage() {
         </div>
       ) : null}
 
-      <ContactModal open={Boolean(contactModal)} onClose={() => setContactModal(null)} data={contactModal || {}} title="Contact Seller" />
+      <ContactModal open={Boolean(contactModal)} onClose={() => setContactModal(null)} data={contactModal || {}} title={t('contact.modalTitle')} />
     </div>
   );
 }
