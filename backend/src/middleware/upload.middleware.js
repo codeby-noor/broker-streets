@@ -61,18 +61,28 @@ const uploadListingFilesMulter = multer({
   storage,
   limits: { fileSize: env.uploadMaxVideoSizeMb * 1024 * 1024 },
   fileFilter: (req, file, cb) => {
-    const allAllowed = [
-      ...env.uploadAllowedImageTypes,
-      ...env.uploadAllowedVideoTypes,
-      ...env.uploadAllowedDocumentTypes,
-    ];
-    if (allAllowed.includes(file.mimetype)) {
+    let allowed = [];
+    if (file.fieldname === 'images') {
+      allowed = env.uploadAllowedImageTypes;
+    } else if (file.fieldname === 'videos') {
+      allowed = env.uploadAllowedVideoTypes;
+    } else if (file.fieldname === 'document') {
+      allowed = env.uploadAllowedDocumentTypes;
+    } else {
+      allowed = [
+        ...env.uploadAllowedImageTypes,
+        ...env.uploadAllowedVideoTypes,
+        ...env.uploadAllowedDocumentTypes,
+      ];
+    }
+
+    if (allowed.includes(file.mimetype)) {
       cb(null, true);
     } else {
       cb(
         new ApiError(
           HTTP_STATUS.UNSUPPORTED_MEDIA_TYPE,
-          `Invalid file type: ${file.mimetype}`
+          `Invalid file type for ${file.fieldname}: ${file.mimetype}. Allowed types: ${allowed.join(', ')}`
         ),
         false
       );

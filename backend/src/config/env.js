@@ -34,6 +34,8 @@ const env = {
   cloudinaryCloudName: process.env.CLOUDINARY_CLOUD_NAME || '',
   cloudinaryApiKey: process.env.CLOUDINARY_API_KEY || '',
   cloudinaryApiSecret: process.env.CLOUDINARY_API_SECRET || '',
+  adminDefaultEmail: process.env.ADMIN_DEFAULT_EMAIL || 'admin@brokerstreets.com',
+  adminDefaultPassword: process.env.ADMIN_DEFAULT_PASSWORD || 'Admin@123',
 };
 
 

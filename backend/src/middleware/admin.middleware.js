@@ -7,7 +7,7 @@ const adminMiddleware = asyncHandler(async (req, res, next) => {
     throw new ApiError(HTTP_STATUS.UNAUTHORIZED, 'Authentication required');
   }
 
-  if (req.user.role !== 'admin') {
+  if (req.user.role !== 'admin' && req.user.role !== 'superadmin') {
     throw new ApiError(HTTP_STATUS.FORBIDDEN, 'Admin authorization required');
   }
 

@@ -57,6 +57,10 @@ const createAndSendOtp = async (mobile, pendingUserData = null) => {
     );
   }
 
+  const finalPendingUserData =
+    pendingUserData ||
+    (existingSession && existingSession.expiresAt > new Date() ? existingSession.pendingUserData : null);
+
   // Item 10: Invalidate prior unused active sessions for this mobile before creating a new one
   await OtpSession.updateMany({ mobile, used: false }, { $set: { used: true } });
 
@@ -69,7 +73,7 @@ const createAndSendOtp = async (mobile, pendingUserData = null) => {
     otp: hashedOtp,
     expiresAt,
     // Item 1: Store pending registration data on session so User record isn't mutated before verification
-    pendingUserData: pendingUserData || null,
+    pendingUserData: finalPendingUserData,
   });
 
   await sendSmsViaMsg91(mobile, rawOtp);

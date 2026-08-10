@@ -22,6 +22,7 @@ const createListingSchema = Joi.object({
   videos: Joi.array().items(Joi.string()).optional(),
   keepImages: Joi.alternatives().try(Joi.array().items(Joi.string()), Joi.string()).optional(),
   keepVideos: Joi.alternatives().try(Joi.array().items(Joi.string()), Joi.string()).optional(),
+  removeDocument: Joi.boolean().optional(),
   propertyDocument: Joi.object({
     name: Joi.string().allow('').optional(),
     url: Joi.string().allow('').optional(),
@@ -34,7 +35,7 @@ const createListingSchema = Joi.object({
 });
 
 const updateListingSchema = Joi.object({
-  title: Joi.string().trim().max(200).optional(),
+  title: Joi.string().trim().max(200).allow('').optional(),
   type: Joi.string().valid('Agricultural Land', 'Non-Agricultural Land').optional(),
   state: Joi.string().trim().optional(),
   district: Joi.string().trim().optional(),
@@ -55,6 +56,7 @@ const updateListingSchema = Joi.object({
   videos: Joi.array().items(Joi.string()).optional(),
   keepImages: Joi.alternatives().try(Joi.array().items(Joi.string()), Joi.string()).optional(),
   keepVideos: Joi.alternatives().try(Joi.array().items(Joi.string()), Joi.string()).optional(),
+  removeDocument: Joi.boolean().optional(),
   propertyDocument: Joi.object({
     name: Joi.string().allow('').optional(),
     url: Joi.string().allow('').optional(),

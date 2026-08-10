@@ -5,6 +5,8 @@ const connectDB = async () => {
   try {
     const conn = await mongoose.connect(env.mongodbUri);
     console.log(`[MongoDB] Connected successfully: ${conn.connection.host}`);
+    const AdminUser = require('../models/AdminUser');
+    await AdminUser.bootstrapDefaultAdmin();
   } catch (error) {
     console.error(`[MongoDB] Connection error: ${error.message}`);
     process.exit(1);

@@ -83,7 +83,14 @@ class LocalUploadProvider {
     if (!fileUrl || typeof fileUrl !== 'string') return;
     try {
       const relativePath = fileUrl.startsWith('/uploads/') ? fileUrl.replace('/uploads/', '') : fileUrl;
-      const fullPath = path.join(UPLOADS_DIR, relativePath);
+      const fullPath = path.resolve(UPLOADS_DIR, relativePath);
+      const resolvedUploadsDir = path.resolve(UPLOADS_DIR);
+
+      if (!fullPath.startsWith(resolvedUploadsDir + path.sep) && fullPath !== resolvedUploadsDir) {
+        console.warn(`Attempted path traversal in deleteFile: ${fileUrl}`);
+        return;
+      }
+
       if (fs.existsSync(fullPath)) {
         await fs.promises.unlink(fullPath);
       }

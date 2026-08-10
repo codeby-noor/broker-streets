@@ -49,12 +49,18 @@ class ListingService {
    */
   async createListing(listingData, user) {
     const subDistrict = listingData.subDistrict || listingData.taluka || '';
+    const targetLocation = listingData.village || subDistrict || listingData.district || 'Gujarat';
+    const title =
+      listingData.title && listingData.title.trim() !== ''
+        ? listingData.title.trim()
+        : `${listingData.type} in ${targetLocation}`;
 
     return await this.runTransaction(async (session) => {
       const sessionOpt = session ? { session } : {};
 
       const listing = new Listing({
         ...listingData,
+        title,
         subDistrict,
         userId: user._id,
         ownerName: user.name || '',
@@ -184,10 +190,15 @@ class ListingService {
     const total = facetResult.totalCount[0] ? facetResult.totalCount[0].count : 0;
     const totalPages = Math.ceil(total / limitNum) || 1;
 
-    const formattedData = rawData.map((item) => ({
-      ...item,
-      id: item._id.toString(),
-    }));
+    const formattedData = rawData.map((item) => {
+      const doc = {
+        ...item,
+        id: item._id.toString(),
+      };
+      delete doc._id;
+      delete doc.__v;
+      return doc;
+    });
 
     return {
       data: formattedData,
@@ -248,7 +259,13 @@ class ListingService {
         ? listing.videos.filter((oldUrl) => !updateData.videos.includes(oldUrl))
         : [];
     const removedDocUrl =
-      updateData.propertyDocument && listing.propertyDocument && listing.propertyDocument.url && listing.propertyDocument.url !== updateData.propertyDocument.url
+      (updateData.propertyDocument === null ||
+        (updateData.propertyDocument &&
+          updateData.propertyDocument.url &&
+          listing.propertyDocument &&
+          listing.propertyDocument.url !== updateData.propertyDocument.url)) &&
+      listing.propertyDocument &&
+      listing.propertyDocument.url
         ? listing.propertyDocument.url
         : null;
 
@@ -284,6 +301,10 @@ class ListingService {
     }
 
     this.assertOwnerOrAdmin(listing, user, 'update status of');
+
+    if (user.role !== 'admin' && !['Available', 'Sold'].includes(status)) {
+      throw new ApiError(HTTP_STATUS.BAD_REQUEST, 'Owners can only change property status to Available or Sold');
+    }
 
     listing.status = status;
     await listing.save();
