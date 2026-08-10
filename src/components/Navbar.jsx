@@ -84,38 +84,37 @@ function Navbar() {
         )}
 
         {!hideNav ? (
-          <>
-            <div className="hidden items-center gap-3 md:flex">
-              <div className="flex items-center gap-2 rounded-full border border-slate-200 bg-white px-2 py-1">
-                <button type="button" onClick={() => setLanguage('en')} className={`rounded-full px-2 py-1 text-xs font-semibold ${language === 'en' ? 'bg-sage text-white' : 'text-slate-700'}`}>EN</button>
-                <button type="button" onClick={() => setLanguage('gu')} className={`rounded-full px-2 py-1 text-xs font-semibold ${language === 'gu' ? 'bg-sage text-white' : 'text-slate-700'}`}>ગુજરાતી</button>
-              </div>
-              {isAuthenticated ? (
-                <Link to="/profile" className="inline-flex h-12 items-center justify-center rounded-full border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-800 shadow-sm transition hover:bg-slate-50">
-                  {t('nav.profile')}
-                </Link>
-              ) : (
-                <div className="flex items-center gap-2">
-                  <Link to="/login" className="inline-flex h-10 items-center justify-center rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-800 shadow-sm transition hover:bg-slate-50">
-                    {t('auth.login')}
-                  </Link>
-                  <Link to="/register" className="inline-flex h-10 items-center justify-center rounded-full bg-sage px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-sage-dark">
-                    {t('auth.register')}
-                  </Link>
-                </div>
-              )}
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="flex items-center gap-1 rounded-full border border-slate-200 bg-white px-1.5 py-1 shadow-sm">
+              <button type="button" onClick={() => setLanguage('en')} className={`rounded-full px-2 py-0.5 text-xs font-bold transition ${language === 'en' ? 'bg-sage text-white' : 'text-slate-600 hover:text-slate-900'}`}>EN</button>
+              <button type="button" onClick={() => setLanguage('gu')} className={`rounded-full px-2 py-0.5 text-xs font-bold transition ${language === 'gu' ? 'bg-sage text-white' : 'text-slate-600 hover:text-slate-900'}`}>ગુજરાતી</button>
             </div>
+
+            {isAuthenticated ? (
+              <Link to="/profile" className="hidden md:inline-flex h-10 items-center justify-center rounded-full border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-800 shadow-sm transition hover:bg-slate-50">
+                {t('nav.profile')}
+              </Link>
+            ) : (
+              <div className="hidden md:flex items-center gap-2">
+                <Link to="/login" className="inline-flex h-9 items-center justify-center rounded-full border border-slate-200 bg-white px-3 text-xs font-semibold text-slate-800 shadow-sm transition hover:bg-slate-50">
+                  {t('auth.login')}
+                </Link>
+                <Link to="/register" className="inline-flex h-9 items-center justify-center rounded-full bg-sage px-3 text-xs font-semibold text-white shadow-sm transition hover:bg-sage-dark">
+                  {t('auth.register')}
+                </Link>
+              </div>
+            )}
 
             <button
               type="button"
               onClick={() => setMenuOpen((current) => !current)}
               aria-label={menuOpen ? 'Close menu' : 'Open menu'}
               aria-expanded={menuOpen}
-              className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-800 shadow-sm transition hover:bg-slate-50 md:hidden"
+              className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-800 shadow-sm transition hover:bg-slate-50 md:hidden"
             >
-              {menuOpen ? <X size={24} /> : <Menu size={24} />}
+              {menuOpen ? <X size={20} /> : <Menu size={20} />}
             </button>
-          </>
+          </div>
         ) : null}
       </div>
 
