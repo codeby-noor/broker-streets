@@ -11,9 +11,11 @@ const errorHandler = require('./middleware/errorHandler.middleware');
 const authRoutes = require('./routes/auth.routes');
 const listingRoutes = require('./routes/listing.routes');
 const buyerLeadRoutes = require('./routes/buyerLead.routes');
+const enquiryRoutes = require('./routes/enquiry.routes');
 const uploadRoutes = require('./routes/upload.routes');
 const adminPropertyRoutes = require('./routes/admin/admin.property.routes');
 const adminBuyerLeadRoutes = require('./routes/admin/admin.buyerLead.routes');
+const adminEnquiryRoutes = require('./routes/admin/admin.enquiry.routes');
 const ApiError = require('./utils/ApiError');
 const ApiResponse = require('./utils/ApiResponse');
 const { HTTP_STATUS } = require('./utils/constants');
@@ -58,11 +60,13 @@ app.use(['/auth', '/api/auth'], authRoutes);
 // Property module routes
 app.use('/api/listings', listingRoutes);
 app.use('/api/buyer-leads', buyerLeadRoutes);
+app.use('/api/enquiries', enquiryRoutes);
 app.use('/api/uploads', uploadRoutes);
 
 // Admin property routes
 app.use('/api/admin/properties', adminPropertyRoutes);
 app.use('/api/admin/buyer-leads', adminBuyerLeadRoutes);
+app.use('/api/admin/enquiries', adminEnquiryRoutes);
 
 // Health check endpoint
 app.get('/health', (req, res) => {
