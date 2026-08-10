@@ -2,7 +2,16 @@ const env = require('./env');
 
 const corsOptions = {
   origin: (origin, callback) => {
-    const allowedOrigins = [env.corsOrigin, 'http://localhost:4173', 'http://localhost:5173', 'http://127.0.0.1:5173'];
+    const configuredOrigins = env.corsOrigin
+      ? env.corsOrigin.split(',').map((o) => o.trim()).filter(Boolean)
+      : [];
+    const allowedOrigins = [
+      ...configuredOrigins,
+      'http://localhost:4173',
+      'http://localhost:5173',
+      'http://127.0.0.1:4173',
+      'http://127.0.0.1:5173',
+    ];
     if (!origin || allowedOrigins.includes(origin) || env.nodeEnv === 'development') {
       callback(null, true);
     } else {

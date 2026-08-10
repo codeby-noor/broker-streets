@@ -42,6 +42,9 @@ const env = {
 const requiredEnvVars = ['MONGODB_URI'];
 if (env.nodeEnv === 'production') {
   requiredEnvVars.push('JWT_SECRET', 'JWT_REFRESH_SECRET');
+  if (env.uploadProvider === 'cloudinary') {
+    requiredEnvVars.push('CLOUDINARY_CLOUD_NAME', 'CLOUDINARY_API_KEY', 'CLOUDINARY_API_SECRET');
+  }
 }
 
 for (const envVar of requiredEnvVars) {

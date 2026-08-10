@@ -129,7 +129,12 @@ class CloudinaryUploadProvider {
   async saveFile(buffer, filename, subfolder = '') {
     return new Promise((resolve, reject) => {
       const folderPath = subfolder ? `broker-streets/${subfolder}` : 'broker-streets';
-      const resourceType = subfolder === 'videos' ? 'video' : subfolder === 'audio' ? 'raw' : 'auto';
+      const resourceType =
+        subfolder === 'videos'
+          ? 'video'
+          : subfolder === 'audio' || subfolder === 'documents'
+          ? 'raw'
+          : 'auto';
 
       const uploadStream = cloudinary.uploader.upload_stream(
         {

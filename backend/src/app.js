@@ -23,6 +23,9 @@ const { HTTP_STATUS } = require('./utils/constants');
 
 const app = express();
 
+// Trust proxy header for Railway / reverse proxies
+app.set('trust proxy', 1);
+
 // Security HTTP headers
 app.use(helmet());
 
