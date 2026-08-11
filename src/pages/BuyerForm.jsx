@@ -225,19 +225,14 @@ function BuyerForm() {
           <div className="space-y-6">
             <label className="block">
               <span className="field-label">{t('buyerForm.preferredState')} *</span>
-              <select
-                name="state"
-                value={form.state}
-                onChange={handleChange}
-                className={`field-control w-full ${errors.state ? 'border-red-400' : ''}`}
-              >
-                {gujaratStateOptions.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {t(option.label)}
-                  </option>
-                ))}
-              </select>
-              {errors.state && <p className="error-style">{errors.state}</p>}
+              <input
+                type="text"
+                value={t('Gujarat')}
+                readOnly
+                disabled
+                className="field-control w-full border border-slate-200 bg-slate-100/80 font-semibold text-slate-700 cursor-not-allowed"
+              />
+              <input type="hidden" name="state" value="Gujarat" />
             </label>
 
             <label className="block">

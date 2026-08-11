@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { ArrowLeft, ChevronLeft, ChevronRight, Download, ExternalLink, FileText, Heart, MapPin, Maximize2, Phone, Share2, ShieldCheck, X } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { readStorage, onListingsChanged, STORAGE_KEYS } from '../utils/storage';
+import { readStorage, onListingsChanged, STORAGE_KEYS, addRecentlyViewed, isPropertySaved } from '../utils/storage';
 import { sampleProperties } from '../utils/data';
 import { getSubmissionDestination } from '../utils/formNavigation';
 import PropertyCard from '../components/PropertyCard';
@@ -165,13 +165,32 @@ function PropertyDetailsPage() {
   const [touchStart, setTouchStart] = useState(null);
 
   const resolvePropertySource = () => {
-    const stored = readStorage(STORAGE_KEYS.listings, []);
-    return Array.isArray(stored) && stored.length ? stored : sampleProperties;
+    const storedListings = readStorage(STORAGE_KEYS.listings, []);
+    const lastProp = readStorage(STORAGE_KEYS.lastProperty, null);
+    const savedProps = readStorage(STORAGE_KEYS.savedProperties, []);
+    const recentProps = readStorage(STORAGE_KEYS.recentlyViewed, []);
+    const allStored = [
+      ...(Array.isArray(storedListings) ? storedListings : []),
+      ...(lastProp ? [lastProp] : []),
+      ...(Array.isArray(savedProps) ? savedProps : []),
+      ...(Array.isArray(recentProps) ? recentProps : []),
+      ...sampleProperties,
+    ];
+
+    const uniqueMap = new Map();
+    allStored.forEach((item) => {
+      if (item && item.id && !uniqueMap.has(String(item.id))) {
+        uniqueMap.set(String(item.id), item);
+      }
+    });
+
+    return Array.from(uniqueMap.values());
   };
 
   const loadProperty = () => {
+    if (!id) return;
     const source = resolvePropertySource();
-    const current = source.find((item) => item.id === id) || sampleProperties.find((item) => item.id === id) || null;
+    const current = source.find((item) => String(item?.id) === String(id)) || sampleProperties.find((item) => String(item?.id) === String(id)) || null;
     setSourceProperties(source);
     setProperty(current);
   };
@@ -326,11 +345,22 @@ function PropertyDetailsPage() {
   const similarProperties = useMemo(() => {
     const currentType = property?.type || property?.propertyType || '';
     const currentDistrict = property?.district || property?.location || '';
-    return sourceProperties.filter((item) => item.id !== property?.id).filter((item) => {
-      const sameType = (item.type || item.propertyType || '').toLowerCase() === currentType.toLowerCase();
-      const sameDistrict = (item.district || item.location || '').toLowerCase() === currentDistrict.toLowerCase();
-      return sameType || sameDistrict;
-    }).slice(0, 4);
+    const filtered = sourceProperties
+      .filter((item) => String(item?.id) !== String(property?.id))
+      .filter((item) => {
+        const sameType = (item.type || item.propertyType || '').toLowerCase() === currentType.toLowerCase();
+        const sameDistrict = (item.district || item.location || '').toLowerCase() === currentDistrict.toLowerCase();
+        return sameType || sameDistrict;
+      });
+
+    const uniqueMap = new Map();
+    filtered.forEach((item) => {
+      if (item && item.id && !uniqueMap.has(String(item.id))) {
+        uniqueMap.set(String(item.id), item);
+      }
+    });
+
+    return Array.from(uniqueMap.values()).slice(0, 4);
   }, [property, sourceProperties]);
 
   const handlePrev = () => {

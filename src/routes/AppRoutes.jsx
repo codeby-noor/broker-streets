@@ -86,14 +86,7 @@ function AppRoutes() {
               </FormGuard>
             }
           />
-          <Route
-            path="property/:id"
-            element={
-              <FormGuard flagKey="buyerFormSubmitted" formPath="/buyer-form" requireSubmitted={true}>
-                <PropertyDetailsPage />
-              </FormGuard>
-            }
-          />
+          <Route path="property/:id" element={<PropertyDetailsPage />} />
           <Route path="profile" element={<ProfilePage />} />
           <Route path="profile/properties" element={<ProfilePropertiesPage />} />
           <Route path="profile/saved" element={<ProfileSavedPage />} />

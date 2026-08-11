@@ -1,6 +1,25 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ShieldCheck, MapPin, Users, Sparkles, Search, ArrowRight, Sprout, Building2 } from 'lucide-react';
+import {
+  ShieldCheck,
+  MapPin,
+  Users,
+  Sparkles,
+  Search,
+  ArrowRight,
+  Sprout,
+  Building2,
+  FileText,
+  ScrollText,
+  Landmark,
+  Calculator,
+  Compass,
+  Scale,
+  FileCheck,
+  BookOpen,
+  HelpCircle,
+} from 'lucide-react';
+import { toast } from 'react-toastify';
 import { getSubmissionDestination } from '../utils/formNavigation';
 import { sampleProperties } from '../utils/data';
 import { popularLandLocations } from '../utils/locationData';
@@ -8,6 +27,21 @@ import { onListingsChanged, readStorage, STORAGE_KEYS } from '../utils/storage';
 import ContactModal from '../components/ContactModal';
 import PropertyCard from '../components/PropertyCard';
 import { useLanguage } from '../i18n/LanguageContext';
+
+const governmentLinks = [
+  { id: 1, titleKey: 'home.govLink1', icon: FileText, url: '' },
+  { id: 2, titleKey: 'home.govLink2', icon: ScrollText, url: '' },
+  { id: 3, titleKey: 'home.govLink3', icon: Landmark, url: '' },
+  { id: 4, titleKey: 'home.govLink4', icon: ShieldCheck, url: '' },
+  { id: 5, titleKey: 'home.govLink5', icon: Calculator, url: '' },
+  { id: 6, titleKey: 'home.govLink6', icon: Sprout, url: '' },
+  { id: 7, titleKey: 'home.govLink7', icon: Compass, url: '' },
+  { id: 8, titleKey: 'home.govLink8', icon: Building2, url: '' },
+  { id: 9, titleKey: 'home.govLink9', icon: Scale, url: '' },
+  { id: 10, titleKey: 'home.govLink10', icon: FileCheck, url: '' },
+  { id: 11, titleKey: 'home.govLink11', icon: BookOpen, url: '' },
+  { id: 12, titleKey: 'home.govLink12', icon: HelpCircle, url: '' },
+];
 
 function HomePage() {
   const navigate = useNavigate();
@@ -107,46 +141,45 @@ function HomePage() {
           </div>
         </section>
 
-        {/* 2. QUICK ACTIONS (2 COMPACT CARDS) */}
-        <section className="grid grid-cols-2 gap-3 sm:gap-4">
-          <button
-            type="button"
-            onClick={() => navigate('/buy?type=Agricultural+Land')}
-            className="group flex flex-col justify-between rounded-2xl border border-slate-200/80 bg-white p-4 text-left shadow-sm transition hover:border-sage/40 hover:shadow-md"
-          >
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 text-sage">
-              <Sprout size={20} />
-            </div>
-            <div className="mt-3">
-              <h3 className="text-sm font-bold text-slate-900 sm:text-base">
-                {t('buyerForm.agriculturalLand')}
-              </h3>
-              <p className="mt-0.5 text-xs text-slate-500 line-clamp-1">
-                {isGujarati ? 'ખેતીની જમીન અને ફાર્મલૅન્ડ' : 'Farmland & agriculture'}
-              </p>
-            </div>
-          </button>
+        {/* 2. USEFUL GOVERNMENT LINKS (3 COLUMNS X 4 ROWS = 12 CARDS) */}
+        <section className="space-y-3">
+          <div className="flex items-center gap-2">
+            <Landmark size={18} className="text-sage" />
+            <h2 className="text-base font-bold tracking-tight text-slate-900 sm:text-lg">
+              {t('home.usefulGovLinks')}
+            </h2>
+          </div>
 
-          <button
-            type="button"
-            onClick={() => navigate('/buy?type=Non-Agricultural+Land')}
-            className="group flex flex-col justify-between rounded-2xl border border-slate-200/80 bg-white p-4 text-left shadow-sm transition hover:border-sage/40 hover:shadow-md"
-          >
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-sky-50 text-sky-700">
-              <Building2 size={20} />
-            </div>
-            <div className="mt-3">
-              <h3 className="text-sm font-bold text-slate-900 sm:text-base">
-                {t('buyerForm.nonAgriculturalLand')}
-              </h3>
-              <p className="mt-0.5 text-xs text-slate-500 line-clamp-1">
-                {isGujarati ? 'NA પ્લોટ અને કમર્શિયલ' : 'NA plots & investment'}
-              </p>
-            </div>
-          </button>
+          <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 md:grid-cols-3">
+            {governmentLinks.map((item) => {
+              const Icon = item.icon;
+              const handleClick = () => {
+                if (item.url) {
+                  window.open(item.url, '_blank', 'noopener,noreferrer');
+                } else {
+                  toast.info(t('home.linkUpdateSoon'));
+                }
+              };
+              return (
+                <button
+                  key={item.id}
+                  type="button"
+                  onClick={handleClick}
+                  className="group flex flex-col items-center justify-center rounded-2xl border border-slate-200/80 bg-white p-3.5 text-center shadow-2xs transition hover:border-sage/40 hover:bg-slate-50/80 hover:shadow-xs min-h-[90px]"
+                >
+                  <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-100 text-slate-700 transition group-hover:bg-sage/10 group-hover:text-sage">
+                    <Icon size={18} />
+                  </div>
+                  <span className="mt-2 text-xs font-semibold text-slate-800 line-clamp-2 leading-snug">
+                    {t(item.titleKey)}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
         </section>
 
-        {/* 3. COMPACT SEARCH CARD */}
+        {/* 3. SEARCH CARD */}
         <section className="rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm sm:p-5">
           <div className="mb-3 flex items-center gap-2">
             <Search size={16} className="text-sage" />
@@ -162,7 +195,7 @@ function HomePage() {
                 onChange={(e) => setSearchType(e.target.value)}
                 className="h-11 w-full rounded-xl border border-slate-200 bg-slate-50/60 px-3 text-xs font-medium text-slate-800 outline-none transition focus:border-sage focus:bg-white"
               >
-                <option value="">{t('home.allTypes')}</option>
+                <option value="">{t('home.selectPropertyType')}</option>
                 <option value="Agricultural Land">{t('buyerForm.agriculturalLand')}</option>
                 <option value="Non-Agricultural Land">{t('buyerForm.nonAgriculturalLand')}</option>
               </select>
@@ -174,7 +207,7 @@ function HomePage() {
                 onChange={(e) => setSearchLocation(e.target.value)}
                 className="h-11 w-full rounded-xl border border-slate-200 bg-slate-50/60 px-3 text-xs font-medium text-slate-800 outline-none transition focus:border-sage focus:bg-white"
               >
-                <option value="">{t('home.location')}</option>
+                <option value="">{t('home.selectLocation')}</option>
                 <option value="Surat">{t('home.surat')}</option>
                 <option value="Navsari">{t('home.navsari')}</option>
               </select>
@@ -190,7 +223,52 @@ function HomePage() {
           </form>
         </section>
 
-        {/* 4. FEATURED PROPERTIES (COMPACT HORIZONTAL SWIPE) */}
+        {/* 4. WE ONLY DEAL IN SECTION */}
+        <section className="space-y-3">
+          <h2 className="text-sm font-bold uppercase tracking-wider text-slate-700 sm:text-base">
+            {t('home.weOnlyDealIn')}
+          </h2>
+
+          <div className="grid grid-cols-2 gap-3 sm:gap-4">
+            <button
+              type="button"
+              onClick={() => navigate('/buy?type=Agricultural+Land')}
+              className="group flex flex-col justify-between rounded-2xl border border-slate-200/80 bg-white p-4 text-left shadow-sm transition hover:border-sage/40 hover:shadow-md"
+            >
+              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-50 text-sage transition group-hover:scale-105">
+                <Sprout size={22} />
+              </div>
+              <div className="mt-3">
+                <h3 className="text-sm font-bold text-slate-900 sm:text-base">
+                  {t('buyerForm.agriculturalLand')}
+                </h3>
+                <p className="mt-0.5 text-xs text-slate-500 line-clamp-1">
+                  {isGujarati ? 'ખેતીની જમીન અને ફાર્મલૅન્ડ' : 'Farmland & agriculture'}
+                </p>
+              </div>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => navigate('/buy?type=Non-Agricultural+Land')}
+              className="group flex flex-col justify-between rounded-2xl border border-slate-200/80 bg-white p-4 text-left shadow-sm transition hover:border-sage/40 hover:shadow-md"
+            >
+              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-sky-50 text-sky-700 transition group-hover:scale-105">
+                <Building2 size={22} />
+              </div>
+              <div className="mt-3">
+                <h3 className="text-sm font-bold text-slate-900 sm:text-base">
+                  {t('buyerForm.nonAgriculturalLand')}
+                </h3>
+                <p className="mt-0.5 text-xs text-slate-500 line-clamp-1">
+                  {isGujarati ? 'NA પ્લોટ અને કમર્શિયલ' : 'NA plots & investment'}
+                </p>
+              </div>
+            </button>
+          </div>
+        </section>
+
+        {/* 5. FEATURED PROPERTIES (COMPACT HORIZONTAL SWIPE) */}
         <section className="space-y-3">
           <div className="flex items-center justify-between">
             <div>
@@ -217,7 +295,7 @@ function HomePage() {
           </div>
         </section>
 
-        {/* 5. POPULAR LOCATIONS (COMPACT HORIZONTAL CHIPS) */}
+        {/* 6. POPULAR LOCATIONS (COMPACT HORIZONTAL CHIPS) */}
         <section className="space-y-3">
           <h2 className="text-base font-bold tracking-tight text-slate-900 sm:text-lg">
             {t('home.locations')}
@@ -238,31 +316,6 @@ function HomePage() {
                 </span>
               </button>
             ))}
-          </div>
-        </section>
-
-        {/* 6. BUYER REQUIREMENTS (ONE COMPACT CARD) */}
-        <section className="rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm sm:p-5">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <div className="space-y-1">
-              <span className="inline-flex items-center gap-1 text-[11px] font-bold uppercase tracking-wider text-sage">
-                <Users size={12} /> {t('home.buyerRequirements')}
-              </span>
-              <h3 className="text-sm font-bold text-slate-900 sm:text-base">
-                {t('home.buyerLeadTitle')}
-              </h3>
-              <p className="text-xs text-slate-500">
-                {t('home.buyerLeadDescription')}
-              </p>
-            </div>
-            <button
-              type="button"
-              onClick={() => navigate('/buyer-requirements')}
-              className="inline-flex h-10 flex-shrink-0 items-center justify-center gap-1 rounded-xl border border-sage/30 bg-emerald-50/50 px-4 text-xs font-bold text-sage transition hover:bg-emerald-50"
-            >
-              <span>{t('home.viewRequirements')}</span>
-              <ArrowRight size={13} />
-            </button>
           </div>
         </section>
 
@@ -299,7 +352,32 @@ function HomePage() {
           </div>
         </section>
 
-        {/* 8. SELL CTA (ONE COMPACT HORIZONTAL BAR) */}
+        {/* 8. BUYER REQUIREMENTS (ONE COMPACT CARD) */}
+        <section className="rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm sm:p-5">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div className="space-y-1">
+              <span className="inline-flex items-center gap-1 text-[11px] font-bold uppercase tracking-wider text-sage">
+                <Users size={12} /> {t('home.buyerRequirements')}
+              </span>
+              <h3 className="text-sm font-bold text-slate-900 sm:text-base">
+                {t('home.buyerLeadTitle')}
+              </h3>
+              <p className="text-xs text-slate-500">
+                {t('home.buyerLeadDescription')}
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => navigate('/buyer-requirements')}
+              className="inline-flex h-10 flex-shrink-0 items-center justify-center gap-1 rounded-xl border border-sage/30 bg-emerald-50/50 px-4 text-xs font-bold text-sage transition hover:bg-emerald-50"
+            >
+              <span>{t('home.viewRequirements')}</span>
+              <ArrowRight size={13} />
+            </button>
+          </div>
+        </section>
+
+        {/* 9. SELL CTA (ONE COMPACT HORIZONTAL BAR) */}
         <section className="flex flex-col gap-3 rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm sm:flex-row sm:items-center sm:justify-between sm:p-5">
           <div className="space-y-0.5">
             <h3 className="text-sm font-bold text-slate-900 sm:text-base">
