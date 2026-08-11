@@ -1,57 +1,23 @@
-﻿import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { ShieldCheck, MapPin, Users, Sparkles, Search, ArrowRight, Sprout, Building2 } from 'lucide-react';
 import { getSubmissionDestination } from '../utils/formNavigation';
 import { sampleProperties } from '../utils/data';
 import { popularLandLocations } from '../utils/locationData';
 import { onListingsChanged, readStorage, STORAGE_KEYS } from '../utils/storage';
 import ContactModal from '../components/ContactModal';
 import PropertyCard from '../components/PropertyCard';
-import SectionHeading from '../components/SectionHeading';
-
-const faqs = [
-  ['Are the land listings verified?', 'Every featured listing is reviewed for clear pricing, location, and property information before it appears on the platform.'],
-  ['Can I reach the seller directly?', 'Yes. Use the contact details on any listing to connect with the seller or request assistance from our support team.'],
-  ['Can I list agricultural and NA land?', 'Absolutely. Broker Streets supports both agricultural and non-agricultural land transactions across Gujarat.'],
-  ['How are buyer requirements matched?', 'Our platform connects buyer preferences with verified land listings and trusted sellers across Surat and Navsari.'],
-];
-
-const formatSubmittedDate = (lead) => {
-  const sourceDate = lead?.submittedAt || lead?.createdAt || lead?.date;
-  if (!sourceDate) return 'Recently posted';
-
-  const parsedDate = new Date(sourceDate);
-  if (Number.isNaN(parsedDate.getTime())) return 'Recently posted';
-
-  return parsedDate.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
-};
-
-const getPropertyTypeBadgeClass = (propertyType) => {
-  if (propertyType === 'Non-Agricultural Land') {
-    return 'border-sky-200 bg-sky-50 text-sky-700';
-  }
-  return 'border-emerald-200 bg-emerald-50 text-emerald-700';
-};
-
-const getPurposeBadgeClass = (purpose) => {
-  switch (purpose) {
-    case 'Investment':
-      return 'border-violet-200 bg-violet-50 text-violet-700';
-    case 'Project':
-      return 'border-amber-200 bg-amber-50 text-amber-700';
-    case 'Personal Farm':
-      return 'border-lime-200 bg-lime-50 text-lime-700';
-    default:
-      return 'border-slate-200 bg-slate-100 text-slate-700';
-  }
-};
+import { useLanguage } from '../i18n/LanguageContext';
 
 function HomePage() {
   const navigate = useNavigate();
+  const { t, getPropertyDisplayTitle, isGujarati } = useLanguage();
   const [latestProperties, setLatestProperties] = useState([]);
-  const [latestBuyerLeads, setLatestBuyerLeads] = useState([]);
   const [contactModal, setContactModal] = useState(null);
-  const [faqOpen, setFaqOpen] = useState(0);
-  const [expandedRequirements, setExpandedRequirements] = useState({});
+
+  // Search state
+  const [searchType, setSearchType] = useState('');
+  const [searchLocation, setSearchLocation] = useState('');
 
   const goToBuy = () => navigate(getSubmissionDestination('buyerFormSubmitted', '/buyer-form', '/buy'));
   const goToSell = () => navigate(getSubmissionDestination('sellerFormSubmitted', '/seller-form', '/sell'));
@@ -66,15 +32,8 @@ function HomePage() {
         const fallbackListings = sampleProperties.filter((listing) => String(listing.status || 'Available').toLowerCase() !== 'sold');
         const combinedListings = [...sortedListings, ...fallbackListings.filter((item) => !sortedListings.some((listing) => String(listing.id) === String(item.id)))];
         setLatestProperties(combinedListings.slice(0, 6));
-
-        const buyers = readStorage(STORAGE_KEYS.buyerLeads, []);
-        const sortedBuyers = Array.isArray(buyers)
-          ? buyers.slice().sort((a, b) => new Date(b.submittedAt || b.createdAt || 0) - new Date(a.submittedAt || a.createdAt || 0))
-          : [];
-        setLatestBuyerLeads(sortedBuyers.slice(0, 4));
       } catch (err) {
         setLatestProperties(sampleProperties.slice(0, 6));
-        setLatestBuyerLeads([]);
       }
     };
 
@@ -83,252 +42,291 @@ function HomePage() {
     return cleanup;
   }, []);
 
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    const params = new URLSearchParams();
+    if (searchType) params.set('type', searchType);
+    if (searchLocation) {
+      params.set('district', searchLocation);
+      params.set('location', searchLocation);
+    }
+    navigate(`/buy?${params.toString()}`);
+  };
+
+  const latestActiveProperties = latestProperties.slice(0, 6);
+
   return (
-    <div className="space-y-24 pb-20 bg-background text-text">
-      <section className="relative overflow-hidden bg-[url('https://images.unsplash.com/photo-1517816743773-6e0fd518b4a6?auto=format&fit=crop&w=1800&q=85')] bg-cover bg-center text-white">
-        <div className="absolute inset-0 bg-gradient-to-b from-slate-950/80 via-slate-950/20 to-slate-950/90" />
-        <div className="relative mx-auto max-w-7xl px-4 py-16 sm:px-10 sm:py-24 lg:px-12">
-          <div className="grid gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:items-end">
-            <div className="max-w-2xl">
-              <p className="eyebrow text-accentSoft">Invest in land. Invest in the future.</p>
-              <h1 className="mt-5 text-3xl font-semibold leading-tight tracking-tight sm:text-5xl lg:text-6xl">Gujarat's Trusted Agricultural & Non-Agricultural Land Marketplace</h1>
-              <p className="mt-6 max-w-2xl text-base leading-8 text-white/80 sm:text-lg">Discover verified farmland, investment plots, and non-agricultural land across Surat, Navsari, and Gujarat. Buy and sell with confidence.</p>
-              <div className="mt-8 flex flex-col gap-3 sm:mt-10 sm:flex-row sm:flex-wrap">
-                <button type="button" onClick={goToBuy} className="inline-flex min-h-[48px] items-center justify-center rounded-full bg-primary px-6 py-3.5 text-sm font-semibold text-white transition hover:bg-primary-dark sm:w-auto">Buy Properties</button>
-                <button type="button" onClick={goToSell} className="inline-flex min-h-[48px] items-center justify-center rounded-full border border-white/30 bg-white/10 px-6 py-3.5 text-sm font-semibold text-white transition hover:bg-white/20 sm:w-auto">Sell Your Land</button>
+    <div className="min-h-screen bg-[#F8FAFC] pb-16 text-slate-900">
+      <main className="mx-auto max-w-6xl space-y-6 px-4 py-4 sm:px-6 lg:space-y-8 lg:px-8">
+
+        {/* 1. COMPACT HERO SECTION */}
+        <section className="overflow-hidden rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm sm:p-6 lg:p-8">
+          <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
+            <div className="space-y-4">
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-sage">
+                <Sparkles size={13} /> {t('app.subtitle')}
+              </span>
+              <h1 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl lg:text-4xl">
+                {t('home.hero.title')}
+              </h1>
+              <p className="text-sm leading-relaxed text-slate-600 sm:text-base">
+                {t('home.hero.description')}
+              </p>
+              <div className="flex flex-wrap gap-2.5 pt-1">
+                <button
+                  type="button"
+                  onClick={goToBuy}
+                  className="inline-flex min-h-[44px] flex-1 items-center justify-center rounded-xl bg-sage px-5 py-2.5 text-sm font-bold text-white shadow-sm transition hover:bg-sage-dark sm:flex-none"
+                >
+                  {t('home.hero.buyLand')}
+                </button>
+                <button
+                  type="button"
+                  onClick={goToSell}
+                  className="inline-flex min-h-[44px] flex-1 items-center justify-center rounded-xl border border-slate-200 bg-white px-5 py-2.5 text-sm font-bold text-slate-800 shadow-sm transition hover:bg-slate-50 sm:flex-none"
+                >
+                  {t('home.hero.sellLand')}
+                </button>
               </div>
             </div>
-            <div className="rounded-[32px] border border-white/10 bg-white/10 p-8 shadow-glass backdrop-blur-xl">
-              <p className="text-sm uppercase tracking-[0.24em] text-white/70">Premium land marketplace</p>
-              <div className="mt-6 grid gap-4">
-                <div className="rounded-3xl bg-white/10 p-5 text-sm text-white/90">Verified listings, local context, and transparent land details.</div>
-                <div className="rounded-3xl bg-white/10 p-5 text-sm text-white/90">Curated opportunities for agricultural and non-agricultural land investors.</div>
-                <div className="rounded-3xl bg-white/10 p-5 text-sm text-white/90">Support for Surat and Navsari property transactions.</div>
+
+            <div className="relative h-44 w-full overflow-hidden rounded-xl bg-slate-100 sm:h-52 lg:h-60">
+              <img
+                src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1200&q=85"
+                alt="Agricultural & NA Land in Gujarat"
+                className="h-full w-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/40 via-transparent to-transparent" />
+              <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between rounded-lg bg-white/90 px-3 py-1.5 backdrop-blur-sm">
+                <span className="text-xs font-semibold text-slate-900">
+                  {t('home.verifiedListingTitle')}
+                </span>
+                <span className="text-[11px] font-bold text-sage">Surat & Navsari</span>
               </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <section className="mx-auto max-w-7xl px-6 lg:px-12">
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          {[
-            { label: 'Verified Land Listings', value: '500+' },
-            { label: 'Happy Buyers', value: '1200+' },
-            { label: 'Trusted Sellers', value: '250+' },
-            { label: 'Cities Covered', value: '15+' },
-          ].map((stat) => (
-            <div key={stat.label} className="rounded-[28px] border border-slate-200 bg-white p-8 shadow-card transition hover:-translate-y-0.5 hover:shadow-card-hover">
-              <p className="text-3xl font-semibold text-ink">{stat.value}</p>
-              <p className="mt-3 text-sm uppercase tracking-[0.16em] text-muted">{stat.label}</p>
+        {/* 2. QUICK ACTIONS (2 COMPACT CARDS) */}
+        <section className="grid grid-cols-2 gap-3 sm:gap-4">
+          <button
+            type="button"
+            onClick={() => navigate('/buy?type=Agricultural+Land')}
+            className="group flex flex-col justify-between rounded-2xl border border-slate-200/80 bg-white p-4 text-left shadow-sm transition hover:border-sage/40 hover:shadow-md"
+          >
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 text-sage">
+              <Sprout size={20} />
             </div>
-          ))}
-        </div>
-      </section>
-
-      <section className="mx-auto max-w-7xl px-6 lg:px-12">
-        <SectionHeading eyebrow="Featured" title="Featured Land Opportunities" description="Hand-picked agricultural and non-agricultural land with verified details." action={<button type="button" onClick={() => navigate('/buy')} className="inline-flex items-center gap-2 rounded-full border border-primary px-5 py-3 text-sm font-semibold text-primary transition hover:bg-primary/5">View All Properties</button>} />
-        <div className="mt-10 grid gap-6 lg:grid-cols-2 xl:grid-cols-3">
-          {latestProperties.slice(0, 6).map((property) => (
-            <PropertyCard key={property.id} property={property} onContact={(data) => setContactModal({ type: 'seller', data })} />
-          ))}
-        </div>
-      </section>
-
-      <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-12">
-        <div className="rounded-[32px] border border-slate-200 bg-white p-5 shadow-card sm:p-8">
-          <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
-            <div className="max-w-2xl">
-              <p className="eyebrow">Latest Buyer Requirements</p>
-              <h2 className="mt-3 text-3xl font-semibold text-ink">Helping buyers connect with trusted land owners across Gujarat.</h2>
-              <p className="mt-4 text-sm leading-7 text-muted">Connect directly with verified buyers looking for agricultural and non-agricultural land.</p>
+            <div className="mt-3">
+              <h3 className="text-sm font-bold text-slate-900 sm:text-base">
+                {t('buyerForm.agriculturalLand')}
+              </h3>
+              <p className="mt-0.5 text-xs text-slate-500 line-clamp-1">
+                {isGujarati ? 'ખેતીની જમીન અને ફાર્મલૅન્ડ' : 'Farmland & agriculture'}
+              </p>
             </div>
-            <button type="button" onClick={() => navigate('/buyer-requirements')} className="inline-flex items-center justify-center rounded-full border border-primary px-6 py-3 text-sm font-semibold text-primary transition hover:bg-primary/5">View All Requirements</button>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => navigate('/buy?type=Non-Agricultural+Land')}
+            className="group flex flex-col justify-between rounded-2xl border border-slate-200/80 bg-white p-4 text-left shadow-sm transition hover:border-sage/40 hover:shadow-md"
+          >
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-sky-50 text-sky-700">
+              <Building2 size={20} />
+            </div>
+            <div className="mt-3">
+              <h3 className="text-sm font-bold text-slate-900 sm:text-base">
+                {t('buyerForm.nonAgriculturalLand')}
+              </h3>
+              <p className="mt-0.5 text-xs text-slate-500 line-clamp-1">
+                {isGujarati ? 'NA પ્લોટ અને કમર્શિયલ' : 'NA plots & investment'}
+              </p>
+            </div>
+          </button>
+        </section>
+
+        {/* 3. COMPACT SEARCH CARD */}
+        <section className="rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm sm:p-5">
+          <div className="mb-3 flex items-center gap-2">
+            <Search size={16} className="text-sage" />
+            <h2 className="text-xs font-bold uppercase tracking-wider text-slate-700">
+              {t('home.searchProperty')}
+            </h2>
           </div>
 
-          <div className="mt-10 grid gap-6 md:grid-cols-2">
-            {latestBuyerLeads.length ? latestBuyerLeads.slice(0, 4).map((lead) => {
-              const preferredVillages = Array.isArray(lead.preferredVillages) ? lead.preferredVillages : [];
-              const visibleVillages = preferredVillages.slice(0, 3);
-              const remainingVillages = preferredVillages.length - visibleVillages.length;
-              const requirementsText = typeof lead.requirements === 'string' ? lead.requirements.trim() : '';
-              const isExpanded = Boolean(expandedRequirements[lead.id]);
-              const shouldClamp = requirementsText.length > 180;
+          <form onSubmit={handleSearchSubmit} className="grid gap-2.5 sm:grid-cols-3">
+            <div>
+              <select
+                value={searchType}
+                onChange={(e) => setSearchType(e.target.value)}
+                className="h-11 w-full rounded-xl border border-slate-200 bg-slate-50/60 px-3 text-xs font-medium text-slate-800 outline-none transition focus:border-sage focus:bg-white"
+              >
+                <option value="">{t('home.allTypes')}</option>
+                <option value="Agricultural Land">{t('buyerForm.agriculturalLand')}</option>
+                <option value="Non-Agricultural Land">{t('buyerForm.nonAgriculturalLand')}</option>
+              </select>
+            </div>
 
-              return (
-                <article key={lead.id} className="group flex h-full min-h-[430px] flex-col overflow-hidden rounded-[24px] border border-slate-200 bg-white p-7 shadow-sm transition duration-300 hover:-translate-y-1 hover:border-emerald-300 hover:shadow-card-hover">
-                  <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-emerald-500 to-green-600" />
-                  <div className="flex flex-1 flex-col">
-                    <div className="flex items-start justify-between gap-4">
-                      <div className="min-w-0 flex-1">
-                        <div className="flex flex-wrap items-center gap-2">
-                          <h3 className="break-words text-xl font-semibold leading-7 text-ink">{lead.userName || lead.name || lead.buyerName || 'Buyer request'}</h3>
-                          <span className="inline-flex items-center gap-1 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-emerald-700">
-                            <span className="h-2 w-2 rounded-full bg-emerald-500" />
-                            Verified Buyer
-                          </span>
-                        </div>
-                        <p className="mt-2 text-sm text-slate-500">Posted on {formatSubmittedDate(lead)}</p>
-                      </div>
-                      <span className={`inline-flex shrink-0 rounded-full border px-3 py-1 text-xs font-semibold ${getPropertyTypeBadgeClass(lead.propertyType)}`}>
-                        {lead.propertyType || 'Land'}
-                      </span>
-                    </div>
+            <div>
+              <select
+                value={searchLocation}
+                onChange={(e) => setSearchLocation(e.target.value)}
+                className="h-11 w-full rounded-xl border border-slate-200 bg-slate-50/60 px-3 text-xs font-medium text-slate-800 outline-none transition focus:border-sage focus:bg-white"
+              >
+                <option value="">{t('home.location')}</option>
+                <option value="Surat">{t('home.surat')}</option>
+                <option value="Navsari">{t('home.navsari')}</option>
+              </select>
+            </div>
 
-                    <div className="mt-6 flex flex-wrap gap-2">
-                      <span className={`rounded-full border px-3 py-1 text-xs font-semibold ${getPurposeBadgeClass(lead.purpose)}`}>
-                        {lead.purpose || 'Other'}
-                      </span>
-                    </div>
+            <button
+              type="submit"
+              className="inline-flex h-11 items-center justify-center gap-1.5 rounded-xl bg-sage px-4 text-xs font-bold text-white transition hover:bg-sage-dark"
+            >
+              <Search size={14} />
+              <span>{t('home.searchProperty')}</span>
+            </button>
+          </form>
+        </section>
 
-                    <div className="mt-6 rounded-[20px] bg-slate-50 p-4">
-                      <p className="flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.16em] text-slate-500">
-                        <span className="text-base">📍</span>
-                        {lead.district || 'District'} • {lead.taluka || 'Taluka'}
-                      </p>
-                    </div>
+        {/* 4. FEATURED PROPERTIES (COMPACT HORIZONTAL SWIPE) */}
+        <section className="space-y-3">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-base font-bold tracking-tight text-slate-900 sm:text-lg">
+                {t('home.featuredTitle')}
+              </h2>
+            </div>
+            <button
+              type="button"
+              onClick={() => navigate('/buy')}
+              className="inline-flex items-center gap-1 text-xs font-bold text-sage hover:underline"
+            >
+              <span>{t('home.viewAll')}</span>
+              <ArrowRight size={13} />
+            </button>
+          </div>
 
-                    {preferredVillages.length ? (
-                      <div className="mt-6">
-                        <p className="text-sm font-semibold uppercase tracking-[0.16em] text-slate-500">Preferred Villages</p>
-                        <div className="mt-3 flex flex-wrap gap-2">
-                          {visibleVillages.map((village) => (
-                            <span key={village} className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-sm font-medium text-slate-700">
-                              {village}
-                            </span>
-                          ))}
-                          {remainingVillages > 0 ? (
-                            <span className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-sm font-medium text-slate-500">
-                              +{remainingVillages} more
-                            </span>
-                          ) : null}
-                        </div>
-                      </div>
-                    ) : null}
-
-                    {requirementsText ? (
-                      <div className="mt-6 flex-1">
-                        <p className="text-sm font-semibold uppercase tracking-[0.16em] text-slate-500">Additional Requirements</p>
-                        <p
-                          className={`mt-3 text-sm leading-7 text-slate-600 ${shouldClamp && !isExpanded ? 'overflow-hidden' : ''}`}
-                          style={shouldClamp && !isExpanded ? { display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' } : undefined}
-                        >
-                          {requirementsText}
-                        </p>
-                        {shouldClamp ? (
-                          <button
-                            type="button"
-                            onClick={() => setExpandedRequirements((current) => ({ ...current, [lead.id]: !current[lead.id] }))}
-                            className="mt-3 text-sm font-semibold text-primary transition hover:text-primary-dark"
-                          >
-                            {isExpanded ? 'Read Less' : 'Read More'}
-                          </button>
-                        ) : null}
-                      </div>
-                    ) : null}
-
-                    <div className="mt-8 border-t border-slate-100 pt-5">
-                      <button
-                        type="button"
-                        onClick={() => setContactModal({ type: 'buyer', data: lead })}
-                        className="flex w-full items-center justify-center gap-2 rounded-full bg-gradient-to-r from-emerald-600 to-green-600 px-5 py-3.5 text-sm font-semibold text-white shadow-sm transition duration-300 hover:from-emerald-700 hover:to-green-700"
-                      >
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-4 w-4">
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M3 5.75A2.75 2.75 0 0 1 5.75 3h2.07a1.5 1.5 0 0 1 1.42 1.02l.94 2.5a1.5 1.5 0 0 1-.27 1.57l-1.16 1.16a13.95 13.95 0 0 0 5.6 5.6l1.16-1.16a1.5 1.5 0 0 1 1.57-.27l2.5.94A1.5 1.5 0 0 1 21 9.18v2.07A2.75 2.75 0 0 1 18.25 14H17.5c-4.14 0-7.5-3.36-7.5-7.5V3.75" />
-                        </svg>
-                        Contact Buyer
-                      </button>
-                    </div>
-                  </div>
-                </article>
-              );
-            }) : (
-              <div className="rounded-[24px] border border-dashed border-slate-300 bg-slate-50 p-8 text-center text-sm text-slate-600 md:col-span-2">
-                No buyer requirements available right now.
+          <div className="-mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-2 scrollbar-none sm:mx-0 sm:px-0">
+            {latestActiveProperties.map((property) => (
+              <div key={property.id} className="w-[82%] flex-shrink-0 snap-start sm:w-[48%] md:w-[32%]">
+                <PropertyCard property={property} compact={true} onContact={(data) => setContactModal({ type: 'seller', data })} />
               </div>
-            )}
+            ))}
           </div>
-        </div>
-      </section>
+        </section>
 
-      <section className="bg-surface py-20">
-        <div className="mx-auto max-w-7xl px-6 lg:px-12">
-          <div className="mx-auto mb-12 max-w-3xl text-center">
-            <p className="eyebrow">Popular Investment Locations</p>
-            <h2 className="mt-4 text-3xl font-semibold text-ink">Explore high-demand agricultural and non-agricultural land locations across Surat and Navsari.</h2>
-            <p className="mt-4 text-sm leading-7 text-muted">Discover verified listings in the most active land markets with premium infrastructure, strong connectivity, and investment momentum.</p>
-          </div>
-          <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+        {/* 5. POPULAR LOCATIONS (COMPACT HORIZONTAL CHIPS) */}
+        <section className="space-y-3">
+          <h2 className="text-base font-bold tracking-tight text-slate-900 sm:text-lg">
+            {t('home.locations')}
+          </h2>
+
+          <div className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 scrollbar-none sm:mx-0 sm:flex-wrap sm:px-0">
             {popularLandLocations.map((location) => (
-              <button key={location.slug} type="button" onClick={() => navigate(`/location/${location.slug}`)} className="group overflow-hidden rounded-[24px] border border-slate-200 bg-white text-left shadow-sm transition duration-300 hover:-translate-y-1 hover:border-emerald-300 hover:shadow-card-hover">
-                <div className="relative h-72 overflow-hidden">
-                  <img src={location.image} alt={location.name} className="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/25 to-transparent" />
-                  <div className="absolute left-5 top-5 rounded-full border border-white/20 bg-white/15 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-white backdrop-blur-sm">
-                    {location.district}
-                  </div>
-                  <div className="absolute inset-x-0 bottom-0 p-6">
-                    <div className="inline-flex rounded-full border border-emerald-400/40 bg-emerald-500/20 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-emerald-100">
-                      Agricultural & NA Land
-                    </div>
-                    <h3 className="mt-4 text-2xl font-semibold text-white">{location.name}</h3>
-                    <p className="mt-2 text-sm text-slate-200">{location.activeListings} Active Listings</p>
-                  </div>
-                </div>
-                <div className="space-y-4 p-6">
-                  <p className="text-sm leading-7 text-slate-600">{location.description}</p>
-                  <div className="rounded-[18px] bg-slate-50 p-4">
-                    <p className="text-sm font-semibold text-slate-500">Starting From</p>
-                    <p className="mt-1 text-xl font-semibold text-emerald-700">{location.startingPrice}</p>
-                  </div>
-                  <div className="flex items-center justify-between gap-3">
-                    <span className="text-sm font-semibold text-slate-700">{location.region} District</span>
-                    <span className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1.5 text-sm font-semibold text-primary">
-                      Explore Properties
-                      <span aria-hidden="true">→</span>
-                    </span>
-                  </div>
-                </div>
+              <button
+                key={location.slug}
+                type="button"
+                onClick={() => navigate(`/buy?district=${encodeURIComponent(location.district)}&taluka=${encodeURIComponent(location.name)}`)}
+                className="inline-flex flex-shrink-0 items-center gap-1.5 rounded-xl border border-slate-200/90 bg-white px-3.5 py-2 text-xs font-semibold text-slate-800 shadow-2xs transition hover:border-sage/40 hover:bg-slate-50"
+              >
+                <MapPin size={13} className="text-sage" />
+                <span>{t(location.name)}</span>
+                <span className="rounded-md bg-slate-100 px-1.5 py-0.5 text-[10px] text-slate-500">
+                  {location.district}
+                </span>
               </button>
             ))}
           </div>
-        </div>
-      </section>
+        </section>
 
-      <section className="mx-auto max-w-7xl px-6 lg:px-12">
-        <div className="grid gap-10 lg:grid-cols-[1.35fr_0.85fr]">
-          <div className="rounded-[32px] border border-slate-200 bg-white p-10 shadow-card">
-            <p className="eyebrow">Seller Section</p>
-            <h2 className="mt-4 text-3xl font-semibold text-ink">List your land today and reach genuine buyers.</h2>
-            <p className="mt-5 text-lg leading-8 text-muted">Seller listings are presented with clear land details, verified credentials, and local market context to attract serious buyers.</p>
-            <div className="mt-8 grid gap-4 sm:grid-cols-2">
-              <div className="rounded-[24px] bg-surface p-5">
-                <p className="text-sm uppercase tracking-[0.16em] text-muted">Trusted reach</p>
-                <p className="mt-3 text-lg font-semibold text-ink">250+ sellers</p>
-              </div>
-              <div className="rounded-[24px] bg-surface p-5">
-                <p className="text-sm uppercase tracking-[0.16em] text-muted">Verified process</p>
-                <p className="mt-3 text-lg font-semibold text-ink">Clear property reviews</p>
-              </div>
+        {/* 6. BUYER REQUIREMENTS (ONE COMPACT CARD) */}
+        <section className="rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm sm:p-5">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div className="space-y-1">
+              <span className="inline-flex items-center gap-1 text-[11px] font-bold uppercase tracking-wider text-sage">
+                <Users size={12} /> {t('home.buyerRequirements')}
+              </span>
+              <h3 className="text-sm font-bold text-slate-900 sm:text-base">
+                {t('home.buyerLeadTitle')}
+              </h3>
+              <p className="text-xs text-slate-500">
+                {t('home.buyerLeadDescription')}
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => navigate('/buyer-requirements')}
+              className="inline-flex h-10 flex-shrink-0 items-center justify-center gap-1 rounded-xl border border-sage/30 bg-emerald-50/50 px-4 text-xs font-bold text-sage transition hover:bg-emerald-50"
+            >
+              <span>{t('home.viewRequirements')}</span>
+              <ArrowRight size={13} />
+            </button>
+          </div>
+        </section>
+
+        {/* 7. WHY BROKER STREETS (COMPACT 2X2 GRID OF SMALL TRUST ITEMS) */}
+        <section className="rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm sm:p-5">
+          <h2 className="mb-3 text-xs font-bold uppercase tracking-wider text-slate-500">
+            {t('home.whyBroker')}
+          </h2>
+
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+            <div className="rounded-xl border border-slate-100 bg-slate-50/60 p-3">
+              <ShieldCheck size={18} className="text-sage" />
+              <h4 className="mt-1.5 text-xs font-bold text-slate-900">{t('home.verifiedListingTitle')}</h4>
+              <p className="mt-0.5 text-[11px] text-slate-500 line-clamp-2">{t('home.verifiedListingDescription')}</p>
+            </div>
+
+            <div className="rounded-xl border border-slate-100 bg-slate-50/60 p-3">
+              <MapPin size={18} className="text-sage" />
+              <h4 className="mt-1.5 text-xs font-bold text-slate-900">{t('home.localExpertiseTitle')}</h4>
+              <p className="mt-0.5 text-[11px] text-slate-500 line-clamp-2">{t('home.localExpertiseDescription')}</p>
+            </div>
+
+            <div className="rounded-xl border border-slate-100 bg-slate-50/60 p-3">
+              <Users size={18} className="text-sage" />
+              <h4 className="mt-1.5 text-xs font-bold text-slate-900">{t('home.directContactTitle')}</h4>
+              <p className="mt-0.5 text-[11px] text-slate-500 line-clamp-2">{t('home.directContactDescription')}</p>
+            </div>
+
+            <div className="rounded-xl border border-slate-100 bg-slate-50/60 p-3">
+              <Sparkles size={18} className="text-sage" />
+              <h4 className="mt-1.5 text-xs font-bold text-slate-900">{t('home.trustedPlatformTitle')}</h4>
+              <p className="mt-0.5 text-[11px] text-slate-500 line-clamp-2">{t('home.trustedPlatformDesc')}</p>
             </div>
           </div>
-          <div className="rounded-[32px] border border-slate-200 bg-primary p-10 text-white shadow-card">
-            <p className="eyebrow text-accentSoft">Professional quote</p>
-            <blockquote className="mt-6 text-3xl font-semibold leading-tight">Premium agricultural and non-agricultural land selected for serious buyers.</blockquote>
-            <p className="mt-6 text-sm leading-7 text-white/80">Our team surfaces the most promising land opportunities with a focus on local clarity, strong documentation, and meaningful investment potential.</p>
+        </section>
+
+        {/* 8. SELL CTA (ONE COMPACT HORIZONTAL BAR) */}
+        <section className="flex flex-col gap-3 rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm sm:flex-row sm:items-center sm:justify-between sm:p-5">
+          <div className="space-y-0.5">
+            <h3 className="text-sm font-bold text-slate-900 sm:text-base">
+              {t('home.wantToSellTitle')}
+            </h3>
+            <p className="text-xs text-slate-500">
+              {t('home.wantToSellDesc')}
+            </p>
           </div>
-        </div>
-      </section>
+          <button
+            type="button"
+            onClick={goToSell}
+            className="inline-flex h-10 flex-shrink-0 items-center justify-center gap-1.5 rounded-xl bg-sage px-5 text-xs font-bold text-white shadow-sm transition hover:bg-sage-dark"
+          >
+            <span>{t('home.hero.postLand')}</span>
+            <ArrowRight size={14} />
+          </button>
+        </section>
 
-      <section className="bg-surface py-20">
-        <div className="mx-auto max-w-5xl px-6 text-center">
-          <p className="eyebrow">Final quote</p>
-          <blockquote className="mt-6 text-3xl font-semibold text-ink">Building trust through transparent land transactions.</blockquote>
-          <p className="mt-6 text-sm leading-7 text-muted">Broker Streets brings a premium marketplace experience for buyers and sellers of land in Gujarat.</p>
-        </div>
-      </section>
+      </main>
 
-      <ContactModal open={Boolean(contactModal)} onClose={() => setContactModal(null)} data={contactModal?.data || {}} title={contactModal?.type === 'seller' ? 'Contact Seller' : 'Contact Buyer'} />
+      <ContactModal
+        open={Boolean(contactModal)}
+        onClose={() => setContactModal(null)}
+        data={contactModal?.data || {}}
+        title={contactModal?.type === 'seller' ? t('buy.contactSeller') : t('home.buyerContactTitle')}
+      />
     </div>
   );
 }

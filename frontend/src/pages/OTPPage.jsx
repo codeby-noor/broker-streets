@@ -1,14 +1,17 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import LargeButton from '../components/LargeButton';
 import { toast } from 'react-toastify';
+import { ShieldCheck, ArrowLeft } from 'lucide-react';
+import AuthHeader from '../components/AuthHeader';
 import useCountdown from '../hooks/useCountdown';
 import { useUserStore } from '../store/useUserStore';
 import { findUserByMobile, readPendingOtpMobile, STORAGE_KEYS, writePendingOtpMobile } from '../utils/storage';
 import { getDebugOtpForMobile, normalizeMobile, resendOTP, verifyOTP } from '../utils/otpService';
+import { useLanguage } from '../i18n/LanguageContext';
 
 function OTPPage() {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const location = useLocation();
   const [verifying, setVerifying] = useState(false);
   const [devOtp, setDevOtp] = useState(() => {
@@ -82,27 +85,23 @@ function OTPPage() {
   const handlePaste = (e) => {
     e.preventDefault();
 
-    const paste =
-      (e.clipboardData || window.clipboardData).getData('text') || '';
-
+    const paste = (e.clipboardData || window.clipboardData).getData('text') || '';
     const values = paste.replace(/\D/g, '').slice(0, 6).split('');
 
     if (!values.length) return;
 
     const next = [...digits];
-
     values.forEach((digit, index) => {
       next[index] = digit;
     });
 
     setDigits(next);
-
     inputsRef.current[Math.min(values.length - 1, 5)]?.focus();
   };
 
   const verifyAndProceed = () => {
     if (code.length !== 6) {
-      toast.error('Please enter the 6-digit code');
+      toast.error(t('auth.otpRequired'));
       return;
     }
 
@@ -125,8 +124,7 @@ function OTPPage() {
     localStorage.setItem(STORAGE_KEYS.currentUserId, authenticatedUser.id || '');
     writePendingOtpMobile('');
 
-    toast.success('Login Successful');
-
+    toast.success(t('auth.verifySuccess'));
     navigate('/home');
   };
 
@@ -146,82 +144,92 @@ function OTPPage() {
     }
     writePendingOtpMobile(phone);
     inputsRef.current[0]?.focus();
-    toast.success('A new OTP has been generated. Use the displayed code to verify.');
+    toast.success(t('auth.resendGenerated'));
   };
 
   return (
-    <div className="mx-auto max-w-xl rounded-[30px] border border-slate-200 bg-white p-8 shadow-sm">
-      <h1 className="text-3xl font-semibold text-slate-900">
-        OTP Verification
-      </h1>
+    <div className="flex min-h-screen flex-col bg-[#F8FAFC] text-slate-900">
+      <AuthHeader />
 
-      <p className="mt-2 text-sm text-slate-600">
-        Verify your mobile number
-      </p>
-      <p className="mt-2 text-sm text-slate-600">
-        OTP sent to +91{' '}
-        <span className="font-semibold text-slate-900">
-          {phone}
-        </span>
-      </p>
+      <main className="flex flex-1 items-center justify-center px-4 py-8 sm:px-6">
+        <div className="w-full max-w-md rounded-[28px] border border-slate-200/80 bg-white p-6 shadow-[0_10px_35px_rgba(15,23,42,0.05)] sm:p-8">
+          <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-50 text-sage">
+            <ShieldCheck size={24} />
+          </div>
 
-      {devOtp ? (
-        <div className="mt-6 rounded-[24px] border border-slate-200 bg-slate-50 px-4 py-4 text-slate-900 shadow-sm sm:px-5 sm:py-4" role="status" aria-live="polite">
-          <p className="font-semibold text-slate-900">Development OTP: <span className="font-mono text-base tracking-[0.2em] sm:text-lg">{devOtp}</span></p>
-          <p className="mt-1 text-sm text-slate-600">Use this OTP to complete verification.</p>
+          <div className="space-y-1">
+            <h1 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+              {t('auth.verifyAccount')}
+            </h1>
+            <p className="text-sm leading-relaxed text-slate-500">
+              {t('auth.verifyDescription')}
+            </p>
+            <p className="mt-1 text-sm font-semibold text-slate-700">
+              {t('auth.otpSentTo')} <span className="font-bold text-slate-900">+91 {phone}</span>
+            </p>
+          </div>
+
+          {devOtp ? (
+            <div className="mt-4 rounded-2xl border border-amber-200/80 bg-amber-50/80 p-3.5 text-xs text-amber-900 shadow-sm">
+              <p className="font-bold">{t('auth.developmentOtp')}: <span className="font-mono text-sm tracking-widest">{devOtp}</span></p>
+              <p className="mt-0.5 text-slate-600">{t('auth.useOtpToComplete')}</p>
+            </div>
+          ) : null}
+
+          <form onSubmit={onSubmit} className="mt-6 space-y-5">
+            <div className="grid grid-cols-6 gap-2 sm:gap-2.5">
+              {digits.map((digit, index) => (
+                <input
+                  key={index}
+                  ref={(el) => (inputsRef.current[index] = el)}
+                  value={digit}
+                  maxLength={1}
+                  inputMode="numeric"
+                  pattern="[0-9]*"
+                  onChange={(e) => updateDigit(index, e.target.value.replace(/\D/g, ''))}
+                  onKeyDown={(e) => handleKeyDown(index, e)}
+                  onPaste={handlePaste}
+                  className="h-12 w-full rounded-2xl border border-slate-200 bg-slate-50/50 text-center text-lg font-bold text-slate-900 outline-none transition focus:border-sage focus:bg-white focus:ring-2 focus:ring-sage/20"
+                />
+              ))}
+            </div>
+
+            <div className="flex items-center justify-between rounded-2xl border border-slate-100 bg-slate-50/50 px-4 py-3 text-xs text-slate-600">
+              <button
+                type="button"
+                disabled={!isComplete}
+                onClick={resendOTPHandler}
+                className="font-bold text-sage hover:underline disabled:cursor-not-allowed disabled:opacity-40"
+              >
+                {t('auth.resendOtp')}
+              </button>
+
+              <span className="font-medium text-slate-500">
+                {isComplete ? t('auth.readyToResend') : `${t('auth.resendIn')} ${seconds}s`}
+              </span>
+            </div>
+
+            <div className="space-y-2.5 pt-1">
+              <button
+                type="submit"
+                disabled={verifying}
+                className="inline-flex min-h-[50px] w-full items-center justify-center rounded-2xl bg-sage px-6 py-3.5 text-base font-bold text-white shadow-md shadow-sage/20 transition hover:bg-sage-dark focus:outline-none focus:ring-2 focus:ring-sage/30 disabled:opacity-50"
+              >
+                {verifying ? t('auth.verifying') : t('auth.verify')}
+              </button>
+
+              <button
+                type="button"
+                onClick={() => navigate(-1)}
+                className="inline-flex min-h-[46px] w-full items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
+              >
+                <ArrowLeft size={16} />
+                {t('common.back')}
+              </button>
+            </div>
+          </form>
         </div>
-      ) : null}
-
-      <form onSubmit={onSubmit} className="mt-8 space-y-6">
-        <div className="grid grid-cols-3 gap-3 sm:grid-cols-6">
-          {digits.map((digit, index) => (
-            <input
-              key={index}
-              ref={(el) => (inputsRef.current[index] = el)}
-              value={digit}
-              maxLength={1}
-              inputMode="numeric"
-              onChange={(e) =>
-                updateDigit(index, e.target.value.replace(/\D/g, ''))
-              }
-              onKeyDown={(e) => handleKeyDown(index, e)}
-              onPaste={handlePaste}
-              className="h-16 w-full min-w-0 rounded-3xl border border-slate-200 bg-slate-50 text-center text-2xl font-semibold text-slate-900 outline-none focus:border-primary"
-            />
-          ))}
-        </div>
-
-        <div className="flex items-center justify-between text-sm text-slate-600">
-          <button
-            type="button"
-            disabled={!isComplete}
-            onClick={resendOTPHandler}
-            className="font-semibold text-primary disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            Resend OTP
-          </button>
-
-          <p>
-            {isComplete
-              ? 'Ready to resend'
-              : `Resend in ${seconds}s`}
-          </p>
-        </div>
-
-        <div className="flex flex-col gap-3 sm:flex-row">
-          <LargeButton type="submit" disabled={verifying}>
-            {verifying ? 'Verifying...' : 'Verify'}
-          </LargeButton>
-
-          <button
-            type="button"
-            onClick={() => navigate(-1)}
-            className="rounded-3xl border border-slate-200 bg-white px-6 py-4 text-base font-semibold text-slate-900 hover:bg-slate-50"
-          >
-            Back
-          </button>
-        </div>
-      </form>
+      </main>
     </div>
   );
 }

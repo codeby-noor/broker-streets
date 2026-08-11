@@ -6,14 +6,15 @@ import LargeButton from '../components/LargeButton';
 import { useUserStore } from '../store/useUserStore';
 import { gujaratDistricts, gujaratSubDistricts, gujaratVillages } from '../utils/data';
 import { appendStorageArray, readStorage, writeStorage, STORAGE_KEYS } from '../utils/storage';
+import logo from '../assets/images/logo.png';
+import { useLanguage } from '../i18n/LanguageContext';
 
-const propertyTypes = ['Agricultural Land', 'Non-Agricultural Land'];
-const priceUnits = ['Vigha', 'Sq.Yard (Var)', 'Sq.Ft'];
-const fallbackPropertyImage = 'https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=1400&q=85';
+const fallbackPropertyImage = logo;
 const metadata = (files) => Array.from(files || []).map((file) => ({ name: file.name, type: file.type, size: file.size, lastModified: file.lastModified }));
 
 function SellerForm() {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const user = useUserStore((state) => state.user);
   const { register, handleSubmit, watch, setValue, clearErrors, formState: { errors } } = useForm({
     defaultValues: {
@@ -33,6 +34,15 @@ function SellerForm() {
   const [pdf, setPdf] = useState(null);
   const [submitting, setSubmitting] = useState(false);
   const [displayPrice, setDisplayPrice] = useState('');
+  const propertyTypeOptions = useMemo(() => [
+    { value: 'Agricultural Land', label: t('sellerForm.agriculturalLand') },
+    { value: 'Non-Agricultural Land', label: t('sellerForm.nonAgriculturalLand') },
+  ], [t]);
+  const priceUnitOptions = useMemo(() => [
+    { value: 'Vigha', label: t('sellerForm.vigha') },
+    { value: 'sq.yard (var)', label: t('sellerForm.sqYard') },
+    { value: 'Sq.Ft', label: t('sellerForm.sqFt') },
+  ], [t]);
   const selectedDistrict = watch('district');
   const selectedTaluka = watch('subDistrict');
   const subDistrictOptions = selectedDistrict ? gujaratSubDistricts[selectedDistrict] || [] : [];
@@ -73,7 +83,7 @@ function SellerForm() {
   };
 
   const submit = (data) => {
-    if (!pdf) { toast.error('Please upload your property 7/12 document.'); return; }
+    if (!pdf) { toast.error(t('sellerForm.documentRequired')); return; }
     setSubmitting(true);
     const listingId = typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : `listing-${Date.now()}`;
     const imageUrls = images.map((item) => item.url).filter(Boolean);
@@ -114,11 +124,11 @@ function SellerForm() {
       description: data.additionalDetails || 'Verified land listing with clear location and pricing details.',
       status: 'Available',
       verified: true,
-      image: imageUrls[0] || fallbackPropertyImage,
-      gallery: imageUrls.length ? imageUrls : [fallbackPropertyImage],
-      images: imageUrls.length ? imageUrls : [fallbackPropertyImage],
-      propertyDocument: pdf ? { name: pdf.name, type: pdf.type, size: pdf.size, lastModified: pdf.lastModified, url: pdfUrl } : null,
-      documentUrl: pdfUrl,
+      image: fallbackPropertyImage,
+      gallery: [fallbackPropertyImage],
+      images: [fallbackPropertyImage],
+      propertyDocument: pdf ? { name: pdf.name, type: pdf.type, size: pdf.size, lastModified: pdf.lastModified, url: '#' } : null,
+      documentUrl: '#',
       mapLink: data.mapLink || '',
       mapUrl: data.mapLink || '',
       googleMaps: data.mapLink || '',
@@ -140,43 +150,44 @@ function SellerForm() {
       appendStorageArray(STORAGE_KEYS.listings, listing);
       writeStorage(STORAGE_KEYS.lastProperty, listing);
     } catch {
-      toast.error('Unable to save the property details.');
+      toast.error(t('sellerForm.saveError'));
       setSubmitting(false);
       return;
     }
     setSubmitting(false);
-    toast.success('Your property has been submitted successfully.');
+    toast.success(t('sellerForm.submitSuccess'));
     navigate('/seller-form', { state: { justSubmitted: true, data: lead } });
   };
 
   return <div className="-mx-4 -mt-8 bg-[#FFFEFE] pb-20 sm:-mx-6 lg:-mx-8">
-    <section className="bg-ink px-4 py-12 text-white sm:px-10 sm:py-16 lg:px-12"><div className="mx-auto max-w-5xl"><p className="eyebrow text-blue-200">Sell land with Broker Streets</p><h1 className="mt-4 text-3xl font-bold sm:text-6xl">List your land with confidence.</h1><p className="mt-4 max-w-2xl text-sm text-white/70 sm:text-base">Your authenticated profile is attached securely to this listing.</p></div></section>
+    <section className="bg-ink px-4 py-12 text-white sm:px-10 sm:py-16 lg:px-12"><div className="mx-auto max-w-5xl"><p className="eyebrow text-blue-200">{t('sellerForm.title')}</p><h1 className="mt-4 text-3xl font-bold sm:text-6xl">{t('sellerForm.smallHeading')}</h1><p className="mt-4 max-w-2xl text-sm text-white/70 sm:text-base">{t('sellerForm.authMessage')}</p></div></section>
     <section className="mx-auto -mt-8 max-w-4xl px-4 sm:px-6">
-      <form onSubmit={handleSubmit(submit)} className="space-y-6 rounded-[32px] bg-white p-4 shadow-xl sm:p-10">
+      <form onSubmit={handleSubmit(submit)} className="space-y-6 rounded-[32px] bg-white p-5 shadow-xl sm:p-10">
         <div>
-          <p className="eyebrow">Land details</p>
-          <h2 className="mt-2 text-3xl font-bold text-ink">Tell us about your land</h2>
+          <p className="eyebrow">{t('sellerForm.sectionEyebrow')}</p>
+          <h2 className="mt-2 text-3xl font-bold text-ink">{t('sellerForm.headline')}</h2>
         </div>
 
-        <div className="space-y-5">
+        <div className="space-y-6">
           <label className="block">
-            <span className="field-label">State *</span>
+            <span className="field-label">{t('sellerForm.state')} *</span>
             <input
-              value="Gujarat"
+              type="text"
+              value={t('Gujarat')}
               readOnly
               disabled
               className="field-control w-full bg-slate-100 text-slate-600"
             />
-            <input type="hidden" {...register('state', { required: 'State is required' })} value="Gujarat" />
+            <input type="hidden" {...register('state', { required: t('sellerForm.stateRequired') })} value="Gujarat" />
           </label>
 
           <label className="block">
-            <span className="field-label">District *</span>
-            <select {...register('district', { required: 'District is required' })} className="field-control w-full">
-              <option value="">Select district</option>
+            <span className="field-label">{t('sellerForm.district')} *</span>
+            <select {...register('district', { required: t('sellerForm.districtRequired') })} className="field-control w-full">
+              <option value="">{t('sellerForm.selectDistrict')}</option>
               {gujaratDistricts.map((district) => (
                 <option key={district} value={district}>
-                  {district}
+                  {t(district)}
                 </option>
               ))}
             </select>
@@ -184,16 +195,16 @@ function SellerForm() {
           </label>
 
           <label className="block">
-            <span className="field-label">Taluka *</span>
+            <span className="field-label">{t('sellerForm.taluka')} *</span>
             <select
-              {...register('subDistrict', { required: 'Taluka is required' })}
+              {...register('subDistrict', { required: t('sellerForm.talukaRequired') })}
               className="field-control w-full"
               disabled={!selectedDistrict}
             >
-              <option value="">{selectedDistrict ? 'Select taluka' : 'Select district first'}</option>
+              <option value="">{selectedDistrict ? t('sellerForm.selectTaluka') : t('sellerForm.selectDistrictFirst')}</option>
               {subDistrictOptions.map((subDistrict) => (
                 <option key={subDistrict} value={subDistrict}>
-                  {subDistrict}
+                  {t(subDistrict)}
                 </option>
               ))}
             </select>
@@ -201,9 +212,9 @@ function SellerForm() {
           </label>
 
           <label className="block">
-            <span className="field-label">Village *</span>
+            <span className="field-label">{t('sellerForm.village')} *</span>
             <select
-              {...register('village', { required: 'Please select a village.' })}
+              {...register('village', { required: t('sellerForm.villageRequired') })}
               className="field-control w-full"
               disabled={!selectedTaluka}
               value={watch('village') || ''}
@@ -212,10 +223,10 @@ function SellerForm() {
                 if (event.target.value) clearErrors('village');
               }}
             >
-              <option value="">{selectedTaluka ? 'Select Village' : 'Select Taluka First'}</option>
+              <option value="">{selectedTaluka ? t('sellerForm.selectVillage') : t('sellerForm.selectTalukaFirst')}</option>
               {villageOptions.map((village) => (
                 <option key={village} value={village}>
-                  {village}
+                  {t(village)}
                 </option>
               ))}
             </select>
@@ -223,12 +234,12 @@ function SellerForm() {
           </label>
 
           <label className="block">
-            <span className="field-label">Property Type *</span>
-            <select {...register('type', { required: 'Select a property type' })} className="field-control w-full">
-              <option value="">Select land type</option>
-              {propertyTypes.map((type) => (
-                <option key={type} value={type}>
-                  {type}
+            <span className="field-label">{t('sellerForm.propertyType')} *</span>
+            <select {...register('type', { required: t('sellerForm.propertyTypeRequired') })} className="field-control w-full">
+              <option value="">{t('sellerForm.selectPropertyType')}</option>
+              {propertyTypeOptions.map((type) => (
+                <option key={type.value} value={type.value}>
+                  {type.label}
                 </option>
               ))}
             </select>
@@ -236,12 +247,12 @@ function SellerForm() {
           </label>
 
           <label className="block">
-            <span className="field-label">Price Unit *</span>
-            <select {...register('priceUnit', { required: 'Select a price unit' })} className="field-control w-full">
-              <option value="">Select price unit</option>
-              {priceUnits.map((unit) => (
-                <option key={unit} value={unit}>
-                  {unit}
+            <span className="field-label">{t('sellerForm.priceUnit')} *</span>
+            <select {...register('priceUnit', { required: t('sellerForm.priceUnitRequired') })} className="field-control w-full">
+              <option value="">{t('sellerForm.selectPriceUnit')}</option>
+              {priceUnitOptions.map((unit) => (
+                <option key={unit.value} value={unit.value}>
+                  {unit.label}
                 </option>
               ))}
             </select>
@@ -249,89 +260,103 @@ function SellerForm() {
           </label>
 
           <label className="block">
-            <span className="field-label">Price Amount *</span>
+            <span className="field-label">{t('sellerForm.priceAmount')} *</span>
             <input
               type="text"
               value={displayPrice}
               onChange={handlePriceInput}
               className="field-control w-full"
-              placeholder="Enter property price"
+              placeholder={t('sellerForm.pricePlaceholder')}
               inputMode="numeric"
             />
             {errors.priceAmount && <p className="error-style">{errors.priceAmount.message}</p>}
           </label>
 
           <label className="block">
-            <span className="field-label">Property Images</span>
-            <input type="file" accept="image/*" multiple onChange={(event) => addFiles(event, setImages, 'image/')} className="field-control w-full" />
-            {images.length === 0 && <p className="mt-1 text-xs text-slate-500">Upload one or more image files.</p>}
-            {images.length > 0 && (
-              <div className="mt-3 grid gap-3 sm:grid-cols-2">
-                {images.map((item, index) => (
-                  <div key={item.url} className="space-y-2">
-                    <img src={item.url} alt="Property upload" className="h-36 w-full rounded-3xl object-cover" />
-                    <button type="button" onClick={() => removeFile(setImages, index)} className="text-sm font-semibold text-red-600">Remove image</button>
-                  </div>
-                ))}
-              </div>
-            )}
-          </label>
-
-          <label className="block">
-            <span className="field-label">Property Videos</span>
-            <input type="file" accept="video/*" multiple onChange={(event) => addFiles(event, setVideos, 'video/')} className="field-control w-full" />
-            {videos.length > 0 && (
-              <div className="mt-3 space-y-3">
-                {videos.map((item, index) => (
-                  <div key={item.url}>
-                    <video controls src={item.url} className="h-48 w-full rounded-3xl bg-slate-900" />
-                    <button type="button" onClick={() => removeFile(setVideos, index)} className="mt-2 text-sm font-semibold text-red-600">Remove video</button>
-                  </div>
-                ))}
-              </div>
-            )}
-          </label>
-
-          <label className="block">
-            <span className="field-label">7/12 Document *</span>
-            <input type="file" accept=".pdf,.jpg,.jpeg,.png,.webp" onChange={(event) => setPdf(event.target.files?.[0] || null)} className="field-control w-full" />
-            <p className="mt-1 text-xs text-slate-500">Upload your property&apos;s 7/12 document or a clear photo/screenshot of the document.</p>
-            {pdf && (
-              <div className="mt-3 rounded-3xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm">
-                <div className="flex items-center justify-between gap-4">
-                  <div>
-                    <p className="font-semibold text-slate-800">{pdf.name}</p>
-                    <p className="mt-1 text-xs text-slate-500">Upload status: ready</p>
-                  </div>
-                  <button type="button" onClick={() => setPdf(null)} className="text-red-600">Remove</button>
+            <span className="field-label">{t('sellerForm.propertyImages')}</span>
+            <div className="rounded-[28px] border border-slate-200 bg-slate-50 p-4">
+              <input type="file" accept="image/*" multiple onChange={(event) => addFiles(event, setImages, 'image/')} className="field-control w-full bg-white" />
+              <p className="mt-3 text-sm text-slate-500">{t('sellerForm.imageHint')}</p>
+              {images.length > 0 && (
+                <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                  {images.map((item, index) => (
+                    <div key={item.url} className="overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-sm">
+                      <img src={item.url} alt="Property upload" className="h-40 w-full object-cover" />
+                      <div className="flex items-center justify-between gap-3 px-4 py-3">
+                        <p className="truncate text-sm font-semibold text-slate-800">{t('sellerForm.imageLabel')} {index + 1}</p>
+                        <button type="button" onClick={() => removeFile(setImages, index)} className="rounded-full bg-red-50 px-3 py-2 text-xs font-semibold text-red-600">{t('common.clear')}</button>
+                      </div>
+                    </div>
+                  ))}
                 </div>
-              </div>
-            )}
+              )}
+            </div>
           </label>
 
           <label className="block">
-            <span className="field-label">Google Maps Link *</span>
+            <span className="field-label">{t('sellerForm.propertyVideos')}</span>
+            <div className="rounded-[28px] border border-slate-200 bg-slate-50 p-4">
+              <input type="file" accept="video/*" multiple onChange={(event) => addFiles(event, setVideos, 'video/')} className="field-control w-full bg-white" />
+              {videos.length > 0 && (
+                <div className="mt-4 space-y-3">
+                  {videos.map((item, index) => (
+                    <div key={item.url} className="overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-sm">
+                      <video controls src={item.url} className="h-48 w-full bg-slate-900" />
+                      <div className="flex items-center justify-between gap-3 px-4 py-3">
+                        <p className="truncate text-sm font-semibold text-slate-800">{t('sellerForm.videoLabel')} {index + 1}</p>
+                        <button type="button" onClick={() => removeFile(setVideos, index)} className="rounded-full bg-red-50 px-3 py-2 text-xs font-semibold text-red-600">{t('common.clear')}</button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </label>
+
+          <label className="block">
+            <span className="field-label">{t('sellerForm.document')} *</span>
+            <div className="rounded-[28px] border border-slate-200 bg-slate-50 p-4">
+              <input type="file" accept=".pdf,.jpg,.jpeg,.png,.webp" onChange={(event) => setPdf(event.target.files?.[0] || null)} className="field-control w-full bg-white" />
+              <p className="mt-3 text-sm text-slate-500">{t('sellerForm.documentHint')}</p>
+              {pdf && (
+                <div className="mt-4 rounded-[24px] border border-slate-200 bg-white p-4 shadow-sm">
+                  <div className="flex items-center justify-between gap-4">
+                    <div>
+                      <p className="font-semibold text-slate-800 truncate">{pdf.name}</p>
+                      <p className="mt-1 text-xs text-slate-500">{t('sellerForm.documentReady')}</p>
+                    </div>
+                    <button type="button" onClick={() => setPdf(null)} className="rounded-full bg-red-50 px-3 py-2 text-xs font-semibold text-red-600">{t('common.clear')}</button>
+                  </div>
+                </div>
+              )}
+            </div>
+          </label>
+
+          <label className="block">
+            <span className="field-label">{t('sellerForm.mapLink')} *</span>
             <input
-              {...register('mapLink', { required: 'Google Maps link is required', pattern: { value: /^https?:\/\//i, message: 'Enter a valid URL' } })}
+              {...register('mapLink', { required: t('sellerForm.mapLinkRequired'), pattern: { value: /^https?:\/\//i, message: t('sellerForm.mapLinkInvalid') } })}
               className="field-control w-full"
-              placeholder="https://maps.google.com/..."
+              placeholder={t('sellerForm.mapPlaceholder')}
             />
             {errors.mapLink && <p className="error-style">{errors.mapLink.message}</p>}
           </label>
 
           <label className="block">
-            <span className="field-label">Additional Details</span>
+            <span className="field-label">{t('sellerForm.additionalDetails')}</span>
             <textarea
               {...register('additionalDetails')}
-              rows="4"
-              className="field-control w-full resize-y"
-              placeholder="Land area, road access, water source, title details..."
+              rows="5"
+              className="field-control w-full resize-y min-h-[160px]"
+              placeholder={t('sellerForm.additionalPlaceholder')}
             />
           </label>
         </div>
 
-        <div className="flex justify-end">
-          <LargeButton type="submit" disabled={submitting}>{submitting ? 'Submitting...' : 'Submit Property'}</LargeButton>
+        <div className="flex justify-end pt-2">
+          <LargeButton type="submit" disabled={submitting} className="min-h-[48px]">
+            {submitting ? t('sellerForm.submitting') : t('sellerForm.submit')}
+          </LargeButton>
         </div>
       </form>
     </section>

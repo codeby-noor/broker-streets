@@ -10,16 +10,23 @@ import PropertyDetailsPage from '../pages/PropertyDetailsPage';
 import AboutPage from '../pages/AboutPage';
 import ContactPage from '../pages/ContactPage';
 import ProfilePage from '../pages/ProfilePage';
+import ProfilePropertiesPage from '../pages/ProfilePropertiesPage';
+import ProfileSavedPage from '../pages/ProfileSavedPage';
+import ProfileRequirementsPage from '../pages/ProfileRequirementsPage';
+import ProfileRecentPage from '../pages/ProfileRecentPage';
+import ProfileNotificationsPage from '../pages/ProfileNotificationsPage';
+import ProfileSettingsPage from '../pages/ProfileSettingsPage';
 import NotFoundPage from '../pages/NotFoundPage';
 import BuyerForm from '../pages/BuyerForm';
 import SellerForm from '../pages/SellerForm';
-import AddPropertyPage from '../pages/AddPropertyPage';
 import SellerDashboard from '../pages/SellerDashboard';
 import BuyerRequirementsPage from '../pages/BuyerRequirementsPage';
 import LocationDetailsPage from '../pages/LocationDetailsPage';
 import FormGuard from '../components/FormGuard';
 import ProtectedRoute from './ProtectedRoute';
 import AdminApp from '../admin/AdminApp';
+import LanguageSelectionPage from '../pages/LanguageSelectionPage';
+import { useLanguage } from '../i18n/LanguageContext';
 
 function AppRoutes() {
   return (
@@ -27,6 +34,7 @@ function AppRoutes() {
       <Route path="/admin/*" element={<AdminApp />} />
       <Route path="/" element={<Layout />}>
         <Route index element={<RegisterPage />} />
+        <Route path="home" element={<HomePage />} />
         <Route path="register" element={<RegisterPage />} />
         <Route path="login" element={<LoginPage />} />
         <Route path="otp" element={<OTPPage />} />
@@ -39,8 +47,9 @@ function AppRoutes() {
             </FormGuard>
           }
         />
+        <Route path="about" element={<AboutPage />} />
+        <Route path="contact" element={<ContactPage />} />
         <Route element={<ProtectedRoute />}>
-          <Route path="home" element={<HomePage />} />
           <Route
             path="buyer-form"
             element={
@@ -85,9 +94,13 @@ function AppRoutes() {
               </FormGuard>
             }
           />
-          <Route path="about" element={<AboutPage />} />
-          <Route path="contact" element={<ContactPage />} />
           <Route path="profile" element={<ProfilePage />} />
+          <Route path="profile/properties" element={<ProfilePropertiesPage />} />
+          <Route path="profile/saved" element={<ProfileSavedPage />} />
+          <Route path="profile/requirements" element={<ProfileRequirementsPage />} />
+          <Route path="profile/recent" element={<ProfileRecentPage />} />
+          <Route path="profile/notifications" element={<ProfileNotificationsPage />} />
+          <Route path="profile/settings" element={<ProfileSettingsPage />} />
           <Route path="buyer-requirements" element={<BuyerRequirementsPage />} />
         </Route>
         <Route path="*" element={<NotFoundPage />} />
