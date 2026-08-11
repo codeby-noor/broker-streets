@@ -151,8 +151,23 @@ function HomePage() {
           </div>
 
           <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 md:grid-cols-3">
-            {governmentLinks.map((item) => {
+            {governmentLinks.map((item, index) => {
               const Icon = item.icon;
+              const cardThemes = [
+                { border: 'border-emerald-200/90 hover:border-emerald-400', cardBg: 'bg-emerald-50/90 hover:bg-emerald-100/90', iconBg: 'bg-emerald-200/70 text-emerald-800' },
+                { border: 'border-sky-200/90 hover:border-sky-400', cardBg: 'bg-sky-50/90 hover:bg-sky-100/90', iconBg: 'bg-sky-200/70 text-sky-800' },
+                { border: 'border-amber-200/90 hover:border-amber-400', cardBg: 'bg-amber-50/90 hover:bg-amber-100/90', iconBg: 'bg-amber-200/70 text-amber-800' },
+                { border: 'border-violet-200/90 hover:border-violet-400', cardBg: 'bg-violet-50/90 hover:bg-violet-100/90', iconBg: 'bg-violet-200/70 text-violet-800' },
+                { border: 'border-teal-200/90 hover:border-teal-400', cardBg: 'bg-teal-50/90 hover:bg-teal-100/90', iconBg: 'bg-teal-200/70 text-teal-800' },
+                { border: 'border-orange-200/90 hover:border-orange-400', cardBg: 'bg-orange-50/90 hover:bg-orange-100/90', iconBg: 'bg-orange-200/70 text-orange-800' },
+                { border: 'border-indigo-200/90 hover:border-indigo-400', cardBg: 'bg-indigo-50/90 hover:bg-indigo-100/90', iconBg: 'bg-indigo-200/70 text-indigo-800' },
+                { border: 'border-cyan-200/90 hover:border-cyan-400', cardBg: 'bg-cyan-50/90 hover:bg-cyan-100/90', iconBg: 'bg-cyan-200/70 text-cyan-800' },
+                { border: 'border-lime-200/90 hover:border-lime-400', cardBg: 'bg-lime-50/90 hover:bg-lime-100/90', iconBg: 'bg-lime-200/70 text-lime-800' },
+                { border: 'border-rose-200/90 hover:border-rose-400', cardBg: 'bg-rose-50/90 hover:bg-rose-100/90', iconBg: 'bg-rose-200/70 text-rose-800' },
+                { border: 'border-purple-200/90 hover:border-purple-400', cardBg: 'bg-purple-50/90 hover:bg-purple-100/90', iconBg: 'bg-purple-200/70 text-purple-800' },
+                { border: 'border-blue-200/90 hover:border-blue-400', cardBg: 'bg-blue-50/90 hover:bg-blue-100/90', iconBg: 'bg-blue-200/70 text-blue-800' },
+              ];
+              const theme = cardThemes[index % cardThemes.length];
               const handleClick = () => {
                 if (item.url) {
                   window.open(item.url, '_blank', 'noopener,noreferrer');
@@ -165,12 +180,12 @@ function HomePage() {
                   key={item.id}
                   type="button"
                   onClick={handleClick}
-                  className="group flex flex-col items-center justify-center rounded-2xl border border-slate-200/80 bg-white p-3.5 text-center shadow-2xs transition hover:border-sage/40 hover:bg-slate-50/80 hover:shadow-xs min-h-[90px]"
+                  className={`group flex min-h-[96px] flex-col items-center justify-center rounded-2xl border ${theme.border} ${theme.cardBg} p-3.5 text-center shadow-xs transition-all duration-300 hover:-translate-y-1 hover:shadow-md`}
                 >
-                  <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-100 text-slate-700 transition group-hover:bg-sage/10 group-hover:text-sage">
-                    <Icon size={18} />
+                  <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${theme.iconBg} transition-transform duration-300 group-hover:scale-110 shadow-2xs`}>
+                    <Icon size={19} />
                   </div>
-                  <span className="mt-2 text-xs font-semibold text-slate-800 line-clamp-2 leading-snug">
+                  <span className="mt-2 text-xs font-bold text-slate-900 line-clamp-2 leading-tight">
                     {t(item.titleKey)}
                   </span>
                 </button>

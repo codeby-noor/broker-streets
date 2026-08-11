@@ -281,7 +281,7 @@ export const translations = {
       agriculturalLand: 'Agricultural Land',
       nonAgriculturalLand: 'Non-Agricultural Land',
       vigha: 'Vigha',
-      sqYard: 'sq.yard (var)',
+      sqYard: 'Var (Sq.Yard)',
       sqFt: 'Sq.Ft',
       stateRequired: 'State is required',
       districtRequired: 'District is required',
