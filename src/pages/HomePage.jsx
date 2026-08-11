@@ -18,7 +18,6 @@ function HomePage() {
   // Search state
   const [searchType, setSearchType] = useState('');
   const [searchLocation, setSearchLocation] = useState('');
-  const [searchPrice, setSearchPrice] = useState('');
 
   const goToBuy = () => navigate(getSubmissionDestination('buyerFormSubmitted', '/buyer-form', '/buy'));
   const goToSell = () => navigate(getSubmissionDestination('sellerFormSubmitted', '/seller-form', '/sell'));
@@ -47,8 +46,10 @@ function HomePage() {
     e.preventDefault();
     const params = new URLSearchParams();
     if (searchType) params.set('type', searchType);
-    if (searchLocation) params.set('location', searchLocation);
-    if (searchPrice) params.set('price', searchPrice);
+    if (searchLocation) {
+      params.set('district', searchLocation);
+      params.set('location', searchLocation);
+    }
     navigate(`/buy?${params.toString()}`);
   };
 
@@ -154,7 +155,7 @@ function HomePage() {
             </h2>
           </div>
 
-          <form onSubmit={handleSearchSubmit} className="grid gap-2.5 sm:grid-cols-4">
+          <form onSubmit={handleSearchSubmit} className="grid gap-2.5 sm:grid-cols-3">
             <div>
               <select
                 value={searchType}
@@ -173,28 +174,9 @@ function HomePage() {
                 onChange={(e) => setSearchLocation(e.target.value)}
                 className="h-11 w-full rounded-xl border border-slate-200 bg-slate-50/60 px-3 text-xs font-medium text-slate-800 outline-none transition focus:border-sage focus:bg-white"
               >
-                <option value="">{t('home.allLocations')}</option>
-                <option value="Surat">{isGujarati ? 'સુરત' : 'Surat'}</option>
-                <option value="Navsari">{isGujarati ? 'નવસારી' : 'Navsari'}</option>
-                <option value="Bardoli">{isGujarati ? 'બારડોલી' : 'Bardoli'}</option>
-                <option value="Kamrej">{isGujarati ? 'કામરેજ' : 'Kamrej'}</option>
-                <option value="Gandevi">{isGujarati ? 'ગંડેવી' : 'Gandevi'}</option>
-                <option value="Chikhli">{isGujarati ? 'ચીખલી' : 'Chikhli'}</option>
-                <option value="Bilimora">{isGujarati ? 'બીલીમોરા' : 'Bilimora'}</option>
-                <option value="Amalsad">{isGujarati ? 'અમાલસાડ' : 'Amalsad'}</option>
-              </select>
-            </div>
-
-            <div>
-              <select
-                value={searchPrice}
-                onChange={(e) => setSearchPrice(e.target.value)}
-                className="h-11 w-full rounded-xl border border-slate-200 bg-slate-50/60 px-3 text-xs font-medium text-slate-800 outline-none transition focus:border-sage focus:bg-white"
-              >
-                <option value="">{t('home.anyPrice')}</option>
-                <option value="under20">{t('home.under20L')}</option>
-                <option value="20to50">{t('home.from20to50L')}</option>
-                <option value="above50">{t('home.above50L')}</option>
+                <option value="">{t('home.location')}</option>
+                <option value="Surat">{t('home.surat')}</option>
+                <option value="Navsari">{t('home.navsari')}</option>
               </select>
             </div>
 
@@ -203,7 +185,7 @@ function HomePage() {
               className="inline-flex h-11 items-center justify-center gap-1.5 rounded-xl bg-sage px-4 text-xs font-bold text-white transition hover:bg-sage-dark"
             >
               <Search size={14} />
-              <span>{t('home.search')}</span>
+              <span>{t('home.searchProperty')}</span>
             </button>
           </form>
         </section>

@@ -78,8 +78,9 @@ function BuyPage() {
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
-    const districtParam = params.get('district')?.trim();
+    const districtParam = (params.get('district') || params.get('location'))?.trim();
     const talukaParam = params.get('taluka')?.trim();
+    const typeParam = params.get('type')?.trim();
 
     const validDistrict = districtParam
       ? districtOptions.find((district) => district.toLowerCase() === districtParam.toLowerCase()) || t('buy.allDistricts') || 'All districts'
@@ -88,6 +89,14 @@ function BuyPage() {
     const validTaluka = talukaParam && validDistrict !== (t('buy.allDistricts') || 'All districts')
       ? (gujaratSubDistricts[validDistrict] || []).find((taluka) => taluka.toLowerCase() === talukaParam.toLowerCase()) || t('buy.allTalukas') || 'All talukas'
       : t('buy.allTalukas') || 'All talukas';
+
+    if (typeParam) {
+      const validTypes = propertyTypes || ['Agricultural Land', 'Non-Agricultural Land'];
+      const foundType = validTypes.find((tItem) => tItem.toLowerCase() === typeParam.toLowerCase());
+      if (foundType) {
+        setType(foundType);
+      }
+    }
 
     setSelectedDistrict(validDistrict);
     setSelectedTaluka(validTaluka);

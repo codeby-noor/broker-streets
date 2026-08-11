@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Bookmark, Search } from 'lucide-react';
+import { Heart, Search } from 'lucide-react';
 import PropertyCard from '../components/PropertyCard';
 import ProfileSubPageShell from '../components/ProfileSubPageShell';
 import { getSavedProperties, onSavedPropertiesChanged } from '../utils/storage';
@@ -19,7 +19,7 @@ function ProfileSavedPage() {
   }, []);
 
   return (
-    <ProfileSubPageShell title={t('profile.savedProperties')} description={t('profile.shortlistedProperties')}>
+    <ProfileSubPageShell title={t('profile.likedProperties')} description={t('profile.shortlistedProperties')}>
       {saved.length ? (
         <div className="profile-subpage-grid">
           {saved.map((item) => (
@@ -28,7 +28,7 @@ function ProfileSavedPage() {
         </div>
       ) : (
         <div className="profile-empty-state">
-          <Bookmark size={28} />
+          <Heart size={28} />
           <p>{t('profile.noSavedPropertiesYet')}</p>
           <button type="button" onClick={() => navigate('/buy')} className="profile-subpage-primary-button">
             <Search size={15} /> {t('profile.browseProperties')}

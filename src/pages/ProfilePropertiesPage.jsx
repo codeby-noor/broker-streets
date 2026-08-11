@@ -83,7 +83,7 @@ function ProfilePropertiesPage() {
             <option value="All">{t('buy.allTypes')}</option>
             <option value="Available">{t('dropdown.available')}</option>
             <option value="Sold">{t('dropdown.sold')}</option>
-            <option value="Pending">{t('dropdown.pending')}</option>
+            <option value="Unavailable">{t('dropdown.unavailable')}</option>
           </select>
         </div>
         <button type="button" onClick={() => navigate('/seller-form')} className="profile-subpage-primary-button">
@@ -106,7 +106,7 @@ function ProfilePropertiesPage() {
                       <MapPin size={14} /> {t(listing.district) || t('common.district')} • {t(listing.subDistrict || listing.taluka) || t('common.taluka')} • {t(listing.village) || t('common.village')}
                     </p>
                   </div>
-                  <span className={`profile-status-badge ${listing.status?.toLowerCase()}`}>{listing.status === 'Sold' ? t('dropdown.sold') : listing.status === 'Pending' ? t('dropdown.pending') : t('dropdown.available')}</span>
+                  <span className={`profile-status-badge ${listing.status?.toLowerCase()}`}>{listing.status === 'Sold' ? t('dropdown.sold') : listing.status === 'Unavailable' ? t('dropdown.unavailable') : t('dropdown.available')}</span>
                 </div>
 
                 <div className="profile-subpage-meta-grid">
@@ -120,7 +120,7 @@ function ProfilePropertiesPage() {
                   </div>
                   <div>
                     <span className="profile-subpage-label">{t('common.status')}</span>
-                    <span className="profile-subpage-value">{listing.status === 'Sold' ? t('dropdown.sold') : listing.status === 'Pending' ? t('dropdown.pending') : t('dropdown.available')}</span>
+                    <span className="profile-subpage-value">{listing.status === 'Sold' ? t('dropdown.sold') : listing.status === 'Unavailable' ? t('dropdown.unavailable') : t('dropdown.available')}</span>
                   </div>
                 </div>
 
@@ -132,9 +132,6 @@ function ProfilePropertiesPage() {
                     </button>
                     <button type="button" onClick={() => navigate('/seller-form', { state: { editProperty: listing } })} className="profile-subpage-row-button">
                       <Edit3 size={15} /> {t('common.edit')}
-                    </button>
-                    <button type="button" onClick={() => setDeleteModalTarget(listing)} className="profile-subpage-row-button danger">
-                      <Trash2 size={15} /> {t('common.delete')}
                     </button>
                     <button type="button" onClick={() => handleToggleListingStatus(listing)} className="profile-subpage-row-button success">
                       <CheckCircle2 size={15} /> {listing.status === 'Sold' ? t('common.markAvailable') : t('common.markSold')}
@@ -149,23 +146,6 @@ function ProfilePropertiesPage() {
         <div className="profile-empty-state">
           <p>{t('profile.noPropertiesYet')}</p>
           <button type="button" onClick={() => navigate('/seller-form')} className="profile-subpage-primary-button">{t('profile.createListing')}</button>
-        </div>
-      )}
-
-      {deleteModalTarget && (
-        <div role="dialog" aria-modal="true" className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4">
-          <div className="w-full max-w-md rounded-[28px] bg-white p-6 shadow-xl">
-            <h3 className="text-xl font-semibold text-slate-900">{t('profile.deleteListingModalTitle')}</h3>
-            <p className="mt-3 text-sm text-slate-600">{t('profile.deleteListingModalDesc')}</p>
-            <div className="mt-6 flex justify-end gap-3">
-              <button type="button" onClick={() => setDeleteModalTarget(null)} className="rounded-full border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50">
-                {t('common.cancel')}
-              </button>
-              <button type="button" onClick={confirmDeleteListing} className="rounded-full bg-red-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-red-700">
-                {t('common.delete')}
-              </button>
-            </div>
-          </div>
         </div>
       )}
     </ProfileSubPageShell>

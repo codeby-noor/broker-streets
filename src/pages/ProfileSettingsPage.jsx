@@ -53,7 +53,7 @@ function ProfileSettingsPage() {
   };
 
   return (
-    <ProfileSubPageShell title={t('profile.profileSettings')} description={t('profile.profileSettingsTitle')}>
+    <ProfileSubPageShell title={t('profile.editProfile')} description={t('profile.editProfile')}>
       <section className="profile-settings-panel">
         <div className="profile-settings-photo">
           <div className="profile-settings-avatar">
@@ -69,12 +69,25 @@ function ProfileSettingsPage() {
           </div>
         </div>
 
+        <div className="profile-settings-actions my-2">
+          {isEditingProfile ? (
+            <>
+              <button type="button" onClick={handleSaveProfile} className="profile-subpage-primary-button">
+                <Save size={15} /> {t('profile.saveChanges')}
+              </button>
+              <button type="button" onClick={() => setIsEditingProfile(false)} className="profile-subpage-secondary-button">{t('common.cancel')}</button>
+            </>
+          ) : (
+            <button type="button" onClick={() => setIsEditingProfile(true)} className="profile-subpage-primary-button">{t('profile.editProfile')}</button>
+          )}
+        </div>
+
         <div className="profile-settings-form">
           {[
-            ['name', t('profile.fullNameLabel'), 'text'],
-            ['mobile', t('profile.mobileLabel'), 'text'],
-            ['email', t('profile.emailLabel'), 'email'],
-            ['address', t('profile.addressLabel'), 'text'],
+            ['name', t('profile.fullNameLabel') || 'Full Name', 'text'],
+            ['mobile', t('profile.mobileLabel') || 'Mobile Number', 'text'],
+            ['email', t('profile.emailLabel') || 'Email', 'email'],
+            ['address', t('profile.addressLabel') || 'Address', 'text'],
             ['district', t('common.district'), 'text'],
             ['subDistrict', t('common.taluka'), 'text'],
           ].map(([field, label, type]) => (
@@ -87,19 +100,6 @@ function ProfileSettingsPage() {
               )}
             </label>
           ))}
-        </div>
-
-        <div className="profile-settings-actions">
-          {isEditingProfile ? (
-            <>
-              <button type="button" onClick={handleSaveProfile} className="profile-subpage-primary-button">
-                <Save size={15} /> {t('profile.saveChanges')}
-              </button>
-              <button type="button" onClick={() => setIsEditingProfile(false)} className="profile-subpage-secondary-button">{t('common.cancel')}</button>
-            </>
-          ) : (
-            <button type="button" onClick={() => setIsEditingProfile(true)} className="profile-subpage-primary-button">{t('profile.editProfile')}</button>
-          )}
         </div>
       </section>
     </ProfileSubPageShell>

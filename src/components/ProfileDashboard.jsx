@@ -8,6 +8,7 @@ import {
   Building2,
   BadgeCheck,
   Bookmark,
+  Heart,
   Eye,
   Bell,
   Settings,
@@ -57,13 +58,10 @@ import '../styles/profile-dashboard.css';
 
 const sidebarItems = [
   { key: 'overview', labelKey: 'profile.dashboard', icon: LayoutGrid },
+  { key: 'settings', labelKey: 'profile.editProfile', icon: Settings },
   { key: 'properties', labelKey: 'profile.myProperties', icon: Building2 },
-  { key: 'saved', labelKey: 'profile.savedProperties', icon: Bookmark },
-  { key: 'buyers', labelKey: 'profile.buyerRequirements', icon: BadgeCheck },
+  { key: 'saved', labelKey: 'profile.likedProperties', icon: Heart },
   { key: 'recent', labelKey: 'profile.recentlyViewed', icon: Eye },
-  { key: 'notifications', labelKey: 'profile.notifications', icon: Bell },
-  { key: 'settings', labelKey: 'profile.profileSettings', icon: Settings },
-  { key: 'password', labelKey: 'profile.changePassword', icon: ShieldCheck },
   { key: 'help', labelKey: 'profile.helpSupport', icon: LifeBuoy },
 ];
 
@@ -457,7 +455,6 @@ function ProfileDashboard() {
                         <button type="button" onClick={() => navigate('/seller-form', { state: { editProperty: listing } })} className="dashboard-action-btn bg-slate-900 text-white">{t('common.edit')}</button>
                         <button type="button" onClick={() => handleDuplicateListing(listing)} className="dashboard-action-btn bg-primary/10 text-primary">{t('common.duplicate')}</button>
                         <button type="button" onClick={() => handleToggleListingStatus(listing)} className="dashboard-action-btn bg-emerald-50 text-emerald-700">{listing.status === 'Sold' ? t('common.markAvailable') : t('common.markSold')}</button>
-                        <button type="button" onClick={() => setDeleteTarget(listing)} className="dashboard-action-btn bg-rose-50 text-rose-700">{t('common.delete')}</button>
                       </div>
                     </div>
                   </div>
@@ -469,71 +466,14 @@ function ProfileDashboard() {
       );
     }
 
-    if (activeSection === 'buyers') {
-      return (
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
-          <div className="dashboard-card">
-            <div className="dashboard-card__header">
-              <div>
-                <p className="eyebrow">{t('buyerRequirements.heroTitle')}</p>
-                <h2 className="text-2xl font-semibold text-slate-900">{t('buyerRequirements.heroDescription')}</h2>
-              </div>
-            </div>
-            {buyerRequests.length ? (
-              <div className="space-y-4">
-                {buyerRequests.map((request) => (
-                  <div key={request.id} className="rounded-[24px] border border-slate-200 bg-slate-50 p-4">
-                    <div className="flex flex-wrap items-center justify-between gap-3">
-                      <div>
-                        <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">{t('profile.requirementLabel')} #{request.id}</p>
-                        <h3 className="mt-1 text-lg font-semibold text-slate-900">{request.propertyType || t('profile.landRequirementFallback')}</h3>
-                      </div>
-                      <span className="rounded-full bg-primary/10 px-3 py-1 text-sm font-semibold text-primary">{request.purpose || t('common.ready')}</span>
-                    </div>
-                    <div className="mt-4 grid gap-3 md:grid-cols-2">
-                      {[
-                        [t('profile.districtLabel'), request.preferredDistrict],
-                        [t('profile.talukaLabel'), request.preferredTaluka],
-                        [t('profile.villagesLabel'), Array.isArray(request.preferredVillages) ? request.preferredVillages.join(', ') : request.preferredVillages || '—'],
-                        [t('common.submit'), formatDate(request.createdAt, t('profile.recentlyUpdated'))],
-                      ].map(([label, value]) => (
-                        <div key={label} className="rounded-2xl border border-slate-200 bg-white p-3 text-sm text-slate-700">
-                          <p className="font-semibold text-slate-900">{label}</p>
-                          <p className="mt-1">{value}</p>
-                        </div>
-                      ))}
-                    </div>
-                    {request.audio && typeof request.audio === 'string' && !request.audio.toLowerCase().startsWith('blob:') ? (
-                      <div className="mt-4 rounded-2xl border border-slate-200 bg-white p-3">
-                        <p className="text-sm font-semibold text-slate-900">{t('buyerForm.voiceRecording')}</p>
-                        <audio controls className="mt-3 w-full" ref={(el) => { if (el) audioRefs.current[request.id] = el; }}>
-                          <source src={request.audio} />
-                        </audio>
-                      </div>
-                    ) : null}
-                    <div className="mt-4 flex flex-wrap gap-2">
-                      <button type="button" onClick={() => setSelectedBuyerRequest(request)} className="dashboard-action-btn bg-white text-slate-700">{t('common.view')}</button>
-                      <button type="button" onClick={() => navigate('/buyer-form', { state: { editLead: request } })} className="dashboard-action-btn bg-slate-900 text-white">{t('common.edit')}</button>
-                      <button type="button" onClick={() => setConfirmAction({ title: t('profile.deleteRequirementTitle'), description: t('profile.deleteRequirementDescription'), onConfirm: () => { const next = removeBuyerLead(request.id); setBuyerRequests(next); setConfirmAction(null); toast.success(t('profile.requirementDeleted')); } })} className="dashboard-action-btn bg-rose-50 text-rose-700">{t('common.clear')}</button>
-                      <button type="button" onClick={() => setContactModal({ ...request, modalTitle: t('contact.modalTitle') })} className="dashboard-action-btn bg-primary/10 text-primary">{t('profile.contactBuyer')}</button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : renderEmptyState(t('profile.noBuyerRequirementsYet'), t('profile.noBuyerRequirementsDescription'), t('profile.submitRequirement'), () => navigate('/buyer-form'), <BadgeCheck size={20} />)}
-          </div>
-        </motion.div>
-      );
-    }
-
     if (activeSection === 'saved') {
       return (
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
           <div className="dashboard-card">
             <div className="dashboard-card__header">
               <div>
-                <p className="eyebrow">{t('profile.savedProperties')}</p>
-                <h2 className="text-2xl font-semibold text-slate-900">{t('profile.savedListingsTitle')}</h2>
+                <p className="eyebrow">{t('profile.likedProperties')}</p>
+                <h2 className="text-2xl font-semibold text-slate-900">{t('profile.likedProperties')}</h2>
               </div>
             </div>
             {saved.length ? (
@@ -560,7 +500,7 @@ function ProfileDashboard() {
                   </div>
                 ))}
               </div>
-            ) : renderEmptyState(t('profile.noSavedPropertiesYet'), t('profile.noSavedPropertiesDescription'), t('profile.browseProperties'), () => navigate('/buy'), <Bookmark size={20} />)}
+            ) : renderEmptyState(t('profile.noSavedPropertiesYet'), t('profile.noSavedPropertiesDescription'), t('profile.browseProperties'), () => navigate('/buy'), <Heart size={20} />)}
           </div>
         </motion.div>
       );
@@ -603,61 +543,24 @@ function ProfileDashboard() {
       );
     }
 
-    if (activeSection === 'notifications') {
-      return (
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
-          <div className="dashboard-card">
-            <div className="dashboard-card__header">
-              <div>
-                <p className="eyebrow">{t('profile.notifications')}</p>
-                <h2 className="text-2xl font-semibold text-slate-900">{t('profile.notificationsTitle')}</h2>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                <button type="button" onClick={handleMarkAllRead} className="dashboard-action-btn bg-slate-100 text-slate-800">{t('profile.markAllRead')}</button>
-                <button type="button" onClick={handleClearNotifications} className="dashboard-action-btn bg-rose-50 text-rose-700">{t('profile.clearAll')}</button>
-              </div>
-            </div>
-            {notifications.length ? (
-              <div className="space-y-3">
-                {['Today', 'Yesterday'].map((label) => {
-                  const items = notifications.filter((item) => (item.createdAt || '').includes(label));
-                  if (!items.length) return null;
-                  return (
-                    <div key={label} className="space-y-2">
-                      <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">{label}</p>
-                      {items.map((item) => (
-                        <div key={item.id} className={`dashboard-list-item ${item.read ? 'bg-white' : 'bg-blue-50'}`}>
-                          <div>
-                            <p className="font-semibold text-slate-900">{item.type}</p>
-                            <p className="text-sm text-slate-600">{item.message}</p>
-                          </div>
-                          <div className="flex flex-wrap gap-2">
-                            <button type="button" onClick={() => markNotificationRead(item.id)} className="dashboard-action-btn bg-white text-slate-700">{t('profile.markRead')}</button>
-                            <button type="button" onClick={() => deleteNotification(item.id)} className="dashboard-action-btn bg-rose-50 text-rose-700">{t('common.clear')}</button>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  );
-                })}
-              </div>
-            ) : renderEmptyState(t('profile.noNotificationsYet'), t('profile.noNotificationsDescription'), null, null, <Bell size={20} />)}
-          </div>
-        </motion.div>
-      );
-    }
-
     if (activeSection === 'settings') {
       return (
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
           <div className="dashboard-card">
             <div className="dashboard-card__header">
               <div>
-                <p className="eyebrow">{t('profile.profileSettings')}</p>
-                <h2 className="text-2xl font-semibold text-slate-900">{t('profile.profileSettingsTitle')}</h2>
+                <p className="eyebrow">{t('profile.title')}</p>
+                <h2 className="text-2xl font-semibold text-slate-900">{t('profile.editProfile')}</h2>
               </div>
-              <button type="button" onClick={() => setIsEditingProfile((value) => !value)} className="dashboard-action-btn bg-primary text-white">{isEditingProfile ? t('profile.cancelEdit') : t('profile.editProfile')}</button>
             </div>
+
+            <div className="mt-2 mb-4">
+              <button type="button" onClick={() => setIsEditingProfile((value) => !value)} className="dashboard-action-btn bg-primary text-white inline-flex items-center gap-2">
+                <Edit3 size={16} />
+                <span>{isEditingProfile ? t('profile.cancelEdit') : t('profile.editProfile')}</span>
+              </button>
+            </div>
+
             <div className="grid gap-6 lg:grid-cols-[240px,1fr]">
               <div className="rounded-[28px] border border-slate-200 bg-slate-50 p-5 text-center">
                 <div className="mx-auto flex h-24 w-24 items-center justify-center overflow-hidden rounded-full bg-gradient-to-br from-primary to-sky-400 text-3xl font-semibold text-white">
@@ -696,39 +599,6 @@ function ProfileDashboard() {
                 <button type="button" onClick={() => setIsEditingProfile(false)} className="dashboard-action-btn bg-slate-100 text-slate-800">{t('common.back')}</button>
               </div>
             )}
-          </div>
-        </motion.div>
-      );
-    }
-
-    if (activeSection === 'password') {
-      return (
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
-          <div className="dashboard-card">
-            <div className="dashboard-card__header">
-              <div>
-                <p className="eyebrow">{t('profile.changePassword')}</p>
-                <h2 className="text-2xl font-semibold text-slate-900">{t('profile.passwordTitle')}</h2>
-              </div>
-            </div>
-            <form onSubmit={handlePasswordSubmit} className="grid gap-4 md:grid-cols-2">
-              <label className="space-y-2 text-sm font-medium text-slate-700">
-                <span>{t('profile.currentPassword')}</span>
-                <input type="password" className="dashboard-input" value={passwordForm.currentPassword} onChange={(event) => setPasswordForm((current) => ({ ...current, currentPassword: event.target.value }))} />
-              </label>
-              <label className="space-y-2 text-sm font-medium text-slate-700">
-                <span>{t('profile.newPassword')}</span>
-                <input type="password" className="dashboard-input" value={passwordForm.newPassword} onChange={(event) => setPasswordForm((current) => ({ ...current, newPassword: event.target.value }))} />
-              </label>
-              <label className="space-y-2 text-sm font-medium text-slate-700 md:col-span-2">
-                <span>{t('profile.confirmPassword')}</span>
-                <input type="password" className="dashboard-input" value={passwordForm.confirmPassword} onChange={(event) => setPasswordForm((current) => ({ ...current, confirmPassword: event.target.value }))} />
-              </label>
-              <div className="md:col-span-2 flex flex-wrap gap-3">
-                <button type="submit" className="dashboard-action-btn bg-primary text-white">{t('profile.savePassword')}</button>
-                <button type="button" onClick={() => setPasswordForm({ currentPassword: '', newPassword: '', confirmPassword: '' })} className="dashboard-action-btn bg-slate-100 text-slate-800">{t('common.clear')}</button>
-              </div>
-            </form>
           </div>
         </motion.div>
       );
@@ -845,13 +715,10 @@ function ProfileDashboard() {
               <button type="button" onClick={() => navigate('/seller-form')} className="dashboard-action-btn bg-primary text-white">{t('profile.addListing')}</button>
             </div>
           </div>
-          <div className="dashboard-stat-summary-grid mt-6 grid gap-3 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5">
+          <div className="dashboard-stat-summary-grid mt-6 grid gap-3 sm:grid-cols-2">
             {[
               { label: t('profile.propertiesListed'), value: summary.listed, icon: Building2 },
               { label: t('profile.propertiesSold'), value: summary.sold, icon: House },
-              { label: t('profile.savedProperties'), value: summary.saved, icon: Bookmark },
-              { label: t('profile.buyerRequirements'), value: summary.requests, icon: BadgeCheck },
-              { label: t('profile.recentlyViewed'), value: summary.recent, icon: Eye },
             ].map((item) => {
               const Icon = item.icon;
               return (
@@ -872,11 +739,10 @@ function ProfileDashboard() {
             <span>{t('profile.myActivity')}</span>
           </div>
           {[
+            { key: 'settings', icon: Settings, title: t('profile.editProfile'), description: t('profile.editProfile'), to: '/profile/settings' },
             { key: 'properties', icon: Building2, title: t('profile.myProperties'), description: t('profile.manageListedLand'), to: '/profile/properties' },
-            { key: 'saved', icon: Bookmark, title: t('profile.savedProperties'), description: t('profile.shortlistedProperties'), to: '/profile/saved' },
-            { key: 'buyers', icon: BadgeCheck, title: t('profile.buyerRequirements'), description: t('profile.manageLandRequirements'), to: '/profile/requirements' },
+            { key: 'saved', icon: Heart, title: t('profile.likedProperties'), description: t('profile.shortlistedProperties'), to: '/profile/saved' },
             { key: 'recent', icon: Eye, title: t('profile.recentlyViewed'), description: t('profile.recentlyViewedDescription'), to: '/profile/recent' },
-            { key: 'notifications', icon: Bell, title: t('profile.notifications'), description: t('profile.notificationsDescription'), to: '/profile/notifications' },
           ].map((item) => {
             const Icon = item.icon;
             return (
@@ -896,13 +762,6 @@ function ProfileDashboard() {
           <div className="dashboard-mobile-section-title">
             <span>{t('profile.account')}</span>
           </div>
-          <button type="button" onClick={() => navigate('/profile/settings')} className="dashboard-mobile-account-row">
-            <span className="dashboard-mobile-account-icon"><Settings size={18} /></span>
-            <span className="dashboard-mobile-account-copy">
-              <span className="dashboard-mobile-account-title">{t('profile.profileSettings')}</span>
-            </span>
-            <span className="dashboard-mobile-action-chevron"><ChevronRight size={17} /></span>
-          </button>
           <button type="button" onClick={() => navigate('/contact')} className="dashboard-mobile-account-row">
             <span className="dashboard-mobile-account-icon"><LifeBuoy size={18} /></span>
             <span className="dashboard-mobile-account-copy">

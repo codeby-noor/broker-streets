@@ -1,6 +1,7 @@
 import { useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import LargeButton from '../components/LargeButton';
 import { appendStorageArray, appendNotification, STORAGE_KEYS } from '../utils/storage';
 import { useUserStore } from '../store/useUserStore';
 import { gujaratDistricts, gujaratStateOptions, gujaratSubDistricts, gujaratVillages } from '../utils/data';
@@ -205,18 +206,23 @@ function BuyerForm() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FFFEFE] px-4 py-8 sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-3xl rounded-[32px] border border-slate-200 bg-white p-8 shadow-xl sm:p-10">
-        <div className="mb-8">
-          <p className="eyebrow text-blue-100">{t('buyerForm.eyebrow')}</p>
-          <h1 className="mt-3 text-3xl font-semibold text-ink">{t('buyerForm.heading')}</h1>
-          <p className="mt-3 text-sm text-slate-600">{t('buyerForm.description')}</p>
+    <div className="-mx-4 -mt-8 bg-[#FFFEFE] pb-20 sm:-mx-6 lg:-mx-8">
+      <section className="bg-ink px-4 py-12 text-white sm:px-10 sm:py-16 lg:px-12">
+        <div className="mx-auto max-w-5xl">
+          <p className="eyebrow text-blue-200">{t('buyerForm.eyebrow')}</p>
+          <h1 className="mt-4 text-3xl font-bold sm:text-6xl">{t('buyerForm.heading')}</h1>
+          <p className="mt-4 max-w-2xl text-sm text-white/70 sm:text-base">{t('buyerForm.description')}</p>
         </div>
+      </section>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="space-y-5 rounded-[28px] border border-slate-200 bg-slate-50 p-6">
-            <h2 className="text-xl font-semibold text-ink">{t('buyerForm.preference')}</h2>
+      <section className="mx-auto -mt-8 max-w-4xl px-4 sm:px-6">
+        <form onSubmit={handleSubmit} className="space-y-6 rounded-[32px] bg-white p-5 shadow-xl sm:p-10">
+          <div>
+            <p className="eyebrow">{t('buyerForm.eyebrow')}</p>
+            <h2 className="mt-2 text-3xl font-bold text-ink">{t('buyerForm.preference')}</h2>
+          </div>
 
+          <div className="space-y-6">
             <label className="block">
               <span className="field-label">{t('buyerForm.preferredState')} *</span>
               <select
@@ -273,13 +279,11 @@ function BuyerForm() {
 
             {form.taluka ? (
               <div className="block">
-                <div className="mb-3 space-y-3 rounded-[24px] border border-slate-200 bg-white p-4">
+                <span className="field-label">{t('buyerForm.preferredVillages')} *</span>
+                <div className="rounded-[28px] border border-slate-200 bg-slate-50 p-4 sm:p-6 space-y-4">
                   <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                    <div>
-                      <p className="field-label">{t('buyerForm.preferredVillages')} *</p>
-                      <p className="text-sm text-slate-500">{t('buyerForm.selectVillagesHint')}</p>
-                    </div>
-                    <div className="inline-flex items-center gap-2 rounded-full bg-sage/10 px-3 py-2 text-sm font-semibold text-sage">
+                    <p className="text-sm text-slate-600">{t('buyerForm.selectVillagesHint')}</p>
+                    <div className="inline-flex items-center gap-2 rounded-full bg-sage/10 px-3 py-1.5 text-xs font-bold text-sage self-start sm:self-auto">
                       {t('buyerForm.selectedCount')}: {selectedVillageCount}
                     </div>
                   </div>
@@ -290,51 +294,51 @@ function BuyerForm() {
                       value={villageSearch}
                       onChange={(event) => setVillageSearch(event.target.value)}
                       placeholder={t('buyerForm.searchVillages')}
-                      className="field-control w-full sm:max-w-xs"
+                      className="field-control w-full sm:max-w-xs bg-white"
                     />
                     <div className="flex flex-wrap gap-2">
-                      <button type="button" onClick={handleSelectAllVisible} className="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-sage hover:text-sage">
+                      <button type="button" onClick={handleSelectAllVisible} className="rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-semibold text-slate-700 transition hover:border-sage hover:text-sage">
                         {t('buyerForm.selectAll')}
                       </button>
-                      <button type="button" onClick={handleClearAllVisible} className="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-red-300 hover:text-red-600">
+                      <button type="button" onClick={handleClearAllVisible} className="rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-semibold text-slate-700 transition hover:border-red-300 hover:text-red-600">
                         {t('buyerForm.clearAll')}
                       </button>
                     </div>
                   </div>
-                </div>
 
-                {allVillageOptions.length ? (
-                  <div className="max-h-[360px] overflow-y-auto rounded-[24px] border border-slate-200 bg-white p-3">
-                    <div className="grid gap-2 sm:grid-cols-2">
-                      {filteredVillageOptions.length ? (
-                        filteredVillageOptions.map((village) => {
-                          const isSelected = (form.preferredVillages || []).includes(village);
-                          return (
-                            <button
-                              key={village}
-                              type="button"
-                              onClick={() => handleVillageToggle(village)}
-                              className={`group flex items-start gap-3 rounded-3xl border px-4 py-4 text-left transition ${isSelected ? 'border-sage bg-sage/10 text-ink' : 'border-slate-200 bg-slate-50 text-slate-700 hover:border-slate-400 hover:bg-slate-100'}`}
-                            >
-                              <span className={`mt-0.5 inline-flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full border ${isSelected ? 'border-sage bg-sage text-white' : 'border-slate-300 bg-white text-transparent'}`}>
-                                <span className="text-xs font-semibold">✓</span>
-                              </span>
-                              <span className="leading-6">{t(village)}</span>
-                            </button>
-                          );
-                        })
-                      ) : (
-                        <div className="col-span-full rounded-2xl border border-dashed border-slate-200 px-4 py-4 text-sm text-slate-500">
-                          {t('buyerForm.noVillagesMatch')}
-                        </div>
-                      )}
+                  {allVillageOptions.length ? (
+                    <div className="max-h-[320px] overflow-y-auto rounded-[24px] border border-slate-200 bg-white p-3">
+                      <div className="grid gap-2 sm:grid-cols-2">
+                        {filteredVillageOptions.length ? (
+                          filteredVillageOptions.map((village) => {
+                            const isSelected = (form.preferredVillages || []).includes(village);
+                            return (
+                              <button
+                                key={village}
+                                type="button"
+                                onClick={() => handleVillageToggle(village)}
+                                className={`group flex items-start gap-3 rounded-2xl border px-3.5 py-3 text-left text-sm transition ${isSelected ? 'border-sage bg-sage/10 text-ink font-semibold' : 'border-slate-200 bg-slate-50 text-slate-700 hover:border-slate-300 hover:bg-slate-100'}`}
+                              >
+                                <span className={`mt-0.5 inline-flex h-4 w-4 flex-shrink-0 items-center justify-center rounded-full border text-[10px] ${isSelected ? 'border-sage bg-sage text-white' : 'border-slate-300 bg-white text-transparent'}`}>
+                                  ✓
+                                </span>
+                                <span className="leading-snug">{t(village)}</span>
+                              </button>
+                            );
+                          })
+                        ) : (
+                          <div className="col-span-full rounded-2xl border border-dashed border-slate-200 p-4 text-center text-sm text-slate-500">
+                            {t('buyerForm.noVillagesMatch')}
+                          </div>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                ) : (
-                  <div className="rounded-[24px] border border-dashed border-slate-200 bg-white px-4 py-4 text-sm text-slate-500">
-                    {t('buyerForm.noVillagesAvailable')}
-                  </div>
-                )}
+                  ) : (
+                    <div className="rounded-[24px] border border-dashed border-slate-200 bg-white p-4 text-center text-sm text-slate-500">
+                      {t('buyerForm.noVillagesAvailable')}
+                    </div>
+                  )}
+                </div>
                 {errors.preferredVillages && <p className="error-style mt-2">{errors.preferredVillages}</p>}
               </div>
             ) : null}
@@ -382,56 +386,54 @@ function BuyerForm() {
                 rows="4"
                 value={form.requirements}
                 onChange={handleChange}
-                className="field-control w-full resize-y"
+                className="field-control w-full resize-y min-h-[140px]"
                 placeholder={t('buyerForm.requirementsPlaceholder')}
               />
             </label>
 
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
+            <label className="block">
+              <div className="flex items-center justify-between mb-2">
                 <span className="field-label">{t('buyerForm.voiceRecording')}</span>
-                <span className="text-xs text-muted">{t('common.optional')}</span>
+                <span className="text-xs text-slate-500">{t('common.optional')}</span>
               </div>
-              {!isRecording ? (
-                <button
-                  type="button"
-                  onClick={startRecording}
-                  className="inline-flex w-full items-center justify-center rounded-3xl bg-red-500 px-5 py-3 text-sm font-semibold text-white transition hover:bg-red-600"
-                >
-                  {t('buyerForm.startRecording')}
-                </button>
-              ) : (
-                <button
-                  type="button"
-                  onClick={stopRecording}
-                  className="inline-flex w-full items-center justify-center rounded-3xl bg-slate-700 px-5 py-3 text-sm font-semibold text-white transition hover:bg-slate-800"
-                >
-                  {t('buyerForm.stopRecording')}
-                </button>
-              )}
-              {isRecording ? <p className="text-sm text-slate-600">{t('buyerForm.recordingInProgress')}</p> : null}
-              {audioUrl && (
-                <div className="space-y-3 rounded-3xl border border-slate-200 bg-white p-4">
-                  <audio controls src={audioUrl} className="w-full" />
-                  <button type="button" onClick={() => setAudioUrl('')} className="text-sm font-semibold text-red-600">
-                    {t('buyerForm.removeRecording')}
+              <div className="rounded-[28px] border border-slate-200 bg-slate-50 p-4 sm:p-6 space-y-4">
+                {!isRecording ? (
+                  <button
+                    type="button"
+                    onClick={startRecording}
+                    className="inline-flex w-full items-center justify-center rounded-2xl bg-red-500 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-red-600 min-h-[44px]"
+                  >
+                    {t('buyerForm.startRecording')}
                   </button>
-                </div>
-              )}
-            </div>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={stopRecording}
+                    className="inline-flex w-full items-center justify-center rounded-2xl bg-slate-800 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-slate-900 min-h-[44px]"
+                  >
+                    {t('buyerForm.stopRecording')}
+                  </button>
+                )}
+                {isRecording ? <p className="text-sm font-medium text-slate-600 text-center">{t('buyerForm.recordingInProgress')}</p> : null}
+                {audioUrl && (
+                  <div className="space-y-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+                    <audio controls src={audioUrl} className="w-full" />
+                    <button type="button" onClick={() => setAudioUrl('')} className="text-sm font-semibold text-red-600 hover:underline">
+                      {t('buyerForm.removeRecording')}
+                    </button>
+                  </div>
+                )}
+              </div>
+            </label>
           </div>
 
-          <div className="flex justify-end">
-            <button
-              type="submit"
-              disabled={submitting}
-              className="inline-flex w-full items-center justify-center rounded-3xl bg-sage px-6 py-3 text-sm font-semibold text-white transition hover:bg-sage-dark disabled:cursor-not-allowed disabled:bg-slate-300 min-h-[48px]"
-            >
+          <div className="flex justify-end pt-4">
+            <LargeButton type="submit" disabled={submitting} className="min-h-[48px]">
               {submitting ? t('buyerForm.submitting') : t('buyerForm.submit')}
-            </button>
+            </LargeButton>
           </div>
         </form>
-      </div>
+      </section>
     </div>
   );
 }
