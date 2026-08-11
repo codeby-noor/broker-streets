@@ -45,10 +45,10 @@ function Navbar() {
 
   return (
     <header className="sticky top-0 z-50 border-b border-slate-200/70 bg-background/95 backdrop-blur-sm supports-[backdrop-filter]:bg-background/90">
-      <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-3 py-3 sm:px-6 lg:px-8">
-        <Link to="/home" className="flex items-center gap-3">
-          <img src={logo} alt="Broker Streets logo" className="h-9 w-auto object-contain sm:h-12" />
-          <span className="hidden text-lg font-semibold tracking-tight text-ink sm:inline-block">Broker Streets</span>
+      <div className="mx-auto flex max-w-7xl items-center justify-between gap-2 px-3 py-2.5 sm:px-6 lg:px-8">
+        <Link to="/home" className="flex items-center gap-2 flex-shrink-0">
+          <img src={logo} alt="Broker Streets logo" className="h-8 w-auto object-contain sm:h-11" />
+          <span className="hidden text-base font-bold tracking-tight text-ink sm:inline-block">Broker Streets</span>
         </Link>
 
         {!hideNav && (
@@ -84,14 +84,14 @@ function Navbar() {
         )}
 
         {!hideNav ? (
-          <div className="flex items-center gap-2 sm:gap-3">
-            <div className="flex items-center gap-1 rounded-full border border-slate-200 bg-white px-1.5 py-1 shadow-sm">
-              <button type="button" onClick={() => setLanguage('en')} className={`rounded-full px-2 py-0.5 text-xs font-bold transition ${language === 'en' ? 'bg-sage text-white' : 'text-slate-600 hover:text-slate-900'}`}>EN</button>
-              <button type="button" onClick={() => setLanguage('gu')} className={`rounded-full px-2 py-0.5 text-xs font-bold transition ${language === 'gu' ? 'bg-sage text-white' : 'text-slate-600 hover:text-slate-900'}`}>ગુજરાતી</button>
+          <div className="flex items-center gap-1.5 sm:gap-3 flex-shrink-0">
+            <div className="flex items-center gap-0.5 rounded-full border border-slate-200 bg-white p-0.5 shadow-sm">
+              <button type="button" onClick={() => setLanguage('en')} className={`rounded-full px-2 py-0.5 text-[11px] font-bold transition ${language === 'en' ? 'bg-sage text-white' : 'text-slate-600 hover:text-slate-900'}`}>EN</button>
+              <button type="button" onClick={() => setLanguage('gu')} className={`rounded-full px-2 py-0.5 text-[11px] font-bold transition ${language === 'gu' ? 'bg-sage text-white' : 'text-slate-600 hover:text-slate-900'}`}>ગુજરાતી</button>
             </div>
 
             {isAuthenticated ? (
-              <Link to="/profile" className="hidden md:inline-flex h-10 items-center justify-center rounded-full border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-800 shadow-sm transition hover:bg-slate-50">
+              <Link to="/profile" className="hidden md:inline-flex h-9 items-center justify-center rounded-full border border-slate-200 bg-white px-3.5 text-xs font-semibold text-slate-800 shadow-sm transition hover:bg-slate-50">
                 {t('nav.profile')}
               </Link>
             ) : (
@@ -110,9 +110,9 @@ function Navbar() {
               onClick={() => setMenuOpen((current) => !current)}
               aria-label={menuOpen ? 'Close menu' : 'Open menu'}
               aria-expanded={menuOpen}
-              className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-800 shadow-sm transition hover:bg-slate-50 md:hidden"
+              className="inline-flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-800 shadow-sm transition hover:bg-slate-50 md:hidden"
             >
-              {menuOpen ? <X size={20} /> : <Menu size={20} />}
+              {menuOpen ? <X size={18} /> : <Menu size={18} />}
             </button>
           </div>
         ) : null}

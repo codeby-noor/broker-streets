@@ -1206,72 +1206,32 @@
 @media (max-width: 1023px) {
   .dashboard-shell {
     flex-direction: column;
-    padding: 0.75rem;
+    padding: 0.75rem 1rem 6rem;
+    gap: 0.75rem;
   }
 
   .dashboard-sidebar {
-    position: sticky;
-    top: 64px;
-    left: 0;
-    z-index: 30;
-    width: 100%;
-    max-width: 100%;
-    height: auto;
-    max-height: none;
-    transform: none;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 0.5rem;
-    overflow-x: auto;
-    overflow-y: hidden;
-    white-space: nowrap;
-    padding: 0.5rem 0.75rem;
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(12px);
-    border-radius: 18px;
-    border: 1px solid rgba(37, 99, 235, 0.14);
-    box-shadow: 0 4px 20px rgba(15, 23, 42, 0.06);
-    -webkit-overflow-scrolling: touch;
-    margin-bottom: 0.75rem;
-    scrollbar-width: none;
-  }
-
-  .dashboard-sidebar::-webkit-scrollbar {
-    display: none;
-  }
-
-  .dashboard-sidebar__brand {
-    display: none;
-  }
-
-  .dashboard-sidebar__link {
-    flex-shrink: 0;
-    width: auto;
-    white-space: nowrap;
-    padding: 0.5rem 0.875rem;
-    font-size: 0.875rem;
-    min-height: 40px;
-    border-radius: 12px;
-  }
-
-  .dashboard-sidebar__link--logout {
-    margin-top: 0;
-    margin-left: auto;
-  }
-
-  .dashboard-toggle-pill {
-    display: none;
+    display: none !important;
   }
 
   .dashboard-main {
     width: 100%;
+    max-width: 100%;
   }
 
   .dashboard-topbar {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 1rem;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .dashboard-hero {
+    padding: 1rem;
+    border-radius: 24px;
+    background: #ffffff;
+    margin-bottom: 0.75rem;
   }
 
   .dashboard-card__header {
@@ -1305,6 +1265,14 @@
   .dashboard-sidebar-backdrop {
     display: none;
   }
+}
+
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-none {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
 .dashboard-property-card {

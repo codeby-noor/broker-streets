@@ -637,13 +637,13 @@ function ProfileDashboard() {
 
   return (
     <div className="dashboard-shell">
-      <aside className={`dashboard-sidebar ${sidebarOpen ? 'open' : ''}`}>
+      {/* Desktop Sticky Sidebar (Hidden on Mobile) */}
+      <aside className="dashboard-sidebar hidden lg:flex">
         <div className="dashboard-sidebar__brand">
-          <div className="dashboard-sidebar__brand-badge">BS</div>
-          <div>
-            <p className="text-lg font-semibold text-slate-900">Broker Streets</p>
-            <p className="text-sm text-slate-500">{t('profile.accountDashboard')}</p>
-          </div>
+          <Link to="/home" className="flex items-center gap-3">
+            <img src={logo} alt="Broker Streets" className="h-9 w-auto object-contain" />
+            <span className="text-lg font-bold tracking-tight text-slate-900">Broker Streets</span>
+          </Link>
         </div>
         {sidebarItems.map((item) => {
           const Icon = item.icon;
@@ -658,7 +658,23 @@ function ProfileDashboard() {
             password: '/profile/settings',
           };
           return (
-            <button key={item.key} type="button" onClick={() => { if (item.key === 'logout') { handleLogout(); return; } if (item.key === 'overview') { navigate('/profile'); } else { navigate(navMap[item.key] || '/profile'); } setSidebarOpen(false); }} className={`dashboard-sidebar__link ${activeSection === item.key ? 'active' : ''}`}>
+            <button
+              key={item.key}
+              type="button"
+              onClick={() => {
+                if (item.key === 'logout') {
+                  handleLogout();
+                  return;
+                }
+                if (item.key === 'overview') {
+                  navigate('/profile');
+                } else {
+                  navigate(navMap[item.key] || '/profile');
+                }
+                setSidebarOpen(false);
+              }}
+              className={`dashboard-sidebar__link ${activeSection === item.key ? 'active' : ''}`}
+            >
               <Icon size={18} />
               <span>{t(item.labelKey)}</span>
             </button>
@@ -671,68 +687,135 @@ function ProfileDashboard() {
       </aside>
 
       <main className="dashboard-main">
-        <div className="dashboard-topbar">
-          <div className="flex items-center gap-3">
-            <button type="button" onClick={() => setSidebarOpen((current) => !current)} className="dashboard-toggle-pill lg:hidden">
-              <Menu size={18} />
-            </button>
-            <div>
-              <p className="text-sm font-semibold text-primary">Broker Streets</p>
-              <h1 className="text-xl font-semibold text-slate-900">{t('profile.title')}</h1>
-            </div>
+        {/* Topbar */}
+        <div className="dashboard-topbar flex items-center justify-between gap-3 mb-4">
+          <div>
+            <p className="text-xs font-bold uppercase tracking-wider text-primary">Broker Streets</p>
+            <h1 className="text-xl font-bold text-slate-900 sm:text-2xl">{t('profile.title')}</h1>
           </div>
-          <div className="flex items-center gap-3">
-            <button type="button" onClick={() => navigate('/buy')} className="hidden items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-600 md:flex">
-              <Search size={16} />
-              <span>{t('profile.searchProperties')}</span>
-            </button>
-            <div className="flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700">
-              <ShieldCheck size={16} className="text-primary" /> {t('profile.verifiedAccount')}
+          <div className="flex items-center gap-2">
+            <div className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-bold text-slate-700 shadow-sm">
+              <ShieldCheck size={14} className="text-primary" />
+              <span>{t('profile.verifiedAccount')}</span>
             </div>
           </div>
         </div>
 
-        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="dashboard-hero">
-          <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
-            <div className="flex flex-col gap-4 md:flex-row md:items-center">
-              <div className="dashboard-avatar">
-                {profile.profileImage ? <img src={profile.profileImage} alt="Profile" className="h-full w-full object-cover" /> : <span>{(profile.name || 'U').charAt(0).toUpperCase()}</span>}
+        {/* Profile Hero Header Card */}
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="rounded-[24px] border border-slate-200/80 bg-white p-4 shadow-sm sm:p-6 mb-3">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-center gap-3.5">
+              <div className="h-14 w-14 flex-shrink-0 overflow-hidden rounded-full border-2 border-primary/20 bg-slate-100 text-xl font-bold text-primary flex items-center justify-center shadow-inner">
+                {profile.profileImage ? (
+                  <img src={profile.profileImage} alt="Profile" className="h-full w-full object-cover" />
+                ) : (
+                  <span>{(profile.name || 'U').charAt(0).toUpperCase()}</span>
+                )}
               </div>
-              <div>
+              <div className="min-w-0 flex-1">
                 <div className="flex flex-wrap items-center gap-2">
-                  <h2 className="text-2xl font-semibold text-slate-900">{profile.name || t('profile.profileFallbackName')}</h2>
-                  {user?.verified || profile?.verified ? <span className="rounded-full bg-emerald-100 px-3 py-1 text-sm font-semibold text-emerald-700">{t('profile.verifiedBadge')}</span> : null}
+                  <h2 className="text-lg font-bold text-slate-900 truncate sm:text-2xl">{profile.name || t('profile.profileFallbackName')}</h2>
+                  {(user?.verified || profile?.verified) && (
+                    <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 border border-emerald-200/80 px-2.5 py-0.5 text-xs font-bold text-emerald-700">
+                      <ShieldCheck size={12} />
+                      {t('profile.verifiedBadge')}
+                    </span>
+                  )}
                 </div>
-                <div className="mt-2 flex flex-wrap gap-2 text-sm text-slate-600">
-                  <span className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1">
-                    <House size={14} /> {roleLabel}
+                <div className="mt-1 flex flex-wrap items-center gap-2 text-xs font-medium text-slate-600">
+                  <span className="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-slate-700">
+                    <House size={12} /> {roleLabel}
                   </span>
                 </div>
               </div>
             </div>
-            <div className="flex flex-wrap gap-2">
-              <button type="button" onClick={() => { setIsEditingProfile(true); navigate('/profile/settings'); }} className="dashboard-action-btn bg-white text-slate-700">{t('profile.editProfile')}</button>
-              <button type="button" onClick={() => navigate('/seller-form')} className="dashboard-action-btn bg-primary text-white">{t('profile.addListing')}</button>
+
+            <div className="grid grid-cols-2 gap-2 sm:flex sm:items-center sm:gap-2.5">
+              <button
+                type="button"
+                onClick={() => { setIsEditingProfile(true); navigate('/profile/settings'); }}
+                className="inline-flex min-h-[42px] items-center justify-center rounded-xl border border-slate-200 bg-white px-3.5 text-xs font-bold text-slate-700 shadow-sm transition hover:bg-slate-50 active:scale-[0.98]"
+              >
+                {t('profile.editProfile')}
+              </button>
+              <button
+                type="button"
+                onClick={() => navigate('/seller-form')}
+                className="inline-flex min-h-[42px] items-center justify-center rounded-xl bg-primary px-3.5 text-xs font-bold text-white shadow-sm transition hover:bg-primary-dark active:scale-[0.98]"
+              >
+                {t('profile.addListing')}
+              </button>
             </div>
           </div>
-          <div className="dashboard-stat-summary-grid mt-6 grid gap-3 sm:grid-cols-2">
+
+          {/* 2-Column Summary Stat Cards */}
+          <div className="mt-4 grid grid-cols-2 gap-2.5 sm:gap-3">
             {[
               { label: t('profile.propertiesListed'), value: summary.listed, icon: Building2 },
               { label: t('profile.propertiesSold'), value: summary.sold, icon: House },
             ].map((item) => {
               const Icon = item.icon;
               return (
-                <div key={item.label} className="dashboard-summary-card rounded-[20px] border border-slate-200 bg-slate-50/80 px-4 py-5 text-sm shadow-sm">
-                  <div className="flex items-center gap-2 text-slate-500">
-                    <Icon size={15} className="text-primary" />
-                    <span>{item.label}</span>
+                <div key={item.label} className="rounded-2xl border border-slate-200/80 bg-slate-50/80 p-3.5 shadow-sm">
+                  <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-500 truncate">
+                    <Icon size={14} className="text-primary flex-shrink-0" />
+                    <span className="truncate">{item.label}</span>
                   </div>
-                  <p className="mt-2 text-3xl font-semibold text-slate-900">{item.value}</p>
+                  <p className="mt-1.5 text-2xl font-bold text-slate-900">{item.value}</p>
                 </div>
               );
             })}
           </div>
         </motion.div>
+
+        {/* Compact Mobile Sticky Horizontal Navigation Bar */}
+        <div className="sticky top-[53px] sm:top-[57px] z-30 mb-4 -mx-1 overflow-x-auto rounded-2xl border border-slate-200/80 bg-white/95 p-1.5 shadow-md backdrop-blur-md scrollbar-none lg:hidden">
+          <div className="flex items-center gap-1.5 min-w-max">
+            {sidebarItems.map((item) => {
+              const Icon = item.icon;
+              const isActive = activeSection === item.key;
+              const navMap = {
+                properties: '/profile/properties',
+                saved: '/profile/saved',
+                buyers: '/profile/requirements',
+                recent: '/profile/recent',
+                notifications: '/profile/notifications',
+                settings: '/profile/settings',
+                help: '/contact',
+                password: '/profile/settings',
+              };
+              return (
+                <button
+                  key={item.key}
+                  type="button"
+                  onClick={() => {
+                    if (item.key === 'overview') {
+                      navigate('/profile');
+                    } else {
+                      navigate(navMap[item.key] || '/profile');
+                    }
+                  }}
+                  className={`flex flex-shrink-0 items-center gap-1.5 rounded-xl px-3 py-2 text-xs font-bold transition-all ${
+                    isActive
+                      ? 'bg-primary text-white shadow-sm'
+                      : 'bg-transparent text-slate-700 hover:bg-slate-100 hover:text-slate-900'
+                  }`}
+                >
+                  <Icon size={14} className="flex-shrink-0" />
+                  <span className="whitespace-nowrap">{t(item.labelKey)}</span>
+                </button>
+              );
+            })}
+            <button
+              type="button"
+              onClick={handleLogout}
+              className="flex flex-shrink-0 items-center gap-1.5 rounded-xl px-3 py-2 text-xs font-bold text-rose-600 hover:bg-rose-50 transition-all"
+            >
+              <LogOut size={14} className="flex-shrink-0" />
+              <span className="whitespace-nowrap">{t('profile.logout')}</span>
+            </button>
+          </div>
+        </div>
 
         <section className="dashboard-mobile-action-list">
           <div className="dashboard-mobile-section-title">

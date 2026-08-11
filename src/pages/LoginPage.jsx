@@ -13,14 +13,21 @@ function LoginPage() {
   const [mobile, setMobile] = useState('');
   const [loading, setLoading] = useState(false);
 
+  const handleMobileChange = (event) => {
+    const sanitized = event.target.value.replace(/\D/g, '').slice(0, 10);
+    setMobile(sanitized);
+  };
+
   const handleSubmit = (event) => {
     event.preventDefault();
-    const normalizedMobile = normalizeMobile(mobile);
+    const sanitizedMobile = mobile.replace(/\D/g, '').slice(0, 10);
 
-    if (!normalizedMobile) {
-      toast.error(t('auth.enterMobile'));
+    if (!sanitizedMobile || sanitizedMobile.length !== 10) {
+      toast.error(t('auth.validMobile'));
       return;
     }
+
+    const normalizedMobile = normalizeMobile(sanitizedMobile);
 
     const user = findUserByMobile(normalizedMobile);
 
@@ -77,8 +84,10 @@ function LoginPage() {
                 <Phone size={18} className="absolute left-3.5 text-slate-400" />
                 <input
                   type="tel"
+                  inputMode="numeric"
+                  maxLength={10}
                   value={mobile}
-                  onChange={(event) => setMobile(event.target.value)}
+                  onChange={handleMobileChange}
                   className="min-h-[48px] w-full rounded-2xl border border-slate-200 bg-slate-50/50 pl-10 pr-4 text-sm font-medium text-slate-900 outline-none transition focus:border-sage focus:bg-white focus:ring-2 focus:ring-sage/20"
                   placeholder={t('auth.placeholderMobile')}
                 />
