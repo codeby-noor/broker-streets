@@ -245,12 +245,8 @@ function HomePage() {
           </h2>
 
           <div className="grid grid-cols-2 gap-3 sm:gap-4">
-            <button
-              type="button"
-              onClick={() => navigate('/buy?type=Agricultural+Land')}
-              className="group flex flex-col justify-between rounded-2xl border border-slate-200/80 bg-white p-4 text-left shadow-sm transition hover:border-sage/40 hover:shadow-md"
-            >
-              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-50 text-sage transition group-hover:scale-105">
+            <div className="group flex flex-col justify-between rounded-2xl border border-slate-200/80 bg-white p-4 text-left shadow-xs transition duration-300 hover:border-emerald-300 sm:hover:-translate-y-0.5 sm:hover:shadow-md">
+              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-50 text-emerald-700 transition duration-300 group-hover:scale-105">
                 <Sprout size={22} />
               </div>
               <div className="mt-3">
@@ -261,14 +257,10 @@ function HomePage() {
                   {isGujarati ? 'ખેતીની જમીન અને ફાર્મલૅન્ડ' : 'Farmland & agriculture'}
                 </p>
               </div>
-            </button>
+            </div>
 
-            <button
-              type="button"
-              onClick={() => navigate('/buy?type=Non-Agricultural+Land')}
-              className="group flex flex-col justify-between rounded-2xl border border-slate-200/80 bg-white p-4 text-left shadow-sm transition hover:border-sage/40 hover:shadow-md"
-            >
-              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-sky-50 text-sky-700 transition group-hover:scale-105">
+            <div className="group flex flex-col justify-between rounded-2xl border border-slate-200/80 bg-white p-4 text-left shadow-xs transition duration-300 hover:border-sky-300 sm:hover:-translate-y-0.5 sm:hover:shadow-md">
+              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-sky-50 text-sky-700 transition duration-300 group-hover:scale-105">
                 <Building2 size={22} />
               </div>
               <div className="mt-3">
@@ -279,7 +271,7 @@ function HomePage() {
                   {isGujarati ? 'NA પ્લોટ અને કમર્શિયલ' : 'NA plots & investment'}
                 </p>
               </div>
-            </button>
+            </div>
           </div>
         </section>
 
