@@ -14,6 +14,8 @@ const authenticateToken = asyncHandler(async (req, res, next) => {
   const token = authHeader.split(' ')[1];
 
   try {
+    const decoded = verifyAccessToken(token);
+
     let user = await User.findById(decoded.userId);
     if (!user) {
       const AdminUser = require('../models/AdminUser');

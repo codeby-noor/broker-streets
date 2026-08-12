@@ -481,6 +481,20 @@ class ListingService {
   }
 
   /**
+   * Neutralize CSV formula injection — any field value starting with =, +, -,
+   * or @ is prefixed with a leading apostrophe so it is treated as text by
+   * Excel/Sheets instead of being evaluated as a formula.
+   */
+  sanitizeCsvValue(value) {
+    if (value === null || value === undefined) return '';
+    const str = String(value);
+    if (/^[=+\-@]/.test(str)) {
+      return `'${str}`;
+    }
+    return str;
+  }
+
+  /**
    * Export listings matching criteria to CSV using streaming cursor
    */
   async exportListingsCsv(queryParams = {}, res) {
@@ -552,19 +566,19 @@ class ListingService {
 
     for await (const item of cursor) {
       const row = [
-        `"${item._id}"`,
-        `"${(item.title || '').replace(/"/g, '""')}"`,
-        `"${(item.type || '').replace(/"/g, '""')}"`,
-        `"${(item.district || '').replace(/"/g, '""')}"`,
-        `"${(item.subDistrict || '').replace(/"/g, '""')}"`,
-        `"${(item.village || '').replace(/"/g, '""')}"`,
+        `"${this.sanitizeCsvValue(item._id)}"`,
+        `"${this.sanitizeCsvValue(item.title).replace(/"/g, '""')}"`,
+        `"${this.sanitizeCsvValue(item.type).replace(/"/g, '""')}"`,
+        `"${this.sanitizeCsvValue(item.district).replace(/"/g, '""')}"`,
+        `"${this.sanitizeCsvValue(item.subDistrict).replace(/"/g, '""')}"`,
+        `"${this.sanitizeCsvValue(item.village).replace(/"/g, '""')}"`,
         item.priceAmount || 0,
-        `"${(item.priceUnit || '').replace(/"/g, '""')}"`,
-        `"${item.status || ''}"`,
+        `"${this.sanitizeCsvValue(item.priceUnit).replace(/"/g, '""')}"`,
+        `"${this.sanitizeCsvValue(item.status)}"`,
         item.verified ? 'Yes' : 'No',
         item.featured ? 'Yes' : 'No',
-        `"${(item.ownerName || '').replace(/"/g, '""')}"`,
-        `"${(item.ownerMobile || '').replace(/"/g, '""')}"`,
+        `"${this.sanitizeCsvValue(item.ownerName).replace(/"/g, '""')}"`,
+        `"${this.sanitizeCsvValue(item.ownerMobile).replace(/"/g, '""')}"`,
         `"${new Date(item.createdAt).toISOString()}"`,
       ];
       res.write(row.join(',') + '\n');

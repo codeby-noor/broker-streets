@@ -76,7 +76,7 @@ backend/
 │   │
 │   ├── routes/
 │   │   ├── auth.routes.js          # Register, login, OTP, logout
-│   │   ├── user.routes.js          # Profile CRUD, password change
+│   │   ├── user.routes.js          # Profile CRUD
 │   │   ├── listing.routes.js       # Property listings CRUD
 │   │   ├── buyerLead.routes.js     # Buyer requirements CRUD
 │   │   ├── sellerLead.routes.js    # Seller submissions
@@ -215,7 +215,8 @@ SMS_SENDER_ID=BRKRST
 SMS_TEMPLATE_ID=
 
 # ──── File Upload ────
-UPLOAD_PROVIDER=local
+# Production (Railway) MUST use cloudinary — local files are lost on every redeploy/restart.
+UPLOAD_PROVIDER=cloudinary
 UPLOAD_MAX_IMAGE_SIZE_MB=5
 UPLOAD_MAX_VIDEO_SIZE_MB=50
 UPLOAD_MAX_DOCUMENT_SIZE_MB=10
@@ -711,7 +712,6 @@ Collection: adminSettings
 | `GET` | `/api/users/me` | ✅ | — | `{ user }` | Current authenticated user profile |
 | `PUT` | `/api/users/me` | ✅ | `{ name?, email?, whatsapp?, district?, subDistrict?, address? }` | `{ user }` | Update profile |
 | `PUT` | `/api/users/me/profile-image` | ✅ | `multipart: profileImage` | `{ user }` | Upload profile photo |
-| `PUT` | `/api/users/me/password` | ✅ | `{ currentPassword, newPassword }` | `{ success }` | Change password (future) |
 
 ---
 
@@ -1186,7 +1186,7 @@ server: {
 ### Phase 5: User Profile
 24. User profile routes (GET/PUT /me)
 25. Profile image upload
-26. Password change (future-proofing)
+26. (Removed — password auth not planned; OTP-based auth only)
 
 ### Phase 6: Location Data
 27. Static Gujarat location data endpoint

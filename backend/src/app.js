@@ -9,6 +9,7 @@ const env = require('./config/env');
 const { apiRateLimiter } = require('./middleware/rateLimiter.middleware');
 const errorHandler = require('./middleware/errorHandler.middleware');
 const authRoutes = require('./routes/auth.routes');
+const userRoutes = require('./routes/user.routes');
 const listingRoutes = require('./routes/listing.routes');
 const buyerLeadRoutes = require('./routes/buyerLead.routes');
 const enquiryRoutes = require('./routes/enquiry.routes');
@@ -60,6 +61,9 @@ app.use('/api', apiRateLimiter);
 // Mount auth routes on both the documented /api/auth prefix and the
 // legacy /auth prefix for backward compatibility.
 app.use(['/auth', '/api/auth'], authRoutes);
+
+// User profile routes
+app.use('/api/users', userRoutes);
 
 // Property module routes
 app.use('/api/listings', listingRoutes);

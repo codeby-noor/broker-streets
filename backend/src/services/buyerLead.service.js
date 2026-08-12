@@ -15,6 +15,31 @@ class BuyerLeadService {
   }
 
   /**
+   * Determines whether a viewer can see full (private) buyer lead details.
+   * Only the lead owner or an admin sees direct-contact fields — everyone else
+   * sees the sanitized "requirements board" projection.
+   */
+  isOwnerOrAdmin(lead, user) {
+    return user && (user.role === 'admin' || lead.userId.toString() === user._id.toString());
+  }
+
+  /**
+   * Strips direct-contact fields (mobile/email/voice recording) from a buyer
+   * lead when the viewer is neither the owner nor an admin. The list endpoints
+   * act as a public "requirements board" for sellers, so contact info must not
+   * leak to unrelated users.
+   */
+  sanitizeForViewer(lead, user) {
+    if (this.isOwnerOrAdmin(lead, user)) return lead;
+
+    const sanitized = lead.toObject ? lead.toObject() : { ...lead };
+    delete sanitized.userMobile;
+    delete sanitized.userEmail;
+    delete sanitized.voiceRecording;
+    return sanitized;
+  }
+
+  /**
    * Create buyer requirement lead and mark buyerFormSubmitted flag on user
    */
   async createBuyerLead(leadData, user) {
@@ -58,7 +83,7 @@ class BuyerLeadService {
   /**
    * Query buyer leads with filtering, search, sorting, and single-facet pagination
    */
-  async getBuyerLeads(queryParams = {}, isAdmin = false) {
+  async getBuyerLeads(queryParams = {}, viewer = null) {
     const {
       district,
       propertyType,
@@ -120,6 +145,14 @@ class BuyerLeadService {
       };
       delete doc._id;
       delete doc.__v;
+
+      // Requirements board: strip direct-contact fields unless this user
+      // owns the lead or is an admin.
+      if (!viewer || (viewer.role !== 'admin' && item.userId.toString() !== viewer._id.toString())) {
+        delete doc.userMobile;
+        delete doc.userEmail;
+        delete doc.voiceRecording;
+      }
       return doc;
     });
 
@@ -137,12 +170,14 @@ class BuyerLeadService {
   /**
    * Get single buyer lead by ID
    */
-  async getBuyerLeadById(id) {
+  async getBuyerLeadById(id, viewer = null) {
     const lead = await BuyerLead.findById(id);
     if (!lead) {
       throw new ApiError(HTTP_STATUS.NOT_FOUND, 'Buyer lead not found');
     }
-    return lead;
+    // Public board: anyone authenticated can view a requirement, but only the
+    // owner or an admin sees direct-contact fields.
+    return this.sanitizeForViewer(lead, viewer);
   }
 
   /**

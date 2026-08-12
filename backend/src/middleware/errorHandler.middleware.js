@@ -15,6 +15,13 @@ const errorHandler = (err, req, res, next) => {
     error = new ApiError(statusCode, `Upload error: ${err.message}`);
   } else if (err.name === 'CastError') {
     error = new ApiError(HTTP_STATUS.BAD_REQUEST, `Invalid ${err.path || 'resource ID'}`);
+  } else if (err.code === 11000) {
+    // MongoDB duplicate-key error (E11000) — e.g. duplicate mobile/email
+    const field = Object.keys(err.keyValue || {})[0] || 'field';
+    error = new ApiError(
+      HTTP_STATUS.CONFLICT,
+      `Duplicate value for ${field}. A record with this ${field} already exists.`
+    );
   } else if (!(error instanceof ApiError)) {
     const statusCode = error.statusCode || (error.name === 'ValidationError' ? HTTP_STATUS.BAD_REQUEST : HTTP_STATUS.INTERNAL_SERVER_ERROR);
     const message = error.message || 'Internal Server Error';

@@ -57,6 +57,13 @@ const uploadProfileImage = multer({
   fileFilter: fileFilter(env.uploadAllowedImageTypes),
 }).single('image');
 
+// Per BACKEND_SPEC.md §8.2 — PUT /api/users/me/profile-image sends multipart field `profileImage`
+const uploadUserProfileImage = multer({
+  storage,
+  limits: { fileSize: env.uploadMaxProfileImageSizeMb * 1024 * 1024 },
+  fileFilter: fileFilter(env.uploadAllowedImageTypes),
+}).single('profileImage');
+
 const uploadListingFilesMulter = multer({
   storage,
   limits: { fileSize: env.uploadMaxVideoSizeMb * 1024 * 1024 },
@@ -208,6 +215,7 @@ module.exports = {
   uploadDocument,
   uploadAudio,
   uploadProfileImage,
+  uploadUserProfileImage,
   uploadListingFiles,
   uploadBuyerLeadFiles,
 };

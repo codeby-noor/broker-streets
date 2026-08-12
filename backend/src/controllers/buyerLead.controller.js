@@ -5,7 +5,7 @@ const asyncHandler = require('../utils/asyncHandler');
 const { HTTP_STATUS } = require('../utils/constants');
 
 const getBuyerLeads = asyncHandler(async (req, res) => {
-  const result = await buyerLeadService.getBuyerLeads(req.query, false);
+  const result = await buyerLeadService.getBuyerLeads(req.query, req.user);
   return res.status(HTTP_STATUS.OK).json(
     new ApiResponse(
       HTTP_STATUS.OK,
@@ -24,7 +24,7 @@ const getMyBuyerLeads = asyncHandler(async (req, res) => {
 });
 
 const getBuyerLeadById = asyncHandler(async (req, res) => {
-  const lead = await buyerLeadService.getBuyerLeadById(req.params.id);
+  const lead = await buyerLeadService.getBuyerLeadById(req.params.id, req.user);
   return res.status(HTTP_STATUS.OK).json(
     new ApiResponse(HTTP_STATUS.OK, lead, 'Buyer lead details retrieved successfully')
   );

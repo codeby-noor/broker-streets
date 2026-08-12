@@ -38,12 +38,31 @@ const env = {
   adminDefaultPassword: process.env.ADMIN_DEFAULT_PASSWORD || 'Admin@123',
 };
 
+if (env.nodeEnv === 'production' && !env.enableRealSms) {
+  throw new Error('[FATAL] ENABLE_REAL_SMS must be "true" in production.');
+}
+
 
 const requiredEnvVars = ['MONGODB_URI'];
 if (env.nodeEnv === 'production') {
-  requiredEnvVars.push('JWT_SECRET', 'JWT_REFRESH_SECRET');
+  requiredEnvVars.push(
+    'JWT_SECRET',
+    'JWT_REFRESH_SECRET',
+    'ADMIN_DEFAULT_EMAIL',
+    'ADMIN_DEFAULT_PASSWORD',
+    'ENABLE_REAL_SMS',
+    'SMS_API_KEY',
+    'SMS_TEMPLATE_ID'
+  );
   if (env.uploadProvider === 'cloudinary') {
     requiredEnvVars.push('CLOUDINARY_CLOUD_NAME', 'CLOUDINARY_API_KEY', 'CLOUDINARY_API_SECRET');
+  } else {
+    // Deploy-item 7: Railway's filesystem is ephemeral — local uploads would be
+    // lost on every redeploy/restart, so refuse to boot production with 'local'.
+    throw new Error(
+      '[FATAL] UPLOAD_PROVIDER must be set to "cloudinary" in production. ' +
+        'Railway\'s filesystem is ephemeral and local uploads would be lost on every redeploy/restart.'
+    );
   }
 }
 
