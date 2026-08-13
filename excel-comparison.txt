@@ -1,0 +1,90 @@
+
+=== Navsari / Chikhli ===
+Excel count: 87
+Current count: 87
+MISSING: none
+EXTRA: none
+
+=== Navsari / Gandevi ===
+Excel count: 55
+Current count: 56
+MISSING: none
+EXTRA (1):
+  Bilimora
+
+=== Navsari / Jalalpore ===
+Excel count: 71
+Current count: 71
+MISSING: none
+EXTRA: none
+
+=== Navsari / Navsari ===
+Excel count: 65
+Current count: 65
+MISSING: none
+EXTRA: none
+
+=== Navsari / Vansda ===
+Excel count: 94
+Current count: 94
+MISSING: none
+EXTRA: none
+
+=== Surat / Bardoli ===
+Excel count: 84
+Current count: 84
+MISSING: none
+EXTRA: none
+
+=== Surat / Choryasi ===
+Excel count: 40
+Current count: 40
+MISSING: none
+EXTRA: none
+
+=== Surat / Kamrej ===
+Excel count: 67
+Current count: 67
+MISSING: none
+EXTRA: none
+
+=== Surat / Mahuva ===
+Excel count: 69
+Current count: 69
+MISSING: none
+EXTRA: none
+
+=== Surat / Mandvi ===
+Excel count: 150
+Current count: 150
+MISSING: none
+EXTRA: none
+
+=== Surat / Mangrol ===
+Excel count: 90
+Current count: 90
+MISSING: none
+EXTRA: none
+
+=== Surat / Olpad ===
+Excel count: 103
+Current count: 103
+MISSING: none
+EXTRA: none
+
+=== Surat / Palsana ===
+Excel count: 46
+Current count: 46
+MISSING: none
+EXTRA: none
+
+=== Surat / Umarpada ===
+Excel count: 63
+Current count: 63
+MISSING: none
+EXTRA: none
+
+
+=== ALL SUB-DISTRICTS IN NAVSARI & SURAT (from Excel) ===
+Navsari sub-districts: Bansda, Chikhli, Gandevi, Jalalpore, Navsari
+Surat sub-districts: Bardoli, Chorasi, Kamrej, Mahuva, Mandvi, Mangrol, Olpad, Palsana, Umarpada

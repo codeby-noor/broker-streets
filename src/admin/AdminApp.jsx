@@ -248,17 +248,52 @@ function Dashboard() {
     registeredUsers: users.length,
   }), [properties, users, buyerLeads, sellerLeads]);
 
-  const recentProperties = useMemo(() => [...properties]
-    .sort((a, b) => new Date(b.updatedAt || b.createdAt || b.submittedAt || b.uploadedDate || 0) - new Date(a.updatedAt || a.createdAt || a.submittedAt || a.uploadedDate || 0))
-    .slice(0, 5), [properties]);
+  // Properties grouped by city — EXPLICITLY limited to Surat and Navsari only.
+  const cityData = useMemo(() => {
+    const map = new Map();
+    properties.forEach((p) => {
+      const district = String(p.district || p.city || p.location || '').trim().toLowerCase();
+      if (district === 'surat') map.set('Surat', (map.get('Surat') || 0) + 1);
+      else if (district === 'navsari') map.set('Navsari', (map.get('Navsari') || 0) + 1);
+    });
+    return ['Surat', 'Navsari']
+      .map((label) => ({ label, count: map.get(label) || 0 }))
+      .filter((d) => d.count > 0);
+  }, [properties]);
 
-  const recentUsers = useMemo(() => [...users]
-    .sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0))
-    .slice(0, 5), [users]);
+  // Property status counts for the donut chart
+  const statusData = useMemo(() => {
+    const available = properties.filter((p) => String(p.status).toLowerCase() === 'available').length;
+    const unavailable = properties.filter((p) => String(p.status).toLowerCase() === 'unavailable').length;
+    const sold = properties.filter((p) => String(p.status).toLowerCase() === 'sold').length;
+    return [
+      { label: t('admin.statusAvailable'), value: available, color: '#10b981' },
+      { label: t('admin.statusUnavailable'), value: unavailable, color: '#94a3b8' },
+      { label: t('admin.statusSold'), value: sold, color: '#ef4444' },
+    ].filter((d) => d.value > 0);
+  }, [properties, t]);
 
-  const recentActivity = useMemo(() => getAdminActivity().slice(0, 5), []);
+  const maxCityCount = Math.max(...cityData.map((d) => d.count), 1);
+  const totalStatus = statusData.reduce((sum, d) => sum + d.value, 0);
+  const totalCityProperties = properties.length;
+  const donutRadius = 70;
+  const donutCircumference = 2 * Math.PI * donutRadius;
+  let cumulative = 0;
+  const donutSegments = statusData.map((d) => {
+    const start = cumulative;
+    cumulative += d.value;
+    return { ...d, start, end: cumulative };
+  });
 
-  const safe = stats.totalProperties || stats.totalBuyers || stats.totalSellers || stats.registeredUsers;
+  const statCards = [
+    { key: 'total', label: t('admin.totalProperties'), value: stats.totalProperties, icon: '▦', tone: 'blue' },
+    { key: 'available', label: t('admin.availableProperties'), value: stats.availableProperties, icon: '✓', tone: 'green' },
+    { key: 'unavailable', label: t('admin.unavailableProperties'), value: stats.unavailableProperties, icon: '✕', tone: 'slate' },
+    { key: 'sold', label: t('admin.soldProperties'), value: stats.soldProperties, icon: '★', tone: 'red' },
+    { key: 'buyers', label: t('admin.totalBuyers'), value: stats.totalBuyers, icon: '◉', tone: 'indigo' },
+    { key: 'sellers', label: t('admin.totalSellers'), value: stats.totalSellers, icon: '◈', tone: 'amber' },
+    { key: 'users', label: t('admin.registeredUsers'), value: stats.registeredUsers, icon: '◎', tone: 'violet' },
+  ];
 
   return (
     <div className="container-fluid px-0">
@@ -272,26 +307,16 @@ function Dashboard() {
         </div>
       </div>
 
-      <div className="row g-3 mb-4">
-        {[
-          [t('admin.totalProperties'), stats.totalProperties, 'primary'],
-          [t('admin.availableProperties'), stats.availableProperties, 'success'],
-          [t('admin.unavailableProperties'), stats.unavailableProperties, 'secondary'],
-          [t('admin.soldProperties'), stats.soldProperties, 'danger'],
-          [t('admin.totalBuyers'), stats.totalBuyers, 'info'],
-          [t('admin.totalSellers'), stats.totalSellers, 'dark'],
-          [t('admin.registeredUsers'), stats.registeredUsers, 'primary'],
-          [t('admin.newUsers'), safe ? Math.min(users.length, 3) : 0, 'success'],
-        ].map(([label, value, tone]) => (
-          <div className="col-12 col-md-6 col-xl-3" key={label}>
-            <div className={`card dashboard-card text-white bg-${tone}`}>
-              <div className="card-body">
-                <div className="d-flex justify-content-between align-items-start">
-                  <div>
-                    <div className="small fw-semibold text-uppercase opacity-75">{label}</div>
-                    <div className="display-6 fw-bold mt-2">{value}</div>
-                  </div>
-                  <span className="stat-pill">Live</span>
+      {/* Statistic cards — 2 per row on mobile, 4 + 3 on desktop */}
+      <div className="row g-3 g-lg-4 mb-4 dashboard-stats-row">
+        {statCards.map((card) => (
+          <div className="col-6 col-xl-3" key={card.key}>
+            <div className="card stat-card h-100">
+              <div className="card-body d-flex align-items-center gap-3">
+                <span className={`stat-icon stat-icon-${card.tone}`}>{card.icon}</span>
+                <div className="stat-copy">
+                  <div className="stat-label">{card.label}</div>
+                  <div className="stat-value">{card.value}</div>
                 </div>
               </div>
             </div>
@@ -299,73 +324,95 @@ function Dashboard() {
         ))}
       </div>
 
+      {/* Properties by City + Property Status Overview */}
       <div className="row g-4">
-        <div className="col-12 col-xl-4">
-          <div className="card table-card h-100">
+        <div className="col-12 col-xl-6">
+          <div className="card chart-card h-100">
             <div className="card-body">
-              <h5 className="fw-semibold mb-3">{t('admin.recentProperties')}</h5>
-              {recentProperties.length ? (
-                <div className="table-responsive">
-                  <table className="table table-hover align-middle mb-0">
-                    <thead><tr><th>{t('admin.property')}</th><th>{t('admin.location')}</th><th>{t('admin.status')}</th></tr></thead>
-                    <tbody>
-                      {recentProperties.map((p) => (
-                        <tr key={p.id}>
-                          <td className="small fw-semibold">{p.title || p.name}</td>
-                          <td className="small">{p.district || p.city || p.location || '—'}</td>
-                          <td><span className={`admin-status-badge ${statusBadgeClass(p.status)}`}>{p.status || '—'}</span></td>
-                        </tr>
+              <h5 className="fw-semibold mb-1">{t('admin.propertiesByCity')}</h5>
+              <p className="text-muted small mb-3">Properties grouped by city.</p>
+              {cityData.length ? (
+                <>
+                  <div className="city-chart-wrap">
+                    <div className="city-chart">
+                      {cityData.map((d) => (
+                        <div className="city-column" key={d.label}>
+                          <div className="city-bar-count">{d.count}</div>
+                          <div className="city-bar-track">
+                            <div
+                              className="city-bar-fill"
+                              style={{ height: `${Math.max((d.count / maxCityCount) * 100, 10)}%` }}
+                              data-city={d.label}
+                              data-count={d.count}
+                            >
+                              <span className="city-bar-tooltip">{d.label}: {d.count} property</span>
+                            </div>
+                          </div>
+                          <div className="city-bar-label">{d.label}</div>
+                        </div>
                       ))}
-                    </tbody>
-                  </table>
-                </div>
+                    </div>
+                    <div className="city-grid-lines" aria-hidden="true">
+                      <span style={{ bottom: '25%' }} />
+                      <span style={{ bottom: '50%' }} />
+                      <span style={{ bottom: '75%' }} />
+                      <span style={{ bottom: '100%' }} />
+                    </div>
+                  </div>
+                  <div className="city-summary">
+                    <div className="city-summary-item">
+                      <span className="city-summary-value">2</span>
+                      <span className="city-summary-label">Total Cities</span>
+                    </div>
+                    <div className="city-summary-divider" />
+                    <div className="city-summary-item">
+                      <span className="city-summary-value">{totalCityProperties}</span>
+                      <span className="city-summary-label">Total Properties</span>
+                    </div>
+                  </div>
+                </>
               ) : <div className="admin-empty-state"><div className="empty-icon">▦</div><div className="empty-title">{t('admin.noPropertiesFound')}</div></div>}
             </div>
           </div>
         </div>
-        <div className="col-12 col-xl-4">
-          <div className="card table-card h-100">
+        <div className="col-12 col-xl-6">
+          <div className="card chart-card h-100">
             <div className="card-body">
-              <h5 className="fw-semibold mb-3">{t('admin.recentUsers')}</h5>
-              {recentUsers.length ? (
-                <div className="table-responsive">
-                  <table className="table table-hover align-middle mb-0">
-                    <thead><tr><th>{t('admin.user')}</th><th>{t('admin.location')}</th><th>{t('admin.type')}</th></tr></thead>
-                    <tbody>
-                      {recentUsers.map((u) => (
-                        <tr key={u.id}>
-                          <td className="small fw-semibold">{u.name}</td>
-                          <td className="small">{u.city || u.district || '—'}</td>
-                          <td><span className={`admin-role-badge ${roleBadgeClass(deriveUserRole(u, buyerLeads, sellerLeads, properties))}`}>{deriveUserRole(u, buyerLeads, sellerLeads, properties)}</span></td>
-                        </tr>
+              <h5 className="fw-semibold mb-1">{t('admin.propertyStatusOverview')}</h5>
+              <p className="text-muted small mb-3">Current availability of all properties.</p>
+              {totalStatus > 0 ? (
+                <div className="donut-chart-wrap">
+                  <div className="donut-chart">
+                    <svg viewBox="0 0 180 180" width="180" height="180" role="img" aria-label={t('admin.propertyStatusOverview')}>
+                      {donutSegments.map((seg) => (
+                        <circle
+                          key={seg.label}
+                          cx="90"
+                          cy="90"
+                          r={donutRadius}
+                          fill="none"
+                          stroke={seg.color}
+                          strokeWidth="24"
+                          strokeDasharray={`${(seg.value / totalStatus) * donutCircumference} ${donutCircumference}`}
+                          strokeDashoffset={-(seg.start / totalStatus) * donutCircumference}
+                          transform="rotate(-90 90 90)"
+                        />
                       ))}
-                    </tbody>
-                  </table>
+                      <text x="90" y="86" textAnchor="middle" className="donut-total">{totalStatus}</text>
+                      <text x="90" y="104" textAnchor="middle" className="donut-total-label">Properties</text>
+                    </svg>
+                  </div>
+                  <div className="donut-legend">
+                    {donutSegments.map((seg) => (
+                      <div className="donut-legend-item" key={seg.label}>
+                        <span className="donut-legend-dot" style={{ background: seg.color }} />
+                        <span className="donut-legend-label">{seg.label}</span>
+                        <span className="donut-legend-value">{seg.value}</span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              ) : <div className="admin-empty-state"><div className="empty-icon">◎</div><div className="empty-title">{t('admin.noUsersFound')}</div></div>}
-            </div>
-          </div>
-        </div>
-        <div className="col-12 col-xl-4">
-          <div className="card table-card h-100">
-            <div className="card-body">
-              <h5 className="fw-semibold mb-3">{t('admin.recentActivity')}</h5>
-              {recentActivity.length ? (
-                <div className="table-responsive">
-                  <table className="table table-hover align-middle mb-0">
-                    <thead><tr><th>{t('admin.admin')}</th><th>{t('admin.loginTime')}</th><th>{t('admin.status')}</th></tr></thead>
-                    <tbody>
-                      {recentActivity.map((a) => (
-                        <tr key={a.id}>
-                          <td className="small fw-semibold">{ADMIN_NAMES[a.mobile] || maskMobile(a.mobile)}</td>
-                          <td className="small">{formatDateTime(a.loginAt)}</td>
-                          <td><span className={`admin-status-badge ${statusBadgeClass(a.status)}`}>{a.status === 'Login' ? t('admin.active') : t('admin.loggedOut')}</span></td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              ) : <div className="admin-empty-state"><div className="empty-icon">◷</div><div className="empty-title">{t('admin.noActivityFound')}</div></div>}
+              ) : <div className="admin-empty-state"><div className="empty-icon">◔</div><div className="empty-title">{t('admin.noPropertiesFound')}</div></div>}
             </div>
           </div>
         </div>

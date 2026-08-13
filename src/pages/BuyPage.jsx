@@ -10,11 +10,6 @@ import PropertyCard from '../components/PropertyCard';
 import SectionHeading from '../components/SectionHeading';
 import { useLanguage } from '../i18n/LanguageContext';
 
-const locationGroups = {
-  Surat: ['Vesu', 'Adajan', 'Pal', 'Piplod', 'Dumas', 'Althan', 'VIP Road', 'City Light'],
-  Navsari: ['Gandevi', 'Bilimora', 'Chikhli', 'Jalalpore', 'Kabilpore', 'Amalsad', 'Maroli', 'Eru'],
-};
-
 const priceNumber = (value) => Number(String(value || '').replace(/[^0-9]/g, '')) || 0;
 const landSizeInSqFt = (value) => {
   const normalized = String(value || '').toLowerCase().trim();

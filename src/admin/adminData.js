@@ -176,8 +176,8 @@ export const ADMIN_DEMO_PROPERTIES = [
         propertyType: 'Agricultural Land',
         state: 'Gujarat',
         district: 'Navsari',
-        subDistrict: 'Bilimora',
-        taluka: 'Bilimora',
+        subDistrict: 'Gandevi',
+        taluka: 'Gandevi',
         village: 'Bilimora',
         location: 'Navsari',
         city: 'Navsari',
@@ -213,8 +213,8 @@ export const ADMIN_DEMO_PROPERTIES = [
         propertyType: 'Agricultural Land',
         state: 'Gujarat',
         district: 'Navsari',
-        subDistrict: 'Amalsad',
-        taluka: 'Amalsad',
+        subDistrict: 'Gandevi',
+        taluka: 'Gandevi',
         village: 'Amalsad',
         location: 'Navsari',
         city: 'Navsari',
@@ -251,7 +251,7 @@ export const ADMIN_DEMO_USERS = [
     { id: 'DEMO-USR-1004', name: 'Neha Joshi', mobile: '9876500004', whatsapp: '', email: 'neha@example.com', city: 'Kamrej', state: 'Gujarat', district: 'Surat', subDistrict: 'Kamrej', profileImage: '', createdAt: '2026-07-10T15:00:00.000Z', status: 'Active', isDemo: true },
     { id: 'DEMO-USR-1005', name: 'Rakesh Patel', mobile: '9876500005', whatsapp: '', email: 'rakesh@example.com', city: 'Gandevi', state: 'Gujarat', district: 'Navsari', subDistrict: 'Gandevi', profileImage: '', createdAt: '2026-07-08T10:30:00.000Z', status: 'Active', isDemo: true },
     { id: 'DEMO-USR-1006', name: 'Mehul Shah', mobile: '9876500006', whatsapp: '', email: 'mehul@example.com', city: 'Chikhli', state: 'Gujarat', district: 'Navsari', subDistrict: 'Chikhli', profileImage: '', createdAt: '2026-07-06T13:00:00.000Z', status: 'Active', isDemo: true },
-    { id: 'DEMO-USR-1007', name: 'Jignesh Desai', mobile: '9876500007', whatsapp: '', email: 'jignesh@example.com', city: 'Bilimora', state: 'Gujarat', district: 'Navsari', subDistrict: 'Bilimora', profileImage: '', createdAt: '2026-07-04T16:00:00.000Z', status: 'Active', isDemo: true },
+    { id: 'DEMO-USR-1007', name: 'Jignesh Desai', mobile: '9876500007', whatsapp: '', email: 'jignesh@example.com', city: 'Bilimora', state: 'Gujarat', district: 'Navsari', subDistrict: 'Gandevi', profileImage: '', createdAt: '2026-07-04T16:00:00.000Z', status: 'Active', isDemo: true },
 ];
 
 export const ADMIN_DEMO_BUYER_LEADS = [

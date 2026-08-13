@@ -307,7 +307,7 @@ function HomePage() {
                 <button
                   key={location.slug}
                   type="button"
-                  onClick={() => navigate(`/buy?district=${encodeURIComponent(location.district)}&taluka=${encodeURIComponent(location.name)}`)}
+                  onClick={() => navigate(`/buy?district=${encodeURIComponent(location.district)}&taluka=${encodeURIComponent(location.taluka || location.name)}`)}
                   className={`group flex flex-col items-center justify-center rounded-2xl border bg-gradient-to-b ${theme.from} ${theme.to} ${theme.border} px-3 py-4 text-center shadow-xs transition-all duration-300 hover:-translate-y-1 hover:shadow-md active:scale-95`}
                 >
                   <span className={`mb-2 flex h-11 w-11 items-center justify-center rounded-xl ${theme.iconBg} transition-transform duration-300 group-hover:scale-110`}>
