@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   ShieldCheck,
@@ -15,11 +15,8 @@ import {
   Calculator,
   Compass,
   Scale,
-  FileCheck,
-  BookOpen,
-  HelpCircle,
+  ExternalLink,
 } from 'lucide-react';
-import { toast } from 'react-toastify';
 import { getSubmissionDestination } from '../utils/formNavigation';
 import { sampleProperties } from '../utils/data';
 import { popularLandLocations } from '../utils/locationData';
@@ -29,18 +26,26 @@ import PropertyCard from '../components/PropertyCard';
 import { useLanguage } from '../i18n/LanguageContext';
 
 const governmentLinks = [
-  { id: 1, titleKey: 'home.govLink1', icon: FileText, url: '' },
-  { id: 2, titleKey: 'home.govLink2', icon: ScrollText, url: '' },
-  { id: 3, titleKey: 'home.govLink3', icon: Landmark, url: '' },
-  { id: 4, titleKey: 'home.govLink4', icon: ShieldCheck, url: '' },
-  { id: 5, titleKey: 'home.govLink5', icon: Calculator, url: '' },
-  { id: 6, titleKey: 'home.govLink6', icon: Sprout, url: '' },
-  { id: 7, titleKey: 'home.govLink7', icon: Compass, url: '' },
-  { id: 8, titleKey: 'home.govLink8', icon: Building2, url: '' },
-  { id: 9, titleKey: 'home.govLink9', icon: Scale, url: '' },
-  { id: 10, titleKey: 'home.govLink10', icon: FileCheck, url: '' },
-  { id: 11, titleKey: 'home.govLink11', icon: BookOpen, url: '' },
-  { id: 12, titleKey: 'home.govLink12', icon: HelpCircle, url: '' },
+  { id: 1, titleKey: 'home.govLandRecords', descKey: 'home.govLandRecordsDesc', icon: FileText, url: 'https://anyror.gujarat.gov.in/' },
+  { id: 2, titleKey: 'home.govPropertyCard', descKey: 'home.govPropertyCardDesc', icon: Building2, url: 'https://e-milkat.gujarat.gov.in/' },
+  { id: 3, titleKey: 'home.govRegistration', descKey: 'home.govRegistrationDesc', icon: ScrollText, url: 'https://garvi.gujarat.gov.in/' },
+  { id: 4, titleKey: 'home.govJantri', descKey: 'home.govJantriDesc', icon: Calculator, url: 'https://garvi.gujarat.gov.in/ViewJantri_New.aspx' },
+  { id: 5, titleKey: 'home.govRevenueServices', descKey: 'home.govRevenueServicesDesc', icon: Landmark, url: 'https://iora.gujarat.gov.in/' },
+  { id: 6, titleKey: 'home.govRevenueCases', descKey: 'home.govRevenueCasesDesc', icon: Scale, url: 'https://ircms.gujarat.gov.in/' },
+  { id: 7, titleKey: 'home.govEDhara', descKey: 'home.govEDharaDesc', icon: Compass, url: 'https://revenuedepartment.gujarat.gov.in/e-dhara-forms' },
+  { id: 8, titleKey: 'home.govRevenueDepartment', descKey: 'home.govRevenueDepartmentDesc', icon: ShieldCheck, url: 'https://revenuedepartment.gujarat.gov.in/' },
+];
+
+// Distinct subtle accent themes for the government link cards
+const govCardThemes = [
+  { iconBg: 'bg-emerald-100 text-emerald-700', border: 'border-emerald-200/70 hover:border-emerald-400', from: 'from-emerald-50', to: 'to-white', ring: 'hover:ring-emerald-100' },
+  { iconBg: 'bg-sky-100 text-sky-700', border: 'border-sky-200/70 hover:border-sky-400', from: 'from-sky-50', to: 'to-white', ring: 'hover:ring-sky-100' },
+  { iconBg: 'bg-violet-100 text-violet-700', border: 'border-violet-200/70 hover:border-violet-400', from: 'from-violet-50', to: 'to-white', ring: 'hover:ring-violet-100' },
+  { iconBg: 'bg-amber-100 text-amber-700', border: 'border-amber-200/70 hover:border-amber-400', from: 'from-amber-50', to: 'to-white', ring: 'hover:ring-amber-100' },
+  { iconBg: 'bg-teal-100 text-teal-700', border: 'border-teal-200/70 hover:border-teal-400', from: 'from-teal-50', to: 'to-white', ring: 'hover:ring-teal-100' },
+  { iconBg: 'bg-rose-100 text-rose-700', border: 'border-rose-200/70 hover:border-rose-400', from: 'from-rose-50', to: 'to-white', ring: 'hover:ring-rose-100' },
+  { iconBg: 'bg-indigo-100 text-indigo-700', border: 'border-indigo-200/70 hover:border-indigo-400', from: 'from-indigo-50', to: 'to-white', ring: 'hover:ring-indigo-100' },
+  { iconBg: 'bg-emerald-100 text-emerald-700', border: 'border-emerald-200/70 hover:border-emerald-400', from: 'from-emerald-50', to: 'to-white', ring: 'hover:ring-emerald-100' },
 ];
 
 // Distinct subtle accent themes for the location cards
@@ -160,7 +165,60 @@ function HomePage() {
           </div>
         </section>
 
-        {/* 2. SEARCH CARD */}
+        {/* 2. USEFUL GOVERNMENT LINKS (COLORFUL PREMIUM CARDS) */}
+        <section className="rounded-2xl border border-slate-200/80 bg-gradient-to-br from-emerald-50/80 via-sky-50/60 to-white p-4 shadow-sm sm:p-5">
+          <div className="flex items-center gap-2">
+            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-100 text-emerald-700">
+              <Landmark size={18} />
+            </span>
+            <div>
+              <h2 className="text-base font-bold tracking-tight text-slate-900 sm:text-lg">
+                {t('home.usefulGovLinks')}
+              </h2>
+              <p className="mt-0.5 text-xs text-slate-600 sm:text-sm">
+                {t('home.usefulGovLinksDescription')}
+              </p>
+            </div>
+          </div>
+
+          <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            {governmentLinks.map((item, index) => {
+              const Icon = item.icon;
+              const theme = govCardThemes[index % govCardThemes.length];
+              const handleClick = () => {
+                window.open(item.url, '_blank', 'noopener,noreferrer');
+              };
+              return (
+                <button
+                  key={item.id}
+                  type="button"
+                  onClick={handleClick}
+                  aria-label={`${t(item.titleKey)} - ${t('home.visitOfficialSite')}`}
+                  className={`group flex flex-col items-start rounded-2xl border bg-gradient-to-b ${theme.from} ${theme.to} ${theme.border} p-4 text-left shadow-xs transition-all duration-300 hover:-translate-y-1 hover:shadow-lg active:scale-[0.98] sm:hover:-translate-y-1.5`}
+                >
+                  <div className="flex w-full items-start justify-between">
+                    <span className={`flex h-11 w-11 items-center justify-center rounded-xl ${theme.iconBg} transition-transform duration-300 group-hover:scale-110`}>
+                      <Icon size={20} />
+                    </span>
+                    <ExternalLink size={15} className="mt-1 text-slate-400 transition-all duration-300 group-hover:translate-x-0.5 group-hover:text-slate-600" />
+                  </div>
+                  <h3 className="mt-3 text-sm font-bold text-slate-900 leading-snug">
+                    {t(item.titleKey)}
+                  </h3>
+                  <p className="mt-1 text-xs leading-relaxed text-slate-600 line-clamp-2">
+                    {t(item.descKey)}
+                  </p>
+                  <span className="mt-3 inline-flex items-center gap-1 text-[11px] font-bold text-slate-700 transition-colors duration-300 group-hover:text-slate-900">
+                    {t('home.visitOfficialSite')}
+                    <ArrowRight size={12} className="transition-transform duration-300 group-hover:translate-x-0.5" />
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        </section>
+
+        {/* 3. SEARCH CARD */}
         <section className="rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm sm:p-5">
           <div className="mb-3 flex items-center gap-2">
             <Search size={16} className="text-sage" />
@@ -204,7 +262,7 @@ function HomePage() {
           </form>
         </section>
 
-        {/* 3. WE ONLY DEAL IN SECTION */}
+        {/* 4. WE ONLY DEAL IN SECTION */}
         <section className="space-y-3">
           <h2 className="text-sm font-bold uppercase tracking-wider text-slate-700 sm:text-base">
             {t('home.weOnlyDealIn')}
@@ -241,7 +299,7 @@ function HomePage() {
           </div>
         </section>
 
-        {/* 4. POPULAR INVESTMENT LOCATIONS (COLORFUL ATTRACTIVE CARDS) */}
+        {/* 5. POPULAR INVESTMENT LOCATIONS (COLORFUL ATTRACTIVE CARDS) */}
         <section className="rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm sm:p-5">
           <div className="flex items-center gap-2">
             <MapPin size={18} className="text-sage" />
@@ -276,7 +334,7 @@ function HomePage() {
           </div>
         </section>
 
-        {/* 5. FEATURED PROPERTIES (COMPACT HORIZONTAL SWIPE) */}
+        {/* 6. FEATURED PROPERTIES (COMPACT HORIZONTAL SWIPE) */}
         <section className="space-y-3">
           <div className="flex items-center justify-between">
             <div>
@@ -300,59 +358,6 @@ function HomePage() {
                 <PropertyCard property={property} compact={true} onContact={(data) => setContactModal({ type: 'seller', data })} />
               </div>
             ))}
-          </div>
-        </section>
-
-        {/* 6. USEFUL GOVERNMENT LINKS (3 COLUMNS X 4 ROWS = 12 CARDS) */}
-        <section className="space-y-3">
-          <div className="flex items-center gap-2">
-            <Landmark size={18} className="text-sage" />
-            <h2 className="text-base font-bold tracking-tight text-slate-900 sm:text-lg">
-              {t('home.usefulGovLinks')}
-            </h2>
-          </div>
-
-          <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 md:grid-cols-3">
-            {governmentLinks.map((item, index) => {
-              const Icon = item.icon;
-              const cardThemes = [
-                { border: 'border-emerald-200/90 hover:border-emerald-400', cardBg: 'bg-emerald-50/90 hover:bg-emerald-100/90', iconBg: 'bg-emerald-200/70 text-emerald-800' },
-                { border: 'border-sky-200/90 hover:border-sky-400', cardBg: 'bg-sky-50/90 hover:bg-sky-100/90', iconBg: 'bg-sky-200/70 text-sky-800' },
-                { border: 'border-amber-200/90 hover:border-amber-400', cardBg: 'bg-amber-50/90 hover:bg-amber-100/90', iconBg: 'bg-amber-200/70 text-amber-800' },
-                { border: 'border-violet-200/90 hover:border-violet-400', cardBg: 'bg-violet-50/90 hover:bg-violet-100/90', iconBg: 'bg-violet-200/70 text-violet-800' },
-                { border: 'border-teal-200/90 hover:border-teal-400', cardBg: 'bg-teal-50/90 hover:bg-teal-100/90', iconBg: 'bg-teal-200/70 text-teal-800' },
-                { border: 'border-orange-200/90 hover:border-orange-400', cardBg: 'bg-orange-50/90 hover:bg-orange-100/90', iconBg: 'bg-orange-200/70 text-orange-800' },
-                { border: 'border-indigo-200/90 hover:border-indigo-400', cardBg: 'bg-indigo-50/90 hover:bg-indigo-100/90', iconBg: 'bg-indigo-200/70 text-indigo-800' },
-                { border: 'border-cyan-200/90 hover:border-cyan-400', cardBg: 'bg-cyan-50/90 hover:bg-cyan-100/90', iconBg: 'bg-cyan-200/70 text-cyan-800' },
-                { border: 'border-lime-200/90 hover:border-lime-400', cardBg: 'bg-lime-50/90 hover:bg-lime-100/90', iconBg: 'bg-lime-200/70 text-lime-800' },
-                { border: 'border-rose-200/90 hover:border-rose-400', cardBg: 'bg-rose-50/90 hover:bg-rose-100/90', iconBg: 'bg-rose-200/70 text-rose-800' },
-                { border: 'border-purple-200/90 hover:border-purple-400', cardBg: 'bg-purple-50/90 hover:bg-purple-100/90', iconBg: 'bg-purple-200/70 text-purple-800' },
-                { border: 'border-blue-200/90 hover:border-blue-400', cardBg: 'bg-blue-50/90 hover:bg-blue-100/90', iconBg: 'bg-blue-200/70 text-blue-800' },
-              ];
-              const theme = cardThemes[index % cardThemes.length];
-              const handleClick = () => {
-                if (item.url) {
-                  window.open(item.url, '_blank', 'noopener,noreferrer');
-                } else {
-                  toast.info(t('home.linkUpdateSoon'));
-                }
-              };
-              return (
-                <button
-                  key={item.id}
-                  type="button"
-                  onClick={handleClick}
-                  className={`group flex min-h-[96px] flex-col items-center justify-center rounded-2xl border ${theme.border} ${theme.cardBg} p-3.5 text-center shadow-xs transition-all duration-300 hover:-translate-y-1 hover:shadow-md`}
-                >
-                  <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${theme.iconBg} transition-transform duration-300 group-hover:scale-110 shadow-2xs`}>
-                    <Icon size={19} />
-                  </div>
-                  <span className="mt-2 text-xs font-bold text-slate-900 line-clamp-2 leading-tight">
-                    {t(item.titleKey)}
-                  </span>
-                </button>
-              );
-            })}
           </div>
         </section>
 
