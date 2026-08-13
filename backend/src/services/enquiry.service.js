@@ -39,21 +39,17 @@ class EnquiryService {
 
     const savedEnquiry = await enquiry.save();
 
-    // Best-effort notification creation if Notification model is available
+    // Item 6: Create notification via notification.service helper
     try {
-      const Notification = require('../models/Notification');
-      await Notification.create({
+      const notificationService = require('./notification.service');
+      await notificationService.createNotification({
         userId: listing.userId,
         type: 'New enquiry',
         message: `${user.name || 'A buyer'} sent an enquiry about ${listing.title}.`,
         category: 'enquiry',
       });
     } catch (e) {
-      if (e.code === 'MODULE_NOT_FOUND' || (e.message && e.message.includes('Cannot find module'))) {
-        // Notification model not implemented yet — ignore gracefully
-      } else {
-        console.error(`Failed to create notification for enquiry ${savedEnquiry._id}:`, e);
-      }
+      console.error(`Failed to create notification for enquiry ${savedEnquiry._id}:`, e.message);
     }
 
     return savedEnquiry;

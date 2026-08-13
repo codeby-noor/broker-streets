@@ -14,6 +14,10 @@ const listingRoutes = require('./routes/listing.routes');
 const buyerLeadRoutes = require('./routes/buyerLead.routes');
 const enquiryRoutes = require('./routes/enquiry.routes');
 const uploadRoutes = require('./routes/upload.routes');
+// Items 4, 5, 6: Require Phase 4 module routes
+const savedPropertyRoutes = require('./routes/savedProperty.routes');
+const recentlyViewedRoutes = require('./routes/recentlyViewed.routes');
+const notificationRoutes = require('./routes/notification.routes');
 const adminAuthRoutes = require('./routes/admin/admin.auth.routes');
 const adminPropertyRoutes = require('./routes/admin/admin.property.routes');
 const adminBuyerLeadRoutes = require('./routes/admin/admin.buyerLead.routes');
@@ -40,7 +44,7 @@ if (env.nodeEnv === 'development') {
   app.use(morgan('combined'));
 }
 
-const authenticateToken = require('./middleware/auth.middleware');
+// Item 2: Removed unused authenticateToken import (routes handle their own auth)
 
 // Body parsers
 app.use(express.json({ limit: '10mb' }));
@@ -70,6 +74,11 @@ app.use('/api/listings', listingRoutes);
 app.use('/api/buyer-leads', buyerLeadRoutes);
 app.use('/api/enquiries', enquiryRoutes);
 app.use('/api/uploads', uploadRoutes);
+
+// Phase 4 module routes (Items 4, 5, 6)
+app.use('/api/saved-properties', savedPropertyRoutes);
+app.use('/api/recently-viewed', recentlyViewedRoutes);
+app.use('/api/notifications', notificationRoutes);
 
 // Admin routes
 app.use('/api/admin/auth', adminAuthRoutes);

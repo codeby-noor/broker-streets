@@ -1177,20 +1177,20 @@ server: {
 18. Seller lead creation (as part of listing creation)
 
 ### Phase 4: Buyer Features
-19. `BuyerLead` model
-20. Buyer lead CRUD routes + controllers
-21. `SavedProperty` model + routes
-22. `RecentlyViewed` model + routes
-23. `Notification` model + routes
+19. `BuyerLead` model ✅
+20. Buyer lead CRUD routes + controllers ✅
+21. `SavedProperty` model + routes ✅ (Completed - Item 4)
+22. `RecentlyViewed` model + routes ✅ (Completed - Item 5)
+23. `Notification` model + routes ✅ (Completed - Item 6)
 
 ### Phase 5: User Profile
-24. User profile routes (GET/PUT /me)
-25. Profile image upload
+24. User profile routes (GET/PUT /me) ✅
+25. Profile image upload ✅ (with `uploadRateLimiter` - Item 1)
 26. (Removed — password auth not planned; OTP-based auth only)
 
 ### Phase 6: Location Data
-27. Static Gujarat location data endpoint
-28. Popular locations endpoint
+27. Static Gujarat location data endpoint ⚠️ (Open Decision — frontend currently bundles `gujarat-villages.json` client-side)
+28. Popular locations endpoint ⚠️ (Open Decision — frontend currently bundles location data client-side)
 29. Location model + admin CRUD
 
 ### Phase 7: Admin Panel

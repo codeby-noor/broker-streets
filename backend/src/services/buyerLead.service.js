@@ -60,21 +60,17 @@ class BuyerLeadService {
       console.warn(`Failed to update buyerFormSubmitted flag for user ${user._id}:`, err.message);
     }
 
-    // Conditionally create notification if Notification model is available
+    // Item 6: Create notification via notification.service helper
     try {
-      const Notification = require('../models/Notification');
-      await Notification.create({
+      const notificationService = require('./notification.service');
+      await notificationService.createNotification({
         userId: user._id,
         type: 'Requirement submitted',
         message: `New buyer requirement submitted for ${savedLead.district} ${savedLead.propertyType}.`,
         category: 'buyer',
       });
     } catch (e) {
-      if (e.code === 'MODULE_NOT_FOUND' || (e.message && e.message.includes('Cannot find module'))) {
-        // Notification model not implemented yet — ignore gracefully
-      } else {
-        console.error(`Failed to create notification for buyer lead ${savedLead._id}:`, e);
-      }
+      console.error(`Failed to create notification for buyer lead ${savedLead._id}:`, e.message);
     }
 
     return savedLead;
