@@ -165,8 +165,12 @@ function BuyerForm() {
   const filteredVillageOptions = useMemo(() => {
     const query = villageSearch.trim().toLowerCase();
     if (!query) return allVillageOptions;
-    return allVillageOptions.filter((village) => village.toLowerCase().includes(query));
-  }, [allVillageOptions, villageSearch]);
+    return allVillageOptions.filter((village) => {
+      if (village.toLowerCase().includes(query)) return true;
+      const gujaratiName = t(village);
+      return Boolean(gujaratiName && gujaratiName !== village && gujaratiName.toLowerCase().includes(query));
+    });
+  }, [allVillageOptions, villageSearch, t]);
 
   const selectedVillageCount = form.preferredVillages?.length || 0;
 
