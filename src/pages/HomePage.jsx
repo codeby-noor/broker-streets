@@ -15,7 +15,6 @@ import {
   Calculator,
   Compass,
   Scale,
-  ExternalLink,
 } from 'lucide-react';
 import { getSubmissionDestination } from '../utils/formNavigation';
 import { sampleProperties } from '../utils/data';
@@ -26,14 +25,14 @@ import PropertyCard from '../components/PropertyCard';
 import { useLanguage } from '../i18n/LanguageContext';
 
 const governmentLinks = [
-  { id: 1, titleKey: 'home.govLandRecords', descKey: 'home.govLandRecordsDesc', icon: FileText, url: 'https://anyror.gujarat.gov.in/' },
-  { id: 2, titleKey: 'home.govPropertyCard', descKey: 'home.govPropertyCardDesc', icon: Building2, url: 'https://e-milkat.gujarat.gov.in/' },
-  { id: 3, titleKey: 'home.govRegistration', descKey: 'home.govRegistrationDesc', icon: ScrollText, url: 'https://garvi.gujarat.gov.in/' },
-  { id: 4, titleKey: 'home.govJantri', descKey: 'home.govJantriDesc', icon: Calculator, url: 'https://garvi.gujarat.gov.in/ViewJantri_New.aspx' },
-  { id: 5, titleKey: 'home.govRevenueServices', descKey: 'home.govRevenueServicesDesc', icon: Landmark, url: 'https://iora.gujarat.gov.in/' },
-  { id: 6, titleKey: 'home.govRevenueCases', descKey: 'home.govRevenueCasesDesc', icon: Scale, url: 'https://ircms.gujarat.gov.in/' },
-  { id: 7, titleKey: 'home.govEDhara', descKey: 'home.govEDharaDesc', icon: Compass, url: 'https://revenuedepartment.gujarat.gov.in/e-dhara-forms' },
-  { id: 8, titleKey: 'home.govRevenueDepartment', descKey: 'home.govRevenueDepartmentDesc', icon: ShieldCheck, url: 'https://revenuedepartment.gujarat.gov.in/' },
+  { id: 1, titleKey: 'home.govLandRecords', icon: FileText, url: 'https://anyror.gujarat.gov.in/' },
+  { id: 2, titleKey: 'home.govPropertyCard', icon: Building2, url: 'https://e-milkat.gujarat.gov.in/' },
+  { id: 3, titleKey: 'home.govRegistration', icon: ScrollText, url: 'https://garvi.gujarat.gov.in/' },
+  { id: 4, titleKey: 'home.govJantri', icon: Calculator, url: 'https://garvi.gujarat.gov.in/ViewJantri_New.aspx' },
+  { id: 5, titleKey: 'home.govRevenueServices', icon: Landmark, url: 'https://iora.gujarat.gov.in/' },
+  { id: 6, titleKey: 'home.govRevenueCases', icon: Scale, url: 'https://ircms.gujarat.gov.in/' },
+  { id: 7, titleKey: 'home.govEDhara', icon: Compass, url: 'https://revenuedepartment.gujarat.gov.in/e-dhara-forms' },
+  { id: 8, titleKey: 'home.govRevenueDepartment', icon: ShieldCheck, url: 'https://revenuedepartment.gujarat.gov.in/' },
 ];
 
 // Distinct subtle accent themes for the government link cards
@@ -167,21 +166,21 @@ function HomePage() {
 
         {/* 2. USEFUL GOVERNMENT LINKS (COLORFUL PREMIUM CARDS) */}
         <section className="rounded-2xl border border-slate-200/80 bg-gradient-to-br from-emerald-50/80 via-sky-50/60 to-white p-4 shadow-sm sm:p-5">
-          <div className="flex items-center gap-2">
-            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-100 text-emerald-700">
-              <Landmark size={18} />
+          <div className="flex items-center gap-2.5">
+            <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-100 to-teal-50 text-emerald-700 shadow-sm ring-1 ring-emerald-200/60">
+              <Landmark size={19} />
             </span>
             <div>
               <h2 className="text-base font-bold tracking-tight text-slate-900 sm:text-lg">
                 {t('home.usefulGovLinks')}
               </h2>
-              <p className="mt-0.5 text-xs text-slate-600 sm:text-sm">
+              <p className="mt-0.5 text-xs text-slate-500 sm:text-sm">
                 {t('home.usefulGovLinksDescription')}
               </p>
             </div>
           </div>
 
-          <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
             {governmentLinks.map((item, index) => {
               const Icon = item.icon;
               const theme = govCardThemes[index % govCardThemes.length];
@@ -193,25 +192,15 @@ function HomePage() {
                   key={item.id}
                   type="button"
                   onClick={handleClick}
-                  aria-label={`${t(item.titleKey)} - ${t('home.visitOfficialSite')}`}
-                  className={`group flex flex-col items-start rounded-2xl border bg-gradient-to-b ${theme.from} ${theme.to} ${theme.border} p-4 text-left shadow-xs transition-all duration-300 hover:-translate-y-1 hover:shadow-lg active:scale-[0.98] sm:hover:-translate-y-1.5`}
+                  aria-label={t(item.titleKey)}
+                  className={`group flex min-h-[120px] flex-col items-center justify-center rounded-2xl border bg-gradient-to-b ${theme.from} ${theme.to} ${theme.border} px-3 py-4 text-center shadow-xs transition-all duration-300 hover:-translate-y-1 hover:shadow-lg active:scale-[0.98] sm:hover:-translate-y-1.5`}
                 >
-                  <div className="flex w-full items-start justify-between">
-                    <span className={`flex h-11 w-11 items-center justify-center rounded-xl ${theme.iconBg} transition-transform duration-300 group-hover:scale-110`}>
-                      <Icon size={20} />
-                    </span>
-                    <ExternalLink size={15} className="mt-1 text-slate-400 transition-all duration-300 group-hover:translate-x-0.5 group-hover:text-slate-600" />
-                  </div>
-                  <h3 className="mt-3 text-sm font-bold text-slate-900 leading-snug">
+                  <span className={`flex h-11 w-11 items-center justify-center rounded-xl ${theme.iconBg} shadow-sm transition-transform duration-300 group-hover:scale-110 group-hover:-translate-y-0.5`}>
+                    <Icon size={20} />
+                  </span>
+                  <h3 className="mt-2.5 text-sm font-bold leading-snug text-slate-900">
                     {t(item.titleKey)}
                   </h3>
-                  <p className="mt-1 text-xs leading-relaxed text-slate-600 line-clamp-2">
-                    {t(item.descKey)}
-                  </p>
-                  <span className="mt-3 inline-flex items-center gap-1 text-[11px] font-bold text-slate-700 transition-colors duration-300 group-hover:text-slate-900">
-                    {t('home.visitOfficialSite')}
-                    <ArrowRight size={12} className="transition-transform duration-300 group-hover:translate-x-0.5" />
-                  </span>
                 </button>
               );
             })}
