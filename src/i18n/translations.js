@@ -347,6 +347,8 @@ export const translations = {
       purposeRequired: 'Please choose a purpose.',
       villageSelectionRequired: 'Please select at least 1 village.',
       villageSelectionRequiredPlural: 'Please select at least 2 villages.',
+      removeVillage: 'Remove village',
+      maxVillagesReached: 'You can select up to 2 villages',
       agriculturalLand: 'Agricultural Land',
       nonAgriculturalLand: 'Non-Agricultural Land',
       investment: 'Investment',
@@ -1050,7 +1052,7 @@ const batchTwoTranslations = {
     },
   },
   gu: {
-    buyerForm: { submitSuccess: 'તમારી ખરીદદાર પ્રોફાઇલ સફળતાપૂર્વક સબમિટ થઈ છે.', submitting: 'સબમિટ થઈ રહ્યું છે...', validationError: 'આગળ વધતા પહેલાં દર્શાવેલ વિગતો સુધારો.', villageSelectionRequired: 'ઓછામાં ઓછું 1 ગામ પસંદ કરો.', villageSelectionRequiredPlural: 'ઓછામાં ઓછા 2 ગામ પસંદ કરો.' },
+    buyerForm: { submitSuccess: 'તમારી ખરીદદાર પ્રોફાઇલ સફળતાપૂર્વક સબમિટ થઈ છે.', submitting: 'સબમિટ થઈ રહ્યું છે...', validationError: 'આગળ વધતા પહેલાં દર્શાવેલ વિગતો સુધારો.', villageSelectionRequired: 'ઓછામાં ઓછું 1 ગામ પસંદ કરો.', villageSelectionRequiredPlural: 'ઓછામાં ઓછા 2 ગામ પસંદ કરો.', removeVillage: 'ગામ દૂર કરો', maxVillagesReached: 'તમે મહત્તમ 2 ગામ પસંદ કરી શકો છો' },
     common: { back: 'પાછળ', cancel: 'રદ કરો', clear: 'સાફ કરો', confirm: 'પુષ્ટિ કરો', delete: 'કાઢી નાખો', duplicate: 'નકલ કરો', edit: 'ફેરફાર કરો', markAvailable: 'ઉપલબ્ધ તરીકે ચિહ્નિત કરો', markSold: 'વેચાયેલ તરીકે ચિહ્નિત કરો', notAvailable: 'ઉપલબ્ધ નથી', notProvided: 'આપેલ નથી', optional: 'વૈકલ્પિક', ready: 'તૈયાર', remove: 'દૂર કરો', view: 'જુઓ', viewAgain: 'ફરી જુઓ' },
     contact: { heading: 'Broker Streets નો સંપર્ક કરો', description: 'જમીન ખરીદવા અથવા વેચવા માટે મદદ જોઈએ તો અમારી ટીમ સાથે વાત કરો.', phone: 'ફોન', email: 'ઈમેલ', headOffice: 'મુખ્ય કાર્યાલય', officeLocation: 'સુરત, ગુજરાત', modalDescription: 'સંપર્કની વિગતો નીચે આપેલ છે.', modalEmail: 'ઈમેલ', modalMobile: 'મોબાઇલ નંબર', modalName: 'નામ', modalNoContact: 'કોઈ સંપર્ક વિગતો ઉપલબ્ધ નથી.', modalProperty: 'પ્રોપર્ટી' },
     home: {
