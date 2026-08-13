@@ -35,9 +35,10 @@ class NotificationService {
    * Mark single notification as read
    */
   async markAsRead(id, userId) {
+    // Note: True per-user read-state on global notifications (userId: null) would need a separate read-receipt model, which is out of scope for now.
     const notification = await Notification.findOne({
       _id: id,
-      $or: [{ userId }, { userId: null }],
+      userId,
     });
 
     if (!notification) {
