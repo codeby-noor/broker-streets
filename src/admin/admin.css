@@ -4,6 +4,19 @@
   color: #0f172a;
 }
 
+/* Standalone login page — explicit layout so global CSS doesn't interfere */
+.admin-login-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  width: 100%;
+  background: linear-gradient(135deg, #f0f4ff 0%, #e8edf8 100%);
+  color: #0f172a;
+  padding: 2rem 1rem;
+  box-sizing: border-box;
+}
+
 .admin-shell {
   display: flex;
   min-height: 100vh;
@@ -202,4 +215,188 @@
   .dashboard-card {
     min-height: 112px;
   }
+}
+
+/* ============================================================
+   WORKING ADMIN PANEL — MOBILE CARDS + EMPTY STATES + MISC
+   ============================================================ */
+
+/* Mobile-only admin cards (properties, users, activity) */
+@media (max-width: 767px) {
+  .admin-mobile-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .admin-mobile-card {
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    background: #fff;
+    padding: 14px;
+    box-shadow: 0 8px 22px rgba(15, 23, 42, 0.05);
+  }
+
+  .admin-mobile-card .card-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  .admin-mobile-card .row-label {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: #64748b;
+    font-weight: 600;
+  }
+
+  .admin-mobile-card .row-value {
+    font-size: 0.86rem;
+    color: #0f172a;
+    font-weight: 500;
+    word-break: break-word;
+  }
+}
+
+/* Hide mobile-only list on desktop, hide desktop table on mobile */
+.admin-mobile-list {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  .admin-mobile-list {
+    display: flex;
+  }
+
+  .admin-desktop-table {
+    display: none;
+  }
+}
+
+/* Empty state */
+.admin-empty-state {
+  text-align: center;
+  padding: 40px 16px;
+  color: #64748b;
+}
+
+.admin-empty-state .empty-icon {
+  font-size: 2rem;
+  margin-bottom: 8px;
+  opacity: 0.7;
+}
+
+.admin-empty-state .empty-title {
+  font-weight: 700;
+  color: #0f172a;
+  font-size: 1rem;
+  margin-bottom: 4px;
+}
+
+/* Demo badge */
+.admin-demo-badge {
+  background: rgba(245, 158, 11, 0.15);
+  color: #b45309;
+  font-size: 0.68rem;
+  font-weight: 700;
+  border-radius: 999px;
+  padding: 3px 8px;
+  display: inline-block;
+  margin-left: 6px;
+  vertical-align: middle;
+}
+
+/* Role badges */
+.admin-role-badge {
+  font-size: 0.74rem;
+  font-weight: 600;
+  border-radius: 999px;
+  padding: 4px 10px;
+  display: inline-block;
+}
+
+.role-buyer {
+  background: rgba(37, 99, 235, 0.12);
+  color: #1d4ed8;
+}
+
+.role-seller {
+  background: rgba(5, 150, 105, 0.12);
+  color: #047857;
+}
+
+.role-both {
+  background: rgba(124, 58, 237, 0.12);
+  color: #6d28d9;
+}
+
+/* Status badges */
+.admin-status-badge {
+  font-size: 0.74rem;
+  font-weight: 600;
+  border-radius: 999px;
+  padding: 4px 10px;
+  display: inline-block;
+}
+
+.status-available {
+  background: rgba(5, 150, 105, 0.12);
+  color: #047857;
+}
+
+.status-unavailable,
+.status-inactive {
+  background: rgba(100, 116, 139, 0.14);
+  color: #475569;
+}
+
+.status-sold {
+  background: rgba(225, 29, 72, 0.12);
+  color: #be123c;
+}
+
+.status-active,
+.status-login {
+  background: rgba(5, 150, 105, 0.12);
+  color: #047857;
+}
+
+.status-loggedout {
+  background: rgba(100, 116, 139, 0.14);
+  color: #475569;
+}
+
+/* Responsive filters stack */
+@media (max-width: 575px) {
+  .admin-filters .col-12 {
+    width: 100%;
+  }
+}
+
+/* User detail modal rows */
+.admin-detail-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 0;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.admin-detail-row:last-child {
+  border-bottom: 0;
+}
+
+.admin-detail-row .detail-label {
+  color: #64748b;
+  font-size: 0.82rem;
+}
+
+.admin-detail-row .detail-value {
+  color: #0f172a;
+  font-weight: 600;
+  font-size: 0.86rem;
+  text-align: right;
+  word-break: break-word;
 }

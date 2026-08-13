@@ -15,6 +15,7 @@ export const STORAGE_KEYS = {
   currentUserId: 'currentUserId',
   pendingOtpMobile: 'broker-streets-pending-otp-mobile',
   otpSession: 'broker-streets-otp-session',
+  adminActivity: 'broker-streets-admin-activity',
 };
 
 const FALLBACK_LAND_IMAGE = logo;
@@ -90,8 +91,17 @@ export function writeStorage(key, value) {
       if (key === STORAGE_KEYS.buyerLeads) {
         window.dispatchEvent(new Event(BUYER_LEADS_CHANGED_EVENT));
       }
+      if (key === STORAGE_KEYS.sellerLeads) {
+        window.dispatchEvent(new Event(SELLER_LEADS_CHANGED_EVENT));
+      }
+      if (key === STORAGE_KEYS.users) {
+        window.dispatchEvent(new Event(USERS_CHANGED_EVENT));
+      }
       if (key === STORAGE_KEYS.notifications) {
         window.dispatchEvent(new Event(NOTIFICATIONS_CHANGED_EVENT));
+      }
+      if (key === STORAGE_KEYS.adminActivity) {
+        window.dispatchEvent(new Event(ADMIN_ACTIVITY_CHANGED_EVENT));
       }
     }
     return true;
@@ -104,7 +114,10 @@ const SAVED_PROPERTIES_EVENT = 'broker-streets-saved-properties-changed';
 const RECENTLY_VIEWED_EVENT = 'broker-streets-recently-viewed-changed';
 const LISTINGS_CHANGED_EVENT = 'broker-streets-listings-changed';
 const BUYER_LEADS_CHANGED_EVENT = 'broker-streets-buyer-leads-changed';
+const SELLER_LEADS_CHANGED_EVENT = 'broker-streets-seller-leads-changed';
+const USERS_CHANGED_EVENT = 'broker-streets-users-changed';
 const NOTIFICATIONS_CHANGED_EVENT = 'broker-streets-notifications-changed';
+const ADMIN_ACTIVITY_CHANGED_EVENT = 'broker-streets-admin-activity-changed';
 
 function notifySavedPropertiesChanged() {
   if (typeof window !== 'undefined' && window.dispatchEvent) {
@@ -133,6 +146,12 @@ function notifyBuyerLeadsChanged() {
 function notifyNotificationsChanged() {
   if (typeof window !== 'undefined' && window.dispatchEvent) {
     window.dispatchEvent(new Event(NOTIFICATIONS_CHANGED_EVENT));
+  }
+}
+
+function notifyAdminActivityChanged() {
+  if (typeof window !== 'undefined' && window.dispatchEvent) {
+    window.dispatchEvent(new Event(ADMIN_ACTIVITY_CHANGED_EVENT));
   }
 }
 
@@ -209,7 +228,7 @@ export function onSavedPropertiesChanged(handler) {
     window.addEventListener(SAVED_PROPERTIES_EVENT, handler);
     return () => window.removeEventListener(SAVED_PROPERTIES_EVENT, handler);
   }
-  return () => {};
+  return () => { };
 }
 
 export function onRecentlyViewedChanged(handler) {
@@ -217,7 +236,7 @@ export function onRecentlyViewedChanged(handler) {
     window.addEventListener(RECENTLY_VIEWED_EVENT, handler);
     return () => window.removeEventListener(RECENTLY_VIEWED_EVENT, handler);
   }
-  return () => {};
+  return () => { };
 }
 
 export function onListingsChanged(handler) {
@@ -225,7 +244,7 @@ export function onListingsChanged(handler) {
     window.addEventListener(LISTINGS_CHANGED_EVENT, handler);
     return () => window.removeEventListener(LISTINGS_CHANGED_EVENT, handler);
   }
-  return () => {};
+  return () => { };
 }
 
 export function onBuyerLeadsChanged(handler) {
@@ -233,7 +252,23 @@ export function onBuyerLeadsChanged(handler) {
     window.addEventListener(BUYER_LEADS_CHANGED_EVENT, handler);
     return () => window.removeEventListener(BUYER_LEADS_CHANGED_EVENT, handler);
   }
-  return () => {};
+  return () => { };
+}
+
+export function onSellerLeadsChanged(handler) {
+  if (typeof window !== 'undefined' && window.addEventListener) {
+    window.addEventListener(SELLER_LEADS_CHANGED_EVENT, handler);
+    return () => window.removeEventListener(SELLER_LEADS_CHANGED_EVENT, handler);
+  }
+  return () => { };
+}
+
+export function onUsersChanged(handler) {
+  if (typeof window !== 'undefined' && window.addEventListener) {
+    window.addEventListener(USERS_CHANGED_EVENT, handler);
+    return () => window.removeEventListener(USERS_CHANGED_EVENT, handler);
+  }
+  return () => { };
 }
 
 export function onNotificationsChanged(handler) {
@@ -241,7 +276,15 @@ export function onNotificationsChanged(handler) {
     window.addEventListener(NOTIFICATIONS_CHANGED_EVENT, handler);
     return () => window.removeEventListener(NOTIFICATIONS_CHANGED_EVENT, handler);
   }
-  return () => {};
+  return () => { };
+}
+
+export function onAdminActivityChanged(handler) {
+  if (typeof window !== 'undefined' && window.addEventListener) {
+    window.addEventListener(ADMIN_ACTIVITY_CHANGED_EVENT, handler);
+    return () => window.removeEventListener(ADMIN_ACTIVITY_CHANGED_EVENT, handler);
+  }
+  return () => { };
 }
 
 export function readUsers() {
@@ -298,5 +341,47 @@ export function readPendingOtpMobile() {
 export function writePendingOtpMobile(mobile) {
   const normalizedMobile = String(mobile || '').replace(/\D/g, '');
   return writeStorage(STORAGE_KEYS.pendingOtpMobile, normalizedMobile);
+}
+
+// ============================================================
+// ADMIN ACTIVITY LOG (DEVELOPMENT ONLY)
+// ============================================================
+// ⚠️ SECURITY NOTICE — DEVELOPMENT-ONLY IMPLEMENTATION ⚠️
+// This is a pure frontend Vite SPA with localStorage authentication.
+// Admin login/logout activity logging is implemented in frontend
+// JavaScript for DEVELOPMENT ONLY. This is NOT secure for production.
+// For production, admin activity audit logs MUST be moved to a
+// backend/database.
+
+export function getAdminActivity() {
+  return readStorage(STORAGE_KEYS.adminActivity, []);
+}
+
+/**
+ * Append an admin activity entry.
+ * Deduplicates identical entries (same mobile, type, loginAt) so React
+ * StrictMode double-invocation or rapid re-renders never create duplicates.
+ */
+export function appendAdminActivity(entry) {
+  if (!entry || !entry.mobile) return getAdminActivity();
+  const current = getAdminActivity();
+  const list = Array.isArray(current) ? current : [];
+  const duplicate = list.some((item) =>
+    String(item.mobile) === String(entry.mobile) &&
+    String(item.type) === String(entry.type) &&
+    String(item.loginAt || item.logoutAt || '') === String(entry.loginAt || entry.logoutAt || '')
+  );
+  if (duplicate) return list;
+  const next = [entry, ...list];
+  writeStorage(STORAGE_KEYS.adminActivity, next);
+  return next;
+}
+
+export function updateAdminActivity(updatedEntry) {
+  if (!updatedEntry || !updatedEntry.id) return getAdminActivity();
+  const current = getAdminActivity();
+  const next = current.map((item) => (String(item.id) === String(updatedEntry.id) ? updatedEntry : item));
+  writeStorage(STORAGE_KEYS.adminActivity, next);
+  return next;
 }
 

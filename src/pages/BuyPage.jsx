@@ -45,7 +45,12 @@ function BuyPage() {
   const [contactModal, setContactModal] = useState(null);
   const [listings, setListings] = useState(() => {
     const stored = readStorage(STORAGE_KEYS.listings, []);
-    return Array.isArray(stored) && stored.length ? stored : sampleProperties;
+    const source = Array.isArray(stored) && stored.length ? stored : sampleProperties;
+    const uniqueMap = new Map();
+    (Array.isArray(source) ? source : []).forEach((item) => {
+      if (item && item.id && !uniqueMap.has(String(item.id))) uniqueMap.set(String(item.id), item);
+    });
+    return Array.from(uniqueMap.values());
   });
   const perPage = 9;
   const districtOptions = ['All districts', ...gujaratDistricts];
@@ -66,12 +71,20 @@ function BuyPage() {
     setSelectedVillage('All villages');
   }, [selectedTaluka]);
 
+  const dedupeListings = (source) => {
+    const uniqueMap = new Map();
+    (Array.isArray(source) ? source : []).forEach((item) => {
+      if (item && item.id && !uniqueMap.has(String(item.id))) uniqueMap.set(String(item.id), item);
+    });
+    return Array.from(uniqueMap.values());
+  };
+
   useEffect(() => {
     const stored = readStorage(STORAGE_KEYS.listings, []);
-    setListings(Array.isArray(stored) && stored.length ? stored : sampleProperties);
+    setListings(dedupeListings(Array.isArray(stored) && stored.length ? stored : sampleProperties));
     const cleanup = onListingsChanged(() => {
       const updated = readStorage(STORAGE_KEYS.listings, []);
-      setListings(Array.isArray(updated) && updated.length ? updated : sampleProperties);
+      setListings(dedupeListings(Array.isArray(updated) && updated.length ? updated : sampleProperties));
     });
     return cleanup;
   }, []);
@@ -125,7 +138,8 @@ function BuyPage() {
         (landArea === '1000–5000 Sq Ft' && size >= 1000 && size <= 5000) ||
         (landArea === '5000+ Sq Ft' && size > 5000);
       const isSold = String(property.status || 'Available').toLowerCase() === 'sold';
-      const matchesStatus = showSoldProperties || !isSold;
+      const isUnavailable = String(property.status || 'Available').toLowerCase() === 'unavailable';
+      const matchesStatus = showSoldProperties || (!isSold && !isUnavailable);
 
       return matchesSearch && matchesDistrict && matchesTaluka && matchesVillage && matchesType && matchesBudget && matchesArea && matchesStatus;
     });

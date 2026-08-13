@@ -31,7 +31,7 @@ import { useLanguage } from '../i18n/LanguageContext';
 function AppRoutes() {
   return (
     <Routes>
-      <Route path="/admin/*" element={<AdminApp />} />
+      <Route path="/master-group/*" element={<AdminApp />} />
       <Route path="/" element={<Layout />}>
         <Route index element={<RegisterPage />} />
         <Route path="home" element={<HomePage />} />

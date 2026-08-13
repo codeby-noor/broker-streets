@@ -160,7 +160,7 @@ function SellerForm() {
   };
 
   return <div className="-mx-4 -mt-8 bg-[#FFFEFE] pb-20 sm:-mx-6 lg:-mx-8">
-    <section className="bg-ink px-4 py-12 text-white sm:px-10 sm:py-16 lg:px-12"><div className="mx-auto max-w-5xl"><p className="eyebrow text-blue-200">{t('sellerForm.title')}</p><h1 className="mt-4 text-3xl font-bold sm:text-6xl">{t('sellerForm.smallHeading')}</h1><p className="mt-4 max-w-2xl text-sm text-white/70 sm:text-base">{t('sellerForm.authMessage')}</p></div></section>
+    <section className="bg-ink px-4 py-12 text-white sm:px-10 sm:py-16 lg:px-12"><div className="mx-auto max-w-5xl"><p className="eyebrow text-blue-200">{t('sellerForm.title')}</p><h1 className="mt-4 text-3xl font-bold sm:text-6xl">{t('sellerForm.smallHeading')}</h1><p className="mt-4 max-w-2xl text-sm text-white/70 sm:text-base">{t('sellerForm.authMessage')}</p><p className="mt-3 max-w-2xl text-sm text-white/60 sm:text-base">{t('sellerForm.helpDescription')}</p></div></section>
     <section className="mx-auto -mt-8 max-w-4xl px-4 sm:px-6">
       <form onSubmit={handleSubmit(submit)} className="space-y-6 rounded-[32px] bg-white p-5 shadow-xl sm:p-10">
         <div>
@@ -200,6 +200,12 @@ function SellerForm() {
               {...register('subDistrict', { required: t('sellerForm.talukaRequired') })}
               className="field-control w-full"
               disabled={!selectedDistrict}
+              value={watch('subDistrict') || ''}
+              onChange={(event) => {
+                setValue('subDistrict', event.target.value, { shouldDirty: true, shouldValidate: true });
+                if (event.target.value) clearErrors('subDistrict');
+                if (event.target.value) event.target.blur();
+              }}
             >
               <option value="">{selectedDistrict ? t('sellerForm.selectTaluka') : t('sellerForm.selectDistrictFirst')}</option>
               {subDistrictOptions.map((subDistrict) => (
@@ -221,6 +227,7 @@ function SellerForm() {
               onChange={(event) => {
                 setValue('village', event.target.value, { shouldDirty: true, shouldValidate: true });
                 if (event.target.value) clearErrors('village');
+                if (event.target.value) event.target.blur();
               }}
             >
               <option value="">{selectedTaluka ? t('sellerForm.selectVillage') : t('sellerForm.selectTalukaFirst')}</option>

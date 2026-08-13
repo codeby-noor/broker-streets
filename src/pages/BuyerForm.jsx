@@ -258,7 +258,12 @@ function BuyerForm() {
               <select
                 name="taluka"
                 value={form.taluka}
-                onChange={handleChange}
+                onChange={(event) => {
+                  handleChange(event);
+                  if (event.target.value) {
+                    event.target.blur();
+                  }
+                }}
                 className={`field-control w-full ${errors.taluka ? 'border-red-400' : ''}`}
                 disabled={!form.district}
               >
