@@ -949,3 +949,60 @@
     height: 170px;
   }
 }
+
+/* ============================================================
+   MASTER GROUP — LANGUAGE TOGGLE (EN | ગુજરાતી)
+   ============================================================ */
+.admin-lang-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px;
+  border-radius: 999px;
+  background: #eef1f6;
+  border: 1px solid #e2e8f0;
+  flex-shrink: 0;
+}
+
+.admin-lang-btn {
+  border: 0;
+  background: transparent;
+  color: #64748b;
+  font-size: 0.72rem;
+  font-weight: 700;
+  line-height: 1;
+  padding: 6px 10px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.admin-lang-btn:hover {
+  color: #0f172a;
+}
+
+.admin-lang-btn.active {
+  background: #2563eb;
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.35);
+}
+
+/* Login page variant — slightly larger for standalone screen */
+.admin-login-page .admin-lang-toggle {
+  background: rgba(255, 255, 255, 0.7);
+  border-color: rgba(226, 232, 240, 0.9);
+}
+
+.admin-login-page .admin-lang-btn {
+  font-size: 0.78rem;
+  padding: 7px 14px;
+}
+
+/* Mobile: keep compact and prevent horizontal scroll */
+@media (max-width: 575.98px) {
+  .admin-lang-btn {
+    padding: 5px 8px;
+    font-size: 0.68rem;
+  }
+}

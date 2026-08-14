@@ -24,6 +24,7 @@ import {
   verifyMasterGroupOtp,
 } from './masterGroupAuth';
 import { useLanguage } from '../i18n/LanguageContext';
+import AdminLanguageToggle from './AdminLanguageToggle';
 import {
   ADMIN_NAMES,
   deriveUserRole,
@@ -109,7 +110,7 @@ function AdminLogin() {
     setCooldown(30);
     setLoading(false);
     setStep('otp');
-    toast.success('OTP sent successfully');
+    toast.success(t('admin.otpSentSuccess'));
   };
 
   const verifyOtp = (event) => {
@@ -139,7 +140,7 @@ function AdminLogin() {
       sessionInfo: t('admin.sessionStartedVia'),
     });
     setLoading(false);
-    toast.success('Master Group authenticated successfully');
+    toast.success(t('admin.authenticated'));
     navigate('/master-group', { replace: true });
   };
 
@@ -155,7 +156,7 @@ function AdminLogin() {
     setDevOtp(result.devOtp || null);
     setCooldown(30);
     setOtp('');
-    toast.success('OTP resent successfully');
+    toast.success(t('admin.otpResentSuccess'));
   };
 
   const goBackToMobile = () => { setStep('mobile'); setOtp(''); setDevOtp(null); };
@@ -164,6 +165,9 @@ function AdminLogin() {
     <div className="admin-login-page">
       <div className="card form-card w-100" style={{ maxWidth: 480 }}>
         <div className="card-body p-4 p-md-5">
+          <div className="d-flex justify-content-end mb-2">
+            <AdminLanguageToggle />
+          </div>
           <div className="text-center mb-4">
             <div className="avatar mx-auto mb-3">BS</div>
             <h2 className="fw-bold page-title">{t('admin.loginTitle')}</h2>
@@ -177,10 +181,10 @@ function AdminLogin() {
                 <input className="form-control input-glow" type="tel" inputMode="numeric" maxLength={10} value={mobile} onChange={handleMobileChange} placeholder={t('admin.mobilePlaceholder')} />
               </div>
               <button className="btn btn-primary w-100 py-2" type="submit" disabled={loading}>
-                {loading ? 'Sending OTP...' : t('admin.sendOtp')}
+                {loading ? t('admin.sendingOtp') : t('admin.sendOtp')}
               </button>
               <div className="text-center mt-3 text-muted small">
-                <span className="badge bg-primary-subtle text-primary">Local Demo</span>
+                <span className="badge bg-primary-subtle text-primary">{t('admin.localDemo')}</span>
               </div>
             </form>
           ) : (
@@ -197,7 +201,7 @@ function AdminLogin() {
                 </div>
               ) : null}
               <button className="btn btn-primary w-100 py-2" type="submit" disabled={loading}>
-                {loading ? 'Verifying...' : t('admin.verifyLogin')}
+                {loading ? t('admin.verifying') : t('admin.verifyLogin')}
               </button>
               <div className="d-flex justify-content-between align-items-center mt-3">
                 <button className="btn btn-link p-0" type="button" onClick={goBackToMobile}>{t('admin.changeNumber')}</button>
@@ -300,7 +304,7 @@ function Dashboard() {
       <div className="d-flex justify-content-between align-items-center mb-4">
         <div>
           <h2 className="fw-bold mb-1 page-title">{t('admin.dashboard')}</h2>
-          <p className="text-muted mb-0">Overview of your land portfolio, buyers, sellers and registered users.</p>
+          <p className="text-muted mb-0">{t('admin.overview')}</p>
         </div>
         <div className="text-end">
           <div className="fw-semibold">{new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</div>
@@ -330,7 +334,7 @@ function Dashboard() {
           <div className="card chart-card h-100">
             <div className="card-body">
               <h5 className="fw-semibold mb-1">{t('admin.propertiesByCity')}</h5>
-              <p className="text-muted small mb-3">Properties grouped by city.</p>
+              <p className="text-muted small mb-3">{t('admin.propertiesGroupedByCity')}</p>
               {cityData.length ? (
                 <>
                   <div className="city-chart-wrap">
@@ -345,7 +349,7 @@ function Dashboard() {
                               data-city={d.label}
                               data-count={d.count}
                             >
-                              <span className="city-bar-tooltip">{d.label}: {d.count} property</span>
+                              <span className="city-bar-tooltip">{d.label}: {d.count} {t('admin.propertySingular')}</span>
                             </div>
                           </div>
                           <div className="city-bar-label">{d.label}</div>
@@ -362,12 +366,12 @@ function Dashboard() {
                   <div className="city-summary">
                     <div className="city-summary-item">
                       <span className="city-summary-value">2</span>
-                      <span className="city-summary-label">Total Cities</span>
+                      <span className="city-summary-label">{t('admin.totalCities')}</span>
                     </div>
                     <div className="city-summary-divider" />
                     <div className="city-summary-item">
                       <span className="city-summary-value">{totalCityProperties}</span>
-                      <span className="city-summary-label">Total Properties</span>
+                      <span className="city-summary-label">{t('admin.totalProperties')}</span>
                     </div>
                   </div>
                 </>
@@ -379,7 +383,7 @@ function Dashboard() {
           <div className="card chart-card h-100">
             <div className="card-body">
               <h5 className="fw-semibold mb-1">{t('admin.propertyStatusOverview')}</h5>
-              <p className="text-muted small mb-3">Current availability of all properties.</p>
+              <p className="text-muted small mb-3">{t('admin.currentAvailability')}</p>
               {totalStatus > 0 ? (
                 <div className="donut-chart-wrap">
                   <div className="donut-chart">
@@ -399,7 +403,7 @@ function Dashboard() {
                         />
                       ))}
                       <text x="90" y="86" textAnchor="middle" className="donut-total">{totalStatus}</text>
-                      <text x="90" y="104" textAnchor="middle" className="donut-total-label">Properties</text>
+                      <text x="90" y="104" textAnchor="middle" className="donut-total-label">{t('admin.propertiesLabel')}</text>
                     </svg>
                   </div>
                   <div className="donut-legend">
@@ -513,7 +517,7 @@ function PropertiesPage({ navigate }) {
         <div className="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
           <div>
             <h4 className="fw-bold mb-1">{t('admin.properties')}</h4>
-            <p className="text-muted mb-0">Search, filter, sort and manage listings in one place.</p>
+            <p className="text-muted mb-0">{t('admin.manageListings')}</p>
           </div>
           <button className="btn btn-primary" onClick={() => navigate('/master-group/add-property')}>{t('admin.addProperty')}</button>
         </div>
@@ -613,7 +617,7 @@ function PropertiesPage({ navigate }) {
         ) : null}
 
         <div className="d-flex justify-content-between align-items-center mt-3">
-          <span className="text-muted small">{filtered.length} listings</span>
+          <span className="text-muted small">{filtered.length} {t('admin.listings')}</span>
         </div>
       </div>
 
@@ -670,7 +674,7 @@ function AddPropertyPage() {
   const submit = (event) => {
     event.preventDefault();
     if (!form.title.trim() || !form.district.trim() || !form.type || !form.sellerName.trim()) {
-      toast.error('Please complete title, type, district and seller fields.');
+      toast.error(t('admin.pleaseCompleteFields'));
       return;
     }
     const now = new Date().toISOString();
@@ -688,7 +692,7 @@ function AddPropertyPage() {
       location: form.district,
       city: form.district,
       address: [form.village, form.taluka, form.district, 'Gujarat'].filter(Boolean).join(', '),
-      price: form.priceAmount ? formatPrice(form.priceAmount) : 'Price on request',
+      price: form.priceAmount ? formatPrice(form.priceAmount) : t('admin.priceOnRequest'),
       priceAmount: form.priceAmount,
       priceUnit: form.priceUnit,
       landArea: form.area,
@@ -723,31 +727,31 @@ function AddPropertyPage() {
     <div className="card table-card">
       <div className="card-body">
         <h4 className="fw-bold mb-1">{editing ? t('admin.edit') : t('admin.addProperty')}</h4>
-        <p className="text-muted mb-4">Create or update a land listing that will appear in the customer marketplace.</p>
+        <p className="text-muted mb-4">{t('admin.createUpdateListing')}</p>
         <form onSubmit={submit}>
           <div className="row g-3">
             <div className="col-12 col-md-6"><label className="form-label">{t('admin.title')} *</label><input className="form-control input-glow" value={form.title} onChange={(e) => update('title', e.target.value)} required /></div>
             <div className="col-12 col-md-6">
               <label className="form-label">{t('admin.propertyType')} *</label>
               <select className="form-select input-glow" value={form.type} onChange={(e) => update('type', e.target.value)} required>
-                <option value="">Select type</option>
+                <option value="">{t('admin.selectType')}</option>
                 <option value="Agricultural Land">Agricultural Land</option>
                 <option value="Non-Agricultural Land">Non-Agricultural Land</option>
               </select>
             </div>
-            <div className="col-6 col-md-3"><label className="form-label">{t('admin.price')}</label><input className="form-control input-glow" type="number" value={form.priceAmount} onChange={(e) => update('priceAmount', e.target.value)} placeholder="Amount" /></div>
+            <div className="col-6 col-md-3"><label className="form-label">{t('admin.price')}</label><input className="form-control input-glow" type="number" value={form.priceAmount} onChange={(e) => update('priceAmount', e.target.value)} placeholder={t('admin.amount')} /></div>
             <div className="col-6 col-md-3">
-              <label className="form-label">{t('admin.price')} Unit</label>
+              <label className="form-label">{t('admin.priceUnit')}</label>
               <select className="form-select input-glow" value={form.priceUnit} onChange={(e) => update('priceUnit', e.target.value)}>
-                <option value="">Unit</option>
+                <option value="">{t('admin.unit')}</option>
                 <option value="Vigha">Vigha</option>
                 <option value="sq.yard (var)">Var (Sq.Yard)</option>
                 <option value="Sq.Ft">Sq.Ft</option>
               </select>
             </div>
-            <div className="col-12 col-md-6"><label className="form-label">{t('admin.location')} / {t('common.district')} *</label><input className="form-control input-glow" value={form.district} onChange={(e) => update('district', e.target.value)} placeholder="e.g. Surat, Navsari" required /></div>
-            <div className="col-6 col-md-3"><label className="form-label">{t('common.taluka')}</label><input className="form-control input-glow" value={form.taluka} onChange={(e) => update('taluka', e.target.value)} placeholder="Taluka" /></div>
-            <div className="col-6 col-md-3"><label className="form-label">{t('common.village')}</label><input className="form-control input-glow" value={form.village} onChange={(e) => update('village', e.target.value)} placeholder="Village" /></div>
+            <div className="col-12 col-md-6"><label className="form-label">{t('admin.location')} / {t('common.district')} *</label><input className="form-control input-glow" value={form.district} onChange={(e) => update('district', e.target.value)} placeholder={`e.g. ${t('admin.surat')}, ${t('admin.navsari')}`} required /></div>
+            <div className="col-6 col-md-3"><label className="form-label">{t('common.taluka')}</label><input className="form-control input-glow" value={form.taluka} onChange={(e) => update('taluka', e.target.value)} placeholder={t('admin.taluka')} /></div>
+            <div className="col-6 col-md-3"><label className="form-label">{t('common.village')}</label><input className="form-control input-glow" value={form.village} onChange={(e) => update('village', e.target.value)} placeholder={t('admin.village')} /></div>
             <div className="col-12 col-md-6"><label className="form-label">{t('admin.area')}</label><input className="form-control input-glow" value={form.area} onChange={(e) => update('area', e.target.value)} placeholder="e.g. 2 Vigha" /></div>
             <div className="col-12 col-md-6">
               <label className="form-label">{t('admin.status')}</label>
@@ -760,8 +764,8 @@ function AddPropertyPage() {
             <div className="col-12"><label className="form-label">{t('admin.description')}</label><textarea className="form-control input-glow" rows="3" value={form.description} onChange={(e) => update('description', e.target.value)} /></div>
             <div className="col-12 col-md-4"><label className="form-label">{t('admin.seller')} *</label><input className="form-control input-glow" value={form.sellerName} onChange={(e) => update('sellerName', e.target.value)} required /></div>
             <div className="col-12 col-md-4"><label className="form-label">{t('admin.sellerMobile')}</label><input className="form-control input-glow" type="tel" value={form.sellerPhone} onChange={(e) => update('sellerPhone', e.target.value.replace(/\D/g, '').slice(0, 10))} /></div>
-            <div className="col-12 col-md-4"><label className="form-label">Email</label><input className="form-control input-glow" type="email" value={form.sellerEmail} onChange={(e) => update('sellerEmail', e.target.value)} /></div>
-            <div className="col-12"><label className="form-label">Image URL</label><input className="form-control input-glow" value={form.image} onChange={(e) => update('image', e.target.value)} placeholder="https://..." /></div>
+            <div className="col-12 col-md-4"><label className="form-label">{t('admin.email')}</label><input className="form-control input-glow" type="email" value={form.sellerEmail} onChange={(e) => update('sellerEmail', e.target.value)} /></div>
+            <div className="col-12"><label className="form-label">{t('admin.imageUrl')}</label><input className="form-control input-glow" value={form.image} onChange={(e) => update('image', e.target.value)} placeholder="https://..." /></div>
           </div>
           <div className="mt-4 d-flex justify-content-end gap-2">
             <button className="btn btn-outline-secondary" type="button" onClick={() => navigate('/master-group/properties')}>{t('admin.cancel')}</button>
@@ -825,7 +829,7 @@ function UsersPage() {
         <div className="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
           <div>
             <h4 className="fw-bold mb-1">{t('admin.users')}</h4>
-            <p className="text-muted mb-0">Manage all registered buyers and sellers.</p>
+            <p className="text-muted mb-0">{t('admin.manageUsers')}</p>
           </div>
         </div>
 
@@ -941,7 +945,7 @@ function UsersPage() {
                   </div>
                 </div>
                 <div className="admin-detail-row"><span className="detail-label">{t('admin.mobile')}</span><span className="detail-value">{detail.mobile}</span></div>
-                <div className="admin-detail-row"><span className="detail-label">Email</span><span className="detail-value">{detail.email || '—'}</span></div>
+                <div className="admin-detail-row"><span className="detail-label">{t('admin.email')}</span><span className="detail-value">{detail.email || '—'}</span></div>
                 <div className="admin-detail-row"><span className="detail-label">{t('admin.registeredDate')}</span><span className="detail-value">{formatDate(detail.createdAt)}</span></div>
                 <div className="admin-detail-row"><span className="detail-label">{t('admin.location')}</span><span className="detail-value">{detail.city || detail.district || '—'}</span></div>
                 <div className="admin-detail-row"><span className="detail-label">{t('admin.accountStatus')}</span><span className={`admin-status-badge ${statusBadgeClass(detail.status)}`}>{detail.status || '—'}</span></div>
@@ -949,7 +953,7 @@ function UsersPage() {
                 <div className="admin-detail-row"><span className="detail-label">{t('admin.listedProperties')}</span><span className="detail-value">{detail.sellerCount || 0}</span></div>
               </div>
               <div className="modal-footer border-0">
-                <button className="btn btn-outline-secondary" onClick={() => setDetail(null)}>Close</button>
+                <button className="btn btn-outline-secondary" onClick={() => setDetail(null)}>{t('admin.close')}</button>
               </div>
             </div>
           </div>
@@ -1081,7 +1085,7 @@ function AdminActivityPage() {
               <tbody>
                 {filtered.map((entry) => (
                   <tr key={entry.id}>
-                    <td className="fw-semibold">{ADMIN_NAMES[entry.mobile] || 'Admin'}</td>
+                    <td className="fw-semibold">{ADMIN_NAMES[entry.mobile] || t('admin.admin')}</td>
                     <td>{maskMobile(entry.mobile)}</td>
                     <td><span className="admin-role-badge role-both">{entry.role === 'super-admin' ? t('admin.superAdmin') : t('admin.masterGroupAdmin')}</span></td>
                     <td>{formatDateTime(entry.loginAt)}</td>
@@ -1099,7 +1103,7 @@ function AdminActivityPage() {
           {filtered.map((entry) => (
             <div key={entry.id} className="admin-mobile-card">
               <div className="card-head">
-                <span className="fw-semibold">{ADMIN_NAMES[entry.mobile] || 'Admin'}</span>
+                <span className="fw-semibold">{ADMIN_NAMES[entry.mobile] || t('admin.admin')}</span>
                 <span className={`admin-status-badge ${statusBadgeClass(entry.status)}`}>{entry.status === 'Login' ? t('admin.active') : t('admin.loggedOut')}</span>
               </div>
               <div className="mt-2">
@@ -1166,7 +1170,7 @@ function AdminShell({ onLogout }) {
               <div className="avatar">BS</div>
               <div>
                 <div className="fw-bold">Broker Streets</div>
-                <div className="small text-white-50">Master Group Portal</div>
+                <div className="small text-white-50">{t('admin.masterGroupPortal')}</div>
               </div>
             </div>
           </div>
@@ -1191,6 +1195,7 @@ function AdminShell({ onLogout }) {
               </div>
             </div>
             <div className="d-flex align-items-center gap-2">
+              <AdminLanguageToggle />
               <NavLink to="/master-group/profile" className="btn btn-outline-secondary btn-sm">{t('admin.profile')}</NavLink>
             </div>
           </header>
@@ -1240,7 +1245,7 @@ export default function AdminApp() {
       });
     }
     clearMasterGroupSession();
-    toast.info('Master Group logged out');
+    toast.info(t('admin.loggedOutMsg'));
     navigate('/master-group/login');
   };
 
