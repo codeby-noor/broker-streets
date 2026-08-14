@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import LargeButton from '../components/LargeButton';
@@ -27,6 +27,8 @@ function BuyerForm() {
   const [isRecording, setIsRecording] = useState(false);
   const [audioUrl, setAudioUrl] = useState('');
   const [villageSearch, setVillageSearch] = useState('');
+  const [villageDropdownOpen, setVillageDropdownOpen] = useState(false);
+  const villageDropdownRef = useRef(null);
   const propertyTypeOptions = useMemo(() => [
     { value: 'Agricultural Land', label: t('buyerForm.agriculturalLand') },
     { value: 'Non-Agricultural Land', label: t('buyerForm.nonAgriculturalLand') },
@@ -40,6 +42,16 @@ function BuyerForm() {
 
   const mediaRecorderRef = useRef(null);
   const chunksRef = useRef([]);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (villageDropdownRef.current && !villageDropdownRef.current.contains(event.target)) {
+        setVillageDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -55,6 +67,7 @@ function BuyerForm() {
     });
 
     setVillageSearch('');
+    setVillageDropdownOpen(false);
     setErrors((current) => ({
       ...current,
       [name]: '',
@@ -63,16 +76,31 @@ function BuyerForm() {
   };
 
   const handleVillageToggle = (village) => {
-    setForm((current) => {
-      const selectedVillages = current.preferredVillages || [];
-      const alreadySelected = selectedVillages.includes(village);
-      return {
-        ...current,
-        preferredVillages: alreadySelected
-          ? selectedVillages.filter((item) => item !== village)
-          : [...selectedVillages, village],
-      };
-    });
+    const selectedVillages = form.preferredVillages || [];
+    const alreadySelected = selectedVillages.includes(village);
+
+    // Block third village selection
+    if (!alreadySelected && selectedVillages.length >= 2) {
+      return;
+    }
+
+    const nextVillages = alreadySelected
+      ? selectedVillages.filter((item) => item !== village)
+      : [...selectedVillages, village];
+
+    setForm((current) => ({ ...current, preferredVillages: nextVillages }));
+
+    // Close dropdown after 2nd selection
+    if (!alreadySelected && nextVillages.length >= 2) {
+      setVillageDropdownOpen(false);
+    }
+  };
+
+  const handleRemoveVillage = (village) => {
+    setForm((current) => ({
+      ...current,
+      preferredVillages: (current.preferredVillages || []).filter((item) => item !== village),
+    }));
   };
 
   const validate = () => {
@@ -137,24 +165,15 @@ function BuyerForm() {
   const filteredVillageOptions = useMemo(() => {
     const query = villageSearch.trim().toLowerCase();
     if (!query) return allVillageOptions;
-    return allVillageOptions.filter((village) => village.toLowerCase().includes(query));
-  }, [allVillageOptions, villageSearch]);
+    return allVillageOptions.filter((village) => {
+      if (village.toLowerCase().includes(query)) return true;
+      const gujaratiName = t(village);
+      return Boolean(gujaratiName && gujaratiName !== village && gujaratiName.toLowerCase().includes(query));
+    });
+  }, [allVillageOptions, villageSearch, t]);
 
   const selectedVillageCount = form.preferredVillages?.length || 0;
 
-  const handleSelectAllVisible = () => {
-    setForm((current) => ({
-      ...current,
-      preferredVillages: Array.from(new Set([...(current.preferredVillages || []), ...filteredVillageOptions])),
-    }));
-  };
-
-  const handleClearAllVisible = () => {
-    setForm((current) => ({
-      ...current,
-      preferredVillages: (current.preferredVillages || []).filter((village) => !filteredVillageOptions.includes(village)),
-    }));
-  };
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -225,19 +244,14 @@ function BuyerForm() {
           <div className="space-y-6">
             <label className="block">
               <span className="field-label">{t('buyerForm.preferredState')} *</span>
-              <select
-                name="state"
-                value={form.state}
-                onChange={handleChange}
-                className={`field-control w-full ${errors.state ? 'border-red-400' : ''}`}
-              >
-                {gujaratStateOptions.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {t(option.label)}
-                  </option>
-                ))}
-              </select>
-              {errors.state && <p className="error-style">{errors.state}</p>}
+              <input
+                type="text"
+                value={t('Gujarat')}
+                readOnly
+                disabled
+                className="field-control w-full border border-slate-200 bg-slate-100/80 font-semibold text-slate-700 cursor-not-allowed"
+              />
+              <input type="hidden" name="state" value="Gujarat" />
             </label>
 
             <label className="block">
@@ -263,7 +277,12 @@ function BuyerForm() {
               <select
                 name="taluka"
                 value={form.taluka}
-                onChange={handleChange}
+                onChange={(event) => {
+                  handleChange(event);
+                  if (event.target.value) {
+                    event.target.blur();
+                  }
+                }}
                 className={`field-control w-full ${errors.taluka ? 'border-red-400' : ''}`}
                 disabled={!form.district}
               >
@@ -280,65 +299,83 @@ function BuyerForm() {
             {form.taluka ? (
               <div className="block">
                 <span className="field-label">{t('buyerForm.preferredVillages')} *</span>
-                <div className="rounded-[28px] border border-slate-200 bg-slate-50 p-4 sm:p-6 space-y-4">
-                  <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                    <p className="text-sm text-slate-600">{t('buyerForm.selectVillagesHint')}</p>
-                    <div className="inline-flex items-center gap-2 rounded-full bg-sage/10 px-3 py-1.5 text-xs font-bold text-sage self-start sm:self-auto">
-                      {t('buyerForm.selectedCount')}: {selectedVillageCount}
-                    </div>
-                  </div>
+                <div ref={villageDropdownRef} className="relative">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (selectedVillageCount < 2) {
+                        setVillageDropdownOpen((open) => !open);
+                      }
+                    }}
+                    className={`field-control w-full flex flex-wrap items-center gap-2 min-h-[48px] text-left ${errors.preferredVillages ? 'border-red-400' : ''}`}
+                  >
+                    {selectedVillageCount === 0 ? (
+                      <span className="text-slate-400">{t('buyerForm.selectVillagesHint')}</span>
+                    ) : (
+                      (form.preferredVillages || []).map((village) => (
+                        <span key={village} className="inline-flex items-center gap-1.5 rounded-full bg-sage/10 px-3 py-1 text-sm font-semibold text-ink">
+                          {t(village)}
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleRemoveVillage(village);
+                            }}
+                            className="text-slate-500 hover:text-red-600 transition"
+                            aria-label={t('buyerForm.removeVillage')}
+                          >
+                            ×
+                          </button>
+                        </span>
+                      ))
+                    )}
+                    <span className="ml-auto text-xs font-semibold text-slate-400">{selectedVillageCount}/2</span>
+                  </button>
 
-                  <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                    <input
-                      type="text"
-                      value={villageSearch}
-                      onChange={(event) => setVillageSearch(event.target.value)}
-                      placeholder={t('buyerForm.searchVillages')}
-                      className="field-control w-full sm:max-w-xs bg-white"
-                    />
-                    <div className="flex flex-wrap gap-2">
-                      <button type="button" onClick={handleSelectAllVisible} className="rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-semibold text-slate-700 transition hover:border-sage hover:text-sage">
-                        {t('buyerForm.selectAll')}
-                      </button>
-                      <button type="button" onClick={handleClearAllVisible} className="rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-semibold text-slate-700 transition hover:border-red-300 hover:text-red-600">
-                        {t('buyerForm.clearAll')}
-                      </button>
-                    </div>
-                  </div>
-
-                  {allVillageOptions.length ? (
-                    <div className="max-h-[320px] overflow-y-auto rounded-[24px] border border-slate-200 bg-white p-3">
-                      <div className="grid gap-2 sm:grid-cols-2">
-                        {filteredVillageOptions.length ? (
-                          filteredVillageOptions.map((village) => {
-                            const isSelected = (form.preferredVillages || []).includes(village);
-                            return (
-                              <button
-                                key={village}
-                                type="button"
-                                onClick={() => handleVillageToggle(village)}
-                                className={`group flex items-start gap-3 rounded-2xl border px-3.5 py-3 text-left text-sm transition ${isSelected ? 'border-sage bg-sage/10 text-ink font-semibold' : 'border-slate-200 bg-slate-50 text-slate-700 hover:border-slate-300 hover:bg-slate-100'}`}
-                              >
-                                <span className={`mt-0.5 inline-flex h-4 w-4 flex-shrink-0 items-center justify-center rounded-full border text-[10px] ${isSelected ? 'border-sage bg-sage text-white' : 'border-slate-300 bg-white text-transparent'}`}>
-                                  ✓
-                                </span>
-                                <span className="leading-snug">{t(village)}</span>
-                              </button>
-                            );
-                          })
+                  {villageDropdownOpen && selectedVillageCount < 2 ? (
+                    <div className="absolute z-20 mt-2 w-full rounded-[24px] border border-slate-200 bg-white shadow-xl">
+                      <div className="p-3">
+                        <input
+                          type="text"
+                          value={villageSearch}
+                          onChange={(event) => setVillageSearch(event.target.value)}
+                          placeholder={t('buyerForm.searchVillages')}
+                          className="field-control w-full bg-slate-50"
+                        />
+                      </div>
+                      <div className="max-h-[280px] overflow-y-auto p-2">
+                        {allVillageOptions.length ? (
+                          filteredVillageOptions.length ? (
+                            filteredVillageOptions.map((village) => {
+                              const isSelected = (form.preferredVillages || []).includes(village);
+                              return (
+                                <button
+                                  key={village}
+                                  type="button"
+                                  onClick={() => handleVillageToggle(village)}
+                                  className={`w-full rounded-xl px-3.5 py-2.5 text-left text-sm transition ${isSelected ? 'bg-sage/10 text-ink font-semibold' : 'text-slate-700 hover:bg-slate-100'}`}
+                                >
+                                  {t(village)}
+                                </button>
+                              );
+                            })
+                          ) : (
+                            <div className="rounded-xl border border-dashed border-slate-200 p-4 text-center text-sm text-slate-500">
+                              {t('buyerForm.noVillagesMatch')}
+                            </div>
+                          )
                         ) : (
-                          <div className="col-span-full rounded-2xl border border-dashed border-slate-200 p-4 text-center text-sm text-slate-500">
-                            {t('buyerForm.noVillagesMatch')}
+                          <div className="rounded-xl border border-dashed border-slate-200 p-4 text-center text-sm text-slate-500">
+                            {t('buyerForm.noVillagesAvailable')}
                           </div>
                         )}
                       </div>
                     </div>
-                  ) : (
-                    <div className="rounded-[24px] border border-dashed border-slate-200 bg-white p-4 text-center text-sm text-slate-500">
-                      {t('buyerForm.noVillagesAvailable')}
-                    </div>
-                  )}
+                  ) : null}
                 </div>
+                {selectedVillageCount >= 2 && (
+                  <p className="mt-1 text-xs text-slate-500">{t('buyerForm.maxVillagesReached')}</p>
+                )}
                 {errors.preferredVillages && <p className="error-style mt-2">{errors.preferredVillages}</p>}
               </div>
             ) : null}

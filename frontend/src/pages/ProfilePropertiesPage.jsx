@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { CheckCircle2, Edit3, Eye, MapPin, PlusCircle, Trash2 } from 'lucide-react';
+import { CheckCircle2, Edit3, Eye, MapPin, PlusCircle, XCircle } from 'lucide-react';
 import AsyncImage from '../components/AsyncImage';
 import ProfileSubPageShell from '../components/ProfileSubPageShell';
 import { readStorage, STORAGE_KEYS, onListingsChanged, writeStorage } from '../utils/storage';
@@ -29,11 +29,16 @@ const formatCurrency = (value) => {
   return `₹${numeric.toLocaleString('en-IN')}`;
 };
 
+const formatPriceWithUnit = (listing) => {
+  const priceText = formatCurrency(listing?.price || listing?.priceAmount || 0);
+  if (!listing?.priceUnit) return priceText;
+  return `${priceText} per ${listing.priceUnit}`;
+};
+
 function ProfilePropertiesPage() {
   const navigate = useNavigate();
   const { t, getPropertyDisplayTitle } = useLanguage();
   const [listings, setListings] = useState(() => readStorage(STORAGE_KEYS.listings, sampleListings));
-  const [deleteModalTarget, setDeleteModalTarget] = useState(null);
   const [statusFilter, setStatusFilter] = useState('All');
 
   useEffect(() => {
@@ -48,21 +53,19 @@ function ProfilePropertiesPage() {
     return date.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
   };
 
-  const confirmDeleteListing = () => {
-    if (!deleteModalTarget) return;
-    const nextListings = (readStorage(STORAGE_KEYS.listings, sampleListings) || []).filter((item) => item.id !== deleteModalTarget.id);
-    writeStorage(STORAGE_KEYS.listings, nextListings);
-    setListings(nextListings);
-    setDeleteModalTarget(null);
-  };
-
-  const handleToggleListingStatus = (listing) => {
+  const changeStatus = (listing, nextStatus) => {
     const nextListings = listings.map((item) => {
       if (item.id !== listing.id) return item;
-      return { ...item, status: item.status === 'Sold' ? 'Available' : 'Sold', updatedAt: new Date().toISOString() };
+      return { ...item, status: nextStatus, updatedAt: new Date().toISOString() };
     });
     writeStorage(STORAGE_KEYS.listings, nextListings);
     setListings(nextListings);
+  };
+
+  const getStatusLabel = (status) => {
+    if (status === 'Sold') return t('dropdown.sold');
+    if (status === 'Unavailable') return t('dropdown.unavailable');
+    return t('dropdown.available');
   };
 
   const filteredListings = listings.filter((item) => {
@@ -106,13 +109,13 @@ function ProfilePropertiesPage() {
                       <MapPin size={14} /> {t(listing.district) || t('common.district')} • {t(listing.subDistrict || listing.taluka) || t('common.taluka')} • {t(listing.village) || t('common.village')}
                     </p>
                   </div>
-                  <span className={`profile-status-badge ${listing.status?.toLowerCase()}`}>{listing.status === 'Sold' ? t('dropdown.sold') : listing.status === 'Unavailable' ? t('dropdown.unavailable') : t('dropdown.available')}</span>
+                  <span className={`profile-status-badge ${listing.status?.toLowerCase()}`}>{getStatusLabel(listing.status)}</span>
                 </div>
 
                 <div className="profile-subpage-meta-grid">
                   <div>
                     <span className="profile-subpage-label">{t('buy.price')}</span>
-                    <span className="profile-subpage-value">{formatCurrency(listing.price || listing.priceAmount || 0)}</span>
+                    <span className="profile-subpage-value">{formatPriceWithUnit(listing)}</span>
                   </div>
                   <div>
                     <span className="profile-subpage-label">{t('common.area')}</span>
@@ -120,7 +123,7 @@ function ProfilePropertiesPage() {
                   </div>
                   <div>
                     <span className="profile-subpage-label">{t('common.status')}</span>
-                    <span className="profile-subpage-value">{listing.status === 'Sold' ? t('dropdown.sold') : listing.status === 'Unavailable' ? t('dropdown.unavailable') : t('dropdown.available')}</span>
+                    <span className="profile-subpage-value">{getStatusLabel(listing.status)}</span>
                   </div>
                 </div>
 
@@ -133,9 +136,29 @@ function ProfilePropertiesPage() {
                     <button type="button" onClick={() => navigate('/seller-form', { state: { editProperty: listing } })} className="profile-subpage-row-button">
                       <Edit3 size={15} /> {t('common.edit')}
                     </button>
-                    <button type="button" onClick={() => handleToggleListingStatus(listing)} className="profile-subpage-row-button success">
-                      <CheckCircle2 size={15} /> {listing.status === 'Sold' ? t('common.markAvailable') : t('common.markSold')}
-                    </button>
+                    <div className="profile-subpage-status-actions">
+                      <button
+                        type="button"
+                        onClick={() => changeStatus(listing, 'Available')}
+                        className={`profile-status-action available ${listing.status === 'Available' ? 'active' : ''}`}
+                      >
+                        <CheckCircle2 size={14} /> {t('dropdown.available')}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => changeStatus(listing, 'Unavailable')}
+                        className={`profile-status-action unavailable ${listing.status === 'Unavailable' ? 'active' : ''}`}
+                      >
+                        <XCircle size={14} /> {t('dropdown.unavailable')}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => changeStatus(listing, 'Sold')}
+                        className={`profile-status-action sold ${listing.status === 'Sold' ? 'active' : ''}`}
+                      >
+                        <CheckCircle2 size={14} /> {t('dropdown.sold')}
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>

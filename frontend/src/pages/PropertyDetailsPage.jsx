@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { ArrowLeft, ChevronLeft, ChevronRight, Download, ExternalLink, FileText, Heart, MapPin, Maximize2, Phone, Share2, ShieldCheck, X } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { readStorage, onListingsChanged, STORAGE_KEYS } from '../utils/storage';
+import { readStorage, onListingsChanged, STORAGE_KEYS, addRecentlyViewed, isPropertySaved, toggleSavedProperty } from '../utils/storage';
 import { sampleProperties } from '../utils/data';
 import { getSubmissionDestination } from '../utils/formNavigation';
 import PropertyCard from '../components/PropertyCard';
@@ -22,6 +22,41 @@ const formatPrice = (value, t, isGujarati) => {
     return trimmed.startsWith('₹') ? trimmed : trimmed;
   }
   return isGujarati ? 'કિંમત માટે સંપર્ક કરો' : 'Price on request';
+};
+
+const formatPriceWithUnit = (value, unit, t, isGujarati) => {
+  const priceText = formatPrice(value, t, isGujarati);
+  const unitText = translatePriceUnit(unit, isGujarati);
+  if (!unit || String(unit).trim() === '') return priceText;
+  if (priceText === (isGujarati ? 'કિંમત માટે સંપર્ક કરો' : 'Price on request')) return priceText;
+  return `${priceText} ${isGujarati ? 'પ્રતિ' : 'per'} ${unitText}`;
+};
+
+const getPropertyMapEmbedUrl = (property) => {
+  if (!property) return '';
+  // Prefer explicit coordinates when available
+  const lat = property?.latitude || property?.lat;
+  const lng = property?.longitude || property?.lng || property?.lon;
+  if (lat && lng) {
+    return `https://www.google.com/maps?q=${encodeURIComponent(`${lat},${lng}`)}&z=15&output=embed`;
+  }
+  // Fall back to existing map link if it's an embeddable Google Maps URL
+  const mapLink = property?.mapUrl || property?.googleMaps || property?.mapLink || '';
+  if (mapLink && mapLink.includes('output=embed')) return mapLink;
+  if (mapLink && mapLink.includes('google.com/maps')) {
+    return mapLink.includes('output=embed') ? mapLink : `${mapLink}${mapLink.includes('?') ? '&' : '?'}output=embed`;
+  }
+  // Safely build a location query from available location data
+  const locationParts = [
+    property?.village,
+    property?.subDistrict || property?.taluka,
+    property?.district || property?.location || property?.city,
+    property?.state || 'Gujarat',
+  ].filter(Boolean);
+  if (locationParts.length) {
+    return `https://www.google.com/maps?q=${encodeURIComponent(locationParts.join(', '))}&z=13&output=embed`;
+  }
+  return '';
 };
 
 const translateLocation = (val, t, isGujarati) => {
@@ -165,13 +200,32 @@ function PropertyDetailsPage() {
   const [touchStart, setTouchStart] = useState(null);
 
   const resolvePropertySource = () => {
-    const stored = readStorage(STORAGE_KEYS.listings, []);
-    return Array.isArray(stored) && stored.length ? stored : sampleProperties;
+    const storedListings = readStorage(STORAGE_KEYS.listings, []);
+    const lastProp = readStorage(STORAGE_KEYS.lastProperty, null);
+    const savedProps = readStorage(STORAGE_KEYS.savedProperties, []);
+    const recentProps = readStorage(STORAGE_KEYS.recentlyViewed, []);
+    const allStored = [
+      ...(Array.isArray(storedListings) ? storedListings : []),
+      ...(lastProp ? [lastProp] : []),
+      ...(Array.isArray(savedProps) ? savedProps : []),
+      ...(Array.isArray(recentProps) ? recentProps : []),
+      ...sampleProperties,
+    ];
+
+    const uniqueMap = new Map();
+    allStored.forEach((item) => {
+      if (item && item.id && !uniqueMap.has(String(item.id))) {
+        uniqueMap.set(String(item.id), item);
+      }
+    });
+
+    return Array.from(uniqueMap.values());
   };
 
   const loadProperty = () => {
+    if (!id) return;
     const source = resolvePropertySource();
-    const current = source.find((item) => item.id === id) || sampleProperties.find((item) => item.id === id) || null;
+    const current = source.find((item) => String(item?.id) === String(id)) || sampleProperties.find((item) => String(item?.id) === String(id)) || null;
     setSourceProperties(source);
     setProperty(current);
   };
@@ -241,8 +295,7 @@ function PropertyDetailsPage() {
 
     addItem(t('common.propertyType'), translatePropertyType(property?.type || property?.propertyType, t, isGujarati));
     addItem(t('common.area'), translateArea(property?.landArea || property?.area, isGujarati));
-    addItem(t('common.price'), formatPrice(property?.priceAmount || property?.price, t, isGujarati));
-    addItem(t('common.priceUnit'), translatePriceUnit(property?.priceUnit, isGujarati));
+    addItem(t('common.price'), formatPriceWithUnit(property?.priceAmount || property?.price, property?.priceUnit, t, isGujarati));
     addItem(t('common.district'), translateLocation(property?.district || property?.location, t, isGujarati));
     addItem(t('common.taluka'), translateLocation(property?.subDistrict || property?.taluka, t, isGujarati));
     addItem(t('common.village'), translateLocation(property?.village, t, isGujarati));
@@ -326,11 +379,22 @@ function PropertyDetailsPage() {
   const similarProperties = useMemo(() => {
     const currentType = property?.type || property?.propertyType || '';
     const currentDistrict = property?.district || property?.location || '';
-    return sourceProperties.filter((item) => item.id !== property?.id).filter((item) => {
-      const sameType = (item.type || item.propertyType || '').toLowerCase() === currentType.toLowerCase();
-      const sameDistrict = (item.district || item.location || '').toLowerCase() === currentDistrict.toLowerCase();
-      return sameType || sameDistrict;
-    }).slice(0, 4);
+    const filtered = sourceProperties
+      .filter((item) => String(item?.id) !== String(property?.id))
+      .filter((item) => {
+        const sameType = (item.type || item.propertyType || '').toLowerCase() === currentType.toLowerCase();
+        const sameDistrict = (item.district || item.location || '').toLowerCase() === currentDistrict.toLowerCase();
+        return sameType || sameDistrict;
+      });
+
+    const uniqueMap = new Map();
+    filtered.forEach((item) => {
+      if (item && item.id && !uniqueMap.has(String(item.id))) {
+        uniqueMap.set(String(item.id), item);
+      }
+    });
+
+    return Array.from(uniqueMap.values()).slice(0, 4);
   }, [property, sourceProperties]);
 
   const handlePrev = () => {
@@ -364,7 +428,7 @@ function PropertyDetailsPage() {
 
   const propertyTitle = getPropertyDisplayTitle(property.title || property.name || t('propertyDetails.propertyTitleFallback'));
   const propertyTypeLabel = property.type || property.propertyType || t('propertyDetails.propertyTypeFallback');
-  
+
   const locationParts = [
     property?.state || t('propertyDetails.stateFallback'),
     property?.district || property?.location || '',
@@ -435,6 +499,31 @@ function PropertyDetailsPage() {
                   </button>
                 ))}
               </div>
+
+              {/* Property Map — below the image/gallery */}
+              <div className="mt-4 overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-sm">
+                <div className="flex items-center justify-between gap-3 border-b border-slate-100 px-4 py-3">
+                  <div className="flex items-center gap-2">
+                    <MapPin size={16} className="text-sage" />
+                    <h3 className="text-sm font-semibold text-ink">{t('propertyDetails.propertyLocation')}</h3>
+                  </div>
+                  {property?.mapUrl || property?.googleMaps || property?.mapLink ? (
+                    <a href={property.mapUrl || property.googleMaps || property.mapLink} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-primary transition hover:bg-slate-50">
+                      <ExternalLink size={13} /> {t('propertyDetails.openInGoogleMaps')}
+                    </a>
+                  ) : null}
+                </div>
+                <div className="relative w-full">
+                  <iframe
+                    title={`${propertyTitle} location map`}
+                    src={getPropertyMapEmbedUrl(property)}
+                    className="h-64 w-full border-0 sm:h-80"
+                    loading="lazy"
+                    allowFullScreen
+                    referrerPolicy="no-referrer-when-downgrade"
+                  />
+                </div>
+              </div>
             </div>
 
             <div className="flex flex-col justify-between border-t border-slate-200 p-4 sm:p-6 lg:border-l lg:border-t-0">
@@ -456,8 +545,7 @@ function PropertyDetailsPage() {
                   <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">{t('propertyDetails.landPrice')}</p>
                   <div className="mt-2 flex items-end justify-between gap-3">
                     <div>
-                      <p className="text-2xl font-semibold text-ink sm:text-3xl">{formatPrice(property.priceAmount || property.price, t, isGujarati)}</p>
-                      <p className="mt-1 text-sm text-slate-600">{translatePriceUnit(property.priceUnit, isGujarati)}</p>
+                      <p className="text-2xl font-semibold text-ink sm:text-3xl">{formatPriceWithUnit(property.priceAmount || property.price, property.priceUnit, t, isGujarati)}</p>
                     </div>
                     <div className="rounded-full bg-white px-3 py-2 text-sm font-semibold text-slate-700 shadow-sm">
                       {translateArea(property?.landArea || property?.area, isGujarati)}
@@ -504,18 +592,6 @@ function PropertyDetailsPage() {
                   <div key={item.label} className="rounded-[20px] border border-slate-200 bg-slate-50 p-4">
                     <p className="text-[11px] font-semibold uppercase tracking-[0.3em] text-slate-500">{item.label}</p>
                     <p className="mt-2 text-sm font-semibold text-ink">{item.value}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="rounded-[28px] border border-slate-200 bg-white p-5 shadow-card sm:p-6">
-              <h2 className="text-2xl font-semibold text-ink">{t('propertyDetails.propertyFeatures')}</h2>
-              <div className="mt-5 grid grid-cols-2 gap-3">
-                {featureItems.map((feature) => (
-                  <div key={feature.label} className="rounded-[20px] border border-slate-200 bg-slate-50 p-4">
-                    <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">{feature.label}</p>
-                    <p className={`mt-2 text-sm font-semibold ${feature.available ? 'text-ink' : 'text-slate-500'}`}>{feature.value}</p>
                   </div>
                 ))}
               </div>

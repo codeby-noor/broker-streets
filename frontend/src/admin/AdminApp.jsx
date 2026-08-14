@@ -3,264 +3,324 @@ import { Navigate, NavLink, Route, Routes, useLocation, useNavigate } from 'reac
 import { toast } from 'react-toastify';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './admin.css';
-import { readStorage, writeStorage } from '../utils/storage';
-
-const ADMIN_AUTH_KEY = 'broker-streets-admin-auth';
-const ADMIN_SETTINGS_KEY = 'broker-streets-admin-settings';
-
-const defaultSettings = {
-  siteName: 'Broker Streets',
-  contactEmail: 'hello@brokerstreets.com',
-  phone: '+91 98765 43210',
-  address: 'Ahmedabad, Gujarat',
-  primaryColor: '#2563eb',
-  secondaryColor: '#0f172a',
-  footerText: 'Premium real estate experiences with transparent, data-driven guidance.',
-};
-
-const seedProperties = [
-  {
-    id: 'PROP-1001',
-    title: 'Azure Skyline Residence',
-    sellerName: 'Ananya Shah',
-    city: 'Ahmedabad',
-    category: 'Apartment',
-    propertyType: 'Residential',
-    purpose: 'Sale',
-    price: 8200000,
-    area: 1425,
-    bedrooms: 3,
-    bathrooms: 2,
-    balcony: 1,
-    parking: 2,
-    floor: 8,
-    totalFloors: 12,
-    facing: 'North-East',
-    furnishing: 'Semi-Furnished',
-    constructionAge: '2 Years',
-    readyToMove: true,
-    amenities: ['Pool', 'Gym', 'Security'],
-    address: 'SG Highway',
-    state: 'Gujarat',
-    pincode: '380054',
-    status: 'Available',
-    featured: true,
-    dateAdded: '2026-07-18',
-    images: ['https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd?auto=format&fit=crop&w=900&q=80'],
-    description: 'Luxury apartment in the heart of the business corridor.',
-  },
-  {
-    id: 'PROP-1002',
-    title: 'Verdant Villa Park',
-    sellerName: 'Rohan Mehta',
-    city: 'Surat',
-    category: 'Villa',
-    propertyType: 'Residential',
-    purpose: 'Sale',
-    price: 15600000,
-    area: 2480,
-    bedrooms: 4,
-    bathrooms: 4,
-    balcony: 2,
-    parking: 3,
-    floor: 2,
-    totalFloors: 2,
-    facing: 'West',
-    furnishing: 'Fully Furnished',
-    constructionAge: '5 Years',
-    readyToMove: true,
-    amenities: ['Garden', 'Home Theatre', 'Backup'],
-    address: 'Dumas Road',
-    state: 'Gujarat',
-    pincode: '395007',
-    status: 'Pending',
-    featured: false,
-    dateAdded: '2026-07-22',
-    images: ['https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=900&q=80'],
-    description: 'Spacious villa with modern interiors and private garden.',
-  },
-  {
-    id: 'PROP-1003',
-    title: 'Harbor Commercial Hub',
-    sellerName: 'Mira Joshi',
-    city: 'Vadodara',
-    category: 'Commercial',
-    propertyType: 'Commercial',
-    purpose: 'Lease',
-    price: 3200000,
-    area: 2800,
-    bedrooms: 0,
-    bathrooms: 2,
-    balcony: 2,
-    parking: 8,
-    floor: 3,
-    totalFloors: 5,
-    facing: 'South',
-    furnishing: 'Unfurnished',
-    constructionAge: '1 Year',
-    readyToMove: true,
-    amenities: ['Lift', 'CCTV', 'Parking'],
-    address: 'Alkapuri',
-    state: 'Gujarat',
-    pincode: '390007',
-    status: 'Sold',
-    featured: true,
-    dateAdded: '2026-06-14',
-    images: ['https://images.unsplash.com/photo-1494526585095-c41746248156?auto=format&fit=crop&w=900&q=80'],
-    description: 'Premium office and retail space suitable for flagship stores.',
-  },
-];
-
-const seedBuyerLeads = [
-  { id: 'BL-1001', name: 'Vikram Rao', phone: '9876543210', email: 'vikram@example.com', city: 'Ahmedabad', budget: '₹80 Lakh', preferredArea: 'SG Highway', purpose: 'Investment', date: '2026-07-27', status: 'New' },
-  { id: 'BL-1002', name: 'Neha Verma', phone: '9988776655', email: 'neha@example.com', city: 'Surat', budget: '₹1.2 Cr', preferredArea: 'Dumas', purpose: 'Home', date: '2026-07-24', status: 'Hot' },
-];
-
-const seedSellerLeads = [
-  { id: 'SL-1001', ownerName: 'Deepak Patel', phone: '9123456780', email: 'deepak@example.com', propertyType: 'Villa', city: 'Ahmedabad', expectedPrice: '₹1.5 Cr', googleMapLink: 'https://maps.google.com', submissionDate: '2026-07-25', status: 'New' },
-];
-
-const seedUsers = [
-  { id: 'USR-1001', profile: 'AR', name: 'Aarav Rathod', mobile: '9876123456', email: 'aarav@example.com', state: 'Gujarat', city: 'Ahmedabad', registrationDate: '2026-05-12', buyerCompleted: true, sellerCompleted: false, status: 'Active' },
-  { id: 'USR-1002', profile: 'SK', name: 'Sonia Kapoor', mobile: '9765432108', email: 'sonia@example.com', state: 'Gujarat', city: 'Surat', registrationDate: '2026-06-18', buyerCompleted: true, sellerCompleted: true, status: 'Active' },
-];
-
-const seedEnquiries = [
-  { id: 'ENQ-1001', buyer: 'Vikram Rao', seller: 'Ananya Shah', property: 'Azure Skyline Residence', message: 'Can I schedule a site visit this weekend?', phone: '9876543210', email: 'vikram@example.com', date: '2026-07-28', status: 'Pending' },
-];
-
-const seedCategories = ['Apartment', 'Villa', 'Plot', 'Commercial', 'Office', 'Farm House', 'Bungalow'];
-const seedLocations = [{ state: 'Gujarat', cities: ['Ahmedabad', 'Surat', 'Vadodara'], areas: ['SG Highway', 'Dumas', 'Alkapuri'] }];
-const seedNotifications = [
-  { id: 1, title: 'New buyer registered', detail: 'Vikram Rao completed the buyer form.', unread: true, createdAt: '2026-07-28' },
-  { id: 2, title: 'Property updated', detail: 'Azure Skyline Residence was featured.', unread: false, createdAt: '2026-07-27' },
-];
-
-function createInitialData() {
-  return {
-    properties: readStorage('broker-streets-properties', seedProperties),
-    buyerLeads: readStorage('broker-streets-buyer-leads', seedBuyerLeads),
-    sellerLeads: readStorage('broker-streets-seller-leads', seedSellerLeads),
-    users: readStorage('broker-streets-users', seedUsers),
-    enquiries: readStorage('broker-streets-enquiries', seedEnquiries),
-    categories: readStorage('broker-streets-categories', seedCategories),
-    locations: readStorage('broker-streets-locations', seedLocations),
-    notifications: readStorage('broker-streets-notifications', seedNotifications),
-    settings: readStorage(ADMIN_SETTINGS_KEY, defaultSettings),
-  };
-}
+import {
+  writeStorage,
+  appendAdminActivity,
+  getAdminActivity,
+  onAdminActivityChanged,
+  onListingsChanged,
+  onUsersChanged,
+  onBuyerLeadsChanged,
+  onSellerLeadsChanged,
+  STORAGE_KEYS,
+} from '../utils/storage';
+import {
+  clearMasterGroupSession,
+  createMasterGroupSession,
+  isApprovedMasterGroupMobile,
+  isSuperAdminSession,
+  readMasterGroupSession,
+  sendMasterGroupOtp,
+  verifyMasterGroupOtp,
+} from './masterGroupAuth';
+import { useLanguage } from '../i18n/LanguageContext';
+import AdminLanguageToggle from './AdminLanguageToggle';
+import {
+  ADMIN_NAMES,
+  deriveUserRole,
+  formatDate,
+  formatDateTime,
+  formatPrice,
+  getAdminBuyerLeads,
+  getAdminProperties,
+  getAdminSellerLeads,
+  getAdminUsers,
+  getInitials,
+  maskMobile,
+  seedAdminDemoData,
+} from './adminData';
 
 function ProtectedAdminRoute({ children }) {
-  const auth = readStorage(ADMIN_AUTH_KEY, null);
+  const auth = readMasterGroupSession();
   return auth ? children : <Navigate to="login" replace />;
 }
 
+/* ---------------- STATUS / ROLE HELPERS ---------------- */
+function statusBadgeClass(status) {
+  const s = String(status || '').toLowerCase();
+  if (s === 'available' || s === 'active' || s === 'login') return 'status-available status-active status-login';
+  if (s === 'unavailable' || s === 'inactive') return 'status-unavailable status-inactive';
+  if (s === 'sold') return 'status-sold';
+  if (s === 'loggedout') return 'status-loggedout';
+  return 'status-unavailable';
+}
+
+function roleBadgeClass(role) {
+  const r = String(role || '').toLowerCase();
+  if (r === 'buyer') return 'role-buyer';
+  if (r === 'seller') return 'role-seller';
+  if (r === 'buyer & seller') return 'role-both';
+  return 'role-buyer';
+}
+
+/* ---------------- ADMIN LOGIN ---------------- */
 function AdminLogin() {
   const navigate = useNavigate();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [remember, setRemember] = useState(true);
+  const { t } = useLanguage();
+  const [mobile, setMobile] = useState('');
+  const [step, setStep] = useState('mobile');
+  const [otp, setOtp] = useState('');
+  const [devOtp, setDevOtp] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [cooldown, setCooldown] = useState(0);
 
-  const submit = (event) => {
+  useEffect(() => {
+    const auth = readMasterGroupSession();
+    if (auth) navigate('/master-group', { replace: true });
+  }, [navigate]);
+
+  useEffect(() => {
+    if (cooldown <= 0) return undefined;
+    const timer = window.setTimeout(() => setCooldown((value) => value - 1), 1000);
+    return () => window.clearTimeout(timer);
+  }, [cooldown]);
+
+  const handleMobileChange = (event) => setMobile(event.target.value.replace(/\D/g, '').slice(0, 10));
+
+  const requestOtp = (event) => {
     event.preventDefault();
+    const sanitizedMobile = mobile.replace(/\D/g, '').slice(0, 10);
+    if (!sanitizedMobile || sanitizedMobile.length !== 10) {
+      toast.error(t('admin.mobilePlaceholder'));
+      return;
+    }
+    if (!isApprovedMasterGroupMobile(sanitizedMobile)) {
+      toast.error(t('admin.notAuthorized'));
+      return;
+    }
     setLoading(true);
-    setTimeout(() => {
-      if (email.includes('@') && password.length >= 4) {
-        writeStorage(ADMIN_AUTH_KEY, { email, remember });
-        toast.success('Signed in successfully');
-        navigate('/admin');
-      } else {
-        toast.error('Please enter a valid admin email and password');
-      }
+    const result = sendMasterGroupOtp(sanitizedMobile);
+    if (!result.success) {
       setLoading(false);
-    }, 700);
+      toast.error(result.message);
+      if (result.cooldownRemaining) setCooldown(result.cooldownRemaining);
+      return;
+    }
+    setDevOtp(result.devOtp || null);
+    setCooldown(30);
+    setLoading(false);
+    setStep('otp');
+    toast.success(t('admin.otpSentSuccess'));
   };
 
+  const verifyOtp = (event) => {
+    event.preventDefault();
+    const sanitizedMobile = mobile.replace(/\D/g, '').slice(0, 10);
+    const enteredOtp = otp.replace(/\D/g, '').slice(0, 6);
+    if (!enteredOtp) {
+      toast.error(t('admin.otpPlaceholder'));
+      return;
+    }
+    setLoading(true);
+    const verification = verifyMasterGroupOtp({ mobile: sanitizedMobile, otp: enteredOtp });
+    if (!verification.success) {
+      setLoading(false);
+      toast.error(verification.message);
+      return;
+    }
+    const session = createMasterGroupSession(sanitizedMobile);
+    // DEVELOPMENT-ONLY: record admin login activity. See storage.js notice.
+    appendAdminActivity({
+      id: `login-${Date.now()}`,
+      mobile: sanitizedMobile,
+      role: session.role,
+      type: 'login',
+      loginAt: new Date().toISOString(),
+      status: 'Login',
+      sessionInfo: t('admin.sessionStartedVia'),
+    });
+    setLoading(false);
+    toast.success(t('admin.authenticated'));
+    navigate('/master-group', { replace: true });
+  };
+
+  const resendOtp = () => {
+    if (cooldown > 0) return;
+    const sanitizedMobile = mobile.replace(/\D/g, '').slice(0, 10);
+    const result = sendMasterGroupOtp(sanitizedMobile);
+    if (!result.success) {
+      toast.error(result.message);
+      if (result.cooldownRemaining) setCooldown(result.cooldownRemaining);
+      return;
+    }
+    setDevOtp(result.devOtp || null);
+    setCooldown(30);
+    setOtp('');
+    toast.success(t('admin.otpResentSuccess'));
+  };
+
+  const goBackToMobile = () => { setStep('mobile'); setOtp(''); setDevOtp(null); };
+
   return (
-    <div className="admin-app d-flex align-items-center justify-content-center px-3 py-5">
+    <div className="admin-login-page">
       <div className="card form-card w-100" style={{ maxWidth: 480 }}>
         <div className="card-body p-4 p-md-5">
+          <div className="d-flex justify-content-end mb-2">
+            <AdminLanguageToggle />
+          </div>
           <div className="text-center mb-4">
             <div className="avatar mx-auto mb-3">BS</div>
-            <h2 className="fw-bold page-title">Broker Streets Admin</h2>
-            <p className="text-muted mb-0">Secure, premium control center for your real estate CRM</p>
+            <h2 className="fw-bold page-title">{t('admin.loginTitle')}</h2>
+            <p className="text-muted mb-0">{t('admin.loginSubtitle')}</p>
           </div>
-          <form onSubmit={submit}>
-            <div className="mb-3">
-              <label className="form-label fw-semibold">Admin Email</label>
-              <input className="form-control input-glow" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="admin@brokerstreets.com" />
-            </div>
-            <div className="mb-3">
-              <label className="form-label fw-semibold">Password</label>
-              <input className="form-control input-glow" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••" />
-            </div>
-            <div className="form-check mb-3">
-              <input className="form-check-input" id="remember" type="checkbox" checked={remember} onChange={() => setRemember(!remember)} />
-              <label className="form-check-label" htmlFor="remember">Remember me</label>
-            </div>
-            <button className="btn btn-primary w-100 py-2" type="submit" disabled={loading}>{loading ? 'Signing in...' : 'Login'}</button>
-          </form>
-          <div className="d-flex justify-content-between align-items-center mt-3 text-muted small">
-            <button className="btn btn-link p-0">Forgot Password?</button>
-            <span className="badge bg-primary-subtle text-primary">Local Demo</span>
-          </div>
+
+          {step === 'mobile' ? (
+            <form onSubmit={requestOtp}>
+              <div className="mb-3">
+                <label className="form-label fw-semibold">{t('admin.mobileLabel')}</label>
+                <input className="form-control input-glow" type="tel" inputMode="numeric" maxLength={10} value={mobile} onChange={handleMobileChange} placeholder={t('admin.mobilePlaceholder')} />
+              </div>
+              <button className="btn btn-primary w-100 py-2" type="submit" disabled={loading}>
+                {loading ? t('admin.sendingOtp') : t('admin.sendOtp')}
+              </button>
+              <div className="text-center mt-3 text-muted small">
+                <span className="badge bg-primary-subtle text-primary">{t('admin.localDemo')}</span>
+              </div>
+            </form>
+          ) : (
+            <form onSubmit={verifyOtp}>
+              <div className="mb-3">
+                <label className="form-label fw-semibold">{t('admin.otpTitle')}</label>
+                <p className="text-muted small mb-2">{t('admin.otpSentTo')} {mobile}</p>
+                <input className="form-control input-glow text-center" type="tel" inputMode="numeric" maxLength={6} value={otp} onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))} placeholder={t('admin.otpPlaceholder')} />
+              </div>
+              {devOtp ? (
+                <div className="alert alert-warning py-2 small">
+                  <strong>{t('admin.devOtp')}:</strong> <span className="font-monospace">{devOtp}</span>
+                  <div className="text-muted">{t('admin.devOtpHint')}</div>
+                </div>
+              ) : null}
+              <button className="btn btn-primary w-100 py-2" type="submit" disabled={loading}>
+                {loading ? t('admin.verifying') : t('admin.verifyLogin')}
+              </button>
+              <div className="d-flex justify-content-between align-items-center mt-3">
+                <button className="btn btn-link p-0" type="button" onClick={goBackToMobile}>{t('admin.changeNumber')}</button>
+                <button className="btn btn-link p-0" type="button" onClick={resendOtp} disabled={cooldown > 0}>
+                  {cooldown > 0 ? `${t('admin.resendIn')} ${cooldown}s` : t('admin.resendOtp')}
+                </button>
+              </div>
+            </form>
+          )}
         </div>
       </div>
     </div>
   );
 }
 
-function Dashboard({ properties, buyerLeads, sellerLeads, users, enquiries, notifications }) {
+/* ---------------- DASHBOARD ---------------- */
+function Dashboard() {
+  const { t } = useLanguage();
+  const [state, setState] = useState(() => ({
+    properties: getAdminProperties(),
+    users: getAdminUsers(),
+    buyerLeads: getAdminBuyerLeads(),
+    sellerLeads: getAdminSellerLeads(),
+  }));
+
+  useEffect(() => {
+    const reload = () => setState({
+      properties: getAdminProperties(),
+      users: getAdminUsers(),
+      buyerLeads: getAdminBuyerLeads(),
+      sellerLeads: getAdminSellerLeads(),
+    });
+    const offListings = onListingsChanged(reload);
+    const offUsers = onUsersChanged(reload);
+    const offBuyers = onBuyerLeadsChanged(reload);
+    const offSellers = onSellerLeadsChanged(reload);
+    return () => { offListings(); offUsers(); offBuyers(); offSellers(); };
+  }, []);
+
+  const { properties, users, buyerLeads, sellerLeads } = state;
   const stats = useMemo(() => ({
     totalProperties: properties.length,
-    activeProperties: properties.filter((p) => p.status === 'Available').length,
-    soldProperties: properties.filter((p) => p.status === 'Sold').length,
-    pendingProperties: properties.filter((p) => p.status === 'Pending').length,
+    availableProperties: properties.filter((p) => String(p.status).toLowerCase() === 'available').length,
+    unavailableProperties: properties.filter((p) => String(p.status).toLowerCase() === 'unavailable').length,
+    soldProperties: properties.filter((p) => String(p.status).toLowerCase() === 'sold').length,
     totalBuyers: buyerLeads.length,
     totalSellers: sellerLeads.length,
-    totalEnquiries: enquiries.length,
-    newLeadsToday: 3,
     registeredUsers: users.length,
-  }), []);
+  }), [properties, users, buyerLeads, sellerLeads]);
 
-  const categoryData = ['Apartment', 'Villa', 'Commercial', 'Office', 'Plot'];
-  const monthlyData = [18, 22, 27, 19, 31, 26];
+  // Properties grouped by city — EXPLICITLY limited to Surat and Navsari only.
+  const cityData = useMemo(() => {
+    const map = new Map();
+    properties.forEach((p) => {
+      const district = String(p.district || p.city || p.location || '').trim().toLowerCase();
+      if (district === 'surat') map.set('Surat', (map.get('Surat') || 0) + 1);
+      else if (district === 'navsari') map.set('Navsari', (map.get('Navsari') || 0) + 1);
+    });
+    return ['Surat', 'Navsari']
+      .map((label) => ({ label, count: map.get(label) || 0 }))
+      .filter((d) => d.count > 0);
+  }, [properties]);
+
+  // Property status counts for the donut chart
+  const statusData = useMemo(() => {
+    const available = properties.filter((p) => String(p.status).toLowerCase() === 'available').length;
+    const unavailable = properties.filter((p) => String(p.status).toLowerCase() === 'unavailable').length;
+    const sold = properties.filter((p) => String(p.status).toLowerCase() === 'sold').length;
+    return [
+      { label: t('admin.statusAvailable'), value: available, color: '#10b981' },
+      { label: t('admin.statusUnavailable'), value: unavailable, color: '#94a3b8' },
+      { label: t('admin.statusSold'), value: sold, color: '#ef4444' },
+    ].filter((d) => d.value > 0);
+  }, [properties, t]);
+
+  const maxCityCount = Math.max(...cityData.map((d) => d.count), 1);
+  const totalStatus = statusData.reduce((sum, d) => sum + d.value, 0);
+  const totalCityProperties = properties.length;
+  const donutRadius = 70;
+  const donutCircumference = 2 * Math.PI * donutRadius;
+  let cumulative = 0;
+  const donutSegments = statusData.map((d) => {
+    const start = cumulative;
+    cumulative += d.value;
+    return { ...d, start, end: cumulative };
+  });
+
+  const statCards = [
+    { key: 'total', label: t('admin.totalProperties'), value: stats.totalProperties, icon: '▦', tone: 'blue' },
+    { key: 'available', label: t('admin.availableProperties'), value: stats.availableProperties, icon: '✓', tone: 'green' },
+    { key: 'unavailable', label: t('admin.unavailableProperties'), value: stats.unavailableProperties, icon: '✕', tone: 'slate' },
+    { key: 'sold', label: t('admin.soldProperties'), value: stats.soldProperties, icon: '★', tone: 'red' },
+    { key: 'buyers', label: t('admin.totalBuyers'), value: stats.totalBuyers, icon: '◉', tone: 'indigo' },
+    { key: 'sellers', label: t('admin.totalSellers'), value: stats.totalSellers, icon: '◈', tone: 'amber' },
+    { key: 'users', label: t('admin.registeredUsers'), value: stats.registeredUsers, icon: '◎', tone: 'violet' },
+  ];
 
   return (
     <div className="container-fluid px-0">
       <div className="d-flex justify-content-between align-items-center mb-4">
         <div>
-          <h2 className="fw-bold mb-1 page-title">Dashboard Overview</h2>
-          <p className="text-muted mb-0">A polished real estate CRM view of your portfolio, contacts, and activity.</p>
+          <h2 className="fw-bold mb-1 page-title">{t('admin.dashboard')}</h2>
+          <p className="text-muted mb-0">{t('admin.overview')}</p>
         </div>
         <div className="text-end">
-          <div className="fw-semibold">Today</div>
-          <div className="text-muted small">{new Date().toLocaleDateString()}</div>
+          <div className="fw-semibold">{new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</div>
         </div>
       </div>
 
-      <div className="row g-3 mb-4">
-        {[
-          ['Total Properties', stats.totalProperties, 'primary'],
-          ['Active Properties', stats.activeProperties, 'success'],
-          ['Sold Properties', stats.soldProperties, 'danger'],
-          ['Pending Properties', stats.pendingProperties, 'warning'],
-          ['Total Buyers', stats.totalBuyers, 'info'],
-          ['Total Sellers', stats.totalSellers, 'secondary'],
-          ['Total Enquiries', stats.totalEnquiries, 'dark'],
-          ['New Leads Today', stats.newLeadsToday, 'primary'],
-          ['Registered Users', stats.registeredUsers, 'success'],
-        ].map(([label, value, tone]) => (
-          <div className="col-12 col-md-6 col-xl-4" key={label}>
-            <div className={`card dashboard-card text-white bg-${tone}`}>
-              <div className="card-body">
-                <div className="d-flex justify-content-between align-items-start">
-                  <div>
-                    <div className="small fw-semibold text-uppercase opacity-75">{label}</div>
-                    <div className="display-6 fw-bold mt-2">{value}</div>
-                  </div>
-                  <span className="stat-pill">Live</span>
+      {/* Statistic cards — 2 per row on mobile, 4 + 3 on desktop */}
+      <div className="row g-3 g-lg-4 mb-4 dashboard-stats-row">
+        {statCards.map((card) => (
+          <div className="col-6 col-xl-3" key={card.key}>
+            <div className="card stat-card h-100">
+              <div className="card-body d-flex align-items-center gap-3">
+                <span className={`stat-icon stat-icon-${card.tone}`}>{card.icon}</span>
+                <div className="stat-copy">
+                  <div className="stat-label">{card.label}</div>
+                  <div className="stat-value">{card.value}</div>
                 </div>
               </div>
             </div>
@@ -268,77 +328,95 @@ function Dashboard({ properties, buyerLeads, sellerLeads, users, enquiries, noti
         ))}
       </div>
 
-      <div className="row g-4 mb-4">
-        <div className="col-12 col-xl-6">
-          <div className="card chart-card">
-            <div className="card-body">
-              <h5 className="fw-semibold mb-1">Properties by Category</h5>
-              <p className="text-muted small mb-0">Portfolio mix across residential and commercial offerings.</p>
-              <div className="chart-bars mt-4">
-                {categoryData.map((item, index) => (
-                  <div key={item} className="bar" style={{ height: `${40 + index * 20}px` }}><small>{item}</small></div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="col-12 col-xl-6">
-          <div className="card chart-card">
-            <div className="card-body">
-              <h5 className="fw-semibold mb-1">Monthly Enquiries</h5>
-              <p className="text-muted small mb-0">Momentum and demand across the year.</p>
-              <div className="chart-bars mt-4">
-                {monthlyData.map((value, index) => (
-                  <div key={`${value}-${index}`} className="bar" style={{ height: `${value * 3}px` }}><small>0{index + 1}</small></div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
+      {/* Properties by City + Property Status Overview */}
       <div className="row g-4">
         <div className="col-12 col-xl-6">
-          <div className="card table-card">
+          <div className="card chart-card h-100">
             <div className="card-body">
-              <div className="d-flex justify-content-between align-items-center mb-3">
-                <h5 className="fw-semibold mb-0">Recent Buyer Forms</h5>
-                <span className="badge badge-soft">Updated</span>
-              </div>
-              <div className="table-responsive">
-                <table className="table table-hover align-middle mb-0">
-                  <thead>
-                    <tr><th>Name</th><th>City</th><th>Status</th></tr>
-                  </thead>
-                  <tbody>
-                    {buyerLeads.slice(0, 3).map((lead) => (
-                      <tr key={lead.id}><td>{lead.name}</td><td>{lead.city}</td><td><span className="badge bg-primary-subtle text-primary">{lead.status}</span></td></tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+              <h5 className="fw-semibold mb-1">{t('admin.propertiesByCity')}</h5>
+              <p className="text-muted small mb-3">{t('admin.propertiesGroupedByCity')}</p>
+              {cityData.length ? (
+                <>
+                  <div className="city-chart-wrap">
+                    <div className="city-chart">
+                      {cityData.map((d) => (
+                        <div className="city-column" key={d.label}>
+                          <div className="city-bar-count">{d.count}</div>
+                          <div className="city-bar-track">
+                            <div
+                              className="city-bar-fill"
+                              style={{ height: `${Math.max((d.count / maxCityCount) * 100, 10)}%` }}
+                              data-city={d.label}
+                              data-count={d.count}
+                            >
+                              <span className="city-bar-tooltip">{d.label}: {d.count} {t('admin.propertySingular')}</span>
+                            </div>
+                          </div>
+                          <div className="city-bar-label">{d.label}</div>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="city-grid-lines" aria-hidden="true">
+                      <span style={{ bottom: '25%' }} />
+                      <span style={{ bottom: '50%' }} />
+                      <span style={{ bottom: '75%' }} />
+                      <span style={{ bottom: '100%' }} />
+                    </div>
+                  </div>
+                  <div className="city-summary">
+                    <div className="city-summary-item">
+                      <span className="city-summary-value">2</span>
+                      <span className="city-summary-label">{t('admin.totalCities')}</span>
+                    </div>
+                    <div className="city-summary-divider" />
+                    <div className="city-summary-item">
+                      <span className="city-summary-value">{totalCityProperties}</span>
+                      <span className="city-summary-label">{t('admin.totalProperties')}</span>
+                    </div>
+                  </div>
+                </>
+              ) : <div className="admin-empty-state"><div className="empty-icon">▦</div><div className="empty-title">{t('admin.noPropertiesFound')}</div></div>}
             </div>
           </div>
         </div>
         <div className="col-12 col-xl-6">
-          <div className="card table-card">
+          <div className="card chart-card h-100">
             <div className="card-body">
-              <div className="d-flex justify-content-between align-items-center mb-3">
-                <h5 className="fw-semibold mb-0">Latest Added Properties</h5>
-                <span className="badge badge-soft">Fresh</span>
-              </div>
-              <div className="table-responsive">
-                <table className="table table-hover align-middle mb-0">
-                  <thead>
-                    <tr><th>Title</th><th>City</th><th>Status</th></tr>
-                  </thead>
-                  <tbody>
-                    {properties.slice(0, 3).map((property) => (
-                      <tr key={property.id}><td>{property.title}</td><td>{property.city}</td><td><span className="badge bg-success-subtle text-success">{property.status}</span></td></tr>
+              <h5 className="fw-semibold mb-1">{t('admin.propertyStatusOverview')}</h5>
+              <p className="text-muted small mb-3">{t('admin.currentAvailability')}</p>
+              {totalStatus > 0 ? (
+                <div className="donut-chart-wrap">
+                  <div className="donut-chart">
+                    <svg viewBox="0 0 180 180" width="180" height="180" role="img" aria-label={t('admin.propertyStatusOverview')}>
+                      {donutSegments.map((seg) => (
+                        <circle
+                          key={seg.label}
+                          cx="90"
+                          cy="90"
+                          r={donutRadius}
+                          fill="none"
+                          stroke={seg.color}
+                          strokeWidth="24"
+                          strokeDasharray={`${(seg.value / totalStatus) * donutCircumference} ${donutCircumference}`}
+                          strokeDashoffset={-(seg.start / totalStatus) * donutCircumference}
+                          transform="rotate(-90 90 90)"
+                        />
+                      ))}
+                      <text x="90" y="86" textAnchor="middle" className="donut-total">{totalStatus}</text>
+                      <text x="90" y="104" textAnchor="middle" className="donut-total-label">{t('admin.propertiesLabel')}</text>
+                    </svg>
+                  </div>
+                  <div className="donut-legend">
+                    {donutSegments.map((seg) => (
+                      <div className="donut-legend-item" key={seg.label}>
+                        <span className="donut-legend-dot" style={{ background: seg.color }} />
+                        <span className="donut-legend-label">{seg.label}</span>
+                        <span className="donut-legend-value">{seg.value}</span>
+                      </div>
                     ))}
-                  </tbody>
-                </table>
-              </div>
+                  </div>
+                </div>
+              ) : <div className="admin-empty-state"><div className="empty-icon">◔</div><div className="empty-title">{t('admin.noPropertiesFound')}</div></div>}
             </div>
           </div>
         </div>
@@ -347,99 +425,475 @@ function Dashboard({ properties, buyerLeads, sellerLeads, users, enquiries, noti
   );
 }
 
-function PropertiesPage({ properties, setProperties, setModalState }) {
+/* ---------------- PROPERTIES PAGE ---------------- */
+function PropertiesPage({ navigate }) {
+  const { t } = useLanguage();
   const [query, setQuery] = useState('');
   const [status, setStatus] = useState('All');
+  const [type, setType] = useState('All');
+  const [location, setLocation] = useState('All');
   const [sort, setSort] = useState('newest');
-  const [page, setPage] = useState(1);
-  const rowsPerPage = 10;
+  const [viewing, setViewing] = useState(null);
+
+  const properties = getAdminProperties();
+
+  const locations = useMemo(() => {
+    const set = new Set();
+    properties.forEach((p) => { if (p.district) set.add(p.district); if (p.city) set.add(p.city); if (p.location) set.add(p.location); });
+    return ['All', ...Array.from(set).sort()];
+  }, [properties]);
+
+  const types = useMemo(() => {
+    const set = new Set();
+    properties.forEach((p) => { if (p.type || p.propertyType) set.add(p.type || p.propertyType); });
+    return ['All', ...Array.from(set).sort()];
+  }, [properties]);
 
   const filtered = useMemo(() => {
-    const next = [...properties].filter((property) => {
-      const matchesQuery = `${property.title} ${property.city} ${property.sellerName}`.toLowerCase().includes(query.toLowerCase());
-      const matchesStatus = status === 'All' || property.status === status;
-      return matchesQuery && matchesStatus;
+    const q = query.trim().toLowerCase();
+    return properties.filter((p) => {
+      const haystack = `${p.title} ${p.name} ${p.sellerName} ${p.ownerName} ${p.sellerPhone} ${p.ownerMobile} ${p.district} ${p.taluka} ${p.subDistrict} ${p.village} ${p.city} ${p.location} ${p.id}`.toLowerCase();
+      const matchesQuery = !q || haystack.includes(q);
+      const matchesStatus = status === 'All' || String(p.status) === status;
+      const matchesType = type === 'All' || (p.type || p.propertyType) === type;
+      const matchesLocation = location === 'All' || p.district === location || p.city === location || p.location === location;
+      return matchesQuery && matchesStatus && matchesType && matchesLocation;
+    }).sort((a, b) => {
+      const dateA = new Date(a.updatedAt || a.createdAt || a.submittedAt || a.uploadedDate || 0);
+      const dateB = new Date(b.updatedAt || b.createdAt || b.submittedAt || b.uploadedDate || 0);
+      if (sort === 'price-high') return (parseNum(b.priceAmount) - parseNum(a.priceAmount));
+      if (sort === 'price-low') return (parseNum(a.priceAmount) - parseNum(b.priceAmount));
+      if (sort === 'location') return String(a.district || a.city).localeCompare(String(b.district || b.city));
+      if (sort === 'status') return String(a.status).localeCompare(String(b.status));
+      if (sort === 'oldest') return dateA - dateB;
+      return dateB - dateA;
     });
-    next.sort((a, b) => {
-      if (sort === 'price-high') return b.price - a.price;
-      if (sort === 'price-low') return a.price - b.price;
-      if (sort === 'name') return a.title.localeCompare(b.title);
-      return new Date(b.dateAdded) - new Date(a.dateAdded);
-    });
-    return next;
-  }, [properties, query, status, sort]);
+  }, [properties, query, status, type, location, sort]);
 
-  const paged = filtered.slice((page - 1) * rowsPerPage, page * rowsPerPage);
+  const parseNum = (v) => Number(String(v || '').replace(/[^\d]/g, '')) || 0;
 
-  const updateStatus = (id, nextStatus) => {
-    setProperties((current) => current.map((item) => item.id === id ? { ...item, status: nextStatus } : item));
-    toast.success(`Property marked as ${nextStatus}`);
+  const clearFilters = () => { setQuery(''); setStatus('All'); setType('All'); setLocation('All'); setSort('newest'); };
+
+  const changeStatus = (id, nextStatus) => {
+    const current = getAdminProperties();
+    const next = current.map((item) => (String(item.id) === String(id) ? { ...item, status: nextStatus, updatedAt: new Date().toISOString() } : item));
+    writeStorage(STORAGE_KEYS.listings, next);
+    toast.success(t('admin.statusUpdated'));
   };
 
-  const removeProperty = (id) => {
-    setProperties((current) => current.filter((item) => item.id !== id));
-    toast.info('Property removed');
+  const editProperty = (property) => {
+    navigate('/master-group/add-property', { state: { editing: property } });
+  };
+
+  const row = (p) => (
+    <tr key={p.id}>
+      <td>
+        <div className="fw-semibold">{p.title || p.name}</div>
+        <div className="small text-muted">{p.id}</div>
+      </td>
+      <td>{p.sellerName || p.ownerName || '—'}</td>
+      <td>{p.type || p.propertyType || '—'}</td>
+      <td>{p.district || p.city || p.location || '—'}</td>
+      <td>{formatPrice(p.price || p.priceAmount)}</td>
+      <td><span className={`admin-status-badge ${statusBadgeClass(p.status)}`}>{p.status || '—'}</span></td>
+      <td className="small text-muted">{formatDate(p.updatedAt || p.createdAt || p.submittedAt || p.uploadedDate)}</td>
+      <td>
+        <div className="btn-group btn-group-sm">
+          <button className="btn btn-outline-secondary" onClick={() => setViewing(p)}>{t('admin.view')}</button>
+          <button className="btn btn-outline-primary" onClick={() => editProperty(p)}>{t('admin.edit')}</button>
+          <select className="form-select form-select-sm ms-2" style={{ width: 'auto' }} value={p.status} onChange={(e) => changeStatus(p.id, e.target.value)}>
+            <option value="Available">{t('admin.statusAvailable')}</option>
+            <option value="Unavailable">{t('admin.statusUnavailable')}</option>
+            <option value="Sold">{t('admin.statusSold')}</option>
+          </select>
+        </div>
+      </td>
+    </tr>
+  );
+
+  return (
+    <div className="card table-card">
+      <div className="card-body">
+        <div className="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
+          <div>
+            <h4 className="fw-bold mb-1">{t('admin.properties')}</h4>
+            <p className="text-muted mb-0">{t('admin.manageListings')}</p>
+          </div>
+          <button className="btn btn-primary" onClick={() => navigate('/master-group/add-property')}>{t('admin.addProperty')}</button>
+        </div>
+
+        <div className="row g-2 mb-3 admin-filters">
+          <div className="col-12 col-md-4">
+            <input className="form-control" placeholder={t('admin.searchPlaceholderProperties')} value={query} onChange={(e) => setQuery(e.target.value)} />
+          </div>
+          <div className="col-6 col-md-2">
+            <select className="form-select" value={status} onChange={(e) => setStatus(e.target.value)}>
+              <option value="All">{t('admin.allStatus')}</option>
+              <option value="Available">{t('admin.statusAvailable')}</option>
+              <option value="Unavailable">{t('admin.statusUnavailable')}</option>
+              <option value="Sold">{t('admin.statusSold')}</option>
+            </select>
+          </div>
+          <div className="col-6 col-md-2">
+            <select className="form-select" value={type} onChange={(e) => setType(e.target.value)}>
+              <option value="All">{t('admin.allTypes')}</option>
+              {types.filter((x) => x !== 'All').map((x) => <option key={x} value={x}>{x}</option>)}
+            </select>
+          </div>
+          <div className="col-6 col-md-2">
+            <select className="form-select" value={location} onChange={(e) => setLocation(e.target.value)}>
+              <option value="All">{t('admin.allLocations')}</option>
+              {locations.filter((x) => x !== 'All').map((x) => <option key={x} value={x}>{x}</option>)}
+            </select>
+          </div>
+          <div className="col-6 col-md-2">
+            <select className="form-select" value={sort} onChange={(e) => setSort(e.target.value)}>
+              <option value="newest">{t('admin.newest')}</option>
+              <option value="oldest">{t('admin.oldest')}</option>
+              <option value="price-low">{t('admin.priceLowToHigh')}</option>
+              <option value="price-high">{t('admin.priceHighToLow')}</option>
+              <option value="location">{t('admin.location')}</option>
+              <option value="status">{t('admin.status')}</option>
+            </select>
+          </div>
+        </div>
+
+        <div className="d-flex justify-content-end mb-2">
+          <button className="btn btn-outline-secondary btn-sm" onClick={clearFilters}>{t('admin.clearFilters')}</button>
+        </div>
+
+        <div className="table-responsive admin-desktop-table">
+          <table className="table table-hover align-middle">
+            <thead>
+              <tr>
+                <th>{t('admin.property')}</th>
+                <th>{t('admin.owner')}</th>
+                <th>{t('admin.type')}</th>
+                <th>{t('admin.location')}</th>
+                <th>{t('admin.price')}</th>
+                <th>{t('admin.status')}</th>
+                <th>{t('admin.date')}</th>
+                <th>{t('admin.actions')}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filtered.map(row)}
+            </tbody>
+          </table>
+        </div>
+
+        <div className="admin-mobile-list">
+          {filtered.map((p) => (
+            <div key={p.id} className="admin-mobile-card">
+              <div className="card-head">
+                <div className="fw-semibold">{p.title || p.name}</div>
+                <span className={`admin-status-badge ${statusBadgeClass(p.status)}`}>{p.status || '—'}</span>
+              </div>
+              <div className="mt-2">
+                <div className="row-label">{t('admin.owner')}</div>
+                <div className="row-value">{p.sellerName || p.ownerName || '—'}</div>
+                <div className="row-label mt-1">{t('admin.location')}</div>
+                <div className="row-value">{p.district || p.city || p.location || '—'} • {p.type || p.propertyType || '—'}</div>
+                <div className="row-label mt-1">{t('admin.price')}</div>
+                <div className="row-value">{formatPrice(p.price || p.priceAmount)}</div>
+                <div className="row-label mt-1">{t('admin.date')}</div>
+                <div className="row-value">{formatDate(p.updatedAt || p.createdAt || p.submittedAt || p.uploadedDate)}</div>
+              </div>
+              <div className="d-flex gap-2 mt-2 flex-wrap">
+                <button className="btn btn-outline-secondary btn-sm" onClick={() => setViewing(p)}>{t('admin.view')}</button>
+                <button className="btn btn-outline-primary btn-sm" onClick={() => editProperty(p)}>{t('admin.edit')}</button>
+                <select className="form-select form-select-sm ms-auto" style={{ width: 'auto' }} value={p.status} onChange={(e) => changeStatus(p.id, e.target.value)}>
+                  <option value="Available">{t('admin.statusAvailable')}</option>
+                  <option value="Unavailable">{t('admin.statusUnavailable')}</option>
+                  <option value="Sold">{t('admin.statusSold')}</option>
+                </select>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {!filtered.length ? (
+          <div className="admin-empty-state"><div className="empty-icon">▦</div><div className="empty-title">{t('admin.noPropertiesFound')}</div></div>
+        ) : null}
+
+        <div className="d-flex justify-content-between align-items-center mt-3">
+          <span className="text-muted small">{filtered.length} {t('admin.listings')}</span>
+        </div>
+      </div>
+
+      {viewing ? (
+        <div className="modal fade show d-block" tabIndex="-1" style={{ background: 'rgba(2,6,23,0.65)' }}>
+          <div className="modal-dialog modal-lg modal-dialog-centered">
+            <div className="modal-content border-0 rounded-4">
+              <div className="modal-header border-0"><h5 className="modal-title fw-bold">{viewing.title || viewing.name}</h5><button className="btn-close" onClick={() => setViewing(null)} /></div>
+              <div className="modal-body p-4">
+                <div className="admin-detail-row"><span className="detail-label">ID</span><span className="detail-value">{viewing.id}</span></div>
+                <div className="admin-detail-row"><span className="detail-label">{t('admin.status')}</span><span className={`admin-status-badge ${statusBadgeClass(viewing.status)}`}>{viewing.status || '—'}</span></div>
+                <div className="admin-detail-row"><span className="detail-label">{t('admin.type')}</span><span className="detail-value">{viewing.type || viewing.propertyType || '—'}</span></div>
+                <div className="admin-detail-row"><span className="detail-label">{t('admin.location')}</span><span className="detail-value">{viewing.address || [viewing.village, viewing.subDistrict, viewing.district, viewing.state].filter(Boolean).join(', ') || '—'}</span></div>
+                <div className="admin-detail-row"><span className="detail-label">{t('admin.price')}</span><span className="detail-value">{formatPrice(viewing.price || viewing.priceAmount)} {viewing.priceUnit || ''}</span></div>
+                <div className="admin-detail-row"><span className="detail-label">{t('admin.area')}</span><span className="detail-value">{viewing.area || viewing.landArea || '—'}</span></div>
+                <div className="admin-detail-row"><span className="detail-label">{t('admin.seller')}</span><span className="detail-value">{viewing.sellerName || viewing.ownerName || '—'}</span></div>
+                <div className="admin-detail-row"><span className="detail-label">{t('admin.sellerMobile')}</span><span className="detail-value">{viewing.sellerPhone || viewing.ownerMobile || '—'}</span></div>
+                <div className="admin-detail-row"><span className="detail-label">{t('admin.description')}</span><span className="detail-value">{viewing.description || '—'}</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
+/* ---------------- ADD / EDIT PROPERTY PAGE ---------------- */
+function AddPropertyPage() {
+  const { t } = useLanguage();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const editing = location.state?.editing || null;
+  const [form, setForm] = useState({
+    id: editing?.id || '',
+    title: editing?.title || editing?.name || '',
+    type: editing?.type || editing?.propertyType || '',
+    priceUnit: editing?.priceUnit || '',
+    priceAmount: editing?.priceAmount || '',
+    district: editing?.district || '',
+    taluka: editing?.subDistrict || editing?.taluka || '',
+    village: editing?.village || '',
+    area: editing?.area || editing?.landArea || '',
+    description: editing?.description || '',
+    sellerName: editing?.sellerName || editing?.ownerName || '',
+    sellerPhone: editing?.sellerPhone || editing?.ownerMobile || '',
+    sellerEmail: editing?.sellerEmail || editing?.ownerEmail || '',
+    status: editing?.status || 'Available',
+    image: editing?.image || '',
+  });
+
+  const update = (field, value) => setForm((cur) => ({ ...cur, [field]: value }));
+
+  const submit = (event) => {
+    event.preventDefault();
+    if (!form.title.trim() || !form.district.trim() || !form.type || !form.sellerName.trim()) {
+      toast.error(t('admin.pleaseCompleteFields'));
+      return;
+    }
+    const now = new Date().toISOString();
+    const property = {
+      id: form.id || `PROP-${Date.now()}`,
+      title: form.title,
+      name: form.title,
+      type: form.type,
+      propertyType: form.type,
+      state: 'Gujarat',
+      district: form.district,
+      subDistrict: form.taluka,
+      taluka: form.taluka,
+      village: form.village,
+      location: form.district,
+      city: form.district,
+      address: [form.village, form.taluka, form.district, 'Gujarat'].filter(Boolean).join(', '),
+      price: form.priceAmount ? formatPrice(form.priceAmount) : t('admin.priceOnRequest'),
+      priceAmount: form.priceAmount,
+      priceUnit: form.priceUnit,
+      landArea: form.area,
+      area: form.area,
+      description: form.description,
+      status: form.status,
+      verified: true,
+      image: form.image || 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=900&q=80',
+      gallery: [form.image || 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=900&q=80'],
+      images: [form.image || 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=900&q=80'],
+      sellerName: form.sellerName,
+      sellerPhone: form.sellerPhone,
+      sellerEmail: form.sellerEmail,
+      ownerName: form.sellerName,
+      ownerMobile: form.sellerPhone,
+      ownerEmail: form.sellerEmail,
+      seller: { name: form.sellerName, phone: form.sellerPhone, email: form.sellerEmail },
+      createdAt: editing?.createdAt || now,
+      updatedAt: now,
+      submittedAt: editing?.submittedAt || now,
+      uploadedDate: editing?.uploadedDate || now,
+    };
+    const current = getAdminProperties();
+    const exists = current.some((item) => String(item.id) === String(property.id));
+    const next = exists ? current.map((item) => (String(item.id) === String(property.id) ? property : item)) : [property, ...current];
+    writeStorage(STORAGE_KEYS.listings, next);
+    toast.success(exists ? t('admin.propertyUpdated') : t('admin.propertySaved'));
+    navigate('/master-group/properties');
   };
 
   return (
     <div className="card table-card">
       <div className="card-body">
-        <div className="d-flex justify-content-between align-items-center mb-3">
-          <div>
-            <h4 className="fw-bold mb-1">Property Management</h4>
-            <p className="text-muted mb-0">Search, filter, sort, and manage listings in one place.</p>
+        <h4 className="fw-bold mb-1">{editing ? t('admin.edit') : t('admin.addProperty')}</h4>
+        <p className="text-muted mb-4">{t('admin.createUpdateListing')}</p>
+        <form onSubmit={submit}>
+          <div className="row g-3">
+            <div className="col-12 col-md-6"><label className="form-label">{t('admin.title')} *</label><input className="form-control input-glow" value={form.title} onChange={(e) => update('title', e.target.value)} required /></div>
+            <div className="col-12 col-md-6">
+              <label className="form-label">{t('admin.propertyType')} *</label>
+              <select className="form-select input-glow" value={form.type} onChange={(e) => update('type', e.target.value)} required>
+                <option value="">{t('admin.selectType')}</option>
+                <option value="Agricultural Land">Agricultural Land</option>
+                <option value="Non-Agricultural Land">Non-Agricultural Land</option>
+              </select>
+            </div>
+            <div className="col-6 col-md-3"><label className="form-label">{t('admin.price')}</label><input className="form-control input-glow" type="number" value={form.priceAmount} onChange={(e) => update('priceAmount', e.target.value)} placeholder={t('admin.amount')} /></div>
+            <div className="col-6 col-md-3">
+              <label className="form-label">{t('admin.priceUnit')}</label>
+              <select className="form-select input-glow" value={form.priceUnit} onChange={(e) => update('priceUnit', e.target.value)}>
+                <option value="">{t('admin.unit')}</option>
+                <option value="Vigha">Vigha</option>
+                <option value="sq.yard (var)">Var (Sq.Yard)</option>
+                <option value="Sq.Ft">Sq.Ft</option>
+              </select>
+            </div>
+            <div className="col-12 col-md-6"><label className="form-label">{t('admin.location')} / {t('common.district')} *</label><input className="form-control input-glow" value={form.district} onChange={(e) => update('district', e.target.value)} placeholder={`e.g. ${t('admin.surat')}, ${t('admin.navsari')}`} required /></div>
+            <div className="col-6 col-md-3"><label className="form-label">{t('common.taluka')}</label><input className="form-control input-glow" value={form.taluka} onChange={(e) => update('taluka', e.target.value)} placeholder={t('admin.taluka')} /></div>
+            <div className="col-6 col-md-3"><label className="form-label">{t('common.village')}</label><input className="form-control input-glow" value={form.village} onChange={(e) => update('village', e.target.value)} placeholder={t('admin.village')} /></div>
+            <div className="col-12 col-md-6"><label className="form-label">{t('admin.area')}</label><input className="form-control input-glow" value={form.area} onChange={(e) => update('area', e.target.value)} placeholder="e.g. 2 Vigha" /></div>
+            <div className="col-12 col-md-6">
+              <label className="form-label">{t('admin.status')}</label>
+              <select className="form-select input-glow" value={form.status} onChange={(e) => update('status', e.target.value)}>
+                <option value="Available">{t('admin.statusAvailable')}</option>
+                <option value="Unavailable">{t('admin.statusUnavailable')}</option>
+                <option value="Sold">{t('admin.statusSold')}</option>
+              </select>
+            </div>
+            <div className="col-12"><label className="form-label">{t('admin.description')}</label><textarea className="form-control input-glow" rows="3" value={form.description} onChange={(e) => update('description', e.target.value)} /></div>
+            <div className="col-12 col-md-4"><label className="form-label">{t('admin.seller')} *</label><input className="form-control input-glow" value={form.sellerName} onChange={(e) => update('sellerName', e.target.value)} required /></div>
+            <div className="col-12 col-md-4"><label className="form-label">{t('admin.sellerMobile')}</label><input className="form-control input-glow" type="tel" value={form.sellerPhone} onChange={(e) => update('sellerPhone', e.target.value.replace(/\D/g, '').slice(0, 10))} /></div>
+            <div className="col-12 col-md-4"><label className="form-label">{t('admin.email')}</label><input className="form-control input-glow" type="email" value={form.sellerEmail} onChange={(e) => update('sellerEmail', e.target.value)} /></div>
+            <div className="col-12"><label className="form-label">{t('admin.imageUrl')}</label><input className="form-control input-glow" value={form.image} onChange={(e) => update('image', e.target.value)} placeholder="https://..." /></div>
           </div>
-          <button className="btn btn-primary" onClick={() => setModalState('property-form')}>+ Add Property</button>
+          <div className="mt-4 d-flex justify-content-end gap-2">
+            <button className="btn btn-outline-secondary" type="button" onClick={() => navigate('/master-group/properties')}>{t('admin.cancel')}</button>
+            <button className="btn btn-primary" type="submit">{t('admin.saveProperty')}</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}
+
+/* ---------------- USERS PAGE ---------------- */
+function UsersPage() {
+  const { t } = useLanguage();
+  const [query, setQuery] = useState('');
+  const [role, setRole] = useState('All');
+  const [status, setStatus] = useState('All');
+  const [sort, setSort] = useState('newest');
+  const [detail, setDetail] = useState(null);
+
+  const users = getAdminUsers();
+  const buyerLeads = getAdminBuyerLeads();
+  const sellerLeads = getAdminSellerLeads();
+  const properties = getAdminProperties();
+
+  const enriched = useMemo(() => users.map((u) => ({
+    ...u,
+    role: deriveUserRole(u, buyerLeads, sellerLeads, properties),
+    buyerCount: buyerLeads.filter((l) => String(l.userMobile || '').replace(/\D/g, '') === String(u.mobile || '').replace(/\D/g, '') || String(l.userId || '') === String(u.id || '')).length,
+    sellerCount: properties.filter((p) => String(p.sellerPhone || p.ownerMobile || '').replace(/\D/g, '') === String(u.mobile || '').replace(/\D/g, '') || String(p.userId || '') === String(u.id || '')).length,
+  })), [users, buyerLeads, sellerLeads, properties]);
+
+  const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    return enriched.filter((u) => {
+      const haystack = `${u.name} ${u.mobile} ${u.email} ${u.id}`.toLowerCase();
+      const matchesQuery = !q || haystack.includes(q);
+      const matchesRole = role === 'All' || u.role === role;
+      const matchesStatus = status === 'All' || String(u.status) === status;
+      return matchesQuery && matchesRole && matchesStatus;
+    }).sort((a, b) => {
+      if (sort === 'oldest') return new Date(a.createdAt || 0) - new Date(b.createdAt || 0);
+      if (sort === 'name-az') return String(a.name).localeCompare(String(b.name));
+      if (sort === 'name-za') return String(b.name).localeCompare(String(a.name));
+      return new Date(b.createdAt || 0) - new Date(a.createdAt || 0);
+    });
+  }, [enriched, query, role, status, sort]);
+
+  const clearFilters = () => { setQuery(''); setRole('All'); setStatus('All'); setSort('newest'); };
+
+  const toggleStatus = (id) => {
+    const current = getAdminUsers();
+    const next = current.map((u) => (String(u.id) === String(id) ? { ...u, status: String(u.status) === 'Active' ? 'Inactive' : 'Active' } : u));
+    writeStorage(STORAGE_KEYS.users, next);
+    toast.success(t('admin.statusUpdated'));
+  };
+
+  return (
+    <div className="card table-card">
+      <div className="card-body">
+        <div className="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
+          <div>
+            <h4 className="fw-bold mb-1">{t('admin.users')}</h4>
+            <p className="text-muted mb-0">{t('admin.manageUsers')}</p>
+          </div>
         </div>
-        <div className="row g-2 mb-3">
+
+        <div className="row g-2 mb-3 admin-filters">
           <div className="col-12 col-md-4">
-            <input className="form-control" placeholder="Search properties" value={query} onChange={(e) => setQuery(e.target.value)} />
+            <input className="form-control" placeholder={t('admin.searchPlaceholderUsers')} value={query} onChange={(e) => setQuery(e.target.value)} />
+          </div>
+          <div className="col-6 col-md-2">
+            <select className="form-select" value={role} onChange={(e) => setRole(e.target.value)}>
+              <option value="All">{t('admin.allRoles')}</option>
+              <option value="Buyer">{t('admin.buyer')}</option>
+              <option value="Seller">{t('admin.seller')}</option>
+              <option value="Buyer & Seller">{t('admin.buyerAndSeller')}</option>
+            </select>
           </div>
           <div className="col-6 col-md-2">
             <select className="form-select" value={status} onChange={(e) => setStatus(e.target.value)}>
-              <option value="All">All Status</option>
-              <option value="Available">Available</option>
-              <option value="Pending">Pending</option>
-              <option value="Sold">Sold</option>
+              <option value="All">{t('admin.allStatus')}</option>
+              <option value="Active">{t('admin.active')}</option>
+              <option value="Inactive">{t('admin.inactive')}</option>
             </select>
           </div>
           <div className="col-6 col-md-2">
             <select className="form-select" value={sort} onChange={(e) => setSort(e.target.value)}>
-              <option value="newest">Newest</option>
-              <option value="price-high">Price High-Low</option>
-              <option value="price-low">Price Low-High</option>
-              <option value="name">Name A-Z</option>
+              <option value="newest">{t('admin.newest')}</option>
+              <option value="oldest">{t('admin.oldest')}</option>
+              <option value="name-az">{t('admin.nameAZ')}</option>
+              <option value="name-za">{t('admin.nameZA')}</option>
             </select>
           </div>
-          <div className="col-12 col-md-4 text-md-end">
-            <button className="btn btn-outline-secondary me-2">Export CSV</button>
-            <button className="btn btn-outline-danger">Bulk Delete</button>
+          <div className="col-6 col-md-2 text-md-end">
+            <button className="btn btn-outline-secondary w-100" onClick={clearFilters}>{t('admin.clearFilters')}</button>
           </div>
         </div>
-        <div className="table-responsive">
+
+        <div className="table-responsive admin-desktop-table">
           <table className="table table-hover align-middle">
             <thead>
               <tr>
-                <th>Title</th><th>Seller</th><th>City</th><th>Category</th><th>Price</th><th>Status</th><th>Actions</th>
+                <th>{t('admin.user')}</th>
+                <th>{t('admin.mobile')}</th>
+                <th>{t('admin.role')}</th>
+                <th>{t('admin.location')}</th>
+                <th>{t('admin.registeredDate')}</th>
+                <th>{t('admin.status')}</th>
+                <th>{t('admin.actions')}</th>
               </tr>
             </thead>
             <tbody>
-              {paged.map((property) => (
-                <tr key={property.id}>
+              {filtered.map((u) => (
+                <tr key={u.id}>
                   <td>
-                    <div className="fw-semibold">{property.title}</div>
-                    <div className="small text-muted">{property.id}</div>
+                    <div className="d-flex align-items-center gap-2"><span className="avatar" style={{ width: 34, height: 34, fontSize: '0.8rem' }}>{getInitials(u.name)}</span><span className="fw-semibold">{u.name}{u.isDemo ? <span className="admin-demo-badge">{t('admin.demoData')}</span> : null}</span></div>
+                    <div className="small text-muted ms-0">{u.email || '—'}</div>
                   </td>
-                  <td>{property.sellerName}</td>
-                  <td>{property.city}</td>
-                  <td>{property.category}</td>
-                  <td>₹{property.price.toLocaleString()}</td>
-                  <td><span className="badge bg-info-subtle text-info">{property.status}</span></td>
+                  <td>{maskMobile(u.mobile)}</td>
+                  <td><span className={`admin-role-badge ${roleBadgeClass(u.role)}`}>{u.role}</span></td>
+                  <td>{u.city || u.district || '—'}</td>
+                  <td className="small text-muted">{formatDate(u.createdAt)}</td>
+                  <td><span className={`admin-status-badge ${statusBadgeClass(u.status)}`}>{u.status || '—'}</span></td>
                   <td>
                     <div className="btn-group btn-group-sm">
-                      <button className="btn btn-outline-secondary" onClick={() => setModalState('property-view', property)}>View</button>
-                      <button className="btn btn-outline-primary" onClick={() => setModalState('property-form', property)}>Edit</button>
-                      <button className="btn btn-outline-danger" onClick={() => removeProperty(property.id)}>Delete</button>
+                      <button className="btn btn-outline-secondary" onClick={() => setDetail(u)}>{t('admin.view')}</button>
+                      <button className="btn btn-outline-warning" onClick={() => toggleStatus(u.id)}>{String(u.status) === 'Active' ? t('admin.deactivate') : t('admin.activate')}</button>
                     </div>
                   </td>
                 </tr>
@@ -447,350 +901,264 @@ function PropertiesPage({ properties, setProperties, setModalState }) {
             </tbody>
           </table>
         </div>
-        <div className="d-flex justify-content-between align-items-center mt-3">
-          <span className="text-muted small">Showing {paged.length} of {filtered.length} listings</span>
-          <div className="btn-group btn-group-sm">
-            <button className="btn btn-outline-secondary" disabled={page === 1} onClick={() => setPage(page - 1)}>Prev</button>
-            <button className="btn btn-outline-secondary" disabled={page * rowsPerPage >= filtered.length} onClick={() => setPage(page + 1)}>Next</button>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
 
-function BuyerLeadsPage({ buyerLeads, setBuyerLeads }) {
-  const [query, setQuery] = useState('');
-  const [status, setStatus] = useState('All');
-  const filtered = useMemo(() => buyerLeads.filter((lead) => {
-    const matches = `${lead.name} ${lead.city} ${lead.email}`.toLowerCase().includes(query.toLowerCase());
-    return matches && (status === 'All' || lead.status === status);
-  }), [buyerLeads, query, status]);
-
-  const removeLead = (id) => {
-    setBuyerLeads((current) => current.filter((item) => item.id !== id));
-    toast.info('Lead removed');
-  };
-
-  return (
-    <div className="card table-card">
-      <div className="card-body">
-        <div className="d-flex justify-content-between align-items-center mb-3">
-          <div>
-            <h4 className="fw-bold mb-1">Buyer Leads</h4>
-            <p className="text-muted mb-0">Track high-intent buyers and follow up quickly.</p>
-          </div>
-          <button className="btn btn-outline-secondary">Export CSV</button>
-        </div>
-        <div className="row g-2 mb-3">
-          <div className="col-12 col-md-6">
-            <input className="form-control" placeholder="Search buyer leads" value={query} onChange={(e) => setQuery(e.target.value)} />
-          </div>
-          <div className="col-12 col-md-3">
-            <select className="form-select" value={status} onChange={(e) => setStatus(e.target.value)}>
-              <option value="All">All Status</option>
-              <option value="New">New</option>
-              <option value="Hot">Hot</option>
-            </select>
-          </div>
-        </div>
-        <div className="table-responsive">
-          <table className="table table-hover align-middle">
-            <thead><tr><th>Name</th><th>Phone</th><th>Email</th><th>City</th><th>Budget</th><th>Status</th><th>Actions</th></tr></thead>
-            <tbody>
-              {filtered.map((lead) => (
-                <tr key={lead.id}>
-                  <td>{lead.name}</td><td>{lead.phone}</td><td>{lead.email}</td><td>{lead.city}</td><td>{lead.budget}</td><td><span className="badge bg-primary-subtle text-primary">{lead.status}</span></td>
-                  <td><button className="btn btn-sm btn-outline-danger" onClick={() => removeLead(lead.id)}>Delete</button></td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function SellerLeadsPage({ sellerLeads, setSellerLeads }) {
-  const [query, setQuery] = useState('');
-  const filtered = useMemo(() => sellerLeads.filter((lead) => `${lead.ownerName} ${lead.city}`.toLowerCase().includes(query.toLowerCase())), [sellerLeads, query]);
-  const removeLead = (id) => {
-    setSellerLeads((current) => current.filter((item) => item.id !== id));
-    toast.info('Seller lead removed');
-  };
-
-  return (
-    <div className="card table-card">
-      <div className="card-body">
-        <div className="d-flex justify-content-between align-items-center mb-3">
-          <div>
-            <h4 className="fw-bold mb-1">Seller Leads</h4>
-            <p className="text-muted mb-0">Review new seller submissions and reach out quickly.</p>
-          </div>
-          <button className="btn btn-outline-secondary">Export</button>
-        </div>
-        <div className="mb-3">
-          <input className="form-control" placeholder="Search seller leads" value={query} onChange={(e) => setQuery(e.target.value)} />
-        </div>
-        <div className="table-responsive">
-          <table className="table table-hover align-middle">
-            <thead><tr><th>Owner</th><th>Phone</th><th>Property</th><th>City</th><th>Expected Price</th><th>Status</th><th>Actions</th></tr></thead>
-            <tbody>
-              {filtered.map((lead) => (
-                <tr key={lead.id}>
-                  <td>{lead.ownerName}</td><td>{lead.phone}</td><td>{lead.propertyType}</td><td>{lead.city}</td><td>{lead.expectedPrice}</td><td><span className="badge bg-warning-subtle text-warning">{lead.status}</span></td>
-                  <td><button className="btn btn-sm btn-outline-danger" onClick={() => removeLead(lead.id)}>Delete</button></td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function UsersPage({ users, setUsers }) {
-  const [query, setQuery] = useState('');
-  const filtered = useMemo(() => users.filter((user) => `${user.name} ${user.email} ${user.city}`.toLowerCase().includes(query.toLowerCase())), [users, query]);
-  const toggleStatus = (id) => {
-    setUsers((current) => current.map((user) => user.id === id ? { ...user, status: user.status === 'Active' ? 'Inactive' : 'Active' } : user));
-    toast.success('User status updated');
-  };
-
-  return (
-    <div className="card table-card">
-      <div className="card-body">
-        <div className="d-flex justify-content-between align-items-center mb-3">
-          <div>
-            <h4 className="fw-bold mb-1">Registered Users</h4>
-            <p className="text-muted mb-0">Manage account activity and onboarding completion.</p>
-          </div>
-          <button className="btn btn-outline-secondary">Export CSV</button>
-        </div>
-        <div className="mb-3">
-          <input className="form-control" placeholder="Search users" value={query} onChange={(e) => setQuery(e.target.value)} />
-        </div>
-        <div className="table-responsive">
-          <table className="table table-hover align-middle">
-            <thead><tr><th>Name</th><th>Mobile</th><th>Email</th><th>City</th><th>Status</th><th>Actions</th></tr></thead>
-            <tbody>
-              {filtered.map((user) => (
-                <tr key={user.id}>
-                  <td><div className="fw-semibold">{user.name}</div><div className="small text-muted">Buyer: {user.buyerCompleted ? 'Yes' : 'No'} / Seller: {user.sellerCompleted ? 'Yes' : 'No'}</div></td>
-                  <td>{user.mobile}</td><td>{user.email}</td><td>{user.city}</td><td><span className="badge bg-success-subtle text-success">{user.status}</span></td>
-                  <td><button className="btn btn-sm btn-outline-secondary" onClick={() => toggleStatus(user.id)}>Toggle</button></td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function EnquiriesPage({ enquiries, setEnquiries }) {
-  const removeEnquiry = (id) => {
-    setEnquiries((current) => current.filter((item) => item.id !== id));
-    toast.info('Enquiry removed');
-  };
-
-  return (
-    <div className="card table-card">
-      <div className="card-body">
-        <div className="d-flex justify-content-between align-items-center mb-3">
-          <div>
-            <h4 className="fw-bold mb-1">Enquiries</h4>
-            <p className="text-muted mb-0">Review messages from buyers and sellers.</p>
-          </div>
-          <button className="btn btn-outline-secondary">Reply</button>
-        </div>
-        <div className="table-responsive">
-          <table className="table table-hover align-middle">
-            <thead><tr><th>Buyer</th><th>Seller</th><th>Property</th><th>Message</th><th>Status</th><th>Actions</th></tr></thead>
-            <tbody>
-              {enquiries.map((enquiry) => (
-                <tr key={enquiry.id}>
-                  <td>{enquiry.buyer}</td><td>{enquiry.seller}</td><td>{enquiry.property}</td><td>{enquiry.message}</td><td><span className="badge bg-warning-subtle text-warning">{enquiry.status}</span></td>
-                  <td><button className="btn btn-sm btn-outline-danger" onClick={() => removeEnquiry(enquiry.id)}>Delete</button></td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function CategoriesPage({ categories, setCategories }) {
-  const [name, setName] = useState('');
-  const addCategory = () => {
-    if (!name.trim()) return;
-    setCategories((current) => [...current, name.trim()]);
-    setName('');
-    toast.success('Category added');
-  };
-  return (
-    <div className="card table-card">
-      <div className="card-body">
-        <h4 className="fw-bold mb-3">Categories</h4>
-        <div className="row g-2 mb-3">
-          <div className="col-12 col-md-8"><input className="form-control" value={name} onChange={(e) => setName(e.target.value)} placeholder="Add category" /></div>
-          <div className="col-12 col-md-4"><button className="btn btn-primary w-100" onClick={addCategory}>Add Category</button></div>
-        </div>
-        <div className="row g-2">
-          {categories.map((category) => <div key={category} className="col-12 col-md-4"><div className="border rounded-3 p-3">{category}</div></div>)}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function LocationsPage({ locations, setLocations }) {
-  return (
-    <div className="card table-card">
-      <div className="card-body">
-        <h4 className="fw-bold mb-3">Locations</h4>
-        <div className="row g-3">
-          {locations.map((location) => (
-            <div key={location.state} className="col-12 col-md-6">
-              <div className="border rounded-3 p-3">
-                <h6 className="fw-semibold">{location.state}</h6>
-                <p className="text-muted small mb-2">Cities: {location.cities.join(', ')}</p>
-                <p className="text-muted small mb-0">Areas: {location.areas.join(', ')}</p>
+        <div className="admin-mobile-list">
+          {filtered.map((u) => (
+            <div key={u.id} className="admin-mobile-card">
+              <div className="card-head">
+                <div className="d-flex align-items-center gap-2"><span className="avatar" style={{ width: 34, height: 34, fontSize: '0.8rem' }}>{getInitials(u.name)}</span><span className="fw-semibold">{u.name}{u.isDemo ? <span className="admin-demo-badge">{t('admin.demoData')}</span> : null}</span></div>
+                <span className={`admin-status-badge ${statusBadgeClass(u.status)}`}>{u.status || '—'}</span>
+              </div>
+              <div className="mt-2">
+                <span className={`admin-role-badge ${roleBadgeClass(u.role)}`}>{u.role}</span>
+                <div className="row-label mt-2">{t('admin.mobile')}</div>
+                <div className="row-value">{maskMobile(u.mobile)}</div>
+                <div className="row-label mt-1">{t('admin.location')}</div>
+                <div className="row-value">{u.city || u.district || '—'}</div>
+                <div className="row-label mt-1">{t('admin.registeredDate')}</div>
+                <div className="row-value">{formatDate(u.createdAt)}</div>
+              </div>
+              <div className="d-flex gap-2 mt-2">
+                <button className="btn btn-outline-secondary btn-sm" onClick={() => setDetail(u)}>{t('admin.view')}</button>
+                <button className="btn btn-outline-warning btn-sm" onClick={() => toggleStatus(u.id)}>{String(u.status) === 'Active' ? t('admin.deactivate') : t('admin.activate')}</button>
               </div>
             </div>
           ))}
         </div>
-      </div>
-    </div>
-  );
-}
 
-function NotificationsPage({ notifications }) {
-  return (
-    <div className="card table-card">
-      <div className="card-body">
-        <h4 className="fw-bold mb-3">Notifications</h4>
-        <div className="list-group">
-          {notifications.map((item) => (
-            <div key={item.id} className="list-group-item d-flex justify-content-between align-items-start">
-              <div>
-                <div className="fw-semibold">{item.title}</div>
-                <div className="text-muted small">{item.detail}</div>
+        {!filtered.length ? (
+          <div className="admin-empty-state"><div className="empty-icon">◎</div><div className="empty-title">{t('admin.noUsersFound')}</div></div>
+        ) : null}
+      </div>
+
+      {detail ? (
+        <div className="modal fade show d-block" tabIndex="-1" style={{ background: 'rgba(2,6,23,0.65)' }}>
+          <div className="modal-dialog modal-lg modal-dialog-centered">
+            <div className="modal-content border-0 rounded-4">
+              <div className="modal-header border-0"><h5 className="modal-title fw-bold">{t('admin.userDetails')}</h5><button className="btn-close" onClick={() => setDetail(null)} /></div>
+              <div className="modal-body p-4">
+                <div className="d-flex align-items-center gap-3 mb-3">
+                  <span className="avatar" style={{ width: 52, height: 52, fontSize: '1.2rem' }}>{getInitials(detail.name)}</span>
+                  <div>
+                    <div className="fw-bold">{detail.name}{detail.isDemo ? <span className="admin-demo-badge">{t('admin.demoData')}</span> : null}</div>
+                    <span className={`admin-role-badge ${roleBadgeClass(detail.role)}`}>{detail.role}</span>
+                  </div>
+                </div>
+                <div className="admin-detail-row"><span className="detail-label">{t('admin.mobile')}</span><span className="detail-value">{detail.mobile}</span></div>
+                <div className="admin-detail-row"><span className="detail-label">{t('admin.email')}</span><span className="detail-value">{detail.email || '—'}</span></div>
+                <div className="admin-detail-row"><span className="detail-label">{t('admin.registeredDate')}</span><span className="detail-value">{formatDate(detail.createdAt)}</span></div>
+                <div className="admin-detail-row"><span className="detail-label">{t('admin.location')}</span><span className="detail-value">{detail.city || detail.district || '—'}</span></div>
+                <div className="admin-detail-row"><span className="detail-label">{t('admin.accountStatus')}</span><span className={`admin-status-badge ${statusBadgeClass(detail.status)}`}>{detail.status || '—'}</span></div>
+                <div className="admin-detail-row"><span className="detail-label">{t('admin.buyerRequirements')}</span><span className="detail-value">{detail.buyerCount || 0}</span></div>
+                <div className="admin-detail-row"><span className="detail-label">{t('admin.listedProperties')}</span><span className="detail-value">{detail.sellerCount || 0}</span></div>
               </div>
-              {item.unread ? <span className="badge bg-danger">New</span> : null}
+              <div className="modal-footer border-0">
+                <button className="btn btn-outline-secondary" onClick={() => setDetail(null)}>{t('admin.close')}</button>
+              </div>
             </div>
-          ))}
+          </div>
         </div>
-      </div>
+      ) : null}
     </div>
   );
 }
 
-function ReportsPage() {
-  return (
-    <div className="card table-card">
-      <div className="card-body">
-        <h4 className="fw-bold mb-3">Reports</h4>
-        <p className="text-muted">Property, buyer, seller, and revenue reporting views are ready for expansion with richer charts and exports.</p>
-      </div>
-    </div>
-  );
-}
+/* ---------------- PROFILE PAGE ---------------- */
+function ProfilePage() {
+  const { t } = useLanguage();
+  const session = readMasterGroupSession();
+  const isSuper = isSuperAdminSession();
+  const roleLabel = isSuper ? t('admin.superAdmin') : t('admin.masterGroupAdmin');
+  const name = ADMIN_NAMES[session?.mobile] || 'Master Group Admin';
 
-function SettingsPage({ settings, setSettings }) {
-  const [form, setForm] = useState(settings);
-  const save = () => {
-    setSettings(form);
-    writeStorage(ADMIN_SETTINGS_KEY, form);
-    toast.success('Settings saved');
-  };
   return (
     <div className="card table-card">
       <div className="card-body">
-        <h4 className="fw-bold mb-3">Settings</h4>
-        <div className="row g-3">
-          <div className="col-12 col-md-6"><label className="form-label">Website Name</label><input className="form-control" value={form.siteName} onChange={(e) => setForm({ ...form, siteName: e.target.value })} /></div>
-          <div className="col-12 col-md-6"><label className="form-label">Contact Email</label><input className="form-control" value={form.contactEmail} onChange={(e) => setForm({ ...form, contactEmail: e.target.value })} /></div>
-          <div className="col-12 col-md-6"><label className="form-label">Phone</label><input className="form-control" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} /></div>
-          <div className="col-12 col-md-6"><label className="form-label">Address</label><input className="form-control" value={form.address} onChange={(e) => setForm({ ...form, address: e.target.value })} /></div>
-          <div className="col-12 col-md-6"><label className="form-label">Primary Color</label><input className="form-control" type="color" value={form.primaryColor} onChange={(e) => setForm({ ...form, primaryColor: e.target.value })} /></div>
-          <div className="col-12 col-md-6"><label className="form-label">Secondary Color</label><input className="form-control" type="color" value={form.secondaryColor} onChange={(e) => setForm({ ...form, secondaryColor: e.target.value })} /></div>
-          <div className="col-12"><label className="form-label">Footer Content</label><textarea className="form-control" rows="3" value={form.footerText} onChange={(e) => setForm({ ...form, footerText: e.target.value })} /></div>
-        </div>
-        <button className="btn btn-primary mt-3" onClick={save}>Save Settings</button>
-      </div>
-    </div>
-  );
-}
-
-function ProfilePage({ settings }) {
-  return (
-    <div className="card table-card">
-      <div className="card-body">
-        <h4 className="fw-bold mb-3">Admin Profile</h4>
+        <h4 className="fw-bold mb-3">{t('admin.profile')}</h4>
         <div className="d-flex align-items-center gap-3 mb-4">
-          <div className="avatar">AD</div>
+          <span className="avatar" style={{ width: 56, height: 56, fontSize: '1.3rem' }}>{getInitials(name)}</span>
           <div>
-            <h5 className="mb-1">Admin Dashboard</h5>
-            <p className="text-muted mb-0">{settings.siteName} · {settings.contactEmail}</p>
+            <div className="h5 mb-1">{name}</div>
+            <span className={`admin-role-badge ${isSuper ? 'role-both' : 'role-seller'}`}>{roleLabel}</span>
           </div>
         </div>
-        <div className="border rounded-3 p-3">Activity log is ready for richer audit entries and role-based insights.</div>
+        <div className="admin-detail-row"><span className="detail-label">{t('admin.name')}</span><span className="detail-value">{name}</span></div>
+        <div className="admin-detail-row"><span className="detail-label">{t('admin.role')}</span><span className="detail-value">{roleLabel}</span></div>
+        <div className="admin-detail-row"><span className="detail-label">{t('admin.mobile')}</span><span className="detail-value">{maskMobile(session?.mobile)}</span></div>
+        <div className="admin-detail-row"><span className="detail-label">{t('admin.accountStatus')}</span><span className={`admin-status-badge status-active`}>{t('admin.active')}</span></div>
       </div>
     </div>
   );
 }
 
-function AdminShell({ data, setData, onLogout }) {
-  const location = useLocation();
-  const navigate = useNavigate();
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [modalState, setModalState] = useState(null);
-  const [draft, setDraft] = useState(null);
-
-  const navItems = [
-    { to: '/admin', label: 'Dashboard', icon: '▦' },
-    { to: '/admin/properties', label: 'Properties', icon: '⌂' },
-    { to: '/admin/add-property', label: 'Add Property', icon: '+' },
-    { to: '/admin/buyer-leads', label: 'Buyer Leads', icon: '◈' },
-    { to: '/admin/seller-leads', label: 'Seller Leads', icon: '◈' },
-    { to: '/admin/users', label: 'Users', icon: '◎' },
-    { to: '/admin/enquiries', label: 'Enquiries', icon: '✉' },
-    { to: '/admin/categories', label: 'Categories', icon: '☰' },
-    { to: '/admin/locations', label: 'Locations', icon: '⌖' },
-    { to: '/admin/reports', label: 'Reports', icon: '◷' },
-    { to: '/admin/notifications', label: 'Notifications', icon: '🔔' },
-    { to: '/admin/settings', label: 'Settings', icon: '⚙' },
-    { to: '/admin/profile', label: 'Profile', icon: '◍' },
-  ];
-
-  const saveProperty = (event) => {
-    event.preventDefault();
-    const next = { ...(draft || {}), id: draft?.id || `PROP-${Date.now()}`, dateAdded: draft?.dateAdded || new Date().toISOString().slice(0, 10), status: draft?.status || 'Available', featured: draft?.featured || false, images: draft?.images || [] };
-    setData((current) => {
-      const list = current.properties.some((item) => item.id === next.id) ? current.properties.map((item) => item.id === next.id ? next : item) : [next, ...current.properties];
-      return { ...current, properties: list };
-    });
-    toast.success(draft?.id ? 'Property updated' : 'Property saved');
-    setModalState(null);
-    setDraft(null);
-  };
-
-  const openCreate = () => {
-    setDraft({ title: '', description: '', category: 'Apartment', propertyType: 'Residential', purpose: 'Sale', price: '', area: '', bedrooms: '', bathrooms: '', balcony: '', parking: '', floor: '', totalFloors: '', facing: 'North', furnishing: 'Semi-Furnished', constructionAge: 'New', readyToMove: true, amenities: [], address: '', city: '', state: '', pincode: '', googleMapsLink: '', latitude: '', longitude: '', sellerName: '', sellerPhone: '', sellerEmail: '', status: 'Available', featured: false, images: [] });
-    setModalState('property-form');
-  };
+/* ---------------- ADMIN ACTIVITY PAGE ---------------- */
+function AdminActivityPage() {
+  const { t } = useLanguage();
+  const [activity, setActivity] = useState(() => getAdminActivity());
+  const [query, setQuery] = useState('');
+  const [adminFilter, setAdminFilter] = useState('All');
+  const [statusFilter, setStatusFilter] = useState('All');
+  const [sort, setSort] = useState('newest');
 
   useEffect(() => {
-    if (location.pathname === '/admin') {
-      setSidebarOpen(false);
-    }
+    const cleanup = onAdminActivityChanged(() => setActivity(getAdminActivity()));
+    return cleanup;
+  }, []);
+
+  const admins = useMemo(() => {
+    const map = new Map();
+    activity.forEach((a) => {
+      if (!map.has(a.mobile)) map.set(a.mobile, ADMIN_NAMES[a.mobile] || `+91 ${maskMobile(a.mobile)}`);
+    });
+    return ['All', ...Array.from(map.keys())];
+  }, [activity]);
+
+  const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    return activity.filter((a) => {
+      const name = ADMIN_NAMES[a.mobile] || '';
+      const haystack = `${name} ${a.mobile} ${a.role} ${a.id}`.toLowerCase();
+      const matchesQuery = !q || haystack.includes(q);
+      const matchesAdmin = adminFilter === 'All' || String(a.mobile) === adminFilter;
+      const matchesStatus = statusFilter === 'All'
+        || (statusFilter === 'Active' && a.status === 'Login')
+        || (statusFilter === 'Logged Out' && String(a.status).toLowerCase().includes('logout'));
+      return matchesQuery && matchesAdmin && matchesStatus;
+    }).sort((a, b) => {
+      const ta = new Date(a.loginAt || a.logoutAt || 0);
+      const tb = new Date(b.loginAt || b.logoutAt || 0);
+      return sort === 'oldest' ? ta - tb : tb - ta;
+    });
+  }, [activity, query, adminFilter, statusFilter, sort]);
+
+  const clearFilters = () => { setQuery(''); setAdminFilter('All'); setStatusFilter('All'); setSort('newest'); };
+
+  return (
+    <div className="card table-card">
+      <div className="card-body">
+        <h4 className="fw-bold mb-1">{t('admin.adminActivityTitle')}</h4>
+        <p className="text-muted mb-0">{t('admin.adminActivityDesc')}</p>
+        <div className="mt-2 mb-3">
+          <div className="alert alert-warning py-2 small mb-0">⚠️ {t('admin.devWarning')}</div>
+        </div>
+
+        <div className="row g-2 mb-3 admin-filters">
+          <div className="col-12 col-md-4"><input className="form-control" placeholder={t('admin.search')} value={query} onChange={(e) => setQuery(e.target.value)} /></div>
+          <div className="col-6 col-md-2">
+            <select className="form-select" value={adminFilter} onChange={(e) => setAdminFilter(e.target.value)}>
+              <option value="All">{t('admin.filterByAdmin')}</option>
+              {admins.filter((x) => x !== 'All').map((m) => <option key={m} value={m}>{ADMIN_NAMES[m] || maskMobile(m)}</option>)}
+            </select>
+          </div>
+          <div className="col-6 col-md-2">
+            <select className="form-select" value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
+              <option value="All">{t('admin.filterByActivityStatus')}</option>
+              <option value="Active">{t('admin.active')}</option>
+              <option value="Logged Out">{t('admin.loggedOut')}</option>
+            </select>
+          </div>
+          <div className="col-6 col-md-2">
+            <select className="form-select" value={sort} onChange={(e) => setSort(e.target.value)}>
+              <option value="newest">{t('admin.newest')}</option>
+              <option value="oldest">{t('admin.oldest')}</option>
+            </select>
+          </div>
+          <div className="col-6 col-md-2 text-md-end">
+            <button className="btn btn-outline-secondary w-100" onClick={clearFilters}>{t('admin.clearFilters')}</button>
+          </div>
+        </div>
+
+        <div className="d-none d-md-block admin-desktop-table">
+          <div className="table-responsive">
+            <table className="table table-hover align-middle mb-0">
+              <thead>
+                <tr>
+                  <th>{t('admin.admin')}</th>
+                  <th>{t('admin.mobile')}</th>
+                  <th>{t('admin.role')}</th>
+                  <th>{t('admin.loginTime')}</th>
+                  <th>{t('admin.logoutTime')}</th>
+                  <th>{t('admin.status')}</th>
+                  <th>{t('admin.sessionId')}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filtered.map((entry) => (
+                  <tr key={entry.id}>
+                    <td className="fw-semibold">{ADMIN_NAMES[entry.mobile] || t('admin.admin')}</td>
+                    <td>{maskMobile(entry.mobile)}</td>
+                    <td><span className="admin-role-badge role-both">{entry.role === 'super-admin' ? t('admin.superAdmin') : t('admin.masterGroupAdmin')}</span></td>
+                    <td>{formatDateTime(entry.loginAt)}</td>
+                    <td>{formatDateTime(entry.logoutAt)}</td>
+                    <td><span className={`admin-status-badge ${statusBadgeClass(entry.status)}`}>{entry.status === 'Login' ? t('admin.active') : t('admin.loggedOut')}</span></td>
+                    <td className="small text-muted">{entry.id}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div className="d-md-none admin-mobile-list">
+          {filtered.map((entry) => (
+            <div key={entry.id} className="admin-mobile-card">
+              <div className="card-head">
+                <span className="fw-semibold">{ADMIN_NAMES[entry.mobile] || t('admin.admin')}</span>
+                <span className={`admin-status-badge ${statusBadgeClass(entry.status)}`}>{entry.status === 'Login' ? t('admin.active') : t('admin.loggedOut')}</span>
+              </div>
+              <div className="mt-2">
+                <div className="row-label">{t('admin.mobile')}</div>
+                <div className="row-value">{maskMobile(entry.mobile)}</div>
+                <div className="row-label mt-1">{t('admin.role')}</div>
+                <div className="row-value">{entry.role === 'super-admin' ? t('admin.superAdmin') : t('admin.masterGroupAdmin')}</div>
+                <div className="row-label mt-1">{t('admin.loginTime')}</div>
+                <div className="row-value">{formatDateTime(entry.loginAt)}</div>
+                <div className="row-label mt-1">{t('admin.logoutTime')}</div>
+                <div className="row-value">{formatDateTime(entry.logoutAt)}</div>
+                <div className="row-label mt-1">{t('admin.sessionId')}</div>
+                <div className="row-value small">{entry.id}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {!filtered.length ? (
+          <div className="admin-empty-state"><div className="empty-icon">◷</div><div className="empty-title">{t('admin.noActivityFound')}</div></div>
+        ) : null}
+      </div>
+    </div>
+  );
+}
+
+/* ---------------- ADMIN SHELL ---------------- */
+function AdminShell({ onLogout }) {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { t } = useLanguage();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  const isSuperAdmin = isSuperAdminSession();
+
+  useEffect(() => {
+    if (location.pathname === '/master-group') setSidebarOpen(false);
   }, [location.pathname]);
+
+  // Route protection: only super-admin may access admin-activity
+  useEffect(() => {
+    if (location.pathname.includes('/admin-activity') && !isSuperAdmin) {
+      navigate('/master-group', { replace: true });
+    }
+  }, [location.pathname, isSuperAdmin, navigate]);
+
+  const baseNavItems = [
+    { to: '/master-group', label: t('admin.dashboard'), icon: '▦' },
+    { to: '/master-group/properties', label: t('admin.properties'), icon: '⌂' },
+    { to: '/master-group/add-property', label: t('admin.addProperty'), icon: '+' },
+    { to: '/master-group/users', label: t('admin.users'), icon: '◎' },
+    { to: '/master-group/profile', label: t('admin.profile'), icon: '◍' },
+  ];
+  const superAdminItems = isSuperAdmin ? [{ to: '/master-group/admin-activity', label: t('admin.adminActivity'), icon: '◷' }] : [];
+  const navItems = [...baseNavItems, ...superAdminItems];
 
   return (
     <div className="admin-app">
@@ -802,7 +1170,7 @@ function AdminShell({ data, setData, onLogout }) {
               <div className="avatar">BS</div>
               <div>
                 <div className="fw-bold">Broker Streets</div>
-                <div className="small text-white-50">Admin Console</div>
+                <div className="small text-white-50">{t('admin.masterGroupPortal')}</div>
               </div>
             </div>
           </div>
@@ -813,7 +1181,7 @@ function AdminShell({ data, setData, onLogout }) {
                 <span>{item.label}</span>
               </NavLink>
             ))}
-            <button className="btn btn-outline-light mt-3" onClick={onLogout}>Logout</button>
+            <button className="btn btn-outline-light mt-3" onClick={onLogout}>{t('admin.logout')}</button>
           </nav>
         </aside>
 
@@ -822,147 +1190,80 @@ function AdminShell({ data, setData, onLogout }) {
             <div className="d-flex align-items-center gap-2">
               <button className="btn btn-light d-lg-none" onClick={() => setSidebarOpen(true)}>☰</button>
               <div>
-                <div className="fw-semibold">Welcome back</div>
-                <div className="small text-muted">Premium property operations studio</div>
+                <div className="fw-semibold">{t('admin.welcomeBack')}</div>
+                <div className="small text-muted">{t('admin.welcomeSubtitle')}</div>
               </div>
             </div>
             <div className="d-flex align-items-center gap-2">
-              <button className="btn btn-outline-secondary btn-sm">🔔 3</button>
-              <button className="btn btn-outline-secondary btn-sm">Profile</button>
+              <AdminLanguageToggle />
+              <NavLink to="/master-group/profile" className="btn btn-outline-secondary btn-sm">{t('admin.profile')}</NavLink>
             </div>
           </header>
 
           <div className="p-3 p-lg-4">
             <Routes>
-              <Route path="" element={<Dashboard properties={data.properties} buyerLeads={data.buyerLeads} sellerLeads={data.sellerLeads} users={data.users} enquiries={data.enquiries} notifications={data.notifications} />} />
-              <Route path="properties" element={<PropertiesPage properties={data.properties} setProperties={(updater) => setData((current) => ({ ...current, properties: typeof updater === 'function' ? updater(current.properties) : updater }))} setModalState={setModalState} />} />
-              <Route path="add-property" element={<div className="card table-card"><div className="card-body"><h4 className="fw-bold mb-3">Add Property</h4><p className="text-muted">Use the property management form below to create new listings.</p><button className="btn btn-primary" onClick={openCreate}>Create Property</button></div></div>} />
-              <Route path="buyer-leads" element={<BuyerLeadsPage buyerLeads={data.buyerLeads} setBuyerLeads={(updater) => setData((current) => ({ ...current, buyerLeads: typeof updater === 'function' ? updater(current.buyerLeads) : updater }))} />} />
-              <Route path="seller-leads" element={<SellerLeadsPage sellerLeads={data.sellerLeads} setSellerLeads={(updater) => setData((current) => ({ ...current, sellerLeads: typeof updater === 'function' ? updater(current.sellerLeads) : updater }))} />} />
-              <Route path="users" element={<UsersPage users={data.users} setUsers={(updater) => setData((current) => ({ ...current, users: typeof updater === 'function' ? updater(current.users) : updater }))} />} />
-              <Route path="enquiries" element={<EnquiriesPage enquiries={data.enquiries} setEnquiries={(updater) => setData((current) => ({ ...current, enquiries: typeof updater === 'function' ? updater(current.enquiries) : updater }))} />} />
-              <Route path="categories" element={<CategoriesPage categories={data.categories} setCategories={(updater) => setData((current) => ({ ...current, categories: typeof updater === 'function' ? updater(current.categories) : updater }))} />} />
-              <Route path="locations" element={<LocationsPage locations={data.locations} setLocations={(updater) => setData((current) => ({ ...current, locations: typeof updater === 'function' ? updater(current.locations) : updater }))} />} />
-              <Route path="reports" element={<ReportsPage />} />
-              <Route path="notifications" element={<NotificationsPage notifications={data.notifications} />} />
-              <Route path="settings" element={<SettingsPage settings={data.settings} setSettings={(value) => setData((current) => ({ ...current, settings: value }))} />} />
-              <Route path="profile" element={<ProfilePage settings={data.settings} />} />
-              <Route path="*" element={<Navigate to="/admin" replace />} />
+              <Route path="" element={<Dashboard />} />
+              <Route path="properties" element={<PropertiesPage navigate={navigate} />} />
+              <Route path="add-property" element={<AddPropertyPage />} />
+              <Route path="users" element={<UsersPage />} />
+              <Route path="profile" element={<ProfilePage />} />
+              {isSuperAdmin ? <Route path="admin-activity" element={<AdminActivityPage />} /> : null}
+              <Route path="*" element={<Navigate to="/master-group" replace />} />
             </Routes>
           </div>
         </div>
       </div>
-
-      {modalState ? (
-        <div className="modal fade show d-block" tabIndex="-1" style={{ background: 'rgba(2,6,23,0.65)' }}>
-          <div className="modal-dialog modal-xl modal-dialog-centered">
-            <div className="modal-content border-0 rounded-4">
-              <div className="modal-header border-0">
-                <h5 className="modal-title fw-bold">{draft?.id ? 'Edit Property' : 'Add Property'}</h5>
-                <button className="btn-close" onClick={() => { setModalState(null); setDraft(null); }} />
-              </div>
-              <div className="modal-body p-4">
-                <form onSubmit={saveProperty}>
-                  <div className="row g-3">
-                    <div className="col-12 col-lg-8">
-                      <div className="row g-3">
-                        <div className="col-12"><label className="form-label">Property Title</label><input className="form-control input-glow" value={draft?.title || ''} onChange={(e) => setDraft({ ...draft, title: e.target.value })} required /></div>
-                        <div className="col-12"><label className="form-label">Description</label><textarea className="form-control input-glow" rows="3" value={draft?.description || ''} onChange={(e) => setDraft({ ...draft, description: e.target.value })} /></div>
-                        <div className="col-12 col-md-6"><label className="form-label">Category</label><select className="form-select input-glow" value={draft?.category || 'Apartment'} onChange={(e) => setDraft({ ...draft, category: e.target.value })}><option>Apartment</option><option>Villa</option><option>Plot</option><option>Commercial</option><option>Office</option></select></div>
-                        <div className="col-12 col-md-6"><label className="form-label">Property Type</label><input className="form-control input-glow" value={draft?.propertyType || ''} onChange={(e) => setDraft({ ...draft, propertyType: e.target.value })} /></div>
-                        <div className="col-12 col-md-6"><label className="form-label">Purpose</label><input className="form-control input-glow" value={draft?.purpose || ''} onChange={(e) => setDraft({ ...draft, purpose: e.target.value })} /></div>
-                        <div className="col-12 col-md-6"><label className="form-label">Price</label><input className="form-control input-glow" type="number" value={draft?.price || ''} onChange={(e) => setDraft({ ...draft, price: Number(e.target.value) })} /></div>
-                        <div className="col-12 col-md-6"><label className="form-label">Area</label><input className="form-control input-glow" value={draft?.area || ''} onChange={(e) => setDraft({ ...draft, area: e.target.value })} /></div>
-                        <div className="col-12 col-md-6"><label className="form-label">Bedrooms</label><input className="form-control input-glow" value={draft?.bedrooms || ''} onChange={(e) => setDraft({ ...draft, bedrooms: e.target.value })} /></div>
-                        <div className="col-12 col-md-6"><label className="form-label">Bathrooms</label><input className="form-control input-glow" value={draft?.bathrooms || ''} onChange={(e) => setDraft({ ...draft, bathrooms: e.target.value })} /></div>
-                        <div className="col-12 col-md-6"><label className="form-label">Balcony</label><input className="form-control input-glow" value={draft?.balcony || ''} onChange={(e) => setDraft({ ...draft, balcony: e.target.value })} /></div>
-                        <div className="col-12 col-md-6"><label className="form-label">Parking</label><input className="form-control input-glow" value={draft?.parking || ''} onChange={(e) => setDraft({ ...draft, parking: e.target.value })} /></div>
-                        <div className="col-12 col-md-6"><label className="form-label">Floor</label><input className="form-control input-glow" value={draft?.floor || ''} onChange={(e) => setDraft({ ...draft, floor: e.target.value })} /></div>
-                        <div className="col-12 col-md-6"><label className="form-label">Total Floors</label><input className="form-control input-glow" value={draft?.totalFloors || ''} onChange={(e) => setDraft({ ...draft, totalFloors: e.target.value })} /></div>
-                        <div className="col-12 col-md-6"><label className="form-label">Facing</label><input className="form-control input-glow" value={draft?.facing || ''} onChange={(e) => setDraft({ ...draft, facing: e.target.value })} /></div>
-                        <div className="col-12 col-md-6"><label className="form-label">Furnishing</label><input className="form-control input-glow" value={draft?.furnishing || ''} onChange={(e) => setDraft({ ...draft, furnishing: e.target.value })} /></div>
-                        <div className="col-12 col-md-6"><label className="form-label">Construction Age</label><input className="form-control input-glow" value={draft?.constructionAge || ''} onChange={(e) => setDraft({ ...draft, constructionAge: e.target.value })} /></div>
-                        <div className="col-12 col-md-6"><label className="form-label">Ready To Move</label><select className="form-select input-glow" value={draft?.readyToMove ? 'true' : 'false'} onChange={(e) => setDraft({ ...draft, readyToMove: e.target.value === 'true' })}><option value="true">Yes</option><option value="false">No</option></select></div>
-                        <div className="col-12"><label className="form-label">Amenities</label><input className="form-control input-glow" value={(draft?.amenities || []).join(', ')} onChange={(e) => setDraft({ ...draft, amenities: e.target.value.split(',').map((item) => item.trim()).filter(Boolean) })} /></div>
-                      </div>
-                    </div>
-                    <div className="col-12 col-lg-4">
-                      <div className="row g-3">
-                        <div className="col-12"><label className="form-label">Address</label><input className="form-control input-glow" value={draft?.address || ''} onChange={(e) => setDraft({ ...draft, address: e.target.value })} /></div>
-                        <div className="col-12"><label className="form-label">City</label><input className="form-control input-glow" value={draft?.city || ''} onChange={(e) => setDraft({ ...draft, city: e.target.value })} /></div>
-                        <div className="col-12"><label className="form-label">State</label><input className="form-control input-glow" value={draft?.state || ''} onChange={(e) => setDraft({ ...draft, state: e.target.value })} /></div>
-                        <div className="col-12"><label className="form-label">Pincode</label><input className="form-control input-glow" value={draft?.pincode || ''} onChange={(e) => setDraft({ ...draft, pincode: e.target.value })} /></div>
-                        <div className="col-12"><label className="form-label">Google Maps Link</label><input className="form-control input-glow" value={draft?.googleMapsLink || ''} onChange={(e) => setDraft({ ...draft, googleMapsLink: e.target.value })} /></div>
-                        <div className="col-12"><label className="form-label">Seller Name</label><input className="form-control input-glow" value={draft?.sellerName || ''} onChange={(e) => setDraft({ ...draft, sellerName: e.target.value })} /></div>
-                        <div className="col-12"><label className="form-label">Seller Phone</label><input className="form-control input-glow" value={draft?.sellerPhone || ''} onChange={(e) => setDraft({ ...draft, sellerPhone: e.target.value })} /></div>
-                        <div className="col-12"><label className="form-label">Seller Email</label><input className="form-control input-glow" value={draft?.sellerEmail || ''} onChange={(e) => setDraft({ ...draft, sellerEmail: e.target.value })} /></div>
-                        <div className="col-12"><label className="form-label">Property Status</label><select className="form-select input-glow" value={draft?.status || 'Available'} onChange={(e) => setDraft({ ...draft, status: e.target.value })}><option>Available</option><option>Sold</option><option>Pending</option></select></div>
-                        <div className="col-12"><label className="form-check-label">Featured</label><input className="form-check-input ms-2" type="checkbox" checked={draft?.featured || false} onChange={(e) => setDraft({ ...draft, featured: e.target.checked })} /></div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="mt-4 d-flex justify-content-end gap-2">
-                    <button className="btn btn-outline-secondary" type="button" onClick={() => { setModalState(null); setDraft(null); }}>Cancel</button>
-                    <button className="btn btn-primary" type="submit">Save Property</button>
-                  </div>
-                </form>
-              </div>
-            </div>
-          </div>
-        </div>
-      ) : null}
     </div>
   );
 }
 
+/* ---------------- ADMIN APP ---------------- */
 export default function AdminApp() {
   const navigate = useNavigate();
-  const [data, setData] = useState(createInitialData);
+  const { t } = useLanguage();
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
+    // Seed demo data ONCE so the panel looks populated during presentation
+    seedAdminDemoData();
     const timer = setTimeout(() => setReady(true), 250);
     return () => clearTimeout(timer);
   }, []);
 
-  useEffect(() => {
-    writeStorage('broker-streets-properties', data.properties);
-    writeStorage('broker-streets-buyer-leads', data.buyerLeads);
-    writeStorage('broker-streets-seller-leads', data.sellerLeads);
-    writeStorage('broker-streets-users', data.users);
-    writeStorage('broker-streets-enquiries', data.enquiries);
-    writeStorage('broker-streets-categories', data.categories);
-    writeStorage('broker-streets-locations', data.locations);
-    writeStorage('broker-streets-notifications', data.notifications);
-    writeStorage(ADMIN_SETTINGS_KEY, data.settings);
-  }, [data]);
-
   const logout = () => {
-    window.localStorage.removeItem(ADMIN_AUTH_KEY);
-    toast.info('Admin logged out');
-    navigate('/admin/login');
+    const session = readMasterGroupSession();
+    if (session) {
+      // DEVELOPMENT-ONLY: record admin logout activity. See storage.js notice.
+      appendAdminActivity({
+        id: `logout-${Date.now()}`,
+        mobile: session.mobile,
+        role: session.role,
+        type: 'logout',
+        logoutAt: new Date().toISOString(),
+        status: 'Logout',
+        sessionInfo: t('admin.sessionClosedVia'),
+      });
+    }
+    clearMasterGroupSession();
+    toast.info(t('admin.loggedOutMsg'));
+    navigate('/master-group/login');
   };
 
-  if (!ready) {
-    return <div className="admin-app d-flex align-items-center justify-content-center"><div className="spinner-border text-primary" role="status" /></div>;
-  }
-
   return (
-  <Routes>
-    <Route path="login" element={<AdminLogin />} />
-
-    <Route
-      path="*"
-      element={
-        <ProtectedAdminRoute>
-          <AdminShell
-            data={data}
-            setData={setData}
-            onLogout={logout}
-          />
-        </ProtectedAdminRoute>
-      }
-    />
-  </Routes>
-);
+    <Routes>
+      <Route path="login" element={<AdminLogin />} />
+      <Route
+        path="*"
+        element={
+          !ready
+            ? <div className="admin-app d-flex align-items-center justify-content-center"><div className="spinner-border text-primary" role="status" /></div>
+            : (
+              <ProtectedAdminRoute>
+                <AdminShell onLogout={logout} />
+              </ProtectedAdminRoute>
+            )
+        }
+      />
+    </Routes>
+  );
 }

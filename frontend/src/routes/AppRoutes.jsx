@@ -31,7 +31,7 @@ import { useLanguage } from '../i18n/LanguageContext';
 function AppRoutes() {
   return (
     <Routes>
-      <Route path="/admin/*" element={<AdminApp />} />
+      <Route path="/master-group/*" element={<AdminApp />} />
       <Route path="/" element={<Layout />}>
         <Route index element={<RegisterPage />} />
         <Route path="home" element={<HomePage />} />
@@ -86,14 +86,7 @@ function AppRoutes() {
               </FormGuard>
             }
           />
-          <Route
-            path="property/:id"
-            element={
-              <FormGuard flagKey="buyerFormSubmitted" formPath="/buyer-form" requireSubmitted={true}>
-                <PropertyDetailsPage />
-              </FormGuard>
-            }
-          />
+          <Route path="property/:id" element={<PropertyDetailsPage />} />
           <Route path="profile" element={<ProfilePage />} />
           <Route path="profile/properties" element={<ProfilePropertiesPage />} />
           <Route path="profile/saved" element={<ProfileSavedPage />} />

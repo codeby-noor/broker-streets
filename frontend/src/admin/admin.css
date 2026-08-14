@@ -4,6 +4,19 @@
   color: #0f172a;
 }
 
+/* Standalone login page — explicit layout so global CSS doesn't interfere */
+.admin-login-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  width: 100%;
+  background: linear-gradient(135deg, #f0f4ff 0%, #e8edf8 100%);
+  color: #0f172a;
+  padding: 2rem 1rem;
+  box-sizing: border-box;
+}
+
 .admin-shell {
   display: flex;
   min-height: 100vh;
@@ -201,5 +214,795 @@
 
   .dashboard-card {
     min-height: 112px;
+  }
+}
+
+/* ============================================================
+   WORKING ADMIN PANEL — MOBILE CARDS + EMPTY STATES + MISC
+   ============================================================ */
+
+/* Mobile-only admin cards (properties, users, activity) */
+@media (max-width: 767px) {
+  .admin-mobile-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .admin-mobile-card {
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    background: #fff;
+    padding: 14px;
+    box-shadow: 0 8px 22px rgba(15, 23, 42, 0.05);
+  }
+
+  .admin-mobile-card .card-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  .admin-mobile-card .row-label {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: #64748b;
+    font-weight: 600;
+  }
+
+  .admin-mobile-card .row-value {
+    font-size: 0.86rem;
+    color: #0f172a;
+    font-weight: 500;
+    word-break: break-word;
+  }
+}
+
+/* Hide mobile-only list on desktop, hide desktop table on mobile */
+.admin-mobile-list {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  .admin-mobile-list {
+    display: flex;
+  }
+
+  .admin-desktop-table {
+    display: none;
+  }
+}
+
+/* Empty state */
+.admin-empty-state {
+  text-align: center;
+  padding: 40px 16px;
+  color: #64748b;
+}
+
+.admin-empty-state .empty-icon {
+  font-size: 2rem;
+  margin-bottom: 8px;
+  opacity: 0.7;
+}
+
+.admin-empty-state .empty-title {
+  font-weight: 700;
+  color: #0f172a;
+  font-size: 1rem;
+  margin-bottom: 4px;
+}
+
+/* Demo badge */
+.admin-demo-badge {
+  background: rgba(245, 158, 11, 0.15);
+  color: #b45309;
+  font-size: 0.68rem;
+  font-weight: 700;
+  border-radius: 999px;
+  padding: 3px 8px;
+  display: inline-block;
+  margin-left: 6px;
+  vertical-align: middle;
+}
+
+/* Role badges */
+.admin-role-badge {
+  font-size: 0.74rem;
+  font-weight: 600;
+  border-radius: 999px;
+  padding: 4px 10px;
+  display: inline-block;
+}
+
+.role-buyer {
+  background: rgba(37, 99, 235, 0.12);
+  color: #1d4ed8;
+}
+
+.role-seller {
+  background: rgba(5, 150, 105, 0.12);
+  color: #047857;
+}
+
+.role-both {
+  background: rgba(124, 58, 237, 0.12);
+  color: #6d28d9;
+}
+
+/* Status badges */
+.admin-status-badge {
+  font-size: 0.74rem;
+  font-weight: 600;
+  border-radius: 999px;
+  padding: 4px 10px;
+  display: inline-block;
+}
+
+.status-available {
+  background: rgba(5, 150, 105, 0.12);
+  color: #047857;
+}
+
+.status-unavailable,
+.status-inactive {
+  background: rgba(100, 116, 139, 0.14);
+  color: #475569;
+}
+
+.status-sold {
+  background: rgba(225, 29, 72, 0.12);
+  color: #be123c;
+}
+
+.status-active,
+.status-login {
+  background: rgba(5, 150, 105, 0.12);
+  color: #047857;
+}
+
+.status-loggedout {
+  background: rgba(100, 116, 139, 0.14);
+  color: #475569;
+}
+
+/* Responsive filters stack */
+@media (max-width: 575px) {
+  .admin-filters .col-12 {
+    width: 100%;
+  }
+}
+
+/* User detail modal rows */
+.admin-detail-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 0;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.admin-detail-row:last-child {
+  border-bottom: 0;
+}
+
+.admin-detail-row .detail-label {
+  color: #64748b;
+  font-size: 0.82rem;
+}
+
+.admin-detail-row .detail-value {
+  color: #0f172a;
+  font-weight: 600;
+  font-size: 0.86rem;
+  text-align: right;
+  word-break: break-word;
+}
+
+/* ============================================================
+   DASHBOARD — STAT CARDS (2 per row on mobile, 4 per row desktop)
+   ============================================================ */
+/* Dashboard tables only have 3 columns — do not force the global
+   700px minimum width that is used by full management tables. */
+.dashboard-table-wrap {
+  overflow-x: auto;
+}
+
+.dashboard-table-wrap table {
+  min-width: 0 !important;
+  width: 100%;
+}
+
+.dashboard-stats-row .dashboard-card {
+  min-height: 118px;
+}
+
+.dashboard-stats-row .stat-label {
+  font-size: 0.68rem;
+  letter-spacing: 0.02em;
+  line-height: 1.25;
+  word-break: break-word;
+}
+
+.dashboard-stats-row .stat-value {
+  font-size: clamp(1.5rem, 6.5vw, 2.5rem);
+  line-height: 1.1;
+  margin-top: 8px !important;
+}
+
+.dashboard-stats-row .stat-pill {
+  font-size: 0.66rem;
+  padding: 4px 8px;
+  white-space: nowrap;
+}
+
+/* ============================================================
+   DASHBOARD — PROPERTIES BY LOCATION BAR CHART
+   ============================================================ */
+.location-chart {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 6px 0 2px;
+}
+
+.location-bar-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.location-label {
+  flex-shrink: 0;
+  width: 76px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #334155;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.location-bar-track {
+  flex: 1;
+  min-width: 0;
+  background: rgba(37, 99, 235, 0.08);
+  border-radius: 999px;
+  height: 28px;
+  overflow: hidden;
+}
+
+.location-bar-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #2563eb, #4f8df6);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  min-width: 34px;
+  transition: width 0.4s ease;
+}
+
+.location-bar-value {
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding-right: 10px;
+}
+
+/* ============================================================
+   DASHBOARD — PROPERTY STATUS DONUT CHART
+   ============================================================ */
+.donut-chart-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 28px;
+  padding: 8px 0;
+}
+
+.donut-chart {
+  flex-shrink: 0;
+}
+
+.donut-total {
+  font-size: 1.9rem;
+  font-weight: 800;
+  fill: #0f172a;
+}
+
+.donut-total-label {
+  font-size: 0.72rem;
+  fill: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.donut-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+}
+
+.donut-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.86rem;
+}
+
+.donut-legend-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.donut-legend-label {
+  color: #334155;
+  font-weight: 600;
+  flex: 1;
+}
+
+.donut-legend-value {
+  color: #0f172a;
+  font-weight: 800;
+  background: #f1f5f9;
+  border-radius: 999px;
+  padding: 2px 12px;
+  font-size: 0.82rem;
+}
+
+/* ============================================================
+   DASHBOARD — MOBILE RESPONSIVE FIXES
+   ============================================================ */
+@media (max-width: 575.98px) {
+  .dashboard-stats-row .card-body {
+    padding: 14px 12px;
+  }
+
+  .dashboard-stats-row .dashboard-card {
+    min-height: 104px;
+  }
+
+  .dashboard-stats-row .stat-label {
+    font-size: 0.62rem;
+    padding-right: 2px;
+  }
+
+  .dashboard-stats-row .stat-pill {
+    display: none;
+  }
+
+  .donut-chart-wrap {
+    gap: 18px;
+  }
+
+  .donut-legend {
+    gap: 10px;
+  }
+
+  .location-label {
+    width: 64px;
+    font-size: 0.76rem;
+  }
+
+  .admin-content .p-3.p-lg-4 {
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+  }
+
+  .admin-content .container-fluid.px-0 {
+    overflow-x: hidden;
+  }
+}
+
+/* ============================================================
+   DASHBOARD — PREMIUM REDESIGN (stat cards, city chart, donut)
+   ============================================================ */
+.admin-shell {
+  background: linear-gradient(180deg, #f3f6fb 0%, #eef2f9 100%);
+}
+
+.admin-content .container-fluid {
+  max-width: 1440px;
+}
+
+.dashboard-heading .page-title {
+  font-size: 1.65rem;
+  letter-spacing: -0.02em;
+}
+
+/* Premium white stat cards with soft icon backgrounds */
+.stat-card {
+  border: 1px solid #eef1f6;
+  border-radius: 20px;
+  background: #ffffff;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.1);
+  border-color: #e2e8f0;
+}
+
+.stat-card .card-body {
+  padding: 18px 16px;
+  min-height: 104px;
+}
+
+.stat-icon {
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  border-radius: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+
+.stat-icon-blue {
+  background: rgba(37, 99, 235, 0.12);
+  color: #1d4ed8;
+}
+
+.stat-icon-green {
+  background: rgba(5, 150, 105, 0.12);
+  color: #047857;
+}
+
+.stat-icon-slate {
+  background: rgba(100, 116, 139, 0.14);
+  color: #475569;
+}
+
+.stat-icon-red {
+  background: rgba(225, 29, 72, 0.12);
+  color: #be123c;
+}
+
+.stat-icon-indigo {
+  background: rgba(99, 102, 241, 0.12);
+  color: #4f46e5;
+}
+
+.stat-icon-amber {
+  background: rgba(245, 158, 11, 0.14);
+  color: #b45309;
+}
+
+.stat-icon-violet {
+  background: rgba(124, 58, 237, 0.12);
+  color: #6d28d9;
+}
+
+.stat-copy {
+  min-width: 0;
+}
+
+.stat-copy .stat-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #64748b;
+  line-height: 1.3;
+  word-break: break-word;
+}
+
+.stat-copy .stat-value {
+  font-size: clamp(1.5rem, 5vw, 2.1rem);
+  font-weight: 800;
+  color: #0f172a;
+  line-height: 1.15;
+  margin-top: 4px;
+  letter-spacing: -0.02em;
+}
+
+/* City chart */
+.city-chart-wrap {
+  position: relative;
+  padding: 8px 4px 0;
+  height: 240px;
+}
+
+.city-chart {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-around;
+  gap: 24px;
+  height: 100%;
+  padding: 0 12px;
+}
+
+.city-column {
+  flex: 1;
+  max-width: 140px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  height: 100%;
+  position: relative;
+}
+
+.city-bar-count {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin-bottom: 6px;
+  letter-spacing: -0.01em;
+}
+
+.city-bar-track {
+  width: 56px;
+  height: 170px;
+  border-radius: 16px;
+  background: rgba(37, 99, 235, 0.06);
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
+}
+
+.city-bar-fill {
+  width: 100%;
+  border-radius: 16px;
+  background: linear-gradient(180deg, #60a5fa 0%, #2563eb 100%);
+  position: relative;
+  transition: height 0.5s ease;
+  min-height: 14px;
+}
+
+.city-bar-fill[data-city="Surat"] {
+  background: linear-gradient(180deg, #a78bfa 0%, #6d28d9 100%);
+}
+
+.city-bar-fill[data-city="Navsari"] {
+  background: linear-gradient(180deg, #34d399 0%, #059669 100%);
+}
+
+.city-bar-tooltip {
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: max-content;
+  max-width: 160px;
+  background: #0f172a;
+  color: #ffffff;
+  font-size: 0.7rem;
+  font-weight: 600;
+  border-radius: 8px;
+  padding: 5px 9px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+  white-space: nowrap;
+  z-index: 5;
+}
+
+.city-bar-fill:hover .city-bar-tooltip {
+  opacity: 1;
+}
+
+.city-bar-label {
+  margin-top: 10px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #334155;
+}
+
+.city-grid-lines {
+  position: absolute;
+  inset: 8px 0 0 0;
+  z-index: 0;
+}
+
+.city-grid-lines span {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: #eef1f6;
+}
+
+.city-summary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 22px;
+  margin-top: 18px;
+  padding: 14px 18px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+  border: 1px solid #eef1f6;
+}
+
+.city-summary-item {
+  text-align: center;
+}
+
+.city-summary-value {
+  display: block;
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #0f172a;
+  line-height: 1.1;
+}
+
+.city-summary-label {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #64748b;
+  margin-top: 3px;
+}
+
+.city-summary-divider {
+  width: 1px;
+  height: 38px;
+  background: #e2e8f0;
+}
+
+.chart-card {
+  border: 1px solid #eef1f6;
+  border-radius: 22px;
+  background: #ffffff;
+  box-shadow: 0 14px 36px rgba(15, 23, 42, 0.06);
+}
+
+.chart-card .card-body {
+  padding: 22px 20px;
+}
+
+.chart-card h5 {
+  font-size: 1.02rem;
+  letter-spacing: -0.01em;
+}
+
+.donut-chart {
+  width: 190px;
+  height: 190px;
+}
+
+.donut-chart svg {
+  width: 190px;
+  height: 190px;
+}
+
+@media (max-width: 575.98px) {
+  .stat-card .card-body {
+    padding: 14px 12px;
+    min-height: 96px;
+    gap: 10px;
+  }
+
+  .stat-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 14px;
+    font-size: 1.05rem;
+  }
+
+  .stat-copy .stat-label {
+    font-size: 0.62rem;
+  }
+
+  .stat-copy .stat-value {
+    font-size: 1.35rem;
+  }
+
+  .city-chart-wrap {
+    height: 210px;
+  }
+
+  .city-bar-track {
+    width: 44px;
+    height: 150px;
+  }
+
+  .city-chart {
+    gap: 12px;
+    padding: 0 4px;
+  }
+
+  .city-bar-label {
+    font-size: 0.78rem;
+  }
+
+  .city-bar-count {
+    font-size: 0.95rem;
+  }
+
+  .city-summary {
+    gap: 14px;
+    padding: 12px 10px;
+  }
+
+  .city-summary-value {
+    font-size: 1.15rem;
+  }
+
+  .chart-card .card-body {
+    padding: 18px 14px;
+  }
+
+  .donut-chart {
+    width: 170px;
+    height: 170px;
+  }
+
+  .donut-chart svg {
+    width: 170px;
+    height: 170px;
+  }
+}
+
+/* ============================================================
+   MASTER GROUP — LANGUAGE TOGGLE (EN | ગુજરાતી)
+   ============================================================ */
+.admin-lang-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px;
+  border-radius: 999px;
+  background: #eef1f6;
+  border: 1px solid #e2e8f0;
+  flex-shrink: 0;
+}
+
+.admin-lang-btn {
+  border: 0;
+  background: transparent;
+  color: #64748b;
+  font-size: 0.72rem;
+  font-weight: 700;
+  line-height: 1;
+  padding: 6px 10px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.admin-lang-btn:hover {
+  color: #0f172a;
+}
+
+.admin-lang-btn.active {
+  background: #2563eb;
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.35);
+}
+
+/* Login page variant — slightly larger for standalone screen */
+.admin-login-page .admin-lang-toggle {
+  background: rgba(255, 255, 255, 0.7);
+  border-color: rgba(226, 232, 240, 0.9);
+}
+
+.admin-login-page .admin-lang-btn {
+  font-size: 0.78rem;
+  padding: 7px 14px;
+}
+
+/* Mobile: keep compact and prevent horizontal scroll */
+@media (max-width: 575.98px) {
+  .admin-lang-btn {
+    padding: 5px 8px;
+    font-size: 0.68rem;
   }
 }

@@ -60,6 +60,7 @@ function PropertyCard({ property, compact = false, onContact }) {
     if (rawStatus === 'Sold') return t('dropdown.sold');
     if (rawStatus === 'Pending') return t('dropdown.pending');
     if (rawStatus === 'Available') return t('dropdown.available');
+    if (rawStatus === 'Unavailable') return t('dropdown.unavailable');
     return rawStatus;
   }, [rawStatus, t]);
 
@@ -94,6 +95,14 @@ function PropertyCard({ property, compact = false, onContact }) {
     if (lower.includes('ft')) return t('sellerForm.sqFt');
     return priceUnit;
   }, [priceUnit, t]);
+
+  const displayPriceWithUnit = useMemo(() => {
+    const priceText = displayPrice;
+    if (!displayPriceUnit) return priceText;
+    if (priceText === t('common.notAvailable')) return priceText;
+    const perWord = language === 'gu' ? 'પ્રતિ' : 'per';
+    return `${priceText} ${perWord} ${displayPriceUnit}`;
+  }, [displayPrice, displayPriceUnit, t, language]);
 
   const handleShare = async () => {
     const shareUrl = `${window.location.origin}/property/${property.id}`;
@@ -141,7 +150,7 @@ function PropertyCard({ property, compact = false, onContact }) {
         </div>
 
         <div className="absolute bottom-4 left-4 flex flex-wrap gap-2">
-          <span className={`rounded-full px-3 py-1.5 text-[11px] font-semibold ${rawStatus === 'Sold' ? 'bg-amber-500/90 text-white' : 'bg-emerald-600/90 text-white'}`}>{statusText}</span>
+          <span className={`rounded-full px-3 py-1.5 text-[11px] font-semibold ${rawStatus === 'Sold' ? 'bg-amber-500/90 text-white' : rawStatus === 'Unavailable' ? 'bg-slate-500/90 text-white' : 'bg-emerald-600/90 text-white'}`}>{statusText}</span>
           <span className="rounded-full bg-slate-900/80 px-3 py-1.5 text-[11px] font-semibold text-white">{typeText}</span>
         </div>
       </div>
@@ -162,8 +171,7 @@ function PropertyCard({ property, compact = false, onContact }) {
             </div>
             <div className="rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3 text-sm text-slate-700">
               <p className="font-semibold text-slate-900">{t('common.price')}</p>
-              <p className="mt-1 break-words">{displayPrice}</p>
-              {displayPriceUnit ? <span className="text-xs text-slate-500">{displayPriceUnit}</span> : null}
+              <p className="mt-1 break-words">{displayPriceWithUnit}</p>
             </div>
           </div>
         </div>
