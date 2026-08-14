@@ -1631,7 +1631,7 @@ export const locationTranslationsGu = {
   'Valsad': 'વલસાડ',
 
   // Sub-Districts / Talukas / Towns / Villages
-  'Dhamdachha': 'ધામડાછા',
+  'Dhamdachha': 'ધમડાછા',
   'Jalalpore': 'જલાલપોર',
   'Jalalpor': 'જલાલપોર',
   'Gandevi': 'ગણદેવી',
