@@ -1,0 +1,6410 @@
+{
+  "Achharan": {
+    "gujarati": "અછારણ",
+    "code": "050",
+    "district": "Surat",
+    "taluka": "Olpad"
+  },
+  "Atodra": {
+    "gujarati": "અટોદરા",
+    "code": "070",
+    "district": "Surat",
+    "taluka": "Olpad"
+  },
+  "Anita": {
+    "gujarati": "અણીતા",
+    "code": "016",
+    "district": "Surat",
+    "taluka": "Olpad"
+  },
+  "Ambheta": {
+    "gujarati": "અંભેટા",
+    "code": "034",
+    "district": "Navsari",
+    "taluka": "Gandevi"
+  },
+  "Ariyana": {
+    "gujarati": "અરીયાણા",
+    "code": "090",
+    "district": "Surat",
+    "taluka": "Olpad"
+  },
+  "Asnad": {
+    "gujarati": "અસનાડ",
+    "code": "029",
+    "district": "Surat",
+    "taluka": "Olpad"
+  },
+  "Asnabad": {
+    "gujarati": "અસનાબાદ",
+    "code": "069",
+    "district": "Surat",
+    "taluka": "Olpad"
+  },
+  "Naghoi": {
+    "gujarati": "નઘોઇ",
+    "code": "031",
+    "district": "Surat",
+    "taluka": "Olpad"
+  },
+  "Admor": {
+    "gujarati": "આડમોર",
+    "code": "059",
+    "district": "Surat",
+    "taluka": "Olpad"
+  },
+  "Ishanapora": {
+    "gujarati": "ઇશનપોર",
+    "code": "071",
+    "district": "Surat",
+    "taluka": "Olpad"
+  },
+  "Umrachhi": {
+    "gujarati": "ઉમરાછી",
+    "code": "014",
+    "district": "Surat",
+    "taluka": "Olpad"
+  },
+  "Erthan": {
+    "gujarati": "એરથાણ",
+    "code": "024",
+    "district": "Surat",
+    "taluka": "Palsana"
+  },
+  "Obhla": {
+    "gujarati": "ઓભલા",
+    "code": "043",
+    "district": "Surat",
+    "taluka": "Olpad"
+  },
+  "Orma": {
+    "gujarati": "ઓરમા",
+    "code": "067",
+    "district": "Surat",
+    "taluka": "Olpad"
+  },
+  "Olpad": {
+    "gujarati": "ઓલપાડ",
+    "code": "106",
+    "district": "Surat",
+    "taluka": "Olpad"
+  },
+  "Kunkni": {
+    "gujarati": "કુંકણી",
+    "code": "089",
+    "district": "Surat",
+    "taluka": "Olpad"
+  },
+  "Kathodra": {
+    "gujarati": "કઠોદરા",
+    "code": "069",
+    "district": "Surat",
+    "taluka": "Puna"
+  },
+  "Kudsad": {
+    "gujarati": "કુડસદ",
+    "code": "044",
+    "district": "Surat",
+    "taluka": "Olpad"
+  },
+  "Kanbhi": {
+    "gujarati": "કણભી",
+    "code": "024",
+    "district": "Surat",
+    "taluka": "Olpad"
+  },
+  "Kanthraj": {
+    "gujarati": "કંથરાજ",
+    "code": "042",
+    "district": "Surat",
+    "taluka": "Olpad"
+  },
+  "Kadrama": {
+    "gujarati": "કદરામા",
+    "code": "010",
+    "district": "Surat",
+    "taluka": "Olpad"
+  },
+  "Kudiyana": {
+    "gujarati": "કુદીયાણા",
+    "code": "058",
+    "district": "Surat",
+    "taluka": "Olpad"
+  },
+  "Kanyasi": {
+    "gujarati": "કન્યાસી",
+    "code": "045",
+    "district": "Surat",
+    "taluka": "Olpad"
+  },
+  "Kanad": {
+    "gujarati": "કનાદ",
+    "code": "097",
+    "district": "Surat",
+    "taluka": "Olpad"
+  },
+  "Kapasi": {
+    "gujarati": "કપાસી",
+    "code": "057",
+    "district": "Surat",
+    "taluka": "Olpad"
+  },
+  "Kubhari": {
+    "gujarati": "કુભારી",
+    "code": "053",
+    "district": "Surat",
+    "taluka": "Olpad"
+  },
+  "Kamroli": {
+    "gujarati": "કમરોલી",
+    "code": "003",
+    "district": "Surat",
+    "taluka": "Olpad"
+  },
+  "Karanj": {
+    "gujarati": "કરંજ",
+    "code": "002",
+    "district": "Surat",
+    "taluka": "Areth"
+  },
+  "Karamla": {
+    "gujarati": "કરમલા",
+    "code": "072",
+    "district": "Surat",
+    "taluka": "Olpad"
+  },
+  "Kuvad": {
+    "gujarati": "કુવાદ",
+    "code": "056",
+    "district": "Surat",
+    "taluka": "Olpad"
+  },
+  "Kasad": {
+    "gujarati": "કોસાડ",
+    "code": "037",
+    "district": "Surat",
+    "taluka": "Katargam"
+  },
+  "Kachhab": {
+    "gujarati": "કાછબ",
+    "code": "022",
+    "district": "Surat",
+    "taluka": "Olpad"
+  },
+  "Kachhol": {
+    "gujarati": "કછોલ",
+    "code": "050",
+    "district": "Navsari",
+    "taluka": "Navsari"
+  },
+  "Kareli": {
+    "gujarati": "કારેલી",
+    "code": "046",
+    "district": "Surat",
+    "taluka": "Olpad"
+  },
+  "Kasla Bujrang": {
+    "gujarati": "કાસલા બુજ઼રંગ",
+    "code": "066",
+    "district": "Surat",
+    "taluka": "Olpad"
+  },
+  "Kasalakhurd": {
+    "gujarati": "કાસલાખુર્દ",
+    "code": "064",
+    "district": "Surat",
+    "taluka": "Olpad"
+  },
+  "Kima Kathodara": {
+    "gujarati": "કીમ કઠોદરા",
+    "code": "018",
+    "district": "Surat",
+    "taluka": "Olpad"
+  },
+  "Kimamli": {
+    "gujarati": "કીમામલી",
+    "code": "017",
+    "district": "Surat",
+    "taluka": "Olpad"
+  },
+  "Koba": {
+    "gujarati": "કોબા",
+    "code": "008",
+    "district": "Surat",
+    "taluka": "Olpad"
+  },
+  "Kosam": {
+    "gujarati": "કોસમ",
+    "code": "078",
+    "district": "Surat",
+    "taluka": "Olpad"
+  },
+  "Khalipor": {
+    "gujarati": "ખલીપોર",
+    "code": "048",
+    "district": "Surat",
+    "taluka": "Olpad"
+  },
+  "Gola": {
+    "gujarati": "ગોલા",
+    "code": "051",
+    "district": "Surat",
+    "taluka": "Olpad"
+  },
+  "Japharabada": {
+    "gujarati": "જાફરાબાદ",
+    "code": "068",
+    "district": "Surat",
+    "taluka": "Olpad"
+  },
+  "Jinod": {
+    "gujarati": "જીણોદ",
+    "code": "033",
+    "district": "Surat",
+    "taluka": "Olpad"
+  },
+  "Jothan": {
+    "gujarati": "જોથાણ",
+    "code": "095",
+    "district": "Surat",
+    "taluka": "Olpad"
+  },
+  "Takaraman": {
+    "gujarati": "ટકારમાં",
+    "code": "027",
+    "district": "Surat",
+    "taluka": "Olpad"
+  },
+  "Thothab": {
+    "gujarati": "ઠોઠબ",
+    "code": "006",
+    "district": "Surat",
+    "taluka": "Olpad"
+  },
+  "Tena": {
+    "gujarati": "તેના",
+    "code": "085",
+    "district": "Surat",
+    "taluka": "Olpad"
+  },
+  "Talad": {
+    "gujarati": "તળાદ",
+    "code": "094",
+    "district": "Surat",
+    "taluka": "Olpad"
+  },
+  "Delad": {
+    "gujarati": "દેલાડ",
+    "code": "030",
+    "district": "Surat",
+    "taluka": "Kamrej"
+  },
+  "Delasa": {
+    "gujarati": "દેલાસા",
+    "code": "038",
+    "district": "Surat",
+    "taluka": "Olpad"
+  },
+  "Dandi": {
+    "gujarati": "દાંડી",
+    "code": "056",
+    "district": "Navsari",
+    "taluka": "Jalalpore"
+  },
+  "Dihen": {
+    "gujarati": "ઉધના",
+    "code": "024",
+    "district": "Surat",
+    "taluka": "Udhna"
+  },
+  "Narthan": {
+    "gujarati": "નરથાણ",
+    "code": "082",
+    "district": "Surat",
+    "taluka": "Olpad"
+  },
+  "Nesh": {
+    "gujarati": "નેશ",
+    "code": "001",
+    "district": "Surat",
+    "taluka": "Olpad"
+  },
+  "Pariya": {
+    "gujarati": "પરીયા",
+    "code": "077",
+    "district": "Surat",
+    "taluka": "Olpad"
+  },
+  "Pardi Koba": {
+    "gujarati": "પારડી કોબા",
+    "code": "007",
+    "district": "Surat",
+    "taluka": "Olpad"
+  },
+  "Paradi Jhakhari": {
+    "gujarati": "પારડી ઝાખરી",
+    "code": "004",
+    "district": "Surat",
+    "taluka": "Olpad"
+  },
+  "Paradi Bhadoli": {
+    "gujarati": "પારડી ભાદોલી",
+    "code": "023",
+    "district": "Surat",
+    "taluka": "Olpad"
+  },
+  "Pinjrat": {
+    "gujarati": "પીંજરત",
+    "code": "084",
+    "district": "Surat",
+    "taluka": "Olpad"
+  },
+  "Baraboghana": {
+    "gujarati": "બરબોઘન",
+    "code": "086",
+    "district": "Surat",
+    "taluka": "Olpad"
+  },
+  "Balkas": {
+    "gujarati": "બલકસ",
+    "code": "093",
+    "district": "Surat",
+    "taluka": "Olpad"
+  },
+  "Bolav": {
+    "gujarati": "બોલાવ",
+    "code": "015",
+    "district": "Surat",
+    "taluka": "Olpad"
+  },
+  "Bhagava": {
+    "gujarati": "ભગવા",
+    "code": "035",
+    "district": "Surat",
+    "taluka": "Olpad"
+  },
+  "Bhatgam": {
+    "gujarati": "ભટગામ",
+    "code": "030",
+    "district": "Surat",
+    "taluka": "Olpad"
+  },
+  "Bhandut": {
+    "gujarati": "ભાંડુત",
+    "code": "061",
+    "district": "Surat",
+    "taluka": "Olpad"
+  },
+  "Bhadol": {
+    "gujarati": "ભાદોલ",
+    "code": "012",
+    "district": "Surat",
+    "taluka": "Olpad"
+  },
+  "Bharundi": {
+    "gujarati": "ભારુંડી",
+    "code": "047",
+    "district": "Surat",
+    "taluka": "Olpad"
+  },
+  "Mndakola": {
+    "gujarati": "મંડકોલ",
+    "code": "103",
+    "district": "Surat",
+    "taluka": "Olpad"
+  },
+  "Mandroi": {
+    "gujarati": "મંદરોઇ",
+    "code": "005",
+    "district": "Surat",
+    "taluka": "Olpad"
+  },
+  "Mulad": {
+    "gujarati": "મુળદ",
+    "code": "019",
+    "district": "Surat",
+    "taluka": "Olpad"
+  },
+  "Madhar": {
+    "gujarati": "માધ઼ર",
+    "code": "074",
+    "district": "Surat",
+    "taluka": "Olpad"
+  },
+  "Masma": {
+    "gujarati": "માસમા",
+    "code": "080",
+    "district": "Surat",
+    "taluka": "Olpad"
+  },
+  "Mindhin": {
+    "gujarati": "મીંઢીં",
+    "code": "032",
+    "district": "Surat",
+    "taluka": "Olpad"
+  },
+  "Mirajhapora": {
+    "gujarati": "મીરઝાપોર",
+    "code": "034",
+    "district": "Surat",
+    "taluka": "Olpad"
+  },
+  "Mor": {
+    "gujarati": "ઉમરા",
+    "code": "059",
+    "district": "Surat",
+    "taluka": "Ambika"
+  },
+  "Morthan": {
+    "gujarati": "મોરથાણ",
+    "code": "041",
+    "district": "Surat",
+    "taluka": "Olpad"
+  },
+  "Rajanagara": {
+    "gujarati": "રાજનગર",
+    "code": "040",
+    "district": "Surat",
+    "taluka": "Olpad"
+  },
+  "Lavachha": {
+    "gujarati": "લવાછા",
+    "code": "060",
+    "district": "Surat",
+    "taluka": "Olpad"
+  },
+  "Vadod": {
+    "gujarati": "વ઼ડોદ",
+    "code": "043",
+    "district": "Surat",
+    "taluka": "Areth"
+  },
+  "Vadoli": {
+    "gujarati": "વડોલી",
+    "code": "028",
+    "district": "Navsari",
+    "taluka": "Jalalpore"
+  },
+  "Veluk": {
+    "gujarati": "વાલક",
+    "code": "039",
+    "district": "Surat",
+    "taluka": "Abrama"
+  },
+  "Vihara": {
+    "gujarati": "વીહારા",
+    "code": "025",
+    "district": "Surat",
+    "taluka": "Olpad"
+  },
+  "Sherdi": {
+    "gujarati": "શેરડી",
+    "code": "098",
+    "district": "Surat",
+    "taluka": "Olpad"
+  },
+  "Segava Chhama": {
+    "gujarati": "સેગવા છામા",
+    "code": "088",
+    "district": "Surat",
+    "taluka": "Olpad"
+  },
+  "Syadla": {
+    "gujarati": "સ્યાદલા",
+    "code": "021",
+    "district": "Surat",
+    "taluka": "Olpad"
+  },
+  "Saras": {
+    "gujarati": "સરસ",
+    "code": "055",
+    "district": "Surat",
+    "taluka": "Olpad"
+  },
+  "Sarsana": {
+    "gujarati": "સરસાણા",
+    "code": "055",
+    "district": "Surat",
+    "taluka": "Majura"
+  },
+  "Sarol": {
+    "gujarati": "સારોલી",
+    "code": "066",
+    "district": "Surat",
+    "taluka": "Puna"
+  },
+  "Selut": {
+    "gujarati": "સેલુત",
+    "code": "062",
+    "district": "Surat",
+    "taluka": "Olpad"
+  },
+  "Sanghiyera": {
+    "gujarati": "સાંઘીયેર",
+    "code": "073",
+    "district": "Surat",
+    "taluka": "Olpad"
+  },
+  "Soyani": {
+    "gujarati": "સોયાણી",
+    "code": "020",
+    "district": "Surat",
+    "taluka": "Palsana"
+  },
+  "Sithan": {
+    "gujarati": "સીથાણા",
+    "code": "087",
+    "district": "Surat",
+    "taluka": "Olpad"
+  },
+  "Simalthu": {
+    "gujarati": "સીમલથુ",
+    "code": "020",
+    "district": "Surat",
+    "taluka": "Olpad"
+  },
+  "Sevni": {
+    "gujarati": "સેવણી",
+    "code": "048",
+    "district": "Surat",
+    "taluka": "Kamrej"
+  },
+  "Sondlakhara": {
+    "gujarati": "સોંદલાખારા",
+    "code": "039",
+    "district": "Surat",
+    "taluka": "Olpad"
+  },
+  "Sondamitha": {
+    "gujarati": "સોંદામીઠા",
+    "code": "028",
+    "district": "Surat",
+    "taluka": "Olpad"
+  },
+  "Sonsak": {
+    "gujarati": "સોંસક",
+    "code": "092",
+    "district": "Surat",
+    "taluka": "Olpad"
+  },
+  "Hathisa": {
+    "gujarati": "હાથીસા",
+    "code": "054",
+    "district": "Surat",
+    "taluka": "Olpad"
+  },
+  "Amarkui": {
+    "gujarati": "અમરકુઈ",
+    "code": "031",
+    "district": "Surat",
+    "taluka": "Mangrol"
+  },
+  "Ankdod": {
+    "gujarati": "આંકડોદ",
+    "code": "010",
+    "district": "Surat",
+    "taluka": "Mangrol"
+  },
+  "Anbavadi": {
+    "gujarati": "આંબાવાડી",
+    "code": "109",
+    "district": "Surat",
+    "taluka": "Mangrol"
+  },
+  "Amkhuta": {
+    "gujarati": "આમખુટા",
+    "code": "137",
+    "district": "Surat",
+    "taluka": "Mangrol"
+  },
+  "Amnedara": {
+    "gujarati": "આમનડ઼ેરા",
+    "code": "039",
+    "district": "Surat",
+    "taluka": "Mangrol"
+  },
+  "Asarma": {
+    "gujarati": "આસરમા",
+    "code": "067",
+    "district": "Surat",
+    "taluka": "Adajan"
+  },
+  "Asodala": {
+    "gujarati": "આસોદલા",
+    "code": "115",
+    "district": "Surat",
+    "taluka": "Mangrol"
+  },
+  "Ishanapura": {
+    "gujarati": "ઈશનપુર",
+    "code": "033",
+    "district": "Surat",
+    "taluka": "Mangrol"
+  },
+  "Umelav": {
+    "gujarati": "ઉમેલાવ",
+    "code": "131",
+    "district": "Surat",
+    "taluka": "Mangrol"
+  },
+  "Ognisa": {
+    "gujarati": "ઓગણીસા",
+    "code": "140",
+    "district": "Surat",
+    "taluka": "Mangrol"
+  },
+  "Kantva": {
+    "gujarati": "કંટવા",
+    "code": "007",
+    "district": "Surat",
+    "taluka": "Mangrol"
+  },
+  "Kantvav": {
+    "gujarati": "કંટવાવ",
+    "code": "065",
+    "district": "Surat",
+    "taluka": "Mangrol"
+  },
+  "Kathvada": {
+    "gujarati": "કઠવાડા",
+    "code": "049",
+    "district": "Surat",
+    "taluka": "Mangrol"
+  },
+  "Kanvada": {
+    "gujarati": "કનવાડા",
+    "code": "056",
+    "district": "Surat",
+    "taluka": "Mangrol"
+  },
+  "Kargara": {
+    "gujarati": "કરગરા",
+    "code": "036",
+    "district": "Surat",
+    "taluka": "Mangrol"
+  },
+  "Kevdi (Kund)": {
+    "gujarati": "કેવડી (કુંડ)",
+    "code": "032",
+    "district": "Surat",
+    "taluka": "Mangrol"
+  },
+  "Kunvarada": {
+    "gujarati": "કુંવરદા",
+    "code": "046",
+    "district": "Surat",
+    "taluka": "Mangrol"
+  },
+  "Kaઁsali": {
+    "gujarati": "કઁસાલી",
+    "code": "135",
+    "district": "Surat",
+    "taluka": "Mangrol"
+  },
+  "Kothva": {
+    "gujarati": "કોઠવા",
+    "code": "121",
+    "district": "Surat",
+    "taluka": "Mangrol"
+  },
+  "Kosnba": {
+    "gujarati": "કોસંબા",
+    "code": "149",
+    "district": "Surat",
+    "taluka": "Mangrol"
+  },
+  "Kosadi": {
+    "gujarati": "કોસાડી",
+    "code": "119",
+    "district": "Surat",
+    "taluka": "Mandvi"
+  },
+  "Khareda": {
+    "gujarati": "ખરેડા",
+    "code": "055",
+    "district": "Surat",
+    "taluka": "Mandvi"
+  },
+  "Gadkachh": {
+    "gujarati": "ગડક઼ાછ",
+    "code": "058",
+    "district": "Surat",
+    "taluka": "Mangrol"
+  },
+  "Gijram": {
+    "gujarati": "ગીજરમ",
+    "code": "011",
+    "district": "Surat",
+    "taluka": "Mangrol"
+  },
+  "Ghunti": {
+    "gujarati": "ઘુંટી",
+    "code": "051",
+    "district": "Surat",
+    "taluka": "Mangrol"
+  },
+  "Ghodbar": {
+    "gujarati": "ઘોડબાર",
+    "code": "142",
+    "district": "Surat",
+    "taluka": "Mangrol"
+  },
+  "Charetha": {
+    "gujarati": "ચરેઠા",
+    "code": "055",
+    "district": "Surat",
+    "taluka": "Mangrol"
+  },
+  "Chhamuchhal": {
+    "gujarati": "છમુછલ",
+    "code": "128",
+    "district": "Surat",
+    "taluka": "Mangrol"
+  },
+  "Jhankhvav": {
+    "gujarati": "ઝંખવાવ",
+    "code": "066",
+    "district": "Surat",
+    "taluka": "Mangrol"
+  },
+  "Jharni": {
+    "gujarati": "ઝરણી",
+    "code": "107",
+    "district": "Surat",
+    "taluka": "Mangrol"
+  },
+  "Jhankharda": {
+    "gujarati": "ઝાંખરડા",
+    "code": "111",
+    "district": "Surat",
+    "taluka": "Mangrol"
+  },
+  "Jhinora": {
+    "gujarati": "ઝીનોરા",
+    "code": "060",
+    "district": "Surat",
+    "taluka": "Mangrol"
+  },
+  "Timbarva": {
+    "gujarati": "ટીમ્બરવા",
+    "code": "068",
+    "district": "Surat",
+    "taluka": "Choryasi"
+  },
+  "Dungri": {
+    "gujarati": "ડુંગરી",
+    "code": "132",
+    "district": "Surat",
+    "taluka": "Mangrol"
+  },
+  "Tarsadi": {
+    "gujarati": "તરસાડી",
+    "code": "023",
+    "district": "Navsari",
+    "taluka": "Navsari"
+  },
+  "Dinod": {
+    "gujarati": "દીણોદ",
+    "code": "008",
+    "district": "Surat",
+    "taluka": "Mangrol"
+  },
+  "Dhamdod": {
+    "gujarati": "ધામડોદ",
+    "code": "032",
+    "district": "Surat",
+    "taluka": "Palsana"
+  },
+  "Dholikui": {
+    "gujarati": "ધોળીકુઈ",
+    "code": "025",
+    "district": "Surat",
+    "taluka": "Mahuva"
+  },
+  "Nandav": {
+    "gujarati": "નંદાવ",
+    "code": "004",
+    "district": "Surat",
+    "taluka": "Mangrol"
+  },
+  "Nandola": {
+    "gujarati": "નાંદોલા",
+    "code": "063",
+    "district": "Surat",
+    "taluka": "Mangrol"
+  },
+  "Nana Borsara": {
+    "gujarati": "નાના બોરસરા",
+    "code": "002",
+    "district": "Surat",
+    "taluka": "Mangrol"
+  },
+  "Nani Naroli": {
+    "gujarati": "નાની નરોલી",
+    "code": "130",
+    "district": "Surat",
+    "taluka": "Mangrol"
+  },
+  "Nani Pardi": {
+    "gujarati": "નાની પારડી",
+    "code": "012",
+    "district": "Surat",
+    "taluka": "Mangrol"
+  },
+  "Naniphli": {
+    "gujarati": "નાનીફ઼ળી",
+    "code": "062",
+    "district": "Surat",
+    "taluka": "Mangrol"
+  },
+  "Nogama": {
+    "gujarati": "નોગામા",
+    "code": "007",
+    "district": "Navsari",
+    "taluka": "Chikhli"
+  },
+  "Panetha": {
+    "gujarati": "પાણેથા",
+    "code": "118",
+    "district": "Surat",
+    "taluka": "Mangrol"
+  },
+  "Pataldevi": {
+    "gujarati": "પાતાલદેવી",
+    "code": "064",
+    "district": "Surat",
+    "taluka": "Mangrol"
+  },
+  "Palod": {
+    "gujarati": "પાલોદ",
+    "code": "122",
+    "district": "Surat",
+    "taluka": "Mangrol"
+  },
+  "Pipodara": {
+    "gujarati": "પીપોદરા",
+    "code": "124",
+    "district": "Surat",
+    "taluka": "Mangrol"
+  },
+  "Borsad": {
+    "gujarati": "બોરસદ",
+    "code": "133",
+    "district": "Surat",
+    "taluka": "Mangrol"
+  },
+  "Boridara": {
+    "gujarati": "બોરીદરા",
+    "code": "009",
+    "district": "Surat",
+    "taluka": "Mangrol"
+  },
+  "Boriya": {
+    "gujarati": "બોરીયા",
+    "code": "005",
+    "district": "Surat",
+    "taluka": "Mahuva"
+  },
+  "Bhadkuva": {
+    "gujarati": "ભડકુવા",
+    "code": "015",
+    "district": "Surat",
+    "taluka": "Mangrol"
+  },
+  "Bhatkol": {
+    "gujarati": "ભાટકોલ",
+    "code": "123",
+    "district": "Surat",
+    "taluka": "Mangrol"
+  },
+  "Bhilvada": {
+    "gujarati": "ભીલવાડા",
+    "code": "014",
+    "district": "Surat",
+    "taluka": "Mangrol"
+  },
+  "Mahuveja": {
+    "gujarati": "મહુવેજ",
+    "code": "044",
+    "district": "Surat",
+    "taluka": "Mangrol"
+  },
+  "Mangrol": {
+    "gujarati": "માંગરોળ",
+    "code": "021",
+    "district": "Navsari",
+    "taluka": "Jalalpore"
+  },
+  "Mandana(boriya)": {
+    "gujarati": "માંડણ(બોરીયા)",
+    "code": "106",
+    "district": "Surat",
+    "taluka": "Mangrol"
+  },
+  "Mota Borsara": {
+    "gujarati": "મોટા બોરસરા",
+    "code": "125",
+    "district": "Surat",
+    "taluka": "Mangrol"
+  },
+  "Moti Naroli": {
+    "gujarati": "મોટી નરોલી",
+    "code": "119",
+    "district": "Surat",
+    "taluka": "Mangrol"
+  },
+  "Moti Pardi": {
+    "gujarati": "મોટી પારડી",
+    "code": "005",
+    "district": "Surat",
+    "taluka": "Mangrol"
+  },
+  "Motiphali": {
+    "gujarati": "મોટીફળી",
+    "code": "034",
+    "district": "Surat",
+    "taluka": "Mangrol"
+  },
+  "Molvan": {
+    "gujarati": "મોલવણ",
+    "code": "129",
+    "district": "Surat",
+    "taluka": "Mangrol"
+  },
+  "Mosali": {
+    "gujarati": "મોસાલી",
+    "code": "059",
+    "district": "Surat",
+    "taluka": "Mangrol"
+  },
+  "Rtoti": {
+    "gujarati": "ર઼ટોટી",
+    "code": "138",
+    "district": "Surat",
+    "taluka": "Mangrol"
+  },
+  "Ranakpor": {
+    "gujarati": "રણકપોર",
+    "code": "052",
+    "district": "Surat",
+    "taluka": "Mangrol"
+  },
+  "Ratola": {
+    "gujarati": "રતોલા",
+    "code": "134",
+    "district": "Surat",
+    "taluka": "Mangrol"
+  },
+  "Lavet": {
+    "gujarati": "લવેટ",
+    "code": "016",
+    "district": "Surat",
+    "taluka": "Mangrol"
+  },
+  "Luvara": {
+    "gujarati": "લુવારા",
+    "code": "041",
+    "district": "Surat",
+    "taluka": "Mangrol"
+  },
+  "Lindiyada": {
+    "gujarati": "લીંડીયાદ",
+    "code": "127",
+    "district": "Surat",
+    "taluka": "Mangrol"
+  },
+  "Linbada": {
+    "gujarati": "લીંબાડા",
+    "code": "050",
+    "district": "Surat",
+    "taluka": "Mangrol"
+  },
+  "Limodara": {
+    "gujarati": "લીમોદરા",
+    "code": "126",
+    "district": "Surat",
+    "taluka": "Mangrol"
+  },
+  "Vad": {
+    "gujarati": "વાડ",
+    "code": "063",
+    "district": "Navsari",
+    "taluka": "Khergam"
+  },
+  "Verakui": {
+    "gujarati": "વેરાકુઈ",
+    "code": "136",
+    "district": "Surat",
+    "taluka": "Mangrol"
+  },
+  "Velachha": {
+    "gujarati": "વેલાછા",
+    "code": "117",
+    "district": "Surat",
+    "taluka": "Mangrol"
+  },
+  "Vastan": {
+    "gujarati": "વસ્તાન",
+    "code": "112",
+    "district": "Surat",
+    "taluka": "Mangrol"
+  },
+  "Vasravi": {
+    "gujarati": "વસરાવી",
+    "code": "110",
+    "district": "Surat",
+    "taluka": "Mangrol"
+  },
+  "Vankal": {
+    "gujarati": "વંકાલ",
+    "code": "036",
+    "district": "Navsari",
+    "taluka": "Chikhli"
+  },
+  "Valesa": {
+    "gujarati": "વાલેસા",
+    "code": "120",
+    "district": "Surat",
+    "taluka": "Mangrol"
+  },
+  "Vansoli": {
+    "gujarati": "વાંસોલી",
+    "code": "006",
+    "district": "Surat",
+    "taluka": "Mangrol"
+  },
+  "Shenthi": {
+    "gujarati": "શેંઠી",
+    "code": "116",
+    "district": "Surat",
+    "taluka": "Mangrol"
+  },
+  "Shah": {
+    "gujarati": "શાહ",
+    "code": "057",
+    "district": "Surat",
+    "taluka": "Mangrol"
+  },
+  "Sanadhara": {
+    "gujarati": "સ઼ણધરા",
+    "code": "141",
+    "district": "Surat",
+    "taluka": "Mangrol"
+  },
+  "Surali": {
+    "gujarati": "સુરાલી",
+    "code": "113",
+    "district": "Surat",
+    "taluka": "Mangrol"
+  },
+  "Selarpur": {
+    "gujarati": "સેલારપુર",
+    "code": "105",
+    "district": "Surat",
+    "taluka": "Mangrol"
+  },
+  "Sava": {
+    "gujarati": "સાવા",
+    "code": "043",
+    "district": "Surat",
+    "taluka": "Mangrol"
+  },
+  "Simodara": {
+    "gujarati": "સીમોદરા",
+    "code": "053",
+    "district": "Surat",
+    "taluka": "Mangrol"
+  },
+  "Siyalaj": {
+    "gujarati": "સીયાલજ",
+    "code": "047",
+    "district": "Surat",
+    "taluka": "Mangrol"
+  },
+  "Hathuran": {
+    "gujarati": "હથુરણ",
+    "code": "001",
+    "district": "Surat",
+    "taluka": "Mangrol"
+  },
+  "Hathoda": {
+    "gujarati": "હથોડા",
+    "code": "048",
+    "district": "Surat",
+    "taluka": "Mangrol"
+  },
+  "Harsani": {
+    "gujarati": "હરસણી",
+    "code": "037",
+    "district": "Surat",
+    "taluka": "Mangrol"
+  },
+  "Anbadi": {
+    "gujarati": "અંબાડી",
+    "code": "095",
+    "district": "Surat",
+    "taluka": "Umarpada"
+  },
+  "Amli Dabda": {
+    "gujarati": "આમલી દબડા",
+    "code": "104",
+    "district": "Surat",
+    "taluka": "Umarpada"
+  },
+  "Uchavana": {
+    "gujarati": "ઉચવાણ",
+    "code": "101",
+    "district": "Surat",
+    "taluka": "Umarpada"
+  },
+  "Umarkhadi": {
+    "gujarati": "ઉમરખડી",
+    "code": "089",
+    "district": "Surat",
+    "taluka": "Mandvi"
+  },
+  "Umargot": {
+    "gujarati": "ઉમરગોટ",
+    "code": "098",
+    "district": "Surat",
+    "taluka": "Umarpada"
+  },
+  "Umarpada": {
+    "gujarati": "ઉમરપાડા",
+    "code": "099",
+    "district": "Surat",
+    "taluka": "Umarpada"
+  },
+  "Bhoriya": {
+    "gujarati": "ભોરીયા",
+    "code": "052",
+    "district": "Surat",
+    "taluka": "Ambika"
+  },
+  "Umarjhar": {
+    "gujarati": "ઊમરઝર",
+    "code": "029",
+    "district": "Surat",
+    "taluka": "Umarpada"
+  },
+  "Umarda": {
+    "gujarati": "ઊમરદા",
+    "code": "085",
+    "district": "Surat",
+    "taluka": "Umarpada"
+  },
+  "Kadvidadra": {
+    "gujarati": "કડવીદાદરા",
+    "code": "071",
+    "district": "Surat",
+    "taluka": "Umarpada"
+  },
+  "Kevdi (Sharda)": {
+    "gujarati": "કેવડી (શારદા)",
+    "code": "024",
+    "district": "Surat",
+    "taluka": "Umarpada"
+  },
+  "Kali jaman": {
+    "gujarati": "કાલી જામ઼ણ",
+    "code": "021",
+    "district": "Surat",
+    "taluka": "Umarpada"
+  },
+  "Khanbhabngali": {
+    "gujarati": "ખાંભાબંગલી",
+    "code": "073",
+    "district": "Surat",
+    "taluka": "Umarpada"
+  },
+  "Khota Ramapura": {
+    "gujarati": "ખોટા રામપુરા",
+    "code": "155",
+    "district": "Surat",
+    "taluka": "Umarpada"
+  },
+  "Khoda Anba": {
+    "gujarati": "ખોડ આંબા",
+    "code": "035",
+    "district": "Surat",
+    "taluka": "Areth"
+  },
+  "Gundikuva": {
+    "gujarati": "ગુન્દીકુવા",
+    "code": "067",
+    "district": "Surat",
+    "taluka": "Umarpada"
+  },
+  "Gondaliya": {
+    "gujarati": "ગોંડલીયા",
+    "code": "026",
+    "district": "Surat",
+    "taluka": "Umarpada"
+  },
+  "Gopaliya": {
+    "gujarati": "ગોપાલીયા",
+    "code": "102",
+    "district": "Surat",
+    "taluka": "Umarpada"
+  },
+  "Govat": {
+    "gujarati": "ગોવટ",
+    "code": "076",
+    "district": "Surat",
+    "taluka": "Umarpada"
+  },
+  "Ghanavada": {
+    "gujarati": "ઘાણાવડ",
+    "code": "147",
+    "district": "Surat",
+    "taluka": "Umarpada"
+  },
+  "Chakra": {
+    "gujarati": "ચકરા",
+    "code": "084",
+    "district": "Surat",
+    "taluka": "Umarpada"
+  },
+  "Chandrapada": {
+    "gujarati": "ચંદ્રપાડા",
+    "code": "078",
+    "district": "Surat",
+    "taluka": "Umarpada"
+  },
+  "Chavda": {
+    "gujarati": "ચવડા",
+    "code": "081",
+    "district": "Surat",
+    "taluka": "Umarpada"
+  },
+  "Charni": {
+    "gujarati": "ચાર઼ણી",
+    "code": "022",
+    "district": "Surat",
+    "taluka": "Umarpada"
+  },
+  "Chitalda": {
+    "gujarati": "ચીતલદા",
+    "code": "072",
+    "district": "Surat",
+    "taluka": "Umarpada"
+  },
+  "Chimipatal": {
+    "gujarati": "ચીમીપાતલ",
+    "code": "090",
+    "district": "Surat",
+    "taluka": "Umarpada"
+  },
+  "Chokhvada": {
+    "gujarati": "ચોખવાડા",
+    "code": "097",
+    "district": "Surat",
+    "taluka": "Umarpada"
+  },
+  "Jharpan": {
+    "gujarati": "ઝરપણ",
+    "code": "047",
+    "district": "Surat",
+    "taluka": "Areth"
+  },
+  "Jharavadi": {
+    "gujarati": "ઝરાવાડી",
+    "code": "152",
+    "district": "Surat",
+    "taluka": "Umarpada"
+  },
+  "Taval": {
+    "gujarati": "ટાવલ",
+    "code": "080",
+    "district": "Surat",
+    "taluka": "Umarpada"
+  },
+  "Dogaripada": {
+    "gujarati": "ડોગરીપાડા",
+    "code": "087",
+    "district": "Surat",
+    "taluka": "Umarpada"
+  },
+  "Darda": {
+    "gujarati": "દેરોદ",
+    "code": "021",
+    "district": "Surat",
+    "taluka": "Kamrej"
+  },
+  "Divtan": {
+    "gujarati": "દીવત઼ણ",
+    "code": "149",
+    "district": "Surat",
+    "taluka": "Umarpada"
+  },
+  "Nava Chakra": {
+    "gujarati": "નવા ચકરા",
+    "code": "083",
+    "district": "Surat",
+    "taluka": "Umarpada"
+  },
+  "Nana Sutkhadka": {
+    "gujarati": "નાના સુતખડકા",
+    "code": "082",
+    "district": "Surat",
+    "taluka": "Umarpada"
+  },
+  "Nasarpore": {
+    "gujarati": "નાસારપોર",
+    "code": "019",
+    "district": "Surat",
+    "taluka": "Umarpada"
+  },
+  "Pancha Anba": {
+    "gujarati": "પાંચ આંબા",
+    "code": "096",
+    "district": "Surat",
+    "taluka": "Umarpada"
+  },
+  "Pada": {
+    "gujarati": "પાડા",
+    "code": "069",
+    "district": "Surat",
+    "taluka": "Umarpada"
+  },
+  "Pinpur": {
+    "gujarati": "પીનપુર",
+    "code": "100",
+    "district": "Surat",
+    "taluka": "Umarpada"
+  },
+  "Bardi": {
+    "gujarati": "બરડી",
+    "code": "079",
+    "district": "Surat",
+    "taluka": "Umarpada"
+  },
+  "Bardipada": {
+    "gujarati": "બરડીપાડા",
+    "code": "154",
+    "district": "Surat",
+    "taluka": "Umarpada"
+  },
+  "Balala Kuva": {
+    "gujarati": "બલાલ કુવા",
+    "code": "103",
+    "district": "Surat",
+    "taluka": "Umarpada"
+  },
+  "Bijalavadi": {
+    "gujarati": "બીજલવાડી",
+    "code": "075",
+    "district": "Surat",
+    "taluka": "Umarpada"
+  },
+  "Bilvan": {
+    "gujarati": "બીલવાણ",
+    "code": "150",
+    "district": "Surat",
+    "taluka": "Umarpada"
+  },
+  "Mandanpada": {
+    "gujarati": "માંડણ઼પાડા",
+    "code": "068",
+    "district": "Surat",
+    "taluka": "Umarpada"
+  },
+  "Moti Devrupan": {
+    "gujarati": "મોટી દેવરુપણ",
+    "code": "086",
+    "district": "Surat",
+    "taluka": "Umarpada"
+  },
+  "Rudhi Gavan": {
+    "gujarati": "રુઢી ગવણ",
+    "code": "089",
+    "district": "Surat",
+    "taluka": "Umarpada"
+  },
+  "Ranikund": {
+    "gujarati": "રાણીકુંડ",
+    "code": "074",
+    "district": "Surat",
+    "taluka": "Umarpada"
+  },
+  "Vadgam": {
+    "gujarati": "વડગામ",
+    "code": "088",
+    "district": "Surat",
+    "taluka": "Umarpada"
+  },
+  "Vadpada": {
+    "gujarati": "વડપાડા",
+    "code": "086",
+    "district": "Navsari",
+    "taluka": "Khergam"
+  },
+  "Velavi": {
+    "gujarati": "વેલાવી",
+    "code": "023",
+    "district": "Surat",
+    "taluka": "Umarpada"
+  },
+  "Vahar": {
+    "gujarati": "વહાર",
+    "code": "143",
+    "district": "Surat",
+    "taluka": "Umarpada"
+  },
+  "Vadi": {
+    "gujarati": "વાડી",
+    "code": "030",
+    "district": "Surat",
+    "taluka": "Umarpada"
+  },
+  "Satvan": {
+    "gujarati": "સ઼ટવાણ",
+    "code": "092",
+    "district": "Surat",
+    "taluka": "Umarpada"
+  },
+  "Sarda": {
+    "gujarati": "સરેડી",
+    "code": "061",
+    "district": "Surat",
+    "taluka": "Bardoli"
+  },
+  "Saravana Phokadi": {
+    "gujarati": "સરવણ ફોકડી",
+    "code": "020",
+    "district": "Surat",
+    "taluka": "Umarpada"
+  },
+  "Sevlan": {
+    "gujarati": "સેવલાણ",
+    "code": "091",
+    "district": "Surat",
+    "taluka": "Umarpada"
+  },
+  "Sadadapani": {
+    "gujarati": "સાદડાપાણી",
+    "code": "025",
+    "district": "Surat",
+    "taluka": "Umarpada"
+  },
+  "Sampura": {
+    "gujarati": "સામપુરા",
+    "code": "029",
+    "district": "Surat",
+    "taluka": "Kamrej"
+  },
+  "Soli": {
+    "gujarati": "સોલી",
+    "code": "021",
+    "district": "Surat",
+    "taluka": "Mandvi"
+  },
+  "Haripura": {
+    "gujarati": "હરીપુરા",
+    "code": "009",
+    "district": "Surat",
+    "taluka": "Bardoli"
+  },
+  "Haldhari": {
+    "gujarati": "હલધરી",
+    "code": "151",
+    "district": "Surat",
+    "taluka": "Umarpada"
+  },
+  "Andhatri Devgadh": {
+    "gujarati": "અંધાત્રી દેવગઢ",
+    "code": "062",
+    "district": "Surat",
+    "taluka": "Mandvi"
+  },
+  "Amalsadi": {
+    "gujarati": "અમલસાડી",
+    "code": "044",
+    "district": "Surat",
+    "taluka": "Palsana"
+  },
+  "Anbapora": {
+    "gujarati": "આંબાપોર",
+    "code": "095",
+    "district": "Surat",
+    "taluka": "Mandvi"
+  },
+  "Amalchuni": {
+    "gujarati": "આમલચુની",
+    "code": "131",
+    "district": "Surat",
+    "taluka": "Mandvi"
+  },
+  "Amli": {
+    "gujarati": "આમલી",
+    "code": "058",
+    "district": "Surat",
+    "taluka": "Mandvi"
+  },
+  "Isar": {
+    "gujarati": "ઇસર",
+    "code": "015",
+    "district": "Surat",
+    "taluka": "Mandvi"
+  },
+  "Umarsadi": {
+    "gujarati": "ઉમરસાડી",
+    "code": "118",
+    "district": "Surat",
+    "taluka": "Mandvi"
+  },
+  "Ushkera-khurd": {
+    "gujarati": "ઉશ્કેર-ખુર્દ",
+    "code": "110",
+    "district": "Surat",
+    "taluka": "Mandvi"
+  },
+  "Un": {
+    "gujarati": "ઉન",
+    "code": "040",
+    "district": "Navsari",
+    "taluka": "Navsari"
+  },
+  "Kamlapor": {
+    "gujarati": "કમલાપોર",
+    "code": "117",
+    "district": "Surat",
+    "taluka": "Mandvi"
+  },
+  "Karanjvan": {
+    "gujarati": "કરંજવાણ",
+    "code": "059",
+    "district": "Surat",
+    "taluka": "Mandvi"
+  },
+  "Karutha": {
+    "gujarati": "કરુઠા",
+    "code": "101",
+    "district": "Surat",
+    "taluka": "Mandvi"
+  },
+  "Karvati": {
+    "gujarati": "કરવટી",
+    "code": "094",
+    "district": "Surat",
+    "taluka": "Mandvi"
+  },
+  "Kalamkuva": {
+    "gujarati": "કલમકુવા",
+    "code": "090",
+    "district": "Surat",
+    "taluka": "Mandvi"
+  },
+  "Kevdi": {
+    "gujarati": "કેવડી",
+    "code": "034",
+    "district": "Navsari",
+    "taluka": "Vansda"
+  },
+  "Kakadva": {
+    "gujarati": "કાકડવા",
+    "code": "109",
+    "district": "Surat",
+    "taluka": "Mandvi"
+  },
+  "Kakdapar": {
+    "gujarati": "કાકડાપાર",
+    "code": "128",
+    "district": "Surat",
+    "taluka": "Mandvi"
+  },
+  "Katkuva": {
+    "gujarati": "કાટકુવા",
+    "code": "066",
+    "district": "Surat",
+    "taluka": "Mandvi"
+  },
+  "Kalibel": {
+    "gujarati": "કાલીબેલ",
+    "code": "051",
+    "district": "Surat",
+    "taluka": "Mandvi"
+  },
+  "Kim Dungra": {
+    "gujarati": "કીમ ડુંગરા",
+    "code": "033",
+    "district": "Surat",
+    "taluka": "Mandvi"
+  },
+  "Kolkhadi": {
+    "gujarati": "કોલખડી",
+    "code": "019",
+    "district": "Surat",
+    "taluka": "Mandvi"
+  },
+  "Khanjroli": {
+    "gujarati": "ખંજરોલી",
+    "code": "116",
+    "district": "Surat",
+    "taluka": "Mandvi"
+  },
+  "Khedpur": {
+    "gujarati": "ખેડપુર",
+    "code": "108",
+    "district": "Surat",
+    "taluka": "Mandvi"
+  },
+  "Kharoli": {
+    "gujarati": "ખરોલી",
+    "code": "012",
+    "district": "Navsari",
+    "taluka": "Chikhli"
+  },
+  "Khatradevi": {
+    "gujarati": "ખાત્રાદેવી",
+    "code": "022",
+    "district": "Surat",
+    "taluka": "Mandvi"
+  },
+  "Khimpor": {
+    "gujarati": "ખીમપોર",
+    "code": "097",
+    "district": "Surat",
+    "taluka": "Mandvi"
+  },
+  "Gundvan": {
+    "gujarati": "ગુંદવાણ",
+    "code": "100",
+    "district": "Surat",
+    "taluka": "Mandvi"
+  },
+  "Gavachhi": {
+    "gujarati": "ગવાછી",
+    "code": "080",
+    "district": "Surat",
+    "taluka": "Mandvi"
+  },
+  "Gangpor Devgadh": {
+    "gujarati": "ગાંગપોર દેવગઢ",
+    "code": "028",
+    "district": "Surat",
+    "taluka": "Mandvi"
+  },
+  "Gangpor Harshad": {
+    "gujarati": "ગાંગપોર હર્ષદ",
+    "code": "130",
+    "district": "Surat",
+    "taluka": "Mandvi"
+  },
+  "Gamtalav Khurd": {
+    "gujarati": "ગામતલાવ ખુર્દ",
+    "code": "054",
+    "district": "Surat",
+    "taluka": "Mandvi"
+  },
+  "Gamtalav Bujrang": {
+    "gujarati": "ગામતલાવ બુજરંગ",
+    "code": "123",
+    "district": "Surat",
+    "taluka": "Mandvi"
+  },
+  "Goddha": {
+    "gujarati": "ગોડધા",
+    "code": "052",
+    "district": "Surat",
+    "taluka": "Mandvi"
+  },
+  "Godasnba": {
+    "gujarati": "ગોડસંબા",
+    "code": "111",
+    "district": "Surat",
+    "taluka": "Mandvi"
+  },
+  "Godavadi": {
+    "gujarati": "ગોદાવાડી",
+    "code": "120",
+    "district": "Surat",
+    "taluka": "Mandvi"
+  },
+  "Ghantoli": {
+    "gujarati": "ઘંટોલી",
+    "code": "087",
+    "district": "Surat",
+    "taluka": "Mandvi"
+  },
+  "Chandpor": {
+    "gujarati": "ચાંદપોર",
+    "code": "132",
+    "district": "Surat",
+    "taluka": "Mandvi"
+  },
+  "Choranba": {
+    "gujarati": "ચોરાંબા",
+    "code": "013",
+    "district": "Surat",
+    "taluka": "Mandvi"
+  },
+  "Chhelvas": {
+    "gujarati": "છેલવાસ",
+    "code": "063",
+    "district": "Surat",
+    "taluka": "Mandvi"
+  },
+  "Jetpur": {
+    "gujarati": "જેતપુર",
+    "code": "093",
+    "district": "Surat",
+    "taluka": "Mandvi"
+  },
+  "Junvan": {
+    "gujarati": "જુનવાણ",
+    "code": "032",
+    "district": "Surat",
+    "taluka": "Mandvi"
+  },
+  "Jakhla": {
+    "gujarati": "જાખલા",
+    "code": "142",
+    "district": "Surat",
+    "taluka": "Mandvi"
+  },
+  "Jamkui": {
+    "gujarati": "જામકુઈ",
+    "code": "024",
+    "district": "Surat",
+    "taluka": "Mandvi"
+  },
+  "Jamankuva Bar": {
+    "gujarati": "જામણકુવા બાર",
+    "code": "145",
+    "district": "Surat",
+    "taluka": "Mandvi"
+  },
+  "Jhari Dadhvada": {
+    "gujarati": "ઝરી દધવાડા",
+    "code": "105",
+    "district": "Surat",
+    "taluka": "Mandvi"
+  },
+  "Jhari Devgadh": {
+    "gujarati": "ઝરી દેવગઢ",
+    "code": "060",
+    "district": "Surat",
+    "taluka": "Mandvi"
+  },
+  "Tarasada-khurd": {
+    "gujarati": "તરસાડા-ખુર્દ",
+    "code": "068",
+    "district": "Surat",
+    "taluka": "Mandvi"
+  },
+  "Tarsadabar Gam": {
+    "gujarati": "તરસાડાબાર ગામ",
+    "code": "143",
+    "district": "Surat",
+    "taluka": "Mandvi"
+  },
+  "Tarapor": {
+    "gujarati": "તારાપોર",
+    "code": "057",
+    "district": "Surat",
+    "taluka": "Mandvi"
+  },
+  "Dadhvada": {
+    "gujarati": "દ઼ઢવાડા",
+    "code": "104",
+    "district": "Surat",
+    "taluka": "Mandvi"
+  },
+  "Devgadh": {
+    "gujarati": "દેવગઢ",
+    "code": "016",
+    "district": "Surat",
+    "taluka": "Mandvi"
+  },
+  "Devgiri": {
+    "gujarati": "દેવગીરી",
+    "code": "029",
+    "district": "Surat",
+    "taluka": "Mandvi"
+  },
+  "Dadakui": {
+    "gujarati": "દાદાકૂઈ",
+    "code": "010",
+    "district": "Surat",
+    "taluka": "Mandvi"
+  },
+  "Dhvaj": {
+    "gujarati": "ધ્વજ",
+    "code": "064",
+    "district": "Surat",
+    "taluka": "Mandvi"
+  },
+  "Dhvjanba": {
+    "gujarati": "ધ્વજાંબા",
+    "code": "065",
+    "district": "Surat",
+    "taluka": "Mandvi"
+  },
+  "Nandpor": {
+    "gujarati": "નંદપોર",
+    "code": "113",
+    "district": "Surat",
+    "taluka": "Mandvi"
+  },
+  "Nani Cher": {
+    "gujarati": "નાની ચેર",
+    "code": "147",
+    "district": "Surat",
+    "taluka": "Mandvi"
+  },
+  "Petarkui": {
+    "gujarati": "પેટરકુઈ",
+    "code": "020",
+    "district": "Surat",
+    "taluka": "Mandvi"
+  },
+  "Puna": {
+    "gujarati": "પુના",
+    "code": "055",
+    "district": "Surat",
+    "taluka": "Ambika"
+  },
+  "Patavadi": {
+    "gujarati": "પાતાવાડી",
+    "code": "014",
+    "district": "Surat",
+    "taluka": "Mandvi"
+  },
+  "Pichatavana": {
+    "gujarati": "પીચટવાણ",
+    "code": "026",
+    "district": "Surat",
+    "taluka": "Mandvi"
+  },
+  "Pipariya": {
+    "gujarati": "પીપરીયા",
+    "code": "050",
+    "district": "Surat",
+    "taluka": "Bardoli"
+  },
+  "Pipalvada": {
+    "gujarati": "પીપલવાડા",
+    "code": "129",
+    "district": "Surat",
+    "taluka": "Mandvi"
+  },
+  "Pipalvan": {
+    "gujarati": "પીપલવાણ",
+    "code": "023",
+    "district": "Surat",
+    "taluka": "Mandvi"
+  },
+  "Phulavadi": {
+    "gujarati": "ફુલવાડી",
+    "code": "036",
+    "district": "Surat",
+    "taluka": "Mahuva"
+  },
+  "Badtal": {
+    "gujarati": "બડતલ",
+    "code": "085",
+    "district": "Surat",
+    "taluka": "Mandvi"
+  },
+  "Beddha": {
+    "gujarati": "બેડધા",
+    "code": "127",
+    "district": "Surat",
+    "taluka": "Mandvi"
+  },
+  "Bundha": {
+    "gujarati": "બુણધા",
+    "code": "027",
+    "district": "Surat",
+    "taluka": "Mandvi"
+  },
+  "Balethi": {
+    "gujarati": "બલેઠી",
+    "code": "017",
+    "district": "Surat",
+    "taluka": "Mandvi"
+  },
+  "Balaltirth": {
+    "gujarati": "બલાલતીર્થ",
+    "code": "136",
+    "district": "Surat",
+    "taluka": "Mandvi"
+  },
+  "Balanga": {
+    "gujarati": "બાલંગા",
+    "code": "137",
+    "district": "Surat",
+    "taluka": "Mandvi"
+  },
+  "Birama": {
+    "gujarati": "બીરામા",
+    "code": "141",
+    "district": "Surat",
+    "taluka": "Mandvi"
+  },
+  "Bori": {
+    "gujarati": "બોરી",
+    "code": "112",
+    "district": "Surat",
+    "taluka": "Mandvi"
+  },
+  "Bhensi": {
+    "gujarati": "ભેંસી",
+    "code": "096",
+    "district": "Surat",
+    "taluka": "Mandvi"
+  },
+  "Bhatkhai": {
+    "gujarati": "ભાતખાઇ",
+    "code": "107",
+    "district": "Surat",
+    "taluka": "Mandvi"
+  },
+  "Magatra": {
+    "gujarati": "મગતરા",
+    "code": "135",
+    "district": "Surat",
+    "taluka": "Mandvi"
+  },
+  "Mahudi": {
+    "gujarati": "મહુડી",
+    "code": "064",
+    "district": "Navsari",
+    "taluka": "Navsari"
+  },
+  "Mankanjhara": {
+    "gujarati": "માંકણ઼ઝર",
+    "code": "067",
+    "district": "Surat",
+    "taluka": "Mandvi"
+  },
+  "Mandavi": {
+    "gujarati": "માંડવી",
+    "code": "149",
+    "district": "Surat",
+    "taluka": "Mandvi"
+  },
+  "Maldha": {
+    "gujarati": "માલ્ધા",
+    "code": "031",
+    "district": "Surat",
+    "taluka": "Mandvi"
+  },
+  "Moti Cher": {
+    "gujarati": "મોટી ચેર",
+    "code": "148",
+    "district": "Surat",
+    "taluka": "Mandvi"
+  },
+  "Moritha": {
+    "gujarati": "મોરીઠા",
+    "code": "069",
+    "district": "Surat",
+    "taluka": "Mandvi"
+  },
+  "Rakhvav": {
+    "gujarati": "રખવાવ",
+    "code": "133",
+    "district": "Surat",
+    "taluka": "Mandvi"
+  },
+  "Rakhasakhadi": {
+    "gujarati": "રખસખડી",
+    "code": "091",
+    "district": "Surat",
+    "taluka": "Mandvi"
+  },
+  "Regama": {
+    "gujarati": "રેગામા",
+    "code": "034",
+    "district": "Surat",
+    "taluka": "Mandvi"
+  },
+  "Rajvad": {
+    "gujarati": "રજવાડા",
+    "code": "066",
+    "district": "Navsari",
+    "taluka": "Navsari"
+  },
+  "Rundha": {
+    "gujarati": "રૂંઢ",
+    "code": "048",
+    "district": "Surat",
+    "taluka": "Majura"
+  },
+  "Rataniya": {
+    "gujarati": "રતનીયા",
+    "code": "146",
+    "district": "Surat",
+    "taluka": "Mandvi"
+  },
+  "Rupan": {
+    "gujarati": "રુપણ",
+    "code": "125",
+    "district": "Surat",
+    "taluka": "Mandvi"
+  },
+  "Luharvad": {
+    "gujarati": "લુહારવડ",
+    "code": "018",
+    "district": "Surat",
+    "taluka": "Mandvi"
+  },
+  "Lakhgam": {
+    "gujarati": "લાખગામ",
+    "code": "092",
+    "district": "Surat",
+    "taluka": "Mandvi"
+  },
+  "Ladkuva": {
+    "gujarati": "લાડકુવા",
+    "code": "012",
+    "district": "Surat",
+    "taluka": "Mandvi"
+  },
+  "Linbodi": {
+    "gujarati": "લીંબોડી",
+    "code": "061",
+    "district": "Surat",
+    "taluka": "Mandvi"
+  },
+  "Limdha": {
+    "gujarati": "લીમધા",
+    "code": "030",
+    "district": "Surat",
+    "taluka": "Mandvi"
+  },
+  "Varajhakhana": {
+    "gujarati": "વરઝાખણ",
+    "code": "140",
+    "district": "Surat",
+    "taluka": "Mandvi"
+  },
+  "Vareth": {
+    "gujarati": "વરેઠી",
+    "code": "001",
+    "district": "Surat",
+    "taluka": "Areth"
+  },
+  "Valargadh": {
+    "gujarati": "વલારગઢ",
+    "code": "086",
+    "district": "Surat",
+    "taluka": "Mandvi"
+  },
+  "Vankla": {
+    "gujarati": "વાંકલા",
+    "code": "138",
+    "district": "Surat",
+    "taluka": "Mandvi"
+  },
+  "Vaghnera": {
+    "gujarati": "વાઘનેરા",
+    "code": "126",
+    "district": "Surat",
+    "taluka": "Mandvi"
+  },
+  "Visdalya": {
+    "gujarati": "વીસડાલીયા",
+    "code": "056",
+    "district": "Surat",
+    "taluka": "Mandvi"
+  },
+  "Sathvav": {
+    "gujarati": "સઠવાવ",
+    "code": "088",
+    "district": "Surat",
+    "taluka": "Mandvi"
+  },
+  "Sarkui": {
+    "gujarati": "સરકુઈ",
+    "code": "106",
+    "district": "Surat",
+    "taluka": "Mandvi"
+  },
+  "Sarpada": {
+    "gujarati": "સરપાડા",
+    "code": "103",
+    "district": "Surat",
+    "taluka": "Mandvi"
+  },
+  "Sarsi": {
+    "gujarati": "સરસી",
+    "code": "025",
+    "district": "Surat",
+    "taluka": "Mandvi"
+  },
+  "Sadadi": {
+    "gujarati": "સાદડી",
+    "code": "144",
+    "district": "Surat",
+    "taluka": "Mandvi"
+  },
+  "Salaiya": {
+    "gujarati": "સાલૈયા",
+    "code": "070",
+    "district": "Surat",
+    "taluka": "Mandvi"
+  },
+  "Haripura Kanghat": {
+    "gujarati": "હરીપુરા કાણાઘાટ",
+    "code": "102",
+    "district": "Surat",
+    "taluka": "Mandvi"
+  },
+  "Akhakhol": {
+    "gujarati": "અખાખોલ",
+    "code": "007",
+    "district": "Surat",
+    "taluka": "Kamrej"
+  },
+  "Antroli": {
+    "gujarati": "અંત્રોલી",
+    "code": "045",
+    "district": "Surat",
+    "taluka": "Areth"
+  },
+  "Alura": {
+    "gujarati": "અલુરા",
+    "code": "040",
+    "district": "Navsari",
+    "taluka": "Jalalpore"
+  },
+  "Anboli": {
+    "gujarati": "આંબોલી",
+    "code": "014",
+    "district": "Surat",
+    "taluka": "Kamrej"
+  },
+  "Asta": {
+    "gujarati": "આસ્તા",
+    "code": "047",
+    "district": "Surat",
+    "taluka": "Kamrej"
+  },
+  "Unbhela": {
+    "gujarati": "ઉંભેળ",
+    "code": "067",
+    "district": "Surat",
+    "taluka": "Kamrej"
+  },
+  "Orna": {
+    "gujarati": "ઓરણા",
+    "code": "031",
+    "district": "Surat",
+    "taluka": "Kamrej"
+  },
+  "Oviyan": {
+    "gujarati": "ઓવિયાણ",
+    "code": "066",
+    "district": "Surat",
+    "taluka": "Kamrej"
+  },
+  "Karjan": {
+    "gujarati": "કરજણ",
+    "code": "008",
+    "district": "Surat",
+    "taluka": "Kamrej"
+  },
+  "Kamrej": {
+    "gujarati": "કામરેજ",
+    "code": "020",
+    "district": "Surat",
+    "taluka": "Kamrej"
+  },
+  "Koli Bharthana": {
+    "gujarati": "કોળી ભરથાણા",
+    "code": "023",
+    "district": "Surat",
+    "taluka": "Kamrej"
+  },
+  "Kosamadi": {
+    "gujarati": "કોસમાડી",
+    "code": "044",
+    "district": "Surat",
+    "taluka": "Kamrej"
+  },
+  "Khanpur": {
+    "gujarati": "ખાનપુર",
+    "code": "089",
+    "district": "Navsari",
+    "taluka": "Vansda"
+  },
+  "Kholvad": {
+    "gujarati": "ખોલવડ",
+    "code": "019",
+    "district": "Surat",
+    "taluka": "Kamrej"
+  },
+  "Kholeshwar": {
+    "gujarati": "ખોલેશ્વર",
+    "code": "012",
+    "district": "Surat",
+    "taluka": "Kamrej"
+  },
+  "Ghaludi": {
+    "gujarati": "ઘલુડી",
+    "code": "002",
+    "district": "Surat",
+    "taluka": "Kamrej"
+  },
+  "Ghala": {
+    "gujarati": "ઘલા",
+    "code": "009",
+    "district": "Surat",
+    "taluka": "Kamrej"
+  },
+  "Chikhli": {
+    "gujarati": "ચીખલી",
+    "code": "088",
+    "district": "Navsari",
+    "taluka": "Chikhli"
+  },
+  "Choryasi": {
+    "gujarati": "ચોર્યાસી",
+    "code": "015",
+    "district": "Surat",
+    "taluka": "Kamrej"
+  },
+  "Chhedchha": {
+    "gujarati": "છેડછા",
+    "code": "065",
+    "district": "Surat",
+    "taluka": "Kamrej"
+  },
+  "Jat Bharthana": {
+    "gujarati": "જાત ભરથાણા",
+    "code": "032",
+    "district": "Surat",
+    "taluka": "Kamrej"
+  },
+  "Jiyora": {
+    "gujarati": "જીયોર",
+    "code": "010",
+    "district": "Surat",
+    "taluka": "Kamrej"
+  },
+  "Jokha": {
+    "gujarati": "જોખા",
+    "code": "034",
+    "district": "Surat",
+    "taluka": "Kamrej"
+  },
+  "Timba": {
+    "gujarati": "ટીમ્બા",
+    "code": "028",
+    "district": "Surat",
+    "taluka": "Kamrej"
+  },
+  "Dungar": {
+    "gujarati": "ડુંગરા",
+    "code": "011",
+    "district": "Surat",
+    "taluka": "Kamrej"
+  },
+  "Tharoli": {
+    "gujarati": "થારોલી",
+    "code": "004",
+    "district": "Surat",
+    "taluka": "Kamrej"
+  },
+  "Dethli": {
+    "gujarati": "દેથલી",
+    "code": "050",
+    "district": "Surat",
+    "taluka": "Kamrej"
+  },
+  "Digas": {
+    "gujarati": "દીગસ",
+    "code": "026",
+    "district": "Surat",
+    "taluka": "Kamrej"
+  },
+  "Dhatva": {
+    "gujarati": "ધાતવા",
+    "code": "025",
+    "district": "Surat",
+    "taluka": "Kamrej"
+  },
+  "Dharutha": {
+    "gujarati": "ધારુઠા",
+    "code": "033",
+    "district": "Surat",
+    "taluka": "Kamrej"
+  },
+  "Dhoranaparadi": {
+    "gujarati": "ધોરણપારડી",
+    "code": "006",
+    "district": "Surat",
+    "taluka": "Kamrej"
+  },
+  "Nagod": {
+    "gujarati": "નગોડ",
+    "code": "052",
+    "district": "Surat",
+    "taluka": "Kamrej"
+  },
+  "Netrang": {
+    "gujarati": "નેત્રંગ",
+    "code": "024",
+    "district": "Surat",
+    "taluka": "Kamrej"
+  },
+  "Nansad": {
+    "gujarati": "નનસાડ",
+    "code": "022",
+    "district": "Surat",
+    "taluka": "Kamrej"
+  },
+  "Navagam": {
+    "gujarati": "નવાગામ",
+    "code": "025",
+    "district": "Surat",
+    "taluka": "Puna"
+  },
+  "Naviparadi": {
+    "gujarati": "નવીપારડી",
+    "code": "005",
+    "district": "Surat",
+    "taluka": "Kamrej"
+  },
+  "Parab": {
+    "gujarati": "પરબ",
+    "code": "068",
+    "district": "Surat",
+    "taluka": "Kamrej"
+  },
+  "Pali": {
+    "gujarati": "પાલી",
+    "code": "077",
+    "district": "Surat",
+    "taluka": "Udhna"
+  },
+  "Bhairav": {
+    "gujarati": "ભૈરવ",
+    "code": "013",
+    "district": "Surat",
+    "taluka": "Kamrej"
+  },
+  "Mankna": {
+    "gujarati": "માંકણા",
+    "code": "061",
+    "district": "Surat",
+    "taluka": "Kamrej"
+  },
+  "Machhi": {
+    "gujarati": "માછી",
+    "code": "027",
+    "district": "Surat",
+    "taluka": "Kamrej"
+  },
+  "Mirapur": {
+    "gujarati": "મીરાપુર",
+    "code": "056",
+    "district": "Surat",
+    "taluka": "Kamrej"
+  },
+  "Morthana": {
+    "gujarati": "મોરથાણા",
+    "code": "045",
+    "district": "Surat",
+    "taluka": "Kamrej"
+  },
+  "Rundhvada": {
+    "gujarati": "રુંઢવાડા",
+    "code": "051",
+    "district": "Surat",
+    "taluka": "Kamrej"
+  },
+  "Ladvi": {
+    "gujarati": "લાડવી",
+    "code": "063",
+    "district": "Surat",
+    "taluka": "Kamrej"
+  },
+  "Valan": {
+    "gujarati": "વલણ",
+    "code": "060",
+    "district": "Surat",
+    "taluka": "Kamrej"
+  },
+  "Valthan": {
+    "gujarati": "વલથાણ",
+    "code": "062",
+    "district": "Surat",
+    "taluka": "Kamrej"
+  },
+  "Vav": {
+    "gujarati": "વાવ",
+    "code": "074",
+    "district": "Navsari",
+    "taluka": "Khergam"
+  },
+  "Vasnda-rudhi": {
+    "gujarati": "વાસંદા-રુઢી",
+    "code": "057",
+    "district": "Surat",
+    "taluka": "Kamrej"
+  },
+  "Vihan": {
+    "gujarati": "વીહાણ",
+    "code": "049",
+    "district": "Surat",
+    "taluka": "Kamrej"
+  },
+  "Shekhpur": {
+    "gujarati": "શેખપુર",
+    "code": "019",
+    "district": "Surat",
+    "taluka": "Mahuva"
+  },
+  "Segva": {
+    "gujarati": "સેગવા",
+    "code": "046",
+    "district": "Surat",
+    "taluka": "Kamrej"
+  },
+  "Simadi": {
+    "gujarati": "સીમાડા",
+    "code": "042",
+    "district": "Surat",
+    "taluka": "Puna"
+  },
+  "Haldharu": {
+    "gujarati": "હલધરુ",
+    "code": "069",
+    "district": "Surat",
+    "taluka": "Kamrej"
+  },
+  "Eklera": {
+    "gujarati": "એકલેરા",
+    "code": "064",
+    "district": "Surat",
+    "taluka": "Choryasi"
+  },
+  "Kachholi": {
+    "gujarati": "કછોલી",
+    "code": "019",
+    "district": "Navsari",
+    "taluka": "Gandevi"
+  },
+  "Kapletha": {
+    "gujarati": "કપ્લેથા",
+    "code": "083",
+    "district": "Surat",
+    "taluka": "Choryasi"
+  },
+  "Karadva": {
+    "gujarati": "કરાડવા",
+    "code": "051",
+    "district": "Surat",
+    "taluka": "Choryasi"
+  },
+  "Kavasa": {
+    "gujarati": "કવાસ",
+    "code": "033",
+    "district": "Surat",
+    "taluka": "Choryasi"
+  },
+  "Kidiyabeta": {
+    "gujarati": "કીડીયાબેટ",
+    "code": "086",
+    "district": "Surat",
+    "taluka": "Choryasi"
+  },
+  "Khnbhasala": {
+    "gujarati": "ખંભાસલા",
+    "code": "054",
+    "district": "Surat",
+    "taluka": "Choryasi"
+  },
+  "Kharvasa": {
+    "gujarati": "ખરવાસા",
+    "code": "023",
+    "district": "Surat",
+    "taluka": "Bardoli"
+  },
+  "Goja": {
+    "gujarati": "ગોજા",
+    "code": "066",
+    "district": "Surat",
+    "taluka": "Choryasi"
+  },
+  "Dakhkhanvada": {
+    "gujarati": "દખ્ખણવાડા",
+    "code": "053",
+    "district": "Surat",
+    "taluka": "Choryasi"
+  },
+  "Deladva": {
+    "gujarati": "દેલાડવા",
+    "code": "052",
+    "district": "Surat",
+    "taluka": "Choryasi"
+  },
+  "Devadh": {
+    "gujarati": "દેવધ",
+    "code": "085",
+    "district": "Surat",
+    "taluka": "Choryasi"
+  },
+  "Damka": {
+    "gujarati": "દામકા",
+    "code": "020",
+    "district": "Surat",
+    "taluka": "Choryasi"
+  },
+  "Pisad": {
+    "gujarati": "પીસાદ",
+    "code": "068",
+    "district": "Surat",
+    "taluka": "Adajan"
+  },
+  "Popda": {
+    "gujarati": "પોપડા",
+    "code": "080",
+    "district": "Surat",
+    "taluka": "Choryasi"
+  },
+  "Bonand": {
+    "gujarati": "બોણંદ",
+    "code": "065",
+    "district": "Surat",
+    "taluka": "Choryasi"
+  },
+  "Bhatlai": {
+    "gujarati": "ભટલાઈ",
+    "code": "022",
+    "district": "Surat",
+    "taluka": "Choryasi"
+  },
+  "Bhatiya": {
+    "gujarati": "ભાટીયા",
+    "code": "081",
+    "district": "Surat",
+    "taluka": "Choryasi"
+  },
+  "Bhanodra": {
+    "gujarati": "ભાણોદરા",
+    "code": "062",
+    "district": "Surat",
+    "taluka": "Choryasi"
+  },
+  "Malgama": {
+    "gujarati": "મલગામા",
+    "code": "088",
+    "district": "Surat",
+    "taluka": "Choryasi"
+  },
+  "Mohni": {
+    "gujarati": "મોહણી",
+    "code": "067",
+    "district": "Surat",
+    "taluka": "Choryasi"
+  },
+  "Rajgari": {
+    "gujarati": "રાજગરી",
+    "code": "023",
+    "district": "Surat",
+    "taluka": "Choryasi"
+  },
+  "Lajpor": {
+    "gujarati": "લાજપોર",
+    "code": "079",
+    "district": "Surat",
+    "taluka": "Choryasi"
+  },
+  "Limala": {
+    "gujarati": "લીમલા",
+    "code": "024",
+    "district": "Surat",
+    "taluka": "Choryasi"
+  },
+  "Vakatana": {
+    "gujarati": "વકતાણા",
+    "code": "069",
+    "district": "Surat",
+    "taluka": "Choryasi"
+  },
+  "Vedchha": {
+    "gujarati": "વેડછા",
+    "code": "061",
+    "district": "Navsari",
+    "taluka": "Jalalpore"
+  },
+  "Vanjha": {
+    "gujarati": "વાંઝ",
+    "code": "070",
+    "district": "Surat",
+    "taluka": "Choryasi"
+  },
+  "Vansva": {
+    "gujarati": "વાંસવા",
+    "code": "021",
+    "district": "Surat",
+    "taluka": "Choryasi"
+  },
+  "Shivaramapura": {
+    "gujarati": "શિવરામપુર",
+    "code": "087",
+    "district": "Surat",
+    "taluka": "Choryasi"
+  },
+  "Saniya Kanade": {
+    "gujarati": "સણીયા કણદે",
+    "code": "055",
+    "district": "Surat",
+    "taluka": "Choryasi"
+  },
+  "Sunvali": {
+    "gujarati": "સુંવાલી",
+    "code": "035",
+    "district": "Surat",
+    "taluka": "Choryasi"
+  },
+  "Sabargam": {
+    "gujarati": "સાબરગામ",
+    "code": "029",
+    "district": "Surat",
+    "taluka": "Choryasi"
+  },
+  "Samrod": {
+    "gujarati": "સામરોદ",
+    "code": "084",
+    "district": "Surat",
+    "taluka": "Choryasi"
+  },
+  "Hajira": {
+    "gujarati": "હજીરા",
+    "code": "046",
+    "district": "Surat",
+    "taluka": "Choryasi"
+  },
+  "Anbheti": {
+    "gujarati": "અંભેટી",
+    "code": "048",
+    "district": "Surat",
+    "taluka": "Palsana"
+  },
+  "Italva": {
+    "gujarati": "ઈટાળવા",
+    "code": "007",
+    "district": "Navsari",
+    "taluka": "Navsari City"
+  },
+  "Isroli": {
+    "gujarati": "સુરાલી",
+    "code": "038",
+    "district": "Surat",
+    "taluka": "Bardoli"
+  },
+  "Ena": {
+    "gujarati": "એના",
+    "code": "031",
+    "district": "Surat",
+    "taluka": "Palsana"
+  },
+  "Kadodara": {
+    "gujarati": "કડોદરા",
+    "code": "007",
+    "district": "Surat",
+    "taluka": "Palsana"
+  },
+  "Kanav": {
+    "gujarati": "કણાવ",
+    "code": "038",
+    "district": "Surat",
+    "taluka": "Palsana"
+  },
+  "Karan": {
+    "gujarati": "કરણ",
+    "code": "015",
+    "district": "Surat",
+    "taluka": "Palsana"
+  },
+  "Karala": {
+    "gujarati": "કારેલી",
+    "code": "017",
+    "district": "Surat",
+    "taluka": "Palsana"
+  },
+  "Kharbhasi": {
+    "gujarati": "ખરભાસી",
+    "code": "014",
+    "district": "Surat",
+    "taluka": "Palsana"
+  },
+  "Gangpor": {
+    "gujarati": "ગાંગપોર",
+    "code": "018",
+    "district": "Surat",
+    "taluka": "Palsana"
+  },
+  "Gotiya": {
+    "gujarati": "ગોટીયા",
+    "code": "036",
+    "district": "Surat",
+    "taluka": "Palsana"
+  },
+  "Ghaluda": {
+    "gujarati": "ઘલુડા",
+    "code": "030",
+    "district": "Surat",
+    "taluka": "Palsana"
+  },
+  "Chalathana": {
+    "gujarati": "ચલથાણ",
+    "code": "049",
+    "district": "Surat",
+    "taluka": "Palsana"
+  },
+  "Jetpor": {
+    "gujarati": "જેતપોર",
+    "code": "019",
+    "district": "Surat",
+    "taluka": "Palsana"
+  },
+  "Jolva": {
+    "gujarati": "જોળવા",
+    "code": "009",
+    "district": "Surat",
+    "taluka": "Palsana"
+  },
+  "Tundi": {
+    "gujarati": "તૂંડી",
+    "code": "021",
+    "district": "Surat",
+    "taluka": "Palsana"
+  },
+  "Taraj": {
+    "gujarati": "તરાજ",
+    "code": "001",
+    "district": "Surat",
+    "taluka": "Palsana"
+  },
+  "Talodara": {
+    "gujarati": "તળોદરા",
+    "code": "012",
+    "district": "Surat",
+    "taluka": "Palsana"
+  },
+  "Tanti Jhagada": {
+    "gujarati": "તાંતી ઝગડા",
+    "code": "023",
+    "district": "Surat",
+    "taluka": "Palsana"
+  },
+  "Tantithaiya": {
+    "gujarati": "તાંતીથૈયા",
+    "code": "011",
+    "district": "Surat",
+    "taluka": "Palsana"
+  },
+  "Dastan": {
+    "gujarati": "દસ્તાન",
+    "code": "010",
+    "district": "Surat",
+    "taluka": "Palsana"
+  },
+  "Niyol": {
+    "gujarati": "નિયોલ",
+    "code": "003",
+    "district": "Surat",
+    "taluka": "Palsana"
+  },
+  "Puni": {
+    "gujarati": "પુણી",
+    "code": "063",
+    "district": "Navsari",
+    "taluka": "Navsari"
+  },
+  "Palsana": {
+    "gujarati": "પલસાણા",
+    "code": "039",
+    "district": "Surat",
+    "taluka": "Palsana"
+  },
+  "Pardipata": {
+    "gujarati": "પારડીપાતા",
+    "code": "046",
+    "district": "Surat",
+    "taluka": "Palsana"
+  },
+  "Bagumara": {
+    "gujarati": "બગુમરા",
+    "code": "016",
+    "district": "Surat",
+    "taluka": "Palsana"
+  },
+  "Baleshvar": {
+    "gujarati": "બલેશ્વર",
+    "code": "027",
+    "district": "Surat",
+    "taluka": "Palsana"
+  },
+  "Barasadi": {
+    "gujarati": "બારાસડી",
+    "code": "034",
+    "district": "Surat",
+    "taluka": "Palsana"
+  },
+  "Bhutpor": {
+    "gujarati": "ભાટપોર",
+    "code": "025",
+    "district": "Surat",
+    "taluka": "Adajan"
+  },
+  "Malekpor": {
+    "gujarati": "મલેકપોર",
+    "code": "042",
+    "district": "Surat",
+    "taluka": "Palsana"
+  },
+  "Makhinga": {
+    "gujarati": "માખીંગા",
+    "code": "041",
+    "district": "Surat",
+    "taluka": "Palsana"
+  },
+  "Lakhanpor": {
+    "gujarati": "લાખનપોર",
+    "code": "047",
+    "district": "Surat",
+    "taluka": "Palsana"
+  },
+  "Lingad": {
+    "gujarati": "લીંગડ",
+    "code": "026",
+    "district": "Surat",
+    "taluka": "Palsana"
+  },
+  "Vaઁjholiya": {
+    "gujarati": "વઁઝોળીયા",
+    "code": "037",
+    "district": "Surat",
+    "taluka": "Palsana"
+  },
+  "Vadadala": {
+    "gujarati": "વડદલા",
+    "code": "025",
+    "district": "Surat",
+    "taluka": "Palsana"
+  },
+  "Vanesa": {
+    "gujarati": "વણેસા",
+    "code": "035",
+    "district": "Surat",
+    "taluka": "Palsana"
+  },
+  "Vareli": {
+    "gujarati": "વરેલી",
+    "code": "078",
+    "district": "Surat",
+    "taluka": "Areth"
+  },
+  "Vankaneda": {
+    "gujarati": "વાંકાનેડા",
+    "code": "006",
+    "district": "Surat",
+    "taluka": "Palsana"
+  },
+  "Shedhava": {
+    "gujarati": "શેઢાવ",
+    "code": "002",
+    "district": "Surat",
+    "taluka": "Palsana"
+  },
+  "Sanki": {
+    "gujarati": "સાંકી",
+    "code": "022",
+    "district": "Surat",
+    "taluka": "Palsana"
+  },
+  "Siyod": {
+    "gujarati": "સીયોદ",
+    "code": "043",
+    "district": "Surat",
+    "taluka": "Palsana"
+  },
+  "Akoti": {
+    "gujarati": "અકોટી",
+    "code": "031",
+    "district": "Surat",
+    "taluka": "Bardoli"
+  },
+  "Ancheli": {
+    "gujarati": "અંચેલી",
+    "code": "017",
+    "district": "Navsari",
+    "taluka": "Gandevi"
+  },
+  "Allu": {
+    "gujarati": "અલ્લુ",
+    "code": "084",
+    "district": "Surat",
+    "taluka": "Bardoli"
+  },
+  "Astan": {
+    "gujarati": "અસ્તાન",
+    "code": "026",
+    "district": "Surat",
+    "taluka": "Bardoli"
+  },
+  "Aphava": {
+    "gujarati": "આફવા",
+    "code": "053",
+    "district": "Surat",
+    "taluka": "Bardoli"
+  },
+  "Isanpor": {
+    "gujarati": "ઈસનપોર",
+    "code": "003",
+    "district": "Surat",
+    "taluka": "Bardoli"
+  },
+  "Utara": {
+    "gujarati": "ઉતારા",
+    "code": "047",
+    "district": "Surat",
+    "taluka": "Bardoli"
+  },
+  "Umrakh": {
+    "gujarati": "ઉમરાખ",
+    "code": "024",
+    "district": "Surat",
+    "taluka": "Bardoli"
+  },
+  "Uva": {
+    "gujarati": "ઉવા",
+    "code": "051",
+    "district": "Surat",
+    "taluka": "Bardoli"
+  },
+  "Uchharel": {
+    "gujarati": "ઊછરેલ",
+    "code": "008",
+    "district": "Surat",
+    "taluka": "Bardoli"
+  },
+  "Orgam": {
+    "gujarati": "ઓરગામ",
+    "code": "032",
+    "district": "Surat",
+    "taluka": "Bardoli"
+  },
+  "Kantali": {
+    "gujarati": "કંટાળી",
+    "code": "018",
+    "district": "Surat",
+    "taluka": "Bardoli"
+  },
+  "Kadod": {
+    "gujarati": "કડોદ",
+    "code": "086",
+    "district": "Surat",
+    "taluka": "Bardoli"
+  },
+  "Kanai": {
+    "gujarati": "કણાઈ",
+    "code": "067",
+    "district": "Surat",
+    "taluka": "Bardoli"
+  },
+  "Karachaka": {
+    "gujarati": "કરચકા",
+    "code": "049",
+    "district": "Surat",
+    "taluka": "Bardoli"
+  },
+  "Kuvadiya": {
+    "gujarati": "કુવાડીયા",
+    "code": "074",
+    "district": "Surat",
+    "taluka": "Bardoli"
+  },
+  "Kikvad": {
+    "gujarati": "કીકવાડ",
+    "code": "062",
+    "district": "Surat",
+    "taluka": "Bardoli"
+  },
+  "Kharad": {
+    "gujarati": "ખરડ",
+    "code": "075",
+    "district": "Surat",
+    "taluka": "Bardoli"
+  },
+  "Khali": {
+    "gujarati": "ખલી",
+    "code": "046",
+    "district": "Surat",
+    "taluka": "Bardoli"
+  },
+  "Khoj": {
+    "gujarati": "ખોજ",
+    "code": "021",
+    "district": "Surat",
+    "taluka": "Bardoli"
+  },
+  "Goji": {
+    "gujarati": "ગોજી",
+    "code": "059",
+    "district": "Surat",
+    "taluka": "Bardoli"
+  },
+  "Gotasa": {
+    "gujarati": "ગોટાસા",
+    "code": "054",
+    "district": "Surat",
+    "taluka": "Bardoli"
+  },
+  "Chhitra": {
+    "gujarati": "છીત્રા",
+    "code": "073",
+    "district": "Surat",
+    "taluka": "Bardoli"
+  },
+  "Junvani": {
+    "gujarati": "જુનવાણી",
+    "code": "033",
+    "district": "Surat",
+    "taluka": "Bardoli"
+  },
+  "Jhakharada": {
+    "gujarati": "ઝાખરડા",
+    "code": "081",
+    "district": "Surat",
+    "taluka": "Bardoli"
+  },
+  "Tinmbrava": {
+    "gujarati": "ટીંમ્બરવા",
+    "code": "041",
+    "district": "Surat",
+    "taluka": "Bardoli"
+  },
+  "Ten": {
+    "gujarati": "તેન",
+    "code": "044",
+    "district": "Surat",
+    "taluka": "Bardoli"
+  },
+  "Tarbhon": {
+    "gujarati": "તરભોણ",
+    "code": "077",
+    "district": "Surat",
+    "taluka": "Bardoli"
+  },
+  "Tajpor Khurd": {
+    "gujarati": "તાજપોર ખુર્દ",
+    "code": "052",
+    "district": "Surat",
+    "taluka": "Bardoli"
+  },
+  "Tajpore Bujrang": {
+    "gujarati": "તાજપોર બુજરંગ",
+    "code": "056",
+    "district": "Surat",
+    "taluka": "Bardoli"
+  },
+  "Dhamdoda Luઁbha": {
+    "gujarati": "ધામ઼ડોદ લુઁભા",
+    "code": "042",
+    "district": "Surat",
+    "taluka": "Bardoli"
+  },
+  "Nasura": {
+    "gujarati": "નસુરા",
+    "code": "013",
+    "district": "Surat",
+    "taluka": "Bardoli"
+  },
+  "Nandida": {
+    "gujarati": "નાંદીડા",
+    "code": "045",
+    "district": "Surat",
+    "taluka": "Bardoli"
+  },
+  "Nani Bhatalau": {
+    "gujarati": "નાની ભટલાઉ",
+    "code": "037",
+    "district": "Surat",
+    "taluka": "Bardoli"
+  },
+  "Ninat": {
+    "gujarati": "નિણત",
+    "code": "057",
+    "district": "Surat",
+    "taluka": "Bardoli"
+  },
+  "Nijhara": {
+    "gujarati": "નીઝર",
+    "code": "078",
+    "district": "Surat",
+    "taluka": "Bardoli"
+  },
+  "Naugama": {
+    "gujarati": "નૌગામા",
+    "code": "071",
+    "district": "Surat",
+    "taluka": "Bardoli"
+  },
+  "Panada": {
+    "gujarati": "પણદા",
+    "code": "027",
+    "district": "Surat",
+    "taluka": "Bardoli"
+  },
+  "Pathradiya": {
+    "gujarati": "પથરાડીયા",
+    "code": "058",
+    "district": "Surat",
+    "taluka": "Bardoli"
+  },
+  "Palsod": {
+    "gujarati": "પલસોદ",
+    "code": "030",
+    "district": "Surat",
+    "taluka": "Bardoli"
+  },
+  "Pardi Kadod": {
+    "gujarati": "પારડી કડોદ",
+    "code": "019",
+    "district": "Surat",
+    "taluka": "Bardoli"
+  },
+  "Pardi Vagha": {
+    "gujarati": "પારડી વાઘા",
+    "code": "072",
+    "district": "Surat",
+    "taluka": "Bardoli"
+  },
+  "Pardi Valod": {
+    "gujarati": "પારડી વાલોડ",
+    "code": "083",
+    "district": "Surat",
+    "taluka": "Bardoli"
+  },
+  "Bamroli": {
+    "gujarati": "બમરોલી",
+    "code": "018",
+    "district": "Surat",
+    "taluka": "Majura"
+  },
+  "Babena": {
+    "gujarati": "બાબેન",
+    "code": "025",
+    "district": "Surat",
+    "taluka": "Bardoli"
+  },
+  "Babla": {
+    "gujarati": "બાબલા",
+    "code": "068",
+    "district": "Surat",
+    "taluka": "Bardoli"
+  },
+  "Bamni": {
+    "gujarati": "બામણી",
+    "code": "016",
+    "district": "Surat",
+    "taluka": "Bardoli"
+  },
+  "Baradoli": {
+    "gujarati": "બારડોલી",
+    "code": "085",
+    "district": "Surat",
+    "taluka": "Bardoli"
+  },
+  "Balda": {
+    "gujarati": "બાલ્દા",
+    "code": "035",
+    "district": "Surat",
+    "taluka": "Bardoli"
+  },
+  "Bharampor": {
+    "gujarati": "ભરમપોર",
+    "code": "004",
+    "district": "Surat",
+    "taluka": "Bardoli"
+  },
+  "Bhuvasan": {
+    "gujarati": "ભુવાસણ",
+    "code": "070",
+    "district": "Surat",
+    "taluka": "Bardoli"
+  },
+  "Bhensudla": {
+    "gujarati": "ભેંસુદલા",
+    "code": "034",
+    "district": "Surat",
+    "taluka": "Bardoli"
+  },
+  "Bhamaiya": {
+    "gujarati": "ભામૈયા",
+    "code": "007",
+    "district": "Surat",
+    "taluka": "Bardoli"
+  },
+  "Madhi": {
+    "gujarati": "મઢી",
+    "code": "039",
+    "district": "Surat",
+    "taluka": "Bardoli"
+  },
+  "Masad": {
+    "gujarati": "મસાડ",
+    "code": "011",
+    "district": "Surat",
+    "taluka": "Bardoli"
+  },
+  "Mangaroliya": {
+    "gujarati": "માંગરોલીયા",
+    "code": "040",
+    "district": "Surat",
+    "taluka": "Bardoli"
+  },
+  "Manekpor": {
+    "gujarati": "માણેકપોર",
+    "code": "023",
+    "district": "Navsari",
+    "taluka": "Chikhli"
+  },
+  "Miyavadi": {
+    "gujarati": "મીયાવાડી",
+    "code": "010",
+    "district": "Surat",
+    "taluka": "Bardoli"
+  },
+  "Moti Phaloda": {
+    "gujarati": "મોટી ફલોદ",
+    "code": "005",
+    "district": "Surat",
+    "taluka": "Bardoli"
+  },
+  "Moti Bhatlav": {
+    "gujarati": "મોટી ભટલાવ",
+    "code": "066",
+    "district": "Surat",
+    "taluka": "Bardoli"
+  },
+  "Mota": {
+    "gujarati": "મોતા",
+    "code": "001",
+    "district": "Surat",
+    "taluka": "Bardoli"
+  },
+  "Movachhi": {
+    "gujarati": "મોવાછી",
+    "code": "002",
+    "district": "Surat",
+    "taluka": "Bardoli"
+  },
+  "Ruva": {
+    "gujarati": "રુવા",
+    "code": "020",
+    "district": "Surat",
+    "taluka": "Bardoli"
+  },
+  "Rajapura Luઁbha": {
+    "gujarati": "રાજપુરા લુઁભા",
+    "code": "043",
+    "district": "Surat",
+    "taluka": "Bardoli"
+  },
+  "Rayam": {
+    "gujarati": "રાયમ",
+    "code": "028",
+    "district": "Surat",
+    "taluka": "Bardoli"
+  },
+  "Vadhvaniya": {
+    "gujarati": "વઢવાણીયા",
+    "code": "014",
+    "district": "Surat",
+    "taluka": "Bardoli"
+  },
+  "Vadhava": {
+    "gujarati": "વધાવા",
+    "code": "048",
+    "district": "Surat",
+    "taluka": "Bardoli"
+  },
+  "Varad": {
+    "gujarati": "વરાડ",
+    "code": "022",
+    "district": "Surat",
+    "taluka": "Bardoli"
+  },
+  "Vankaner": {
+    "gujarati": "વાંકાનેર",
+    "code": "082",
+    "district": "Surat",
+    "taluka": "Bardoli"
+  },
+  "Vaghech Sarbhon": {
+    "gujarati": "વાઘેચ સરભોણ",
+    "code": "076",
+    "district": "Surat",
+    "taluka": "Bardoli"
+  },
+  "Vaghecha Kadod": {
+    "gujarati": "વાઘેચા કડોદ",
+    "code": "006",
+    "district": "Surat",
+    "taluka": "Bardoli"
+  },
+  "Vasakui": {
+    "gujarati": "વાસકુઈ",
+    "code": "036",
+    "district": "Surat",
+    "taluka": "Bardoli"
+  },
+  "Shingoda": {
+    "gujarati": "શિંગોદ",
+    "code": "015",
+    "district": "Surat",
+    "taluka": "Bardoli"
+  },
+  "Sejvad": {
+    "gujarati": "સેજવાડ",
+    "code": "065",
+    "district": "Surat",
+    "taluka": "Bardoli"
+  },
+  "Samthan": {
+    "gujarati": "સમથાણ",
+    "code": "017",
+    "district": "Surat",
+    "taluka": "Bardoli"
+  },
+  "Sarbhon": {
+    "gujarati": "સરભોણ",
+    "code": "069",
+    "district": "Surat",
+    "taluka": "Bardoli"
+  },
+  "Sankri": {
+    "gujarati": "સાંકરી",
+    "code": "029",
+    "district": "Surat",
+    "taluka": "Bardoli"
+  },
+  "Hindoliya": {
+    "gujarati": "હીંડોલીયા",
+    "code": "063",
+    "district": "Surat",
+    "taluka": "Bardoli"
+  },
+  "Andhatri": {
+    "gujarati": "અંધાત્રી",
+    "code": "018",
+    "district": "Surat",
+    "taluka": "Mahuva"
+  },
+  "Amroli": {
+    "gujarati": "અમરોલી",
+    "code": "063",
+    "district": "Surat",
+    "taluka": "Katargam"
+  },
+  "Amchak": {
+    "gujarati": "આમચક",
+    "code": "014",
+    "district": "Surat",
+    "taluka": "Mahuva"
+  },
+  "Ondach": {
+    "gujarati": "ઓંડચ",
+    "code": "015",
+    "district": "Surat",
+    "taluka": "Mahuva"
+  },
+  "Karcheliya": {
+    "gujarati": "કરચેલીયા",
+    "code": "030",
+    "district": "Surat",
+    "taluka": "Mahuva"
+  },
+  "Kavitha": {
+    "gujarati": "કવીઠા",
+    "code": "013",
+    "district": "Surat",
+    "taluka": "Mahuva"
+  },
+  "Kachhal": {
+    "gujarati": "કાછલ",
+    "code": "028",
+    "district": "Surat",
+    "taluka": "Mahuva"
+  },
+  "Kadiya": {
+    "gujarati": "કાદીયા",
+    "code": "027",
+    "district": "Surat",
+    "taluka": "Mahuva"
+  },
+  "Kani": {
+    "gujarati": "કાની",
+    "code": "001",
+    "district": "Surat",
+    "taluka": "Mahuva"
+  },
+  "Kodada": {
+    "gujarati": "કોદાદા",
+    "code": "021",
+    "district": "Surat",
+    "taluka": "Mahuva"
+  },
+  "Khandal": {
+    "gujarati": "ખંડાલ",
+    "code": "026",
+    "district": "Surat",
+    "taluka": "Mahuva"
+  },
+  "Kharvan": {
+    "gujarati": "ખરવાણ",
+    "code": "040",
+    "district": "Surat",
+    "taluka": "Mahuva"
+  },
+  "Gopla": {
+    "gujarati": "ગોપલા",
+    "code": "038",
+    "district": "Surat",
+    "taluka": "Mahuva"
+  },
+  "Ghadoi": {
+    "gujarati": "ઘડોઈ",
+    "code": "039",
+    "district": "Surat",
+    "taluka": "Mahuva"
+  },
+  "Jol": {
+    "gujarati": "જોળ",
+    "code": "009",
+    "district": "Surat",
+    "taluka": "Mahuva"
+  },
+  "Dungari": {
+    "gujarati": "ડુંગરી",
+    "code": "031",
+    "district": "Surat",
+    "taluka": "Mahuva"
+  },
+  "Dhundhesa": {
+    "gujarati": "ઢુંઢેસા",
+    "code": "004",
+    "district": "Surat",
+    "taluka": "Mahuva"
+  },
+  "Dedvasan": {
+    "gujarati": "દેદવાસણ",
+    "code": "037",
+    "district": "Surat",
+    "taluka": "Mahuva"
+  },
+  "Narda": {
+    "gujarati": "નરડા",
+    "code": "022",
+    "district": "Surat",
+    "taluka": "Mahuva"
+  },
+  "Naldhara": {
+    "gujarati": "નળધરા",
+    "code": "029",
+    "district": "Surat",
+    "taluka": "Mahuva"
+  },
+  "Nihali": {
+    "gujarati": "નિહાલી",
+    "code": "024",
+    "district": "Surat",
+    "taluka": "Mahuva"
+  },
+  "Pathron": {
+    "gujarati": "પથરોણ",
+    "code": "003",
+    "district": "Surat",
+    "taluka": "Mahuva"
+  },
+  "Budhleshvar": {
+    "gujarati": "બુધલેશ્વર",
+    "code": "016",
+    "district": "Surat",
+    "taluka": "Mahuva"
+  },
+  "Bartad": {
+    "gujarati": "બારતાડ",
+    "code": "010",
+    "district": "Navsari",
+    "taluka": "Vansda"
+  },
+  "Bilkhadi": {
+    "gujarati": "બીલખડી",
+    "code": "035",
+    "district": "Surat",
+    "taluka": "Mahuva"
+  },
+  "Mudat": {
+    "gujarati": "મુડત",
+    "code": "017",
+    "district": "Surat",
+    "taluka": "Mahuva"
+  },
+  "Mahuva": {
+    "gujarati": "મહુવા",
+    "code": "008",
+    "district": "Surat",
+    "taluka": "Mahuva"
+  },
+  "Miyanpura": {
+    "gujarati": "મીયાંપુર",
+    "code": "020",
+    "district": "Surat",
+    "taluka": "Mahuva"
+  },
+  "Ranat": {
+    "gujarati": "રાણત",
+    "code": "010",
+    "district": "Surat",
+    "taluka": "Mahuva"
+  },
+  "Vadiya": {
+    "gujarati": "વડીયા",
+    "code": "032",
+    "district": "Surat",
+    "taluka": "Mahuva"
+  },
+  "Vagheshvar": {
+    "gujarati": "વાઘેશ્વર",
+    "code": "048",
+    "district": "Surat",
+    "taluka": "Mahuva"
+  },
+  "Vachhavad": {
+    "gujarati": "વાછાવાડ",
+    "code": "023",
+    "district": "Surat",
+    "taluka": "Mahuva"
+  },
+  "Shankar Talavdi": {
+    "gujarati": "શંકર તલાવડી",
+    "code": "007",
+    "district": "Surat",
+    "taluka": "Mahuva"
+  },
+  "Sevasan": {
+    "gujarati": "સેવાસણ",
+    "code": "012",
+    "district": "Surat",
+    "taluka": "Mahuva"
+  },
+  "Adajana": {
+    "gujarati": "અડાજણ",
+    "code": "001",
+    "district": "Surat",
+    "taluka": "Adajan"
+  },
+  "Ichhapor": {
+    "gujarati": "ઈચ્છાપોર",
+    "code": "019",
+    "district": "Surat",
+    "taluka": "Adajan"
+  },
+  "Okha": {
+    "gujarati": "ઓખા",
+    "code": "066",
+    "district": "Surat",
+    "taluka": "Adajan"
+  },
+  "Chichi": {
+    "gujarati": "ચીચી",
+    "code": "065",
+    "district": "Surat",
+    "taluka": "Adajan"
+  },
+  "Jahangirapura": {
+    "gujarati": "જહાંગીરપુરા",
+    "code": "008",
+    "district": "Surat",
+    "taluka": "Adajan"
+  },
+  "Jahangirabada": {
+    "gujarati": "જહાંગીરાબાદ",
+    "code": "009",
+    "district": "Surat",
+    "taluka": "Adajan"
+  },
+  "Palanapora": {
+    "gujarati": "પાલણપોર",
+    "code": "040",
+    "district": "Surat",
+    "taluka": "Adajan"
+  },
+  "Bhesan": {
+    "gujarati": "ભેસાણ",
+    "code": "011",
+    "district": "Surat",
+    "taluka": "Adajan"
+  },
+  "Bhatha": {
+    "gujarati": "ભાઠા",
+    "code": "038",
+    "district": "Navsari",
+    "taluka": "Gandevi"
+  },
+  "Ranodra": {
+    "gujarati": "રણોદ્રા",
+    "code": "010",
+    "district": "Navsari",
+    "taluka": "Jalalpore"
+  },
+  "Vihel": {
+    "gujarati": "વિહેલ",
+    "code": "003",
+    "district": "Surat",
+    "taluka": "Adajan"
+  },
+  "Utrana": {
+    "gujarati": "ઉત્રાણ",
+    "code": "064",
+    "district": "Surat",
+    "taluka": "Katargam"
+  },
+  "Kataragama": {
+    "gujarati": "કતારગામ",
+    "code": "023",
+    "district": "Surat",
+    "taluka": "Katargam"
+  },
+  "Chhaparabhatha": {
+    "gujarati": "છાપરાભાઠા",
+    "code": "039",
+    "district": "Surat",
+    "taluka": "Katargam"
+  },
+  "Tunki": {
+    "gujarati": "ટુંકી",
+    "code": "022",
+    "district": "Surat",
+    "taluka": "Katargam"
+  },
+  "Dabhalai": {
+    "gujarati": "ડભલાઇ",
+    "code": "059",
+    "district": "Navsari",
+    "taluka": "Navsari"
+  },
+  "Variyava": {
+    "gujarati": "વરીયાવ",
+    "code": "036",
+    "district": "Surat",
+    "taluka": "Katargam"
+  },
+  "Singanapora": {
+    "gujarati": "સીંગણપોર",
+    "code": "021",
+    "district": "Surat",
+    "taluka": "Katargam"
+  },
+  "Umaravada": {
+    "gujarati": "ઉમરવાડા",
+    "code": "070",
+    "district": "Surat",
+    "taluka": "Puna"
+  },
+  "Kunbhariya": {
+    "gujarati": "કુંભારીયા",
+    "code": "031",
+    "district": "Surat",
+    "taluka": "Puna"
+  },
+  "Kapodra": {
+    "gujarati": "કાપોદ્રા",
+    "code": "027",
+    "district": "Surat",
+    "taluka": "Puna"
+  },
+  "Khadsad": {
+    "gujarati": "ખડસદ",
+    "code": "068",
+    "district": "Surat",
+    "taluka": "Puna"
+  },
+  "Nanavarachha": {
+    "gujarati": "નાનાવરાછા",
+    "code": "004",
+    "district": "Surat",
+    "taluka": "Puna"
+  },
+  "Pasodara": {
+    "gujarati": "પાસોદરા",
+    "code": "041",
+    "district": "Surat",
+    "taluka": "Puna"
+  },
+  "Phulapada": {
+    "gujarati": "ફુલપાડા",
+    "code": "034",
+    "district": "Surat",
+    "taluka": "Puna"
+  },
+  "Magob": {
+    "gujarati": "મગોબ",
+    "code": "002",
+    "district": "Navsari",
+    "taluka": "Jalalpore"
+  },
+  "Laskana": {
+    "gujarati": "લસકાણા",
+    "code": "038",
+    "district": "Surat",
+    "taluka": "Puna"
+  },
+  "Saniya Hemad": {
+    "gujarati": "સણીયા હેમાદ",
+    "code": "067",
+    "district": "Surat",
+    "taluka": "Puna"
+  },
+  "Sarathana": {
+    "gujarati": "સરથાણા",
+    "code": "065",
+    "district": "Surat",
+    "taluka": "Puna"
+  },
+  "Anjana": {
+    "gujarati": "આંજણા",
+    "code": "007",
+    "district": "Surat",
+    "taluka": "Udhna"
+  },
+  "Unbera": {
+    "gujarati": "ઊંબેર",
+    "code": "074",
+    "district": "Surat",
+    "taluka": "Udhna"
+  },
+  "Kanasada": {
+    "gujarati": "કનસાડ",
+    "code": "076",
+    "district": "Surat",
+    "taluka": "Udhna"
+  },
+  "Gabheni": {
+    "gujarati": "ગભેણી",
+    "code": "062",
+    "district": "Surat",
+    "taluka": "Udhna"
+  },
+  "Godadara": {
+    "gujarati": "ગોડાદરા",
+    "code": "050",
+    "district": "Surat",
+    "taluka": "Udhna"
+  },
+  "Dunbhala": {
+    "gujarati": "ડુંભાલ",
+    "code": "015",
+    "district": "Surat",
+    "taluka": "Udhna"
+  },
+  "Dindoli": {
+    "gujarati": "ડીંડોલી",
+    "code": "031",
+    "district": "Surat",
+    "taluka": "Udhna"
+  },
+  "Talngapora": {
+    "gujarati": "તલંગપોર",
+    "code": "075",
+    "district": "Surat",
+    "taluka": "Udhna"
+  },
+  "Parvat": {
+    "gujarati": "પરવટ",
+    "code": "011",
+    "district": "Surat",
+    "taluka": "Areth"
+  },
+  "Pandesara": {
+    "gujarati": "પાંડેસરા",
+    "code": "016",
+    "district": "Surat",
+    "taluka": "Udhna"
+  },
+  "Paradi Kanade": {
+    "gujarati": "પારડી કણદે",
+    "code": "071",
+    "district": "Surat",
+    "taluka": "Udhna"
+  },
+  "Bhedavada": {
+    "gujarati": "ભેદવાડ",
+    "code": "017",
+    "district": "Surat",
+    "taluka": "Udhna"
+  },
+  "Bhestana": {
+    "gujarati": "ભેસ્તાન",
+    "code": "020",
+    "district": "Surat",
+    "taluka": "Udhna"
+  },
+  "Linbayata": {
+    "gujarati": "લીંબાયત",
+    "code": "030",
+    "district": "Surat",
+    "taluka": "Udhna"
+  },
+  "Sachina": {
+    "gujarati": "સચીન",
+    "code": "078",
+    "district": "Surat",
+    "taluka": "Udhna"
+  },
+  "Sonari": {
+    "gujarati": "સોનારી",
+    "code": "057",
+    "district": "Surat",
+    "taluka": "Udhna"
+  },
+  "Athava": {
+    "gujarati": "અઠવા",
+    "code": "028",
+    "district": "Surat",
+    "taluka": "Majura"
+  },
+  "Alathana": {
+    "gujarati": "અલથાણ",
+    "code": "002",
+    "district": "Surat",
+    "taluka": "Majura"
+  },
+  "Abhava": {
+    "gujarati": "આભવા",
+    "code": "052",
+    "district": "Surat",
+    "taluka": "Majura"
+  },
+  "Khajoda": {
+    "gujarati": "ખજોદ",
+    "code": "059",
+    "district": "Surat",
+    "taluka": "Majura"
+  },
+  "Khatodara": {
+    "gujarati": "ખટોદરા",
+    "code": "006",
+    "district": "Surat",
+    "taluka": "Majura"
+  },
+  "Gaviyara": {
+    "gujarati": "ગવીયર",
+    "code": "046",
+    "district": "Surat",
+    "taluka": "Majura"
+  },
+  "Jiava": {
+    "gujarati": "જીઆવ",
+    "code": "058",
+    "district": "Surat",
+    "taluka": "Majura"
+  },
+  "Dumasa": {
+    "gujarati": "ડુમસ",
+    "code": "053",
+    "district": "Surat",
+    "taluka": "Majura"
+  },
+  "Pipaloda": {
+    "gujarati": "પીપલોદ",
+    "code": "012",
+    "district": "Surat",
+    "taluka": "Majura"
+  },
+  "Budiya": {
+    "gujarati": "બુડીયા",
+    "code": "035",
+    "district": "Surat",
+    "taluka": "Majura"
+  },
+  "Bhatara": {
+    "gujarati": "ભટાર",
+    "code": "003",
+    "district": "Surat",
+    "taluka": "Majura"
+  },
+  "Bharathana Vesu": {
+    "gujarati": "ભરથાણા વેસુ",
+    "code": "049",
+    "district": "Surat",
+    "taluka": "Majura"
+  },
+  "Bhimapora": {
+    "gujarati": "ભીમપોર",
+    "code": "060",
+    "district": "Surat",
+    "taluka": "Majura"
+  },
+  "Bhimarada": {
+    "gujarati": "ભીમરાડ",
+    "code": "056",
+    "district": "Surat",
+    "taluka": "Majura"
+  },
+  "Magadalla": {
+    "gujarati": "મગદલ્લા",
+    "code": "047",
+    "district": "Surat",
+    "taluka": "Majura"
+  },
+  "Majura": {
+    "gujarati": "મજુરા",
+    "code": "029",
+    "district": "Surat",
+    "taluka": "Majura"
+  },
+  "Vesu": {
+    "gujarati": "વેસુ",
+    "code": "051",
+    "district": "Surat",
+    "taluka": "Majura"
+  },
+  "Vanta": {
+    "gujarati": "વાંટા",
+    "code": "045",
+    "district": "Surat",
+    "taluka": "Majura"
+  },
+  "Sulatanabada": {
+    "gujarati": "સુલતાનાબાદ",
+    "code": "054",
+    "district": "Surat",
+    "taluka": "Majura"
+  },
+  "Abrama": {
+    "gujarati": "અબ્રામા",
+    "code": "063",
+    "district": "Navsari",
+    "taluka": "Jalalpore"
+  },
+  "Kathor": {
+    "gujarati": "કઠોર",
+    "code": "070",
+    "district": "Surat",
+    "taluka": "Abrama"
+  },
+  "Gothan": {
+    "gujarati": "ગોથાણ",
+    "code": "101",
+    "district": "Surat",
+    "taluka": "Abrama"
+  },
+  "Bharathana Kosada": {
+    "gujarati": "ભરથાણા કોસાડ",
+    "code": "006",
+    "district": "Surat",
+    "taluka": "Abrama"
+  },
+  "Bhada": {
+    "gujarati": "ભાદા",
+    "code": "018",
+    "district": "Surat",
+    "taluka": "Abrama"
+  },
+  "Mota Varachha": {
+    "gujarati": "મોટા વરાછા",
+    "code": "038",
+    "district": "Surat",
+    "taluka": "Abrama"
+  },
+  "Velanja": {
+    "gujarati": "વેલંજા",
+    "code": "016",
+    "district": "Surat",
+    "taluka": "Abrama"
+  },
+  "Vasavari": {
+    "gujarati": "વસવારી",
+    "code": "100",
+    "district": "Surat",
+    "taluka": "Abrama"
+  },
+  "Segava Syadala": {
+    "gujarati": "સેગવા સ્યાદલા",
+    "code": "099",
+    "district": "Surat",
+    "taluka": "Abrama"
+  },
+  "Areth": {
+    "gujarati": "અરેઠ",
+    "code": "073",
+    "district": "Surat",
+    "taluka": "Areth"
+  },
+  "Anba": {
+    "gujarati": "આંબા",
+    "code": "071",
+    "district": "Surat",
+    "taluka": "Areth"
+  },
+  "Uteva": {
+    "gujarati": "ઉટેવા",
+    "code": "049",
+    "district": "Surat",
+    "taluka": "Areth"
+  },
+  "Ushker Ramkund": {
+    "gujarati": "ઉશ્કેર રામકુંડ",
+    "code": "039",
+    "district": "Surat",
+    "taluka": "Areth"
+  },
+  "Karvali": {
+    "gujarati": "કરવલી",
+    "code": "083",
+    "district": "Surat",
+    "taluka": "Areth"
+  },
+  "Kevadiya": {
+    "gujarati": "કેવડીયા",
+    "code": "075",
+    "district": "Surat",
+    "taluka": "Areth"
+  },
+  "Kasal": {
+    "gujarati": "કસાલ",
+    "code": "081",
+    "district": "Surat",
+    "taluka": "Areth"
+  },
+  "Kalmoi": {
+    "gujarati": "કાલમોઈ",
+    "code": "008",
+    "district": "Surat",
+    "taluka": "Areth"
+  },
+  "Kolsana": {
+    "gujarati": "કોલસાણા",
+    "code": "006",
+    "district": "Surat",
+    "taluka": "Areth"
+  },
+  "Kolakui": {
+    "gujarati": "કોલાકુઇ",
+    "code": "038",
+    "district": "Surat",
+    "taluka": "Areth"
+  },
+  "Chudel": {
+    "gujarati": "ચુડેલ",
+    "code": "048",
+    "district": "Surat",
+    "taluka": "Areth"
+  },
+  "Jhab": {
+    "gujarati": "ઝાબ",
+    "code": "072",
+    "district": "Surat",
+    "taluka": "Areth"
+  },
+  "Tuked": {
+    "gujarati": "ટુકેદ",
+    "code": "007",
+    "district": "Surat",
+    "taluka": "Areth"
+  },
+  "Titoi": {
+    "gujarati": "ટીટોઈ",
+    "code": "050",
+    "district": "Surat",
+    "taluka": "Areth"
+  },
+  "Tadkeshvar": {
+    "gujarati": "તડકેશ્વર",
+    "code": "003",
+    "district": "Surat",
+    "taluka": "Areth"
+  },
+  "Togapur": {
+    "gujarati": "તોગાપુર",
+    "code": "004",
+    "district": "Surat",
+    "taluka": "Areth"
+  },
+  "Dharampor": {
+    "gujarati": "ધરમપોર",
+    "code": "005",
+    "district": "Surat",
+    "taluka": "Areth"
+  },
+  "Naren": {
+    "gujarati": "નરેણ",
+    "code": "074",
+    "district": "Surat",
+    "taluka": "Areth"
+  },
+  "Patna": {
+    "gujarati": "પાટના",
+    "code": "077",
+    "district": "Surat",
+    "taluka": "Areth"
+  },
+  "Patal": {
+    "gujarati": "પાતલ",
+    "code": "009",
+    "district": "Surat",
+    "taluka": "Areth"
+  },
+  "Pardi": {
+    "gujarati": "પારડી",
+    "code": "047",
+    "district": "Navsari",
+    "taluka": "Navsari"
+  },
+  "Phali": {
+    "gujarati": "ફળી",
+    "code": "046",
+    "district": "Surat",
+    "taluka": "Areth"
+  },
+  "Borigala": {
+    "gujarati": "બોરીગાળા",
+    "code": "037",
+    "district": "Surat",
+    "taluka": "Areth"
+  },
+  "Baudhan": {
+    "gujarati": "બૌધાન",
+    "code": "076",
+    "district": "Surat",
+    "taluka": "Areth"
+  },
+  "Munjlav": {
+    "gujarati": "મુંજલાવ",
+    "code": "040",
+    "district": "Surat",
+    "taluka": "Areth"
+  },
+  "Madharkui": {
+    "gujarati": "મધરકુઈ",
+    "code": "036",
+    "district": "Surat",
+    "taluka": "Areth"
+  },
+  "Rosvad": {
+    "gujarati": "રોસવાડ",
+    "code": "041",
+    "district": "Surat",
+    "taluka": "Areth"
+  },
+  "Vegi": {
+    "gujarati": "વેગી",
+    "code": "079",
+    "district": "Surat",
+    "taluka": "Areth"
+  },
+  "Virpor": {
+    "gujarati": "વીરપોર",
+    "code": "042",
+    "district": "Surat",
+    "taluka": "Areth"
+  },
+  "Anaval": {
+    "gujarati": "અનાવલ",
+    "code": "067",
+    "district": "Surat",
+    "taluka": "Ambika"
+  },
+  "Algat": {
+    "gujarati": "અલગટ",
+    "code": "044",
+    "district": "Surat",
+    "taluka": "Ambika"
+  },
+  "Angaldhara": {
+    "gujarati": "આંગલધરા",
+    "code": "069",
+    "district": "Surat",
+    "taluka": "Ambika"
+  },
+  "Kadhaiya": {
+    "gujarati": "કઢૈયા",
+    "code": "043",
+    "district": "Surat",
+    "taluka": "Ambika"
+  },
+  "Kunbhakotara": {
+    "gujarati": "કુંભકોતર",
+    "code": "060",
+    "district": "Surat",
+    "taluka": "Ambika"
+  },
+  "Kankariya": {
+    "gujarati": "કાંકરીયા",
+    "code": "050",
+    "district": "Surat",
+    "taluka": "Ambika"
+  },
+  "Kosha": {
+    "gujarati": "કોષ",
+    "code": "068",
+    "district": "Surat",
+    "taluka": "Ambika"
+  },
+  "Gunasvel": {
+    "gujarati": "ગુણસવેલ",
+    "code": "046",
+    "district": "Surat",
+    "taluka": "Ambika"
+  },
+  "Gangadiya": {
+    "gujarati": "ગાંગડીયા",
+    "code": "061",
+    "district": "Surat",
+    "taluka": "Ambika"
+  },
+  "Jhervavra": {
+    "gujarati": "ઝેરવાવરા",
+    "code": "041",
+    "district": "Surat",
+    "taluka": "Ambika"
+  },
+  "Tarkani": {
+    "gujarati": "તરકાણી",
+    "code": "066",
+    "district": "Surat",
+    "taluka": "Ambika"
+  },
+  "Dhamakadi": {
+    "gujarati": "ધામકડી",
+    "code": "057",
+    "district": "Surat",
+    "taluka": "Ambika"
+  },
+  "Butvada": {
+    "gujarati": "બુટવાડા",
+    "code": "054",
+    "district": "Surat",
+    "taluka": "Ambika"
+  },
+  "Bamaniya": {
+    "gujarati": "બામણીયા",
+    "code": "042",
+    "district": "Surat",
+    "taluka": "Ambika"
+  },
+  "Mahuvariya": {
+    "gujarati": "મહુવરીયા",
+    "code": "064",
+    "district": "Surat",
+    "taluka": "Ambika"
+  },
+  "Machhisadada": {
+    "gujarati": "માછીસાદડા",
+    "code": "056",
+    "district": "Surat",
+    "taluka": "Ambika"
+  },
+  "Lasanpor": {
+    "gujarati": "લસણપોર",
+    "code": "062",
+    "district": "Surat",
+    "taluka": "Ambika"
+  },
+  "Velanpur": {
+    "gujarati": "વેલણપુર",
+    "code": "047",
+    "district": "Surat",
+    "taluka": "Ambika"
+  },
+  "Valvada": {
+    "gujarati": "વલવાડા",
+    "code": "058",
+    "district": "Surat",
+    "taluka": "Ambika"
+  },
+  "Vasrai": {
+    "gujarati": "વસરાઈ",
+    "code": "053",
+    "district": "Surat",
+    "taluka": "Ambika"
+  },
+  "Vaheval": {
+    "gujarati": "વહેવલ",
+    "code": "065",
+    "district": "Surat",
+    "taluka": "Ambika"
+  },
+  "Vank": {
+    "gujarati": "વાંક",
+    "code": "045",
+    "district": "Surat",
+    "taluka": "Ambika"
+  },
+  "Vanskui": {
+    "gujarati": "વાંસકુઈ",
+    "code": "041",
+    "district": "Navsari",
+    "taluka": "Vansda"
+  },
+  "Sanvalla": {
+    "gujarati": "સણવલ્લા",
+    "code": "049",
+    "district": "Surat",
+    "taluka": "Ambika"
+  },
+  "Sanba": {
+    "gujarati": "સાંબા",
+    "code": "051",
+    "district": "Surat",
+    "taluka": "Ambika"
+  },
+  "Haladva": {
+    "gujarati": "હળદવા",
+    "code": "063",
+    "district": "Surat",
+    "taluka": "Ambika"
+  },
+  "Adada": {
+    "gujarati": "અડદા",
+    "code": "051",
+    "district": "Navsari",
+    "taluka": "Navsari"
+  },
+  "Ambada": {
+    "gujarati": "અંબાડા",
+    "code": "028",
+    "district": "Navsari",
+    "taluka": "Navsari"
+  },
+  "Arsan": {
+    "gujarati": "અરસાણ",
+    "code": "002",
+    "district": "Navsari",
+    "taluka": "Navsari"
+  },
+  "Ashtagam": {
+    "gujarati": "અષ્ટગામ",
+    "code": "055",
+    "district": "Navsari",
+    "taluka": "Navsari"
+  },
+  "Amadpor": {
+    "gujarati": "આમડપોર",
+    "code": "011",
+    "district": "Navsari",
+    "taluka": "Navsari"
+  },
+  "Amri": {
+    "gujarati": "આમરી",
+    "code": "013",
+    "district": "Navsari",
+    "taluka": "Navsari"
+  },
+  "Asundar": {
+    "gujarati": "આસુંદર",
+    "code": "003",
+    "district": "Navsari",
+    "taluka": "Navsari"
+  },
+  "Ugat": {
+    "gujarati": "ઉગત",
+    "code": "044",
+    "district": "Navsari",
+    "taluka": "Navsari"
+  },
+  "Onchi": {
+    "gujarati": "ઓણચી",
+    "code": "022",
+    "district": "Navsari",
+    "taluka": "Navsari"
+  },
+  "Kanbad": {
+    "gujarati": "કંબાડા",
+    "code": "065",
+    "district": "Navsari",
+    "taluka": "Navsari"
+  },
+  "Kunbharaphaliya": {
+    "gujarati": "કુંભારફળીયા",
+    "code": "061",
+    "district": "Navsari",
+    "taluka": "Navsari"
+  },
+  "Kurel": {
+    "gujarati": "કુરેલ",
+    "code": "025",
+    "district": "Navsari",
+    "taluka": "Navsari"
+  },
+  "Kasbapar": {
+    "gujarati": "ક઼સ્બાપાર",
+    "code": "015",
+    "district": "Navsari",
+    "taluka": "Navsari"
+  },
+  "Kadipor": {
+    "gujarati": "કાદીપોર",
+    "code": "014",
+    "district": "Navsari",
+    "taluka": "Navsari"
+  },
+  "Khadsupa": {
+    "gujarati": "ખડસુપા",
+    "code": "049",
+    "district": "Navsari",
+    "taluka": "Navsari"
+  },
+  "Khergam": {
+    "gujarati": "ખેરગામ",
+    "code": "075",
+    "district": "Navsari",
+    "taluka": "Khergam"
+  },
+  "Chndvvasanasupa": {
+    "gujarati": "ચંદ્વવાસણસુપા",
+    "code": "054",
+    "district": "Navsari",
+    "taluka": "Navsari"
+  },
+  "Toli": {
+    "gujarati": "ટોળી",
+    "code": "043",
+    "district": "Navsari",
+    "taluka": "Navsari"
+  },
+  "Telada": {
+    "gujarati": "તેલાડા",
+    "code": "010",
+    "district": "Navsari",
+    "taluka": "Navsari"
+  },
+  "Dndeshvra": {
+    "gujarati": "દંડેશ્વર",
+    "code": "021",
+    "district": "Navsari",
+    "taluka": "Navsari"
+  },
+  "Dantej": {
+    "gujarati": "દાંતેજ",
+    "code": "036",
+    "district": "Navsari",
+    "taluka": "Navsari"
+  },
+  "Dhaman": {
+    "gujarati": "ધામણ",
+    "code": "068",
+    "district": "Navsari",
+    "taluka": "Navsari"
+  },
+  "Dharagiri": {
+    "gujarati": "ધારાગીરી",
+    "code": "018",
+    "district": "Navsari",
+    "taluka": "Navsari"
+  },
+  "Navapara": {
+    "gujarati": "નવાપરા",
+    "code": "045",
+    "district": "Navsari",
+    "taluka": "Navsari"
+  },
+  "Nashilapora": {
+    "gujarati": "નશીલપોર",
+    "code": "032",
+    "district": "Navsari",
+    "taluka": "Navsari"
+  },
+  "Nagdhara": {
+    "gujarati": "નાગધરા",
+    "code": "060",
+    "district": "Navsari",
+    "taluka": "Navsari"
+  },
+  "Padgha": {
+    "gujarati": "પડઘા",
+    "code": "012",
+    "district": "Navsari",
+    "taluka": "Navsari"
+  },
+  "Partapor": {
+    "gujarati": "પરતાપોર",
+    "code": "052",
+    "district": "Navsari",
+    "taluka": "Navsari"
+  },
+  "Parthan": {
+    "gujarati": "પરથાણ",
+    "code": "005",
+    "district": "Navsari",
+    "taluka": "Navsari"
+  },
+  "Pera": {
+    "gujarati": "પેરા",
+    "code": "007",
+    "district": "Navsari",
+    "taluka": "Navsari"
+  },
+  "Pinsad": {
+    "gujarati": "પીનસાડ",
+    "code": "009",
+    "district": "Navsari",
+    "taluka": "Navsari"
+  },
+  "Butlav": {
+    "gujarati": "બુટલાવ",
+    "code": "058",
+    "district": "Navsari",
+    "taluka": "Navsari"
+  },
+  "Boriyacha": {
+    "gujarati": "બોરીયાચ",
+    "code": "067",
+    "district": "Navsari",
+    "taluka": "Navsari"
+  },
+  "Bhatia": {
+    "gujarati": "ભટાઇ",
+    "code": "031",
+    "district": "Navsari",
+    "taluka": "Navsari"
+  },
+  "Bhunavadi": {
+    "gujarati": "ભુનવાડી",
+    "code": "062",
+    "district": "Navsari",
+    "taluka": "Navsari"
+  },
+  "Bhula Faliya": {
+    "gujarati": "ભુલાફ઼ળિયા",
+    "code": "056",
+    "district": "Navsari",
+    "taluka": "Navsari"
+  },
+  "Munsad": {
+    "gujarati": "મુનસાડ",
+    "code": "041",
+    "district": "Navsari",
+    "taluka": "Navsari"
+  },
+  "Mogar": {
+    "gujarati": "મોગાર",
+    "code": "053",
+    "district": "Navsari",
+    "taluka": "Navsari"
+  },
+  "Molaghara": {
+    "gujarati": "મોલઘરા",
+    "code": "020",
+    "district": "Navsari",
+    "taluka": "Navsari"
+  },
+  "Vachchhravada": {
+    "gujarati": "વચ્છરવાડ",
+    "code": "026",
+    "district": "Navsari",
+    "taluka": "Navsari"
+  },
+  "Vejalpor": {
+    "gujarati": "વિજલપોર",
+    "code": "010",
+    "district": "Navsari",
+    "taluka": "Navsari City"
+  },
+  "Vasar": {
+    "gujarati": "વસર",
+    "code": "030",
+    "district": "Navsari",
+    "taluka": "Navsari"
+  },
+  "Vada(adada)": {
+    "gujarati": "વાડ઼ા(અડદા)",
+    "code": "038",
+    "district": "Navsari",
+    "taluka": "Navsari"
+  },
+  "Virwadi": {
+    "gujarati": "વીરવાડી",
+    "code": "019",
+    "district": "Navsari",
+    "taluka": "Navsari"
+  },
+  "Shahu": {
+    "gujarati": "શાહુ",
+    "code": "027",
+    "district": "Navsari",
+    "taluka": "Navsari"
+  },
+  "Sadlav": {
+    "gujarati": "સદલાવ",
+    "code": "042",
+    "district": "Navsari",
+    "taluka": "Navsari"
+  },
+  "Supa": {
+    "gujarati": "સુપા",
+    "code": "008",
+    "district": "Navsari",
+    "taluka": "Navsari"
+  },
+  "Sarai": {
+    "gujarati": "સરઈ",
+    "code": "004",
+    "district": "Navsari",
+    "taluka": "Navsari"
+  },
+  "Sarpor": {
+    "gujarati": "સરપોર",
+    "code": "048",
+    "district": "Navsari",
+    "taluka": "Navsari"
+  },
+  "Sarona": {
+    "gujarati": "સરોણા",
+    "code": "006",
+    "district": "Navsari",
+    "taluka": "Navsari"
+  },
+  "Satem": {
+    "gujarati": "સાતેમ",
+    "code": "046",
+    "district": "Navsari",
+    "taluka": "Navsari"
+  },
+  "Singod": {
+    "gujarati": "સીંગાડ",
+    "code": "016",
+    "district": "Navsari",
+    "taluka": "Vansda"
+  },
+  "Sisodra(ganesha)": {
+    "gujarati": "સીસોદ્રા(ગણેશ)",
+    "code": "039",
+    "district": "Navsari",
+    "taluka": "Navsari"
+  },
+  "At": {
+    "gujarati": "આટ",
+    "code": "057",
+    "district": "Navsari",
+    "taluka": "Jalalpore"
+  },
+  "Araka": {
+    "gujarati": "આરક",
+    "code": "012",
+    "district": "Navsari",
+    "taluka": "Jalalpore"
+  },
+  "Asana": {
+    "gujarati": "આસણા",
+    "code": "007",
+    "district": "Navsari",
+    "taluka": "Jalalpore"
+  },
+  "Unbharata": {
+    "gujarati": "ઊંભરાટ",
+    "code": "024",
+    "district": "Navsari",
+    "taluka": "Jalalpore"
+  },
+  "Ethan": {
+    "gujarati": "એથાણ",
+    "code": "053",
+    "district": "Navsari",
+    "taluka": "Jalalpore"
+  },
+  "Eroo": {
+    "gujarati": "એરુ",
+    "code": "052",
+    "district": "Navsari",
+    "taluka": "Jalalpore"
+  },
+  "Onjal": {
+    "gujarati": "ઓંજલ",
+    "code": "067",
+    "district": "Navsari",
+    "taluka": "Jalalpore"
+  },
+  "Kuched": {
+    "gujarati": "કુચેદ",
+    "code": "035",
+    "district": "Navsari",
+    "taluka": "Jalalpore"
+  },
+  "Kadoli": {
+    "gujarati": "કડોલી",
+    "code": "031",
+    "district": "Navsari",
+    "taluka": "Jalalpore"
+  },
+  "Kanera": {
+    "gujarati": "કનેરા",
+    "code": "068",
+    "district": "Navsari",
+    "taluka": "Jalalpore"
+  },
+  "Krushnapur": {
+    "gujarati": "ક઼્રુષ્ણપુર",
+    "code": "069",
+    "district": "Navsari",
+    "taluka": "Jalalpore"
+  },
+  "Karankhat": {
+    "gujarati": "કરાંખટ",
+    "code": "003",
+    "district": "Navsari",
+    "taluka": "Jalalpore"
+  },
+  "Karadi": {
+    "gujarati": "કરાડી",
+    "code": "048",
+    "district": "Navsari",
+    "taluka": "Jalalpore"
+  },
+  "Karod Kothva": {
+    "gujarati": "કરોડ કોઠવા",
+    "code": "073",
+    "district": "Navsari",
+    "taluka": "Jalalpore"
+  },
+  "Kalthan": {
+    "gujarati": "કલથાણ",
+    "code": "064",
+    "district": "Navsari",
+    "taluka": "Jalalpore"
+  },
+  "Kalakachha": {
+    "gujarati": "કાળાકાછા",
+    "code": "009",
+    "district": "Navsari",
+    "taluka": "Jalalpore"
+  },
+  "Kothamadi": {
+    "gujarati": "કોથમડી",
+    "code": "054",
+    "district": "Navsari",
+    "taluka": "Jalalpore"
+  },
+  "Kolasana": {
+    "gujarati": "કોલાસણા",
+    "code": "017",
+    "district": "Navsari",
+    "taluka": "Jalalpore"
+  },
+  "Khambhlav": {
+    "gujarati": "ખંભલાવ",
+    "code": "066",
+    "district": "Navsari",
+    "taluka": "Jalalpore"
+  },
+  "Kharsad": {
+    "gujarati": "ખરસાડ",
+    "code": "072",
+    "district": "Navsari",
+    "taluka": "Jalalpore"
+  },
+  "Chijgam": {
+    "gujarati": "ચીજગામ",
+    "code": "071",
+    "district": "Navsari",
+    "taluka": "Jalalpore"
+  },
+  "Chokhad": {
+    "gujarati": "ચોખડ",
+    "code": "016",
+    "district": "Navsari",
+    "taluka": "Jalalpore"
+  },
+  "Chhinam": {
+    "gujarati": "છીણમ",
+    "code": "030",
+    "district": "Navsari",
+    "taluka": "Jalalpore"
+  },
+  "Tankoli": {
+    "gujarati": "ટંકોલી",
+    "code": "036",
+    "district": "Navsari",
+    "taluka": "Jalalpore"
+  },
+  "Danbhara": {
+    "gujarati": "ડાંભર",
+    "code": "060",
+    "district": "Navsari",
+    "taluka": "Jalalpore"
+  },
+  "Dabhel": {
+    "gujarati": "ડાભેલ",
+    "code": "008",
+    "district": "Navsari",
+    "taluka": "Jalalpore"
+  },
+  "Dalki": {
+    "gujarati": "ડાલકી",
+    "code": "019",
+    "district": "Navsari",
+    "taluka": "Jalalpore"
+  },
+  "Tavdi": {
+    "gujarati": "તવડી",
+    "code": "044",
+    "district": "Navsari",
+    "taluka": "Jalalpore"
+  },
+  "Delvada": {
+    "gujarati": "દેલવાડા",
+    "code": "041",
+    "district": "Navsari",
+    "taluka": "Jalalpore"
+  },
+  "Danti": {
+    "gujarati": "દાંતી",
+    "code": "025",
+    "district": "Navsari",
+    "taluka": "Jalalpore"
+  },
+  "Dipla": {
+    "gujarati": "દિપલા",
+    "code": "026",
+    "district": "Navsari",
+    "taluka": "Jalalpore"
+  },
+  "Nadod": {
+    "gujarati": "નડોદ",
+    "code": "018",
+    "district": "Navsari",
+    "taluka": "Jalalpore"
+  },
+  "Nimlai": {
+    "gujarati": "નીમલાઈ",
+    "code": "023",
+    "district": "Navsari",
+    "taluka": "Jalalpore"
+  },
+  "Pethan": {
+    "gujarati": "પેથાણ",
+    "code": "050",
+    "district": "Navsari",
+    "taluka": "Jalalpore"
+  },
+  "Panar": {
+    "gujarati": "પનાર",
+    "code": "070",
+    "district": "Navsari",
+    "taluka": "Jalalpore"
+  },
+  "Parujan": {
+    "gujarati": "પરુજણ",
+    "code": "020",
+    "district": "Navsari",
+    "taluka": "Jalalpore"
+  },
+  "Parsoli": {
+    "gujarati": "પરસોલી",
+    "code": "022",
+    "district": "Navsari",
+    "taluka": "Jalalpore"
+  },
+  "Paradi (araka)": {
+    "gujarati": "પારડી (આરક)",
+    "code": "074",
+    "district": "Navsari",
+    "taluka": "Jalalpore"
+  },
+  "Ponsara": {
+    "gujarati": "પોંસરા",
+    "code": "005",
+    "district": "Navsari",
+    "taluka": "Jalalpore"
+  },
+  "Bodali": {
+    "gujarati": "બોદાલી",
+    "code": "046",
+    "district": "Navsari",
+    "taluka": "Jalalpore"
+  },
+  "Borsi": {
+    "gujarati": "બોરસી",
+    "code": "043",
+    "district": "Navsari",
+    "taluka": "Jalalpore"
+  },
+  "Bhutsad": {
+    "gujarati": "ભુતસાડ",
+    "code": "058",
+    "district": "Navsari",
+    "taluka": "Jalalpore"
+  },
+  "Bhinar": {
+    "gujarati": "ભીનાર",
+    "code": "014",
+    "district": "Navsari",
+    "taluka": "Vansda"
+  },
+  "Machhad": {
+    "gujarati": "મછાડ",
+    "code": "047",
+    "district": "Navsari",
+    "taluka": "Jalalpore"
+  },
+  "Matwad": {
+    "gujarati": "મટવાડ",
+    "code": "009",
+    "district": "Navsari",
+    "taluka": "Gandevi"
+  },
+  "Mandir": {
+    "gujarati": "મંદિર",
+    "code": "059",
+    "district": "Navsari",
+    "taluka": "Jalalpore"
+  },
+  "Maroli": {
+    "gujarati": "મરોલી",
+    "code": "004",
+    "district": "Navsari",
+    "taluka": "Jalalpore"
+  },
+  "Mahuvara": {
+    "gujarati": "મહુવર",
+    "code": "075",
+    "district": "Navsari",
+    "taluka": "Jalalpore"
+  },
+  "Mirjapor": {
+    "gujarati": "મીરજાપોર",
+    "code": "039",
+    "district": "Navsari",
+    "taluka": "Jalalpore"
+  },
+  "Vesma": {
+    "gujarati": "વેસ્મા",
+    "code": "014",
+    "district": "Navsari",
+    "taluka": "Jalalpore"
+  },
+  "Wada": {
+    "gujarati": "વાડા",
+    "code": "006",
+    "district": "Navsari",
+    "taluka": "Jalalpore"
+  },
+  "Vansi": {
+    "gujarati": "વાંસી",
+    "code": "027",
+    "district": "Navsari",
+    "taluka": "Jalalpore"
+  },
+  "Sadodra": {
+    "gujarati": "સડોદરા",
+    "code": "013",
+    "district": "Navsari",
+    "taluka": "Jalalpore"
+  },
+  "Sandalpor": {
+    "gujarati": "સંદલપોર",
+    "code": "034",
+    "district": "Navsari",
+    "taluka": "Jalalpore"
+  },
+  "Sarav": {
+    "gujarati": "સરાવ",
+    "code": "062",
+    "district": "Navsari",
+    "taluka": "Jalalpore"
+  },
+  "Sultanpur": {
+    "gujarati": "સુલતાનપુર",
+    "code": "065",
+    "district": "Navsari",
+    "taluka": "Jalalpore"
+  },
+  "Sagra": {
+    "gujarati": "સાગરા",
+    "code": "038",
+    "district": "Navsari",
+    "taluka": "Jalalpore"
+  },
+  "Samapor": {
+    "gujarati": "સામાપોર",
+    "code": "055",
+    "district": "Navsari",
+    "taluka": "Jalalpore"
+  },
+  "Simlak": {
+    "gujarati": "સીમલક",
+    "code": "015",
+    "district": "Navsari",
+    "taluka": "Jalalpore"
+  },
+  "Simalgam": {
+    "gujarati": "સીમળગામ",
+    "code": "029",
+    "district": "Navsari",
+    "taluka": "Jalalpore"
+  },
+  "Sisodra (araka)": {
+    "gujarati": "સીસોદ્રા (આરક)",
+    "code": "011",
+    "district": "Navsari",
+    "taluka": "Jalalpore"
+  },
+  "Hansapor": {
+    "gujarati": "હાંસાપોર",
+    "code": "051",
+    "district": "Navsari",
+    "taluka": "Jalalpore"
+  },
+  "Ajrai": {
+    "gujarati": "અજરાઈ",
+    "code": "025",
+    "district": "Navsari",
+    "taluka": "Gandevi"
+  },
+  "Amalsad": {
+    "gujarati": "અમલસાડ",
+    "code": "027",
+    "district": "Navsari",
+    "taluka": "Gandevi"
+  },
+  "Antaliya": {
+    "gujarati": "આંતલીયા",
+    "code": "048",
+    "district": "Navsari",
+    "taluka": "Gandevi"
+  },
+  "Ichchhapora": {
+    "gujarati": "ઇચ્છાપોર",
+    "code": "003",
+    "district": "Navsari",
+    "taluka": "Gandevi"
+  },
+  "Undacha Luharphaliya": {
+    "gujarati": "ઊંડાચ લુહાર઼ફળીયા",
+    "code": "053",
+    "district": "Navsari",
+    "taluka": "Gandevi"
+  },
+  "Undacha Vaniya Pha.": {
+    "gujarati": "ઊંડાચ વાણીયા ફ.",
+    "code": "054",
+    "district": "Navsari",
+    "taluka": "Gandevi"
+  },
+  "Endhal": {
+    "gujarati": "એંધલ",
+    "code": "011",
+    "district": "Navsari",
+    "taluka": "Gandevi"
+  },
+  "Kalamtha": {
+    "gujarati": "કલમઠા",
+    "code": "042",
+    "district": "Navsari",
+    "taluka": "Gandevi"
+  },
+  "Kalvach": {
+    "gujarati": "ક઼લવાચ",
+    "code": "033",
+    "district": "Navsari",
+    "taluka": "Gandevi"
+  },
+  "Kesali": {
+    "gujarati": "કેસલી",
+    "code": "046",
+    "district": "Navsari",
+    "taluka": "Gandevi"
+  },
+  "Kotha": {
+    "gujarati": "કોથા",
+    "code": "028",
+    "district": "Navsari",
+    "taluka": "Gandevi"
+  },
+  "Kolva": {
+    "gujarati": "કોલવા",
+    "code": "001",
+    "district": "Navsari",
+    "taluka": "Gandevi"
+  },
+  "Khakhavada": {
+    "gujarati": "ખખવાડા",
+    "code": "020",
+    "district": "Navsari",
+    "taluka": "Gandevi"
+  },
+  "Khaparavada": {
+    "gujarati": "ખાપરવાડા",
+    "code": "052",
+    "district": "Navsari",
+    "taluka": "Gandevi"
+  },
+  "Khapariya": {
+    "gujarati": "ખાપરીયા",
+    "code": "007",
+    "district": "Navsari",
+    "taluka": "Gandevi"
+  },
+  "Ganghor": {
+    "gujarati": "ગંઘોર",
+    "code": "018",
+    "district": "Navsari",
+    "taluka": "Gandevi"
+  },
+  "Gadat": {
+    "gujarati": "ગડત",
+    "code": "014",
+    "district": "Navsari",
+    "taluka": "Gandevi"
+  },
+  "Gandeva": {
+    "gujarati": "ગણદેવી",
+    "code": "057",
+    "district": "Navsari",
+    "taluka": "Gandevi"
+  },
+  "Gonyadi Bhathala": {
+    "gujarati": "ગોંયદી ભાઠલા",
+    "code": "050",
+    "district": "Navsari",
+    "taluka": "Gandevi"
+  },
+  "Chhapar": {
+    "gujarati": "છાપરા",
+    "code": "006",
+    "district": "Navsari",
+    "taluka": "Navsari City"
+  },
+  "Torangam": {
+    "gujarati": "તોરણગામ",
+    "code": "031",
+    "district": "Navsari",
+    "taluka": "Gandevi"
+  },
+  "Devdha": {
+    "gujarati": "દેવધા",
+    "code": "037",
+    "district": "Navsari",
+    "taluka": "Gandevi"
+  },
+  "Devasara": {
+    "gujarati": "દેવસર",
+    "code": "059",
+    "district": "Navsari",
+    "taluka": "Gandevi"
+  },
+  "Duvada": {
+    "gujarati": "દુવાડા",
+    "code": "022",
+    "district": "Navsari",
+    "taluka": "Gandevi"
+  },
+  "Desara": {
+    "gujarati": "દેસરા",
+    "code": "058",
+    "district": "Navsari",
+    "taluka": "Gandevi"
+  },
+  "Desada": {
+    "gujarati": "દેસાડ",
+    "code": "035",
+    "district": "Navsari",
+    "taluka": "Gandevi"
+  },
+  "Dhakavada": {
+    "gujarati": "ધકવાડા",
+    "code": "044",
+    "district": "Navsari",
+    "taluka": "Gandevi"
+  },
+  "Dhanori": {
+    "gujarati": "ધનોરી",
+    "code": "021",
+    "district": "Navsari",
+    "taluka": "Gandevi"
+  },
+  "Dhamdachha": {
+    "gujarati": "ધમડાછા",
+    "code": "026",
+    "district": "Navsari",
+    "taluka": "Gandevi"
+  },
+  "Nandarkha": {
+    "gujarati": "નાંદરખા",
+    "code": "047",
+    "district": "Navsari",
+    "taluka": "Gandevi"
+  },
+  "Pati": {
+    "gujarati": "પાટી",
+    "code": "087",
+    "district": "Navsari",
+    "taluka": "Khergam"
+  },
+  "Pathri": {
+    "gujarati": "પાથરી",
+    "code": "013",
+    "district": "Navsari",
+    "taluka": "Gandevi"
+  },
+  "Pinjra": {
+    "gujarati": "પીંજ઼રા",
+    "code": "004",
+    "district": "Navsari",
+    "taluka": "Gandevi"
+  },
+  "Pipaldhara": {
+    "gujarati": "પીપલધરા",
+    "code": "008",
+    "district": "Navsari",
+    "taluka": "Gandevi"
+  },
+  "Bigri": {
+    "gujarati": "બીગરી",
+    "code": "051",
+    "district": "Navsari",
+    "taluka": "Gandevi"
+  },
+  "Bilimora": {
+    "gujarati": "બીલીમોરા",
+    "code": "060",
+    "district": "Navsari",
+    "taluka": "Gandevi"
+  },
+  "Mendhar": {
+    "gujarati": "મેંધર",
+    "code": "041",
+    "district": "Navsari",
+    "taluka": "Gandevi"
+  },
+  "Masa": {
+    "gujarati": "માસા",
+    "code": "040",
+    "district": "Navsari",
+    "taluka": "Gandevi"
+  },
+  "Morali Phaliya": {
+    "gujarati": "મોરલી ફળીયા",
+    "code": "043",
+    "district": "Navsari",
+    "taluka": "Gandevi"
+  },
+  "Mohanpur": {
+    "gujarati": "મોહનપુર",
+    "code": "016",
+    "district": "Navsari",
+    "taluka": "Gandevi"
+  },
+  "Rahej": {
+    "gujarati": "રહેજ",
+    "code": "024",
+    "district": "Navsari",
+    "taluka": "Gandevi"
+  },
+  "Vagalvad": {
+    "gujarati": "વગલવાડ",
+    "code": "006",
+    "district": "Navsari",
+    "taluka": "Gandevi"
+  },
+  "Vegam": {
+    "gujarati": "વેગામ",
+    "code": "005",
+    "district": "Navsari",
+    "taluka": "Gandevi"
+  },
+  "Vadsangal": {
+    "gujarati": "વડસાંગળ",
+    "code": "023",
+    "district": "Navsari",
+    "taluka": "Gandevi"
+  },
+  "Vangam": {
+    "gujarati": "વણગામ",
+    "code": "055",
+    "district": "Navsari",
+    "taluka": "Gandevi"
+  },
+  "Valoti": {
+    "gujarati": "વલોટી",
+    "code": "036",
+    "district": "Navsari",
+    "taluka": "Gandevi"
+  },
+  "Vaghrech": {
+    "gujarati": "વાઘરેચ",
+    "code": "049",
+    "district": "Navsari",
+    "taluka": "Gandevi"
+  },
+  "Vasan": {
+    "gujarati": "વાસણ",
+    "code": "029",
+    "district": "Navsari",
+    "taluka": "Gandevi"
+  },
+  "Sarikhude": {
+    "gujarati": "સરીખુદૅ",
+    "code": "030",
+    "district": "Navsari",
+    "taluka": "Gandevi"
+  },
+  "Saribujrang": {
+    "gujarati": "સરીબુજરંગ",
+    "code": "056",
+    "district": "Navsari",
+    "taluka": "Gandevi"
+  },
+  "Salej": {
+    "gujarati": "સાલેજ",
+    "code": "002",
+    "district": "Navsari",
+    "taluka": "Gandevi"
+  },
+  "Sonwadi": {
+    "gujarati": "સોનવાડી",
+    "code": "015",
+    "district": "Navsari",
+    "taluka": "Gandevi"
+  },
+  "Agasi": {
+    "gujarati": "અગાસી",
+    "code": "052",
+    "district": "Navsari",
+    "taluka": "Chikhli"
+  },
+  "Anbacha": {
+    "gujarati": "અંબાચ",
+    "code": "046",
+    "district": "Navsari",
+    "taluka": "Chikhli"
+  },
+  "Amadhara": {
+    "gujarati": "આમધરા",
+    "code": "041",
+    "district": "Navsari",
+    "taluka": "Chikhli"
+  },
+  "Alipor": {
+    "gujarati": "આલીપોર",
+    "code": "024",
+    "district": "Navsari",
+    "taluka": "Chikhli"
+  },
+  "Undhavala": {
+    "gujarati": "ઊંઢવળ",
+    "code": "019",
+    "district": "Navsari",
+    "taluka": "Chikhli"
+  },
+  "Kukeri": {
+    "gujarati": "કુકેરી",
+    "code": "021",
+    "district": "Navsari",
+    "taluka": "Chikhli"
+  },
+  "Kanbhai": {
+    "gujarati": "કણભઈ",
+    "code": "054",
+    "district": "Navsari",
+    "taluka": "Chikhli"
+  },
+  "Kaliyari": {
+    "gujarati": "કલીયારી",
+    "code": "044",
+    "district": "Navsari",
+    "taluka": "Chikhli"
+  },
+  "Kakadvel": {
+    "gujarati": "કાકડવેલ",
+    "code": "048",
+    "district": "Navsari",
+    "taluka": "Chikhli"
+  },
+  "Kangvai": {
+    "gujarati": "કાંગવઈ",
+    "code": "004",
+    "district": "Navsari",
+    "taluka": "Chikhli"
+  },
+  "Khudvel": {
+    "gujarati": "ખુડવેલ",
+    "code": "031",
+    "district": "Navsari",
+    "taluka": "Chikhli"
+  },
+  "Khundh": {
+    "gujarati": "ખુંધ",
+    "code": "026",
+    "district": "Navsari",
+    "taluka": "Chikhli"
+  },
+  "Khanbhada": {
+    "gujarati": "ખાંભડા",
+    "code": "032",
+    "district": "Navsari",
+    "taluka": "Chikhli"
+  },
+  "Godthal": {
+    "gujarati": "ગોડથલ",
+    "code": "051",
+    "district": "Navsari",
+    "taluka": "Chikhli"
+  },
+  "Ghekti": {
+    "gujarati": "ઘેકટી",
+    "code": "035",
+    "district": "Navsari",
+    "taluka": "Chikhli"
+  },
+  "Ghej": {
+    "gujarati": "ઘેજ",
+    "code": "062",
+    "district": "Navsari",
+    "taluka": "Chikhli"
+  },
+  "Ghodvani": {
+    "gujarati": "ઘોડવણી",
+    "code": "068",
+    "district": "Navsari",
+    "taluka": "Chikhli"
+  },
+  "Gholar": {
+    "gujarati": "ઘોલાર",
+    "code": "055",
+    "district": "Navsari",
+    "taluka": "Chikhli"
+  },
+  "Chari": {
+    "gujarati": "ચરી",
+    "code": "061",
+    "district": "Navsari",
+    "taluka": "Chikhli"
+  },
+  "Chasa": {
+    "gujarati": "ચાસા",
+    "code": "015",
+    "district": "Navsari",
+    "taluka": "Chikhli"
+  },
+  "Chitali": {
+    "gujarati": "ચીતાલી",
+    "code": "002",
+    "district": "Navsari",
+    "taluka": "Chikhli"
+  },
+  "Jogavada": {
+    "gujarati": "જોગવાડ",
+    "code": "003",
+    "district": "Navsari",
+    "taluka": "Chikhli"
+  },
+  "Jhari": {
+    "gujarati": "ઝરી",
+    "code": "022",
+    "district": "Navsari",
+    "taluka": "Vansda"
+  },
+  "Tankal": {
+    "gujarati": "ટાંકલ",
+    "code": "006",
+    "district": "Navsari",
+    "taluka": "Chikhli"
+  },
+  "Dholumber": {
+    "gujarati": "ઢોલુમ્બર",
+    "code": "042",
+    "district": "Navsari",
+    "taluka": "Vansda"
+  },
+  "Tejlav": {
+    "gujarati": "તેજલાવ",
+    "code": "057",
+    "district": "Navsari",
+    "taluka": "Chikhli"
+  },
+  "Talavchora": {
+    "gujarati": "તલાવચોરા",
+    "code": "039",
+    "district": "Navsari",
+    "taluka": "Chikhli"
+  },
+  "Thala": {
+    "gujarati": "થાલા",
+    "code": "025",
+    "district": "Navsari",
+    "taluka": "Chikhli"
+  },
+  "Degam": {
+    "gujarati": "દેગામ",
+    "code": "017",
+    "district": "Navsari",
+    "taluka": "Chikhli"
+  },
+  "Donja": {
+    "gujarati": "દોણજા",
+    "code": "029",
+    "district": "Navsari",
+    "taluka": "Chikhli"
+  },
+  "Pipalgabhan": {
+    "gujarati": "પીપલગભાણ",
+    "code": "040",
+    "district": "Navsari",
+    "taluka": "Chikhli"
+  },
+  "Phadavela": {
+    "gujarati": "ફડવેલ",
+    "code": "030",
+    "district": "Navsari",
+    "taluka": "Chikhli"
+  },
+  "Balavada": {
+    "gujarati": "બલવાડા",
+    "code": "060",
+    "district": "Navsari",
+    "taluka": "Chikhli"
+  },
+  "Bamanvel": {
+    "gujarati": "બામણવેલ",
+    "code": "027",
+    "district": "Navsari",
+    "taluka": "Chikhli"
+  },
+  "Bamanavada": {
+    "gujarati": "બામણવાડા",
+    "code": "043",
+    "district": "Navsari",
+    "taluka": "Chikhli"
+  },
+  "Baroliya": {
+    "gujarati": "બારોલીયા",
+    "code": "008",
+    "district": "Navsari",
+    "taluka": "Chikhli"
+  },
+  "Bodvank": {
+    "gujarati": "બોડવાંક",
+    "code": "005",
+    "district": "Navsari",
+    "taluka": "Chikhli"
+  },
+  "Majigam": {
+    "gujarati": "મજીગામ",
+    "code": "037",
+    "district": "Navsari",
+    "taluka": "Chikhli"
+  },
+  "Malavada": {
+    "gujarati": "મલવાડા",
+    "code": "038",
+    "district": "Navsari",
+    "taluka": "Chikhli"
+  },
+  "Maliyadhara": {
+    "gujarati": "મલીયાધરા",
+    "code": "058",
+    "district": "Navsari",
+    "taluka": "Chikhli"
+  },
+  "Mandav Khadak": {
+    "gujarati": "માંડવ ખડક",
+    "code": "049",
+    "district": "Navsari",
+    "taluka": "Chikhli"
+  },
+  "Minkachchh": {
+    "gujarati": "મીણકચ્છ",
+    "code": "009",
+    "district": "Navsari",
+    "taluka": "Chikhli"
+  },
+  "Mogaravadi": {
+    "gujarati": "મોગરાવાડી",
+    "code": "042",
+    "district": "Navsari",
+    "taluka": "Chikhli"
+  },
+  "Rethavaniya": {
+    "gujarati": "રેઠવાણીયા",
+    "code": "018",
+    "district": "Navsari",
+    "taluka": "Chikhli"
+  },
+  "Rumla": {
+    "gujarati": "રુમલા",
+    "code": "053",
+    "district": "Navsari",
+    "taluka": "Chikhli"
+  },
+  "Ranakuva": {
+    "gujarati": "રાનકુવા",
+    "code": "020",
+    "district": "Navsari",
+    "taluka": "Chikhli"
+  },
+  "Ranverikalla": {
+    "gujarati": "રાનવેરીકલ્લા",
+    "code": "010",
+    "district": "Navsari",
+    "taluka": "Chikhli"
+  },
+  "Ranverikhurd": {
+    "gujarati": "રાનવેરીખુર્દ",
+    "code": "011",
+    "district": "Navsari",
+    "taluka": "Chikhli"
+  },
+  "Velanpor": {
+    "gujarati": "વેલણપોર",
+    "code": "050",
+    "district": "Navsari",
+    "taluka": "Chikhli"
+  },
+  "Vanjhana": {
+    "gujarati": "વાંઝણા",
+    "code": "014",
+    "district": "Navsari",
+    "taluka": "Chikhli"
+  },
+  "Sunthavada": {
+    "gujarati": "સુંઠવાડ",
+    "code": "016",
+    "district": "Navsari",
+    "taluka": "Chikhli"
+  },
+  "Samaroli": {
+    "gujarati": "સમરોલી",
+    "code": "034",
+    "district": "Navsari",
+    "taluka": "Chikhli"
+  },
+  "Syada": {
+    "gujarati": "સ્યાદા",
+    "code": "045",
+    "district": "Navsari",
+    "taluka": "Chikhli"
+  },
+  "Surkhai": {
+    "gujarati": "સુરખ઼ાઇ",
+    "code": "013",
+    "district": "Navsari",
+    "taluka": "Chikhli"
+  },
+  "Saraiya": {
+    "gujarati": "સરૈયા",
+    "code": "001",
+    "district": "Navsari",
+    "taluka": "Chikhli"
+  },
+  "Sadakpor": {
+    "gujarati": "સાદકપોર",
+    "code": "033",
+    "district": "Navsari",
+    "taluka": "Chikhli"
+  },
+  "Sadadvel": {
+    "gujarati": "સાદડવેલ",
+    "code": "028",
+    "district": "Navsari",
+    "taluka": "Chikhli"
+  },
+  "Saravani": {
+    "gujarati": "સારવણી",
+    "code": "047",
+    "district": "Navsari",
+    "taluka": "Chikhli"
+  },
+  "Soldhara": {
+    "gujarati": "સોલધરા",
+    "code": "056",
+    "district": "Navsari",
+    "taluka": "Chikhli"
+  },
+  "Harangam": {
+    "gujarati": "હરણગામ",
+    "code": "022",
+    "district": "Navsari",
+    "taluka": "Chikhli"
+  },
+  "Hond": {
+    "gujarati": "હોન્ડ",
+    "code": "059",
+    "district": "Navsari",
+    "taluka": "Chikhli"
+  },
+  "Anklachh": {
+    "gujarati": "અંકલાછ",
+    "code": "086",
+    "district": "Navsari",
+    "taluka": "Vansda"
+  },
+  "Anbapani": {
+    "gujarati": "આંબાપાણી",
+    "code": "072",
+    "district": "Navsari",
+    "taluka": "Vansda"
+  },
+  "Anbabari": {
+    "gujarati": "આંબાબારી",
+    "code": "052",
+    "district": "Navsari",
+    "taluka": "Vansda"
+  },
+  "Unmarakui": {
+    "gujarati": "ઉંમરકુઈ",
+    "code": "063",
+    "district": "Navsari",
+    "taluka": "Vansda"
+  },
+  "Unai": {
+    "gujarati": "ઊનાઈ",
+    "code": "008",
+    "district": "Navsari",
+    "taluka": "Vansda"
+  },
+  "Upsal": {
+    "gujarati": "ઊપસળ",
+    "code": "025",
+    "district": "Navsari",
+    "taluka": "Vansda"
+  },
+  "Kukda": {
+    "gujarati": "કુકડા",
+    "code": "028",
+    "district": "Navsari",
+    "taluka": "Vansda"
+  },
+  "Kandolpada": {
+    "gujarati": "કંડોલપાડા",
+    "code": "023",
+    "district": "Navsari",
+    "taluka": "Vansda"
+  },
+  "Kanadha": {
+    "gujarati": "કણધા",
+    "code": "083",
+    "district": "Navsari",
+    "taluka": "Vansda"
+  },
+  "Kapadvanj": {
+    "gujarati": "કપડવંજ",
+    "code": "070",
+    "district": "Navsari",
+    "taluka": "Vansda"
+  },
+  "Knboya": {
+    "gujarati": "કંબોયા",
+    "code": "019",
+    "district": "Navsari",
+    "taluka": "Vansda"
+  },
+  "Kureliya": {
+    "gujarati": "કુરેલીયા",
+    "code": "013",
+    "district": "Navsari",
+    "taluka": "Vansda"
+  },
+  "Keliya": {
+    "gujarati": "કેલીયા",
+    "code": "077",
+    "district": "Navsari",
+    "taluka": "Vansda"
+  },
+  "Kelakachchh": {
+    "gujarati": "કેળકચ્છ",
+    "code": "011",
+    "district": "Navsari",
+    "taluka": "Vansda"
+  },
+  "Kansariya": {
+    "gujarati": "કંસારીયા",
+    "code": "045",
+    "district": "Navsari",
+    "taluka": "Vansda"
+  },
+  "Kantasvel": {
+    "gujarati": "કાંટસવેલ",
+    "code": "017",
+    "district": "Navsari",
+    "taluka": "Vansda"
+  },
+  "Kamalajhari": {
+    "gujarati": "કામળઝરી",
+    "code": "091",
+    "district": "Navsari",
+    "taluka": "Vansda"
+  },
+  "Kala Anba": {
+    "gujarati": "કાળા આંબા",
+    "code": "032",
+    "district": "Navsari",
+    "taluka": "Vansda"
+  },
+  "Kavdej": {
+    "gujarati": "કાવડેજ",
+    "code": "076",
+    "district": "Navsari",
+    "taluka": "Vansda"
+  },
+  "Khadakiya": {
+    "gujarati": "ખડકીયા",
+    "code": "067",
+    "district": "Navsari",
+    "taluka": "Vansda"
+  },
+  "Khnbhaliya": {
+    "gujarati": "ખંભાલીયા",
+    "code": "009",
+    "district": "Navsari",
+    "taluka": "Vansda"
+  },
+  "Kharjai": {
+    "gujarati": "ખરજઇ",
+    "code": "030",
+    "district": "Navsari",
+    "taluka": "Vansda"
+  },
+  "Khataanba": {
+    "gujarati": "ખાટાઆંબા",
+    "code": "080",
+    "district": "Navsari",
+    "taluka": "Vansda"
+  },
+  "Khanbhala": {
+    "gujarati": "ખાંભલા",
+    "code": "054",
+    "district": "Navsari",
+    "taluka": "Vansda"
+  },
+  "Gangpur": {
+    "gujarati": "ગંગપુર",
+    "code": "064",
+    "district": "Navsari",
+    "taluka": "Vansda"
+  },
+  "Godhabari": {
+    "gujarati": "ગોધાબારી",
+    "code": "035",
+    "district": "Navsari",
+    "taluka": "Vansda"
+  },
+  "Ghodmal": {
+    "gujarati": "ઘોડમાળ",
+    "code": "079",
+    "district": "Navsari",
+    "taluka": "Vansda"
+  },
+  "Chadhav": {
+    "gujarati": "ચઢાવ",
+    "code": "006",
+    "district": "Navsari",
+    "taluka": "Vansda"
+  },
+  "Chapaldhara": {
+    "gujarati": "ચાપલધરા",
+    "code": "002",
+    "district": "Navsari",
+    "taluka": "Vansda"
+  },
+  "Charanavada": {
+    "gujarati": "ચારણવાડા",
+    "code": "050",
+    "district": "Navsari",
+    "taluka": "Vansda"
+  },
+  "Chikatiya": {
+    "gujarati": "ચીકટીયા",
+    "code": "047",
+    "district": "Navsari",
+    "taluka": "Vansda"
+  },
+  "Chondha": {
+    "gujarati": "ચોંઢા",
+    "code": "092",
+    "district": "Navsari",
+    "taluka": "Vansda"
+  },
+  "Chorvani": {
+    "gujarati": "ચોરવણી",
+    "code": "082",
+    "district": "Navsari",
+    "taluka": "Vansda"
+  },
+  "Jamaliya": {
+    "gujarati": "જામલીયા",
+    "code": "048",
+    "district": "Navsari",
+    "taluka": "Vansda"
+  },
+  "Jhuja": {
+    "gujarati": "ઝૂજ",
+    "code": "068",
+    "district": "Navsari",
+    "taluka": "Vansda"
+  },
+  "Tadpada": {
+    "gujarati": "તાડપાડા",
+    "code": "055",
+    "district": "Navsari",
+    "taluka": "Vansda"
+  },
+  "Dubala Phaliya": {
+    "gujarati": "દુબળ ફળિયા",
+    "code": "040",
+    "district": "Navsari",
+    "taluka": "Vansda"
+  },
+  "Doldha": {
+    "gujarati": "દોલધા",
+    "code": "020",
+    "district": "Navsari",
+    "taluka": "Vansda"
+  },
+  "Dharampuri": {
+    "gujarati": "ધરમપૂરી",
+    "code": "012",
+    "district": "Navsari",
+    "taluka": "Vansda"
+  },
+  "Dhakmal": {
+    "gujarati": "ધાકમાળ",
+    "code": "069",
+    "district": "Navsari",
+    "taluka": "Vansda"
+  },
+  "Navtad": {
+    "gujarati": "નવતાડ",
+    "code": "056",
+    "district": "Navsari",
+    "taluka": "Vansda"
+  },
+  "Navanagar": {
+    "gujarati": "નવાનગર",
+    "code": "066",
+    "district": "Navsari",
+    "taluka": "Vansda"
+  },
+  "Nani Bhamti": {
+    "gujarati": "નાની ભમતી",
+    "code": "026",
+    "district": "Navsari",
+    "taluka": "Vansda"
+  },
+  "Nani Valajhara": {
+    "gujarati": "નાની વાલઝર",
+    "code": "004",
+    "district": "Navsari",
+    "taluka": "Vansda"
+  },
+  "Nanivaghai": {
+    "gujarati": "નાનીવઘઈ",
+    "code": "095",
+    "district": "Navsari",
+    "taluka": "Vansda"
+  },
+  "Nirpan": {
+    "gujarati": "નિરપણ",
+    "code": "094",
+    "district": "Navsari",
+    "taluka": "Vansda"
+  },
+  "Pratapnagar": {
+    "gujarati": "પ્રતાપનગર",
+    "code": "021",
+    "district": "Navsari",
+    "taluka": "Vansda"
+  },
+  "Palgabhan": {
+    "gujarati": "પાલગ઼ભાણ",
+    "code": "005",
+    "district": "Navsari",
+    "taluka": "Vansda"
+  },
+  "Pipalkhed": {
+    "gujarati": "પીપલખેડ",
+    "code": "078",
+    "district": "Navsari",
+    "taluka": "Vansda"
+  },
+  "Bedmal": {
+    "gujarati": "બેડમાળ",
+    "code": "084",
+    "district": "Navsari",
+    "taluka": "Vansda"
+  },
+  "Baratada(kha)": {
+    "gujarati": "બારતાડ(ખા)",
+    "code": "088",
+    "district": "Navsari",
+    "taluka": "Vansda"
+  },
+  "Bilmoda": {
+    "gujarati": "બીલમોડા",
+    "code": "071",
+    "district": "Navsari",
+    "taluka": "Vansda"
+  },
+  "Boriyachha": {
+    "gujarati": "બોરીયાછ",
+    "code": "065",
+    "district": "Navsari",
+    "taluka": "Vansda"
+  },
+  "Manpur": {
+    "gujarati": "મનપુર",
+    "code": "058",
+    "district": "Navsari",
+    "taluka": "Vansda"
+  },
+  "Mahuvas": {
+    "gujarati": "મહુવાસ",
+    "code": "051",
+    "district": "Navsari",
+    "taluka": "Vansda"
+  },
+  "Manakuniya": {
+    "gujarati": "માનકુનીયા",
+    "code": "081",
+    "district": "Navsari",
+    "taluka": "Vansda"
+  },
+  "Mindhabari": {
+    "gujarati": "મીંઢાબારી",
+    "code": "059",
+    "district": "Navsari",
+    "taluka": "Vansda"
+  },
+  "Moti Bhamti": {
+    "gujarati": "મોટી ભમતી",
+    "code": "036",
+    "district": "Navsari",
+    "taluka": "Vansda"
+  },
+  "Moti Valajhara": {
+    "gujarati": "મોટી વાલઝર",
+    "code": "015",
+    "district": "Navsari",
+    "taluka": "Vansda"
+  },
+  "Molaanba": {
+    "gujarati": "મોળાઆંબા",
+    "code": "093",
+    "district": "Navsari",
+    "taluka": "Vansda"
+  },
+  "Rangpur": {
+    "gujarati": "રંગપુર",
+    "code": "046",
+    "district": "Navsari",
+    "taluka": "Vansda"
+  },
+  "Rupvel": {
+    "gujarati": "રુપવેલ",
+    "code": "003",
+    "district": "Navsari",
+    "taluka": "Vansda"
+  },
+  "Ravaniya": {
+    "gujarati": "રવાણીયા",
+    "code": "085",
+    "district": "Navsari",
+    "taluka": "Vansda"
+  },
+  "Rajpur": {
+    "gujarati": "રાજપુર",
+    "code": "001",
+    "district": "Navsari",
+    "taluka": "Vansda"
+  },
+  "Raniphaliya": {
+    "gujarati": "રાણીફળીયા",
+    "code": "038",
+    "district": "Navsari",
+    "taluka": "Vansda"
+  },
+  "Raybor": {
+    "gujarati": "રાયબોર",
+    "code": "074",
+    "district": "Navsari",
+    "taluka": "Vansda"
+  },
+  "Lakadbari": {
+    "gujarati": "લાકડબારી",
+    "code": "087",
+    "district": "Navsari",
+    "taluka": "Vansda"
+  },
+  "Lakhavadi": {
+    "gujarati": "લાખાવાડી",
+    "code": "018",
+    "district": "Navsari",
+    "taluka": "Vansda"
+  },
+  "Lachhakadi": {
+    "gujarati": "લાછકડી",
+    "code": "075",
+    "district": "Navsari",
+    "taluka": "Vansda"
+  },
+  "Linbarapada": {
+    "gujarati": "લીંબરપાડા",
+    "code": "024",
+    "district": "Navsari",
+    "taluka": "Vansda"
+  },
+  "Limajhara": {
+    "gujarati": "લીમઝર",
+    "code": "060",
+    "district": "Navsari",
+    "taluka": "Vansda"
+  },
+  "Vanarasi": {
+    "gujarati": "વણારસી",
+    "code": "039",
+    "district": "Navsari",
+    "taluka": "Vansda"
+  },
+  "Vangan": {
+    "gujarati": "વાંગણ",
+    "code": "073",
+    "district": "Navsari",
+    "taluka": "Vansda"
+  },
+  "Vaghabari": {
+    "gujarati": "વાઘાબારી",
+    "code": "043",
+    "district": "Navsari",
+    "taluka": "Vansda"
+  },
+  "Vati": {
+    "gujarati": "વાટી",
+    "code": "031",
+    "district": "Navsari",
+    "taluka": "Vansda"
+  },
+  "Vadichondha": {
+    "gujarati": "વાડીચોંઢા",
+    "code": "062",
+    "district": "Navsari",
+    "taluka": "Vansda"
+  },
+  "Vandarvela": {
+    "gujarati": "વાંદરવેલા",
+    "code": "044",
+    "district": "Navsari",
+    "taluka": "Vansda"
+  },
+  "Vansada": {
+    "gujarati": "વાંસદા",
+    "code": "096",
+    "district": "Navsari",
+    "taluka": "Vansda"
+  },
+  "Vansiya Talava": {
+    "gujarati": "વાંસીયા તળાવ",
+    "code": "049",
+    "district": "Navsari",
+    "taluka": "Vansda"
+  },
+  "Sukhabari": {
+    "gujarati": "સુખાબારી",
+    "code": "061",
+    "district": "Navsari",
+    "taluka": "Vansda"
+  },
+  "Satimal": {
+    "gujarati": "સતિમાળ",
+    "code": "090",
+    "district": "Navsari",
+    "taluka": "Vansda"
+  },
+  "Sara": {
+    "gujarati": "સરા",
+    "code": "029",
+    "district": "Navsari",
+    "taluka": "Vansda"
+  },
+  "Sadaddevi": {
+    "gujarati": "સાદડ઼દેવી",
+    "code": "033",
+    "district": "Navsari",
+    "taluka": "Vansda"
+  },
+  "Sindhai": {
+    "gujarati": "સીણધઈ",
+    "code": "007",
+    "district": "Navsari",
+    "taluka": "Vansda"
+  },
+  "Sitapur": {
+    "gujarati": "સીતાપુર",
+    "code": "057",
+    "district": "Navsari",
+    "taluka": "Vansda"
+  },
+  "Hanumanbari": {
+    "gujarati": "હનુમાનબારી",
+    "code": "037",
+    "district": "Navsari",
+    "taluka": "Vansda"
+  },
+  "Holipada": {
+    "gujarati": "હોલીપાડા",
+    "code": "027",
+    "district": "Navsari",
+    "taluka": "Vansda"
+  },
+  "Achhavani": {
+    "gujarati": "આછવણી",
+    "code": "065",
+    "district": "Navsari",
+    "taluka": "Khergam"
+  },
+  "Kakadveri": {
+    "gujarati": "કાકડવેરી",
+    "code": "079",
+    "district": "Navsari",
+    "taluka": "Khergam"
+  },
+  "Gauri": {
+    "gujarati": "ગૌરી",
+    "code": "076",
+    "district": "Navsari",
+    "taluka": "Khergam"
+  },
+  "Chimanpada": {
+    "gujarati": "ચીમનપાડા",
+    "code": "080",
+    "district": "Navsari",
+    "taluka": "Khergam"
+  },
+  "Jamanpada": {
+    "gujarati": "જામનપાડા",
+    "code": "077",
+    "district": "Navsari",
+    "taluka": "Khergam"
+  },
+  "Debarpada": {
+    "gujarati": "ડેબરપાડા",
+    "code": "072",
+    "district": "Navsari",
+    "taluka": "Khergam"
+  },
+  "Toranvera": {
+    "gujarati": "તોરણવેરા",
+    "code": "078",
+    "district": "Navsari",
+    "taluka": "Khergam"
+  },
+  "Dhamadhuma": {
+    "gujarati": "ધામધુમા",
+    "code": "067",
+    "district": "Navsari",
+    "taluka": "Khergam"
+  },
+  "Nadagdhari": {
+    "gujarati": "નડગધરી",
+    "code": "066",
+    "district": "Navsari",
+    "taluka": "Khergam"
+  },
+  "Nandhai": {
+    "gujarati": "નાંધઈ",
+    "code": "085",
+    "district": "Navsari",
+    "taluka": "Khergam"
+  },
+  "Naranpor": {
+    "gujarati": "નારણપોર",
+    "code": "084",
+    "district": "Navsari",
+    "taluka": "Khergam"
+  },
+  "Pananj": {
+    "gujarati": "પણંજ",
+    "code": "064",
+    "district": "Navsari",
+    "taluka": "Khergam"
+  },
+  "Peladi Bhervi": {
+    "gujarati": "પેલાડી ભૈરવી",
+    "code": "083",
+    "district": "Navsari",
+    "taluka": "Khergam"
+  },
+  "Panikhadak": {
+    "gujarati": "પાણીખડક",
+    "code": "071",
+    "district": "Navsari",
+    "taluka": "Khergam"
+  },
+  "Bahej": {
+    "gujarati": "બ્હેજ",
+    "code": "081",
+    "district": "Navsari",
+    "taluka": "Khergam"
+  },
+  "Bhervi": {
+    "gujarati": "ભૈરવી",
+    "code": "082",
+    "district": "Navsari",
+    "taluka": "Khergam"
+  },
+  "Rujhavani": {
+    "gujarati": "રુઝવણી",
+    "code": "073",
+    "district": "Navsari",
+    "taluka": "Khergam"
+  },
+  "Kabilapora": {
+    "gujarati": "કબીલપોર",
+    "code": "003",
+    "district": "Navsari",
+    "taluka": "Navsari City"
+  },
+  "Kaliyavadi": {
+    "gujarati": "કાલીયાવાડી",
+    "code": "009",
+    "district": "Navsari",
+    "taluka": "Navsari City"
+  },
+  "Chovisi": {
+    "gujarati": "ચોવીસી",
+    "code": "005",
+    "district": "Navsari",
+    "taluka": "Navsari City"
+  },
+  "Jamalapora": {
+    "gujarati": "જમાલપોર",
+    "code": "008",
+    "district": "Navsari",
+    "taluka": "Navsari City"
+  },
+  "Jalalapora": {
+    "gujarati": "જલાલપોર",
+    "code": "011",
+    "district": "Navsari",
+    "taluka": "Navsari City"
+  },
+  "Tidhara": {
+    "gujarati": "તીધરા",
+    "code": "004",
+    "district": "Navsari",
+    "taluka": "Navsari City"
+  },
+  "Navasari(shahera)": {
+    "gujarati": "નવસારી(શહેર)",
+    "code": "001",
+    "district": "Navsari",
+    "taluka": "Navsari City"
+  },
+  "Viraval": {
+    "gujarati": "વિરાવળ",
+    "code": "002",
+    "district": "Navsari",
+    "taluka": "Navsari City"
+  }
+}

@@ -1,0 +1,435 @@
+
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>
+	-: Any RoR @ Anywhere :- 7
+</title>
+
+    <noscript>
+        <div style="font-size: 25px; top: 0px; left: 0px; color: White; width: 950px; position: absolute;
+            background-color: #000000; opacity: 0.7; vertical-align: middle; padding-top: 300px;
+            text-align: center; z-index: 1005;">
+            Javascript is disabled.<br />
+            Please Enable browser javascript first and then hit F5.
+        </div>
+    </noscript>
+
+    <script src="js/jquery-1.8.3.min.js">
+    </script>
+    <script src="js/Validation.js"></script>
+    <script src="js/bootstrap.min.js">
+    </script>
+
+    <link rel="shortcut icon" href="img/slider-icon/favicon.png" /><link href="css/bootstrap.min.css" rel="stylesheet" /><link href="css/bootstrap-reset.css" rel="stylesheet" /><link href="assets/font-awesome/css/font-awesome.css" rel="stylesheet" /><link href="css/component.css" rel="stylesheet" /><link href="css/style.css" rel="stylesheet" /><link href="css/style-responsive.css" rel="stylesheet" /><link href="css/slick-theme.css" rel="stylesheet" /><link href="css/slick.css" rel="stylesheet" />
+    <style type="text/css">
+        html, body {
+            margin: 0;
+            padding: 0;
+        }
+
+        .slider {
+            width: 80%;
+            margin: 38px auto;
+        }
+
+        .slick-slide {
+            margin: 0px 20px;
+        }
+
+        .slick-prev:before,
+        .slick-next:before {
+            color: black;
+        }
+
+        .slick-slide {
+            transition: all ease-in-out .3s;
+            opacity: .2;
+        }
+
+        .slick-active {
+            opacity: 1.5;
+        }
+
+        #myBtn {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            right: 30px;
+            z-index: 99;
+            font-size: 18px;
+            border: none;
+            outline: none;
+            background-color: orange;
+            color: white;
+            cursor: pointer;
+            padding: 15px;
+            border-radius: 4px;
+            opacity: 75%;
+            text-decoration: none;
+        }
+
+            #myBtn:hover {
+                background-color: #555;
+            }
+    </style>
+    
+</head>
+
+<body>
+
+    <form method="post" action="./LandRecordRural.aspx" id="form1">
+<input type="hidden" name="ContentPlaceHolder1_ToolkitScriptManager1_HiddenField" id="ContentPlaceHolder1_ToolkitScriptManager1_HiddenField" value="" />
+<input type="hidden" name="__VIEWSTATE" id="__VIEWSTATE" value="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" />
+
+
+<script src="/ScriptResource.axd?d=H7TY6PkLw3kk82ZzEOHy0rga7gwaBoOwwMGbe7O1gRxQKBslcb3YkgaPmcUKH5JMV_EcMrYCip_w_EPCQ2uIB8ZnJXiIlRyAqtbUyLA9isF928V8hKXfiJcnI0w6bVGb0&amp;t=ffffffffec54f2d7" type="text/javascript"></script>
+<script src="/LandRecordRural.aspx?_TSM_HiddenField_=ContentPlaceHolder1_ToolkitScriptManager1_HiddenField&amp;_TSM_CombinedScripts_=%3b%3bAjaxControlToolkit%2c+Version%3d3.5.40412.0%2c+Culture%3dneutral%2c+PublicKeyToken%3d28f01b0e84b6d53e%3aen%3a1547e793-5b7e-48fe-8490-03a375b13a33%3a475a4ef5%3aeffe2a26%3a3ac3e789" type="text/javascript"></script>
+<input type="hidden" name="__VIEWSTATEGENERATOR" id="__VIEWSTATEGENERATOR" value="54DE03B8" />
+<input type="hidden" name="__VIEWSTATEENCRYPTED" id="__VIEWSTATEENCRYPTED" value="" />
+<input type="hidden" name="__EVENTVALIDATION" id="__EVENTVALIDATION" value="dPrggiOhWOcc5SkgLmVDOpxG/vPLquH8W72wTGVRxBHmzfOTnjZLODXjeZ2gC2XG8oaus7MIVRjlqzdOHdGGh2eQG6ivxUYIjCfCoeYk/7SaFGMLRpTqDsR2f2ZfDy5Jx8692lNIExzxjETC8Bz8ZpADt5n1J14i+QSLT050aaDDi8t1isB/BVTfGAQbIv85ZFvckZgdoAgPvyFo3azFGZLx6spFucK+vzmuOTUuw1JsUudHuUS8XGkAQ/cG2b39fgO7lxoDIZznzTrI4knQSvepoNgqdZ4UP4jy8ltDPkKPux/Q7k+Cp0l470guwOVKIW6qHKYRNLLjmOxzW901w4diAYFkz0l4nm5SqFX/zbmVQP2oOOph7/xV+iBA0Pc18SzQVF5+JC7GZoJfHqVK5T8T9+P3dPmqIc12AEpP4YIk6x6KhQDP2djCpM1KqyeNFkKjCXofVIkR+biD6keS0uD0qWIZEaBL3pxshyCYdlk8Q+6WwEzckKRwsjyBjypYOUPJjaKGLZcYwxVxPyVVKa0J1x+MiIw5fySC2hPAAq7YEDsTJBt3j7AisS0SQKmkfwP5ENx1l5x8H3wxQM5rpaSnlDUVkAISkAxa9xoLQhPEScR5uGBTQBuH8XTl9PVjHy02fihdPiPgxs6PS0AHoLSdaIxgs9RiGDJVLJ1OtB6Lste4KMFX79F88eabwyjvmJ+yfjCEqE6xLP2gDCoPrdLYjyMqpTnVbkTumwfsTrJNTBjwMNYo6Z9H45/eS3uH2vMdtuQgP9WZ5RLP8h4qy2MLgNQUhyGmvnKUnZLUQ4HNJoSqno7XvxspcLx/i114Awn2YQ7DRgdFqPxu9MDdbM6s/5YN4xiy/I5g568yZ+mt+61DgS8q326wMIdpPrrTNwW4N/6cwOyA3xu0/lOXV+nssImMGo2DK+xv4Dhm7mFGo1hAncd+uZ/ip8Lle5WIzE9/kISXgeAenIcHCEvqSZa9Op5VqATSQg+EP9U8GrNq98nxKNIX+FC1S7hxxCADUb4y9eE9rMu0JkMwaChGQavywJa2KaLBv/d3JFK+/J5q/GH8ULNMrZuSwxHwVEe6C0vQPR9GD+9Dsw/TsbkASxRpNy4pBe2Cey0+iDnuryzW3TDaOok+Ce54FFLVHlxRWPAne2xrKOg3y++1sVnGOpoxmH2IdM3RG1SaxqX96rRLPQpIZo5uFn8nUiyVuEDrgYr3gf4rYBP86nl9WR/IvG/nJeA506DOyi30TNkIzeSfsuSyu2HuMFwRKNDGmmJ1H3ia5q32TVyq+i4c2k6M7g==" />
+
+         <a id="myBtn" onclick="topFunction()" title="Go to Top">Top</a>
+
+        <script>
+            //Get the button
+            var mybutton = document.getElementById("myBtn");
+
+            // When the user scrolls down 20px from the top of the document, show the button
+            window.onscroll = function () { scrollFunction() };
+
+            function scrollFunction() {
+                if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+                    mybutton.style.display = "block";
+                } else {
+                    mybutton.style.display = "none";
+                }
+            }
+
+            // When the user clicks on the button, scroll to the top of the document
+            function topFunction() {
+                document.body.scrollTop = 0;
+                document.documentElement.scrollTop = 0;
+            }
+        </script>
+        <div class="Page-Border">
+            <!--header start-->
+            <header class="head-section">
+                <div class="navbar navbar-default navbar-static-top container-fluid Header-Border">
+                    <div style="box-shadow: 0px 0px 20px 0px #b3e6ff;">
+                        <div class="top-area-h">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                        <span id="lbl_header"> </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="container">
+                            <div class="navbar-header">
+                                <button class="navbar-toggle" data-target=".navbar-collapse" data-toggle="collapse" type="button">
+                                    <span class="icon-bar"></span>
+                                    <span class="icon-bar"></span>
+                                    <span class="icon-bar"></span>
+                                </button>
+                                <div id="logo">
+                                    <img class="hidden-xs" src="img/slider-icon/logo.png" />
+                                    <img class="hidden-lg hidden-md hidden-sm" src="img/slider-icon/logo2.png" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+            <!--header end-->
+            <!--space for top_header start-->
+            
+            
+
+    
+
+    <!--breadcrumbs start-->
+    <div class="breadcrumbs">
+        <div class="container">
+            <div class="row ">
+                <ol class="breadcrumb">
+                    <li>
+                        <a id="ContentPlaceHolder1_lnkHome" href="javascript:__doPostBack(&#39;ctl00$ContentPlaceHolder1$lnkHome&#39;,&#39;&#39;)">HOME</a></li>
+                    <li class="active">RURAL LAND RECORD</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+    <!--breadcrumbs end-->
+
+    
+    <!--container start-->
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <i class="fa fa-files-o pr-10"></i><b>RURAL LAND RECORD (ગ્રામ્ય જમીનનો રેકર્ડ)</b>
+                    </div>
+                    <div class="panel-body Border-Side" style="padding: 5px;">
+                        <div class="bs-example">
+                            <div class="form-horizontal" role="form">
+                                <div class="alert alert-danger" role="alert">
+                                    <b>
+                                        <span class="blink">આધુનિક ખેડૂતની આગવી ઓળખ એટલે યુનિક ફાર્મર આઇડી.
+                                        </span>
+                                        <br />
+                                        <br />
+                                        <span class="blink">જે માટે ફાર્મર રજીસ્ટ્રીમાં રજીસ્ટ્રેશન કરી મેળવો આ૫નું યુનિક ફાર્મર આઇડી!
+                                        </span>
+                                        <br />
+                                        <br />
+                                        <span class="blink">ખાસ ખેડૂત, ખાસ ઓળખ!
+                                        </span>
+                                        <br />
+                                        <br />
+                                        <span class="blink">રજીસ્ટ્રીમાં આ૫ના આધાર નંબર સાથે લીંક થશે આ૫નો ૭/૧૨, જેનાથી મળશે આ૫ની જમીનનાં રેકર્ડમાં થતાં ફેરફારની સુચના માત્ર એક SMS થી!
+                                        </span>
+                                        <br />
+                                        <br />
+                                        <span class="blink">જમીનમાં થતી છેતરપીંડીથી થશે બચાવ, જો ફાર્મર રજીસ્ટ્રીની આધુનિક સુરક્ષાથી થશે જોડાણ!
+                                        </span>
+                                        <br />
+                                        <br />
+                                        <span class="blink">આજે જ કરો રજીસ્ટ્રેશન - <u><a href="https://gjfr.agristack.gov.in" target="_blank">ફાર્મર રજીસ્ટ્રી પોર્ટલ</a></u>&nbsp;&nbsp;કે&nbsp;&nbsp;<u><a href="https://play.google.com/store/apps/details?id=com.agristack.gj.farmerregistry&hl=en_IN" target="_blank">એન્ડ્રોઇડ મોબાઇલ એ૫થી.</a></u>
+                                        </span>
+                                    </b>
+                                </div>
+                                <div class="Div-Border-Side-New">
+                                    <div class="form-group" style="margin: 10px 0px 0px;">
+                                        <div class="alert alert-danger" role="alert">
+                                            <strong>
+                                                <span>** જમીનનો રેકર્ડ જોવા માટે https://anyror.gujarat.gov.in વેબ-સાઇટ સિવાય મહેસૂલ વિભાગ, ગુજરાત રાજ્ય ની અન્ય કોઇ વેબ-સાઇટ કે મોબાઇલ એપ નથી. જેની ખાસ નોંધ લેવી.</span>
+                                                <br />
+                                                <br />
+                                                <span>** The information provided online is updated, and no physical visit is required for this information.<br />
+                                                    For additional information you may visit respective office.</span>
+                                            </strong>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="Div-Border-Side-New">
+                                    <div class="form-group">
+                                        <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                            <div class="control-label text-success">
+                                                <strong>Select Any One (કોઇ એક પસંદ કરો)</strong>
+                                            </div>
+                                            <div class="control-label">
+                                                <select name="ctl00$ContentPlaceHolder1$drpLandRecord" id="ContentPlaceHolder1_drpLandRecord" class="form-control">
+	<option selected="selected" value="0">Select (પસંદ કરો)</option>
+	<option value="13">e-CHAVDI (ઈ-ચાવડી) </option>
+	<option value="15">KNOW CLOSED SURVEY NO DETAIL (બીનખેતી હુકમથી બંધ થયેલ સરવે નંબરની વિગતો જાણવા)</option>
+	<option value="11">OLD SCANNED VF-7/12 DETAILS (જૂના સ્કેન કરેલ ગા.ન. ૭/૧૨ ની વિગતો)</option>
+	<option value="6">OLD SCANNED VF-6 ENTRY DETAILS (જૂના સ્કેન કરેલ હક્ક પત્રક ગા.ન. ૬ ની વિગતો)</option>
+	<option value="1">VF-7 SURVEY NO DETAILS (ગા.ન. ૭ ની વિગતો)</option>
+	<option value="2">VF-8A KHATA DETAILS (ગા.ન. ૮અ ની વિગતો)</option>
+	<option value="3">VF-6 ENTRY DETAILS (હક્ક પત્રક ગા.ન. ૬ ની વિગતો)</option>
+	<option value="4">135-D NOTICE FOR MUTATION (હક્ક પત્રક ફેરફાર માટે ૧૩૫-ડી નોટીસ)</option>
+	<option value="5">NEW SURVEY NO FROM OLD FOR PROMULGATED VILLAGE (પ્રમોલગેશન થયેલ ગામ માટે જુના સરવે નંબર પરથી નવો સરવે નંબર)</option>
+	<option value="7">ENTRY LIST BY MONTH-YEAR (વર્ષ અને મહિના મુજબ નોંધોની વિગત)</option>
+	<option value="8">INTEGRATED SURVEY NO DETAILS (સરવે નંબરને લગતી સંપૂર્ણ માહિતી)</option>
+	<option value="9">REVENUE CASE DETAILS (જમીન રેકર્ડ ને લગતા કેસની વિગત)</option>
+	<option value="10">KNOW KHATA BY OWNER NAME (ખાતેદારના નામ પરથી ખાતુ જાણવા)</option>
+	<option value="16">KNOW OWNER DETAILS IN OTHER LANGUAGE (ખાતેદારની વિગતો અન્ય ભાષામાં જાણવા)</option>
+
+</select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="ContentPlaceHolder1_div_view_main">
+                                    <div class="Div-Border-Side-New">
+                                        <div class="form-group">
+                                            <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
+                                                <div class="control-label text-success">
+                                                    <strong>District (જીલ્લો)</strong>
+                                                </div>
+                                                <div class="control-label">
+                                                    <select name="ctl00$ContentPlaceHolder1$ddlDistrict" id="ContentPlaceHolder1_ddlDistrict" class="form-control">
+	<option selected="selected" value="0">પસંદ કરો</option>
+	<option value="01">કચ્છ</option>
+	<option value="02">બનાસકાંઠા</option>
+	<option value="03">પાટણ</option>
+	<option value="04">મહેસાણા</option>
+	<option value="05">સાબરકાંઠા</option>
+	<option value="06">ગાંધીનગર</option>
+	<option value="07">અમદાવાદ</option>
+	<option value="08">સુરેન્દ્રનગર</option>
+	<option value="09">રાજકોટ</option>
+	<option value="10">જામનગર</option>
+	<option value="11">પોરબંદર</option>
+	<option value="12">જુનાગઢ</option>
+	<option value="13">અમરેલી</option>
+	<option value="14">ભાવનગર</option>
+	<option value="15">આણંદ</option>
+	<option value="16">ખેડા</option>
+	<option value="17">પંચમહાલ</option>
+	<option value="18">દાહોદ</option>
+	<option value="19">વડોદરા</option>
+	<option value="20">નર્મદા</option>
+	<option value="21">ભરુચ</option>
+	<option value="22">સુરત</option>
+	<option value="23">ડાંગ</option>
+	<option value="24">નવસારી</option>
+	<option value="25">વલસાડ</option>
+	<option value="26">તાપી</option>
+	<option value="27">દેવભુમિ દ્વારકા</option>
+	<option value="28">મોરબી</option>
+	<option value="29">ગીર સોમનાથ</option>
+	<option value="30">બોટાદ</option>
+	<option value="31">અરવલ્લી</option>
+	<option value="32">મહિસાગર</option>
+	<option value="33">છોટાઉદેપુર</option>
+	<option value="34">વાવ-થરાદ</option>
+
+</select>
+                                                </div>
+                                            </div>
+                                            <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
+                                                <div class="control-label text-success">
+                                                    <strong>Taluka (તાલુકો)</strong>
+                                                </div>
+                                                <div class="control-label">
+                                                    <select name="ctl00$ContentPlaceHolder1$ddlTaluka" id="ContentPlaceHolder1_ddlTaluka" class="form-control" onclick="return Taluka_Validation();">
+
+</select>
+                                                </div>
+                                            </div>
+                                            <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
+                                                <div class="control-label text-success">
+                                                    <strong>Village (ગામ)</strong>
+                                                </div>
+                                                <div class="control-label">
+                                                    <select name="ctl00$ContentPlaceHolder1$ddlVillage" id="ContentPlaceHolder1_ddlVillage" class="form-control" onclick="return Village_Validation();">
+
+</select>
+                                                </div>
+                                            </div>
+                                            <div id="ContentPlaceHolder1_divSurvayno_khatano" class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
+                                                <div class="control-label text-success">
+                                                    
+                                                </div>
+                                                <div class="control-label">
+                                                    
+                                                    
+                                                    
+                                                    
+                                                    
+                                                    
+                                                    
+                                                    
+                                                    
+                                                    
+                                                    
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div id="ContentPlaceHolder1_DivCaptcha">
+                                            <div class="form-group">
+                                                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3 text-center">
+                                                    <div class="control-label text-success">
+                                                        <img id="ContentPlaceHolder1_i_captcha_1" src="data:image/png;base64,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" />
+                                                    </div>
+                                                    <div class="control-label">
+                                                        <input name="ctl00$ContentPlaceHolder1$txt_captcha_1" type="text" maxlength="6" id="ContentPlaceHolder1_txt_captcha_1" onclick="return Sno_Validation();" class="form-control" placeholder="Enter Text Shown Above" autocomplete="off" />
+                                                        
+                                                    </div>
+                                                    <div class="control-label  text-success">
+                                                        <a id="ContentPlaceHolder1_lb_refresh_1" href="javascript:__doPostBack(&#39;ctl00$ContentPlaceHolder1$lb_refresh_1&#39;,&#39;&#39;)">Refresh Code</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <br />
+                                    <div class="form-group">
+                                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center">
+                                            <input type="submit" name="ctl00$ContentPlaceHolder1$btnGo" value="Get Record Detail" onclick="return Land_Record_Validation();" id="ContentPlaceHolder1_btnGo" class="btn btn-primary " />
+                                            <input type="submit" name="ctl00$ContentPlaceHolder1$btnCancel" value="Cancel" id="ContentPlaceHolder1_btnCancel" class="btn btn-danger" />
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--container end-->
+    
+
+            <!--small footer start -->
+            <footer class="footer-small">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                            <div class="copyright">
+                                Content Owned by Revenue Department, Government of Gujarat
+                                        <br />
+                                &copy; Developed by National Informatics Centre (NIC), Gujarat State Centre, Gandhinagar
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+            <!--small footer end-->
+
+        </div>
+        <script src="js/slick.js"></script>
+
+        <script type="text/javascript">
+            $(document).on('ready', function () {
+
+                $(".vertical").slick({
+                    dots: true,
+                    vertical: false,
+                    slidesToShow: 3,
+                    autoplay: true,
+                    autoplayspeed: 500,
+                    responsive: [
+                    {
+                        breakpoint: 1024,
+                        settings: {
+                            slidesToShow: 3
+                        }
+                    },
+                    {
+                        breakpoint: 600,
+                        settings: {
+                            slidesToShow: 2
+                        }
+                    },
+                    {
+                        breakpoint: 480,
+                        settings: {
+                            slidesToShow: 1
+                        }
+                    }
+                    ]
+                });
+
+            });
+        </script>
+
+    
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {var fn = function() {$get("ContentPlaceHolder1_ToolkitScriptManager1_HiddenField").value = '';Sys.Application.remove_init(fn);};Sys.Application.add_init(fn);})();Sys.Application.add_init(function() {
+    $create(Sys.Extended.UI.FilteredTextBoxBehavior, {"ValidChars":"0123456789","id":"ContentPlaceHolder1_Ftecapcha"}, null, null, $get("ContentPlaceHolder1_txt_captcha_1"));
+});
+//]]>
+</script>
+</form>
+</body>
+</html>
+

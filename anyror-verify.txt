@@ -1,0 +1,55 @@
+
+=== Surat ===
+  Olpad (ઓલપાડ): official=103, built=99
+    OK
+  Mangrol (માંગરોલ): official=92, built=92
+    OK
+  Umarpada (ઉમરપાડા): official=62, built=62
+    OK
+  Mandvi (માંડવી): official=111, built=111
+    OK
+  Kamrej (કામરેજ): official=60, built=58
+    OK
+  Choryasi (ચોરાસી): official=36, built=36
+    OK
+  Palsana (પલસાણા): official=49, built=48
+    MISSING (1):
+      ઈંટાળવા (040)
+    EXTRA (1):
+      Italva [ઈટાળવા]
+  Bardoli (બારડોલી): official=86, built=85
+    OK
+  Mahuva (મહુવા): official=40, built=40
+    OK
+  Adajan (અડાજણ): official=16, built=16
+    OK
+  Katargam (કતારગામ): official=10, built=10
+    OK
+  Puna (પુણા): official=17, built=17
+    OK
+  Udhna (ઉધના): official=19, built=19
+    OK
+  Majura (મજુરા): official=24, built=24
+    OK
+  Abrama (અબ્રામા): official=11, built=11
+    OK
+  Areth (અરેઠ): official=38, built=38
+    OK
+  Ambika (અંબિકા): official=29, built=29
+    OK
+
+=== Navsari ===
+  Navsari (નવસારી): official=62, built=61
+    OK
+  Jalalpore (જલાલપોર): official=72, built=72
+    OK
+  Gandevi (ગણદેવી): official=60, built=61
+    OK
+  Chikhli (ચીખલી): official=66, built=66
+    OK
+  Vansda (વાંસદા): official=95, built=95
+    OK
+  Khergam (ખેરગામ): official=22, built=22
+    OK
+  Navsari City (નવસારી શહેર): official=11, built=11
+    OK
