@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { ArrowLeft, ChevronLeft, ChevronRight, Download, ExternalLink, FileText, Heart, MapPin, Maximize2, Phone, Share2, ShieldCheck, X } from 'lucide-react';
+import { ArrowLeft, ChevronLeft, ChevronRight, Download, ExternalLink, FileText, Heart, MapPin, Maximize2, Share2, ShieldCheck, X } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { readStorage, onListingsChanged, STORAGE_KEYS, addRecentlyViewed, isPropertySaved, toggleSavedProperty } from '../utils/storage';
@@ -477,8 +477,8 @@ function PropertyDetailsPage() {
                       <button type="button" aria-label={t('propertyDetails.shareProperty')} onClick={handleShare} className="rounded-full bg-white/95 p-3 text-ink shadow-sm transition hover:bg-white">
                         <Share2 size={17} />
                       </button>
-                      <button type="button" aria-label={t('propertyDetails.saveProperty')} onClick={() => { const next = toggleSavedProperty(property); setIsSaved(next.some((item) => String(item.id) === String(property.id))); }} className="rounded-full bg-white/95 p-3 text-ink shadow-sm transition hover:bg-white">
-                        {isSaved ? <Heart size={17} className="text-rose-600" /> : <Heart size={17} />}
+                      <button type="button" aria-label={t('propertyDetails.saveProperty')} onClick={() => { const next = toggleSavedProperty(property); setIsSaved(next.some((item) => String(item.id) === String(property.id))); }} className={`rounded-full bg-white/95 p-3 shadow-sm transition hover:bg-white ${isSaved ? 'text-rose-600' : 'text-ink'}`}>
+                        <Heart size={17} fill={isSaved ? 'currentColor' : 'none'} />
                       </button>
                     </div>
                   </div>
@@ -562,23 +562,6 @@ function PropertyDetailsPage() {
                 </div>
               </div>
 
-              <div className="mt-6 flex flex-col gap-3 border-t border-slate-200 pt-6">
-                {sellerCall ? (
-                  <a href={sellerCall} className="inline-flex items-center justify-center gap-2 rounded-full bg-sage px-5 py-3 text-sm font-semibold text-white transition hover:bg-sage-dark">
-                    <Phone size={16} /> {t('propertyDetails.callSeller')}
-                  </a>
-                ) : null}
-                {sellerWhatsApp ? (
-                  <a href={sellerWhatsApp} target="_blank" rel="noreferrer" className="inline-flex items-center justify-center gap-2 rounded-full border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50">
-                    <ExternalLink size={16} /> {t('common.whatsapp')}
-                  </a>
-                ) : null}
-                {sellerMail ? (
-                  <a href={sellerMail} className="inline-flex items-center justify-center gap-2 rounded-full border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50">
-                    <Download size={16} /> {t('propertyDetails.emailSeller')}
-                  </a>
-                ) : null}
-              </div>
             </div>
           </div>
         </section>
@@ -595,33 +578,6 @@ function PropertyDetailsPage() {
                   </div>
                 ))}
               </div>
-            </div>
-
-            <div className="rounded-[28px] border border-slate-200 bg-white p-5 shadow-card sm:p-6">
-              <h2 className="text-2xl font-semibold text-ink">{t('propertyDetails.propertyLocation')}</h2>
-              {property?.mapUrl || property?.googleMaps || property?.mapLink ? (
-                <div className="mt-5 space-y-4">
-                  <div className="grid gap-3 rounded-[20px] border border-slate-200 bg-slate-50 p-4 sm:grid-cols-3">
-                    <div>
-                      <p className="text-xs uppercase tracking-[0.2em] text-slate-500">{t('common.district')}</p>
-                      <p className="mt-1 font-semibold text-ink">{translateLocation(property.district || property.location, t, isGujarati)}</p>
-                    </div>
-                    <div>
-                      <p className="text-xs uppercase tracking-[0.2em] text-slate-500">{t('common.taluka')}</p>
-                      <p className="mt-1 font-semibold text-ink">{translateLocation(property.subDistrict || property.taluka, t, isGujarati)}</p>
-                    </div>
-                    <div>
-                      <p className="text-xs uppercase tracking-[0.2em] text-slate-500">{t('common.village')}</p>
-                      <p className="mt-1 font-semibold text-ink">{translateLocation(property.village, t, isGujarati)}</p>
-                    </div>
-                  </div>
-                  <a href={property.mapUrl || property.googleMaps || property.mapLink} target="_blank" rel="noreferrer" className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-primary bg-primary/10 px-4 py-3 text-sm font-semibold text-primary transition hover:bg-primary/15">
-                    <ExternalLink size={16} /> {t('propertyDetails.openInGoogleMaps')}
-                  </a>
-                </div>
-              ) : (
-                <div className="mt-5 rounded-[20px] border border-dashed border-slate-200 bg-slate-50 p-6 text-sm text-slate-600">{t('propertyDetails.locationNotAvailable')}</div>
-              )}
             </div>
 
             <div className="rounded-[28px] border border-slate-200 bg-white p-5 shadow-card sm:p-6">
@@ -705,24 +661,6 @@ function PropertyDetailsPage() {
           </div>
         </section>
       </main>
-
-      {sellerCall || sellerWhatsApp || sellerMail ? (
-        <div className="fixed inset-x-0 bottom-0 z-[60] border-t border-slate-200 bg-white/95 px-4 py-3 pb-[calc(1rem+env(safe-area-inset-bottom))] shadow-[0_-8px_30px_rgba(15,23,42,0.08)] backdrop-blur lg:hidden">
-          <div className="mx-auto grid max-w-7xl grid-cols-1 gap-2 sm:grid-cols-3">
-            {sellerCall ? (
-              <a href={sellerCall} className="min-h-[46px] rounded-full bg-sage px-4 py-3 text-center text-sm font-semibold text-white">{t('propertyDetails.callSeller')}</a>
-            ) : null}
-            {sellerWhatsApp ? (
-              <a href={sellerWhatsApp} target="_blank" rel="noreferrer" className="min-h-[46px] rounded-full border border-slate-200 bg-white px-4 py-3 text-center text-sm font-semibold text-slate-700">{t('common.whatsapp')}</a>
-            ) : null}
-            {sellerMail ? (
-              <a href={sellerMail} className="min-h-[46px] rounded-full border border-slate-200 bg-white px-4 py-3 text-center text-sm font-semibold text-slate-700">{t('propertyDetails.emailSeller')}</a>
-            ) : null}
-          </div>
-        </div>
-      ) : null}
-
-      {sellerCall || sellerWhatsApp || sellerMail ? <div className="h-[calc(5.25rem+env(safe-area-inset-bottom))] lg:hidden" /> : null}
 
       {zoomOpen ? (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/90 px-4 py-6" onClick={() => setZoomOpen(false)}>
