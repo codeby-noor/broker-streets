@@ -19,9 +19,14 @@ const savedPropertyRoutes = require('./routes/savedProperty.routes');
 const recentlyViewedRoutes = require('./routes/recentlyViewed.routes');
 const notificationRoutes = require('./routes/notification.routes');
 const adminAuthRoutes = require('./routes/admin/admin.auth.routes');
+const adminDashboardRoutes = require('./routes/admin/admin.dashboard.routes');
+const adminTeamRoutes = require('./routes/admin/admin.team.routes');
+const adminUserRoutes = require('./routes/admin/admin.user.routes');
+const adminSellerLeadRoutes = require('./routes/admin/admin.sellerLead.routes');
 const adminPropertyRoutes = require('./routes/admin/admin.property.routes');
 const adminBuyerLeadRoutes = require('./routes/admin/admin.buyerLead.routes');
 const adminEnquiryRoutes = require('./routes/admin/admin.enquiry.routes');
+const adminActivityRoutes = require('./routes/admin/admin.activity.routes');
 const ApiError = require('./utils/ApiError');
 const ApiResponse = require('./utils/ApiResponse');
 const { HTTP_STATUS } = require('./utils/constants');
@@ -82,9 +87,14 @@ app.use('/api/notifications', notificationRoutes);
 
 // Admin routes
 app.use('/api/admin/auth', adminAuthRoutes);
+app.use('/api/admin/dashboard', adminDashboardRoutes);
+app.use('/api/admin/team', adminTeamRoutes);
+app.use('/api/admin/users', adminUserRoutes);
+app.use('/api/admin/seller-leads', adminSellerLeadRoutes);
 app.use('/api/admin/properties', adminPropertyRoutes);
 app.use('/api/admin/buyer-leads', adminBuyerLeadRoutes);
 app.use('/api/admin/enquiries', adminEnquiryRoutes);
+app.use('/api/admin/activity', adminActivityRoutes);
 
 // Health check endpoint
 app.get('/health', (req, res) => {

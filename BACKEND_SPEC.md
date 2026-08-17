@@ -339,15 +339,16 @@ The frontend implements a passwordless OTP flow. The backend must replicate this
 - In development: OTP is returned in the response body and logged to console
 - In production: OTP is sent via SMS gateway only
 
-### 6.2 Admin Authentication
+### 6.2 Admin Authentication (Mobile + OTP)
 
-The current admin login accepts any email with `@` and password ≥ 4 chars. The backend will enforce:
+The admin panel authenticates via mobile number and 6-digit OTP (matching `masterGroupAuth.js`):
 
-- Fixed admin credentials via environment variables (`ADMIN_DEFAULT_EMAIL`, `ADMIN_DEFAULT_PASSWORD`)
-- Bcrypt password hashing
-- Separate `AdminUser` model to support multiple admins in the future
-- Admin JWT includes `role: 'admin'`
-- All `/api/admin/*` routes require admin middleware
+- Whitelisted / approved admin mobile numbers are stored in `AdminUser` collection
+- Only registered and active `AdminUser` mobile numbers can request an OTP on `/api/admin/auth/send-otp` (unauthorized numbers receive 403 Forbidden)
+- Superadmin boots via environment variables (`ADMIN_DEFAULT_MOBILE`, `ADMIN_DEFAULT_NAME`) on initial database connection
+- Admin JWT includes `{ userId, mobile, role: 'admin' | 'superadmin', tokenVersion }`
+- Calling `/api/admin/auth/logout` increments `tokenVersion` on `AdminUser`, revoking active tokens
+- All `/api/admin/*` routes require admin authentication (`authenticateToken` + `adminMiddleware`), and `/api/admin/team` + `/api/admin/activity` additionally require `superAdminMiddleware`.
 
 ---
 
@@ -647,7 +648,9 @@ Collection: locations
 
 ### 7.12 AdminUser
 
-**Source:** `AdminApp.jsx` (L158-212)
+### 7.12 AdminUser
+
+**Source:** `AdminApp.jsx`, `masterGroupAuth.js`
 
 ```
 Collection: adminUsers
@@ -656,15 +659,42 @@ Collection: adminUsers
 | Field | Type | Required | Default | Notes |
 |---|---|---|---|---|
 | `_id` | ObjectId | auto | — | |
-| `email` | String | ✅ | — | Unique |
-| `password` | String | ✅ | — | Bcrypt hashed |
-| `name` | String | — | `'Admin'` | |
+| `mobile` | String | ✅ | — | Unique, 10 digits |
+| `name` | String | ✅ | — | |
 | `role` | String | — | `'admin'` | Enum: `['admin', 'superadmin']` |
 | `isActive` | Boolean | — | `true` | |
-| `lastLogin` | Date | — | — | |
+| `addedBy` | ObjectId | — | `null` | Ref: `AdminUser` |
+| `lastLogin` | Date | — | `null` | |
+| `tokenVersion` | Number | — | `0` | For JWT token revocation |
 | `createdAt` | Date | auto | `Date.now` | |
 
-**Indexes:** `{ email: 1 }` (unique)
+**Indexes:** `{ mobile: 1 }` (unique)
+
+---
+
+### 7.13 AdminActivityLog
+
+**Source:** `AdminApp.jsx`, `storage.js`
+
+```
+Collection: adminActivityLogs
+```
+
+| Field | Type | Required | Default | Notes |
+|---|---|---|---|---|
+| `_id` | ObjectId | auto | — | |
+| `adminId` | ObjectId | ✅ | — | Ref: `AdminUser` |
+| `mobile` | String | ✅ | — | Admin mobile |
+| `name` | String | — | `''` | Admin display name |
+| `role` | String | ✅ | — | Enum: `['admin', 'superadmin']` |
+| `type` | String | ✅ | — | Enum: `['login', 'logout']` |
+| `status` | String | — | `'Login'` | `'Login'` / `'Logout'` |
+| `ip` | String | — | `''` | Client IP |
+| `userAgent` | String | — | `''` | User Agent |
+| `sessionInfo` | String | — | `''` | |
+| `createdAt` | Date | auto | `Date.now` | |
+
+**Indexes:** `{ mobile: 1, createdAt: -1 }`, `{ createdAt: -1 }`
 
 ---
 
@@ -812,10 +842,27 @@ All admin endpoints are prefixed with `/api/admin` and require admin authenticat
 
 #### Admin Auth
 
-| Method | Path | Auth | Body | Response |
-|---|---|---|---|---|
-| `POST` | `/api/admin/auth/login` | ❌ | `{ email, password }` | `{ token, admin }` |
-| `POST` | `/api/admin/auth/logout` | Admin | — | `{ success }` |
+| Method | Path | Auth | Body | Response | Notes |
+|---|---|---|---|---|---|
+| `POST` | `/api/admin/auth/send-otp` | ❌ | `{ mobile }` | `{ mobile, expiresAt, devOtp? }` | Rejects non-admin mobiles with 403 |
+| `POST` | `/api/admin/auth/verify-otp` | ❌ | `{ mobile, otp }` | `{ token, accessToken, refreshToken, user }` | Issues JWT pair, logs activity |
+| `POST` | `/api/admin/auth/refresh-token` | ❌ | `{ refreshToken }` | `{ token, accessToken, refreshToken, user }` | Refreshes access token |
+| `POST` | `/api/admin/auth/logout` | Admin | — | `{ success }` | Bumps tokenVersion, logs activity |
+
+#### Admin Team Management (Super Admin only)
+
+| Method | Path | Auth | Notes |
+|---|---|---|---|
+| `GET` | `/api/admin/team` | Superadmin | List team members populated with addedBy |
+| `POST` | `/api/admin/team` | Superadmin | Add new admin `{ mobile, name, role? }` |
+| `PATCH` | `/api/admin/team/:id/status` | Superadmin | Toggle status (guards against self / last superadmin) |
+| `DELETE` | `/api/admin/team/:id` | Superadmin | Delete member (guards against self / last superadmin) |
+
+#### Admin Activity Logs (Super Admin only)
+
+| Method | Path | Auth | Notes |
+|---|---|---|---|
+| `GET` | `/api/admin/activity` | Superadmin | Paginated audit trail with mobile, status, and sort filters |
 
 #### Admin Dashboard
 

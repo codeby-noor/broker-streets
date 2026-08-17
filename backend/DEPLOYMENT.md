@@ -27,8 +27,8 @@ All environment variables must be configured in your Railway project under **Set
 | `CLOUDINARY_CLOUD_NAME` | Cloudinary account cloud name. | Cloudinary Console Dashboard. |
 | `CLOUDINARY_API_KEY` | Cloudinary account API key. | Cloudinary Console Dashboard. |
 | `CLOUDINARY_API_SECRET` | Cloudinary account API secret. | Cloudinary Console Dashboard. |
-| `ADMIN_DEFAULT_EMAIL` | Initial admin account email for seeding on first boot. | Set to your primary admin email (e.g. `admin@brokerstreets.com`). |
-| `ADMIN_DEFAULT_PASSWORD` | Initial admin account password for seeding on first boot. | Strong password (e.g. `Admin@2026_SecureKey!`). |
+| `ADMIN_DEFAULT_MOBILE` | Initial super admin mobile for seeding on first boot. | 10-digit mobile number (e.g. `9876543210`). |
+| `ADMIN_DEFAULT_NAME` | Initial super admin display name for seeding on first boot. | Super admin name (e.g. `Super Admin`). |
 
 ---
 

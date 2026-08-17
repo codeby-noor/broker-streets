@@ -1,24 +1,19 @@
 const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
 const env = require('../config/env');
 
 const adminUserSchema = new mongoose.Schema(
   {
-    email: {
+    mobile: {
       type: String,
-      required: [true, 'Email is required'],
+      required: [true, 'Mobile number is required'],
       unique: true,
       trim: true,
-      lowercase: true,
+      match: [/^[0-9]{10}$/, 'Mobile number must be exactly 10 digits'],
       index: true,
-    },
-    password: {
-      type: String,
-      required: [true, 'Password is required'],
     },
     name: {
       type: String,
-      default: 'Admin',
+      required: [true, 'Name is required'],
       trim: true,
     },
     role: {
@@ -30,9 +25,18 @@ const adminUserSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
+    addedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'AdminUser',
+      default: null,
+    },
     lastLogin: {
       type: Date,
       default: null,
+    },
+    tokenVersion: {
+      type: Number,
+      default: 0,
     },
   },
   {
@@ -44,31 +48,32 @@ adminUserSchema.set('toJSON', {
   transform: (doc, ret) => {
     ret.id = ret._id;
     delete ret._id;
-    delete ret.password;
     delete ret.__v;
     return ret;
   },
 });
 
 /**
- * Bootstrap default admin user if no admin accounts exist
+ * Bootstrap default superadmin user if no admin accounts exist
  */
-adminUserSchema.statics.bootstrapDefaultAdmin = async function () {
+adminUserSchema.statics.bootstrapDefaultSuperAdmin = async function () {
   try {
     const count = await this.countDocuments();
     if (count === 0) {
-      const hashedPassword = await bcrypt.hash(env.adminDefaultPassword, 10);
+      const defaultMobile = env.adminDefaultMobile || '9876543210';
+      const defaultName = env.adminDefaultName || 'Super Admin';
       await this.create({
-        email: env.adminDefaultEmail.toLowerCase(),
-        password: hashedPassword,
-        name: 'System Admin',
+        mobile: defaultMobile,
+        name: defaultName,
         role: 'superadmin',
         isActive: true,
+        addedBy: null,
+        tokenVersion: 0,
       });
-      console.log(`[AdminUser] Bootstrapped default admin account (${env.adminDefaultEmail})`);
+      console.log(`[AdminUser] Bootstrapped default superadmin account (${defaultMobile} - ${defaultName})`);
     }
   } catch (err) {
-    console.error('[AdminUser] Error bootstrapping default admin account:', err.message);
+    console.error('[AdminUser] Error bootstrapping default superadmin account:', err.message);
   }
 };
 

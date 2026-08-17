@@ -34,8 +34,8 @@ const env = {
   cloudinaryCloudName: process.env.CLOUDINARY_CLOUD_NAME || '',
   cloudinaryApiKey: process.env.CLOUDINARY_API_KEY || '',
   cloudinaryApiSecret: process.env.CLOUDINARY_API_SECRET || '',
-  adminDefaultEmail: process.env.ADMIN_DEFAULT_EMAIL || 'admin@brokerstreets.com',
-  adminDefaultPassword: process.env.ADMIN_DEFAULT_PASSWORD || 'Admin@123',
+  adminDefaultMobile: process.env.ADMIN_DEFAULT_MOBILE || '9876543210',
+  adminDefaultName: process.env.ADMIN_DEFAULT_NAME || 'Super Admin',
 };
 
 if (env.nodeEnv === 'production' && !env.enableRealSms) {
@@ -48,8 +48,8 @@ if (env.nodeEnv === 'production') {
   requiredEnvVars.push(
     'JWT_SECRET',
     'JWT_REFRESH_SECRET',
-    'ADMIN_DEFAULT_EMAIL',
-    'ADMIN_DEFAULT_PASSWORD',
+    'ADMIN_DEFAULT_MOBILE',
+    'ADMIN_DEFAULT_NAME',
     'ENABLE_REAL_SMS',
     'SMS_API_KEY',
     'SMS_TEMPLATE_ID'
