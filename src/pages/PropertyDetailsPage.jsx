@@ -245,13 +245,24 @@ function PropertyDetailsPage() {
     try {
       if (navigator.share) {
         await navigator.share({ title: property?.title || t('propertyDetails.propertyTitleFallback'), text: shareText, url: shareUrl });
-      } else if (navigator.clipboard) {
+        return;
+      }
+      if (navigator.clipboard) {
         await navigator.clipboard.writeText(shareUrl);
         toast.info(t('propertyDetails.propertyLinkCopied'));
+        return;
       }
     } catch (error) {
-      toast.error(t('propertyDetails.shareUnavailable'));
+      // User cancelled/closed the native share dialog — silently ignore.
+      if (error?.name === 'AbortError') {
+        return;
+      }
     }
+    // Reaching here means:
+    //  - navigator.share threw a genuine unexpected error, OR
+    //  - navigator.clipboard threw a genuine unexpected error, OR
+    //  - neither navigator.share nor navigator.clipboard is available.
+    toast.error(t('propertyDetails.shareUnavailable'));
   };
 
   useEffect(() => {
