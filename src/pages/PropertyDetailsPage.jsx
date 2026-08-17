@@ -457,6 +457,11 @@ function PropertyDetailsPage() {
   const sellerCall = sellerPhone ? `tel:${sellerPhone}` : '';
   const sellerMail = sellerEmail ? `mailto:${sellerEmail}` : '';
 
+  const heroPriceText = formatPrice(property.priceAmount || property.price, t, isGujarati);
+  const heroPriceIsRequest = heroPriceText === (isGujarati ? 'કિંમત માટે સંપર્ક કરો' : 'Price on request');
+  const heroUnitText = translatePriceUnit(property.priceUnit, isGujarati);
+  const heroAreaText = translateArea(property?.landArea || property?.area, isGujarati);
+
   return (
     <div className="-mx-4 -mt-8 bg-background pb-24 sm:-mx-6 lg:-mx-8 lg:bg-[#FFFEFE]">
       <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-12">
@@ -498,6 +503,55 @@ function PropertyDetailsPage() {
                     <div className="flex gap-2">
                       <button type="button" onClick={handlePrev} className="rounded-full border border-white/80 bg-white/90 p-2 shadow-sm"><ChevronLeft size={18} /></button>
                       <button type="button" onClick={handleNext} className="rounded-full border border-white/80 bg-white/90 p-2 shadow-sm"><ChevronRight size={18} /></button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Mobile hero — distinctive property-information surface (hidden on desktop) */}
+              <div className="lg:hidden">
+                <div className="relative overflow-hidden bg-[linear-gradient(180deg,#FFFFFF_0%,#F1F5F3_100%)]">
+                  <div className="absolute inset-x-0 top-0 h-[3px] bg-sage" />
+                  <div className="px-4 pb-7 pt-6 sm:px-6">
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.25em] text-sage">
+                      {translatePropertyType(propertyTypeLabel, t, isGujarati)}
+                    </p>
+                    <h1 className="mt-2 text-[26px] font-bold leading-tight tracking-tight text-ink">{propertyTitle}</h1>
+                    <div className="mt-3 flex items-center gap-2 text-sm text-slate-600">
+                      <MapPin size={16} className="shrink-0 text-sage" />
+                      <span>{propertyLocationLabel}</span>
+                    </div>
+                    <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-sm">
+                      <span className="flex items-center gap-1.5 font-semibold text-emerald-700">
+                        <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-600" />
+                        {translateStatus(property.status, isGujarati)}
+                      </span>
+                      {property?.verified ? (
+                        <span className="flex items-center gap-1.5 font-semibold text-sage">
+                          <ShieldCheck size={14} className="shrink-0" />
+                          {t('propertyDetails.verifiedListing')}
+                        </span>
+                      ) : null}
+                    </div>
+                    <div className="mt-5 border-t border-slate-200/70 pt-5">
+                      <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">{t('propertyDetails.landPrice')}</p>
+                      <p className="mt-1.5 text-4xl font-bold tracking-tight text-ink">{heroPriceText}</p>
+                      {!heroPriceIsRequest && (property.priceUnit || property?.landArea || property?.area) ? (
+                        <p className="mt-1 text-sm font-medium text-slate-500">
+                          {property.priceUnit ? `${isGujarati ? 'પ્રતિ' : 'per'} ${heroUnitText}` : ''}
+                          {property.priceUnit && (property?.landArea || property?.area) ? ' · ' : ''}
+                          {property?.landArea || property?.area ? heroAreaText : ''}
+                        </p>
+                      ) : null}
+                    </div>
+                    <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-slate-600">
+                      <span>
+                        {t('propertyDetails.posted')}: {postedDate === 'Recently Listed' || postedDate === 'recently listed' ? t('propertyDetails.recentlyListed') : postedDate}
+                      </span>
+                      <span className="text-slate-300">•</span>
+                      <span>
+                        {t('propertyDetails.verified')}: {property.verified ? t('propertyDetails.yes') : t('propertyDetails.no')}
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -551,7 +605,7 @@ function PropertyDetailsPage() {
               </div>
             </div>
 
-            <div className="flex flex-col justify-between p-4 pt-5 sm:p-6 lg:border-l lg:p-6">
+            <div className="hidden flex-col justify-between lg:flex lg:border-l lg:p-6">
               <div>
                 <div className="flex flex-wrap items-center gap-2">
                   <span className={`rounded-full px-2.5 py-1 text-[11px] font-semibold lg:px-3 lg:py-1.5 lg:text-xs ${propertyTypeLabel.toLowerCase().includes('agricultural') ? 'bg-emerald-100 text-emerald-700' : 'bg-sky-100 text-sky-700'}`}>
@@ -593,14 +647,17 @@ function PropertyDetailsPage() {
         <section className="grid gap-10 lg:grid-cols-[1.05fr_360px] lg:gap-8">
           <div className="space-y-10 lg:space-y-8">
             <section className="lg:rounded-[28px] lg:border lg:border-slate-200 lg:bg-white lg:p-6 lg:shadow-card">
-              <h2 className="text-[22px] font-semibold tracking-tight text-ink lg:text-2xl">{t('propertyDetails.quickOverview')}</h2>
-              <div className="mt-4 grid grid-cols-2 gap-x-4 gap-y-5 lg:mt-5 lg:grid-cols-2 lg:gap-3">
-                {overviewItems.map((item) => (
-                  <div key={item.label} className="lg:rounded-[20px] lg:border lg:border-slate-200 lg:bg-slate-50 lg:p-4">
-                    <p className="text-[11px] font-semibold uppercase tracking-[0.3em] text-slate-500">{item.label}</p>
-                    <p className="mt-1 text-[15px] font-semibold text-ink lg:mt-2 lg:text-sm">{item.value}</p>
-                  </div>
-                ))}
+              <h2 className="text-[22px] font-semibold tracking-tight text-ink lg:hidden">{t('common.propertyDetails')}</h2>
+              <h2 className="hidden text-2xl font-semibold text-ink lg:block">{t('propertyDetails.quickOverview')}</h2>
+              <div className="mt-3 border-t border-slate-200/60 pt-1 lg:mt-5 lg:border-t-0 lg:pt-0">
+                <div className="grid grid-cols-2 gap-x-4 gap-y-4 lg:grid-cols-2 lg:gap-3">
+                  {overviewItems.map((item) => (
+                    <div key={item.label} className="lg:rounded-[20px] lg:border lg:border-slate-200 lg:bg-slate-50 lg:p-4">
+                      <p className="text-[11px] font-semibold uppercase tracking-[0.3em] text-slate-500">{item.label}</p>
+                      <p className="mt-1 text-[15px] font-semibold text-ink lg:mt-2 lg:text-sm">{item.value}</p>
+                    </div>
+                  ))}
+                </div>
               </div>
             </section>
 
