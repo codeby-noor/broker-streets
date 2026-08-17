@@ -2,6 +2,11 @@ const mongoose = require('mongoose');
 
 const adminActivityLogSchema = new mongoose.Schema(
   {
+    sessionId: {
+      type: String,
+      required: [true, 'Session ID is required'],
+      index: true,
+    },
     adminId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'AdminUser',
@@ -57,6 +62,7 @@ const adminActivityLogSchema = new mongoose.Schema(
   }
 );
 
+adminActivityLogSchema.index({ sessionId: 1, createdAt: -1 });
 adminActivityLogSchema.index({ mobile: 1, createdAt: -1 });
 adminActivityLogSchema.index({ createdAt: -1 });
 

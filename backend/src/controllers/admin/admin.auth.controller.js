@@ -1,3 +1,4 @@
+const crypto = require('crypto');
 const AdminUser = require('../../models/AdminUser');
 const AdminActivityLog = require('../../models/AdminActivityLog');
 const { createAndSendOtp, verifyOtp } = require('../../services/otp.service');
@@ -56,9 +57,11 @@ const verifyOtpController = asyncHandler(async (req, res) => {
   admin.lastLogin = new Date();
   await admin.save();
 
-  // Record admin login activity log
+  // Record admin login activity log with unique sessionId
+  const sessionId = crypto.randomUUID();
   try {
     await AdminActivityLog.create({
+      sessionId,
       adminId: admin._id,
       mobile: admin.mobile,
       name: admin.name || '',
@@ -93,9 +96,18 @@ const verifyOtpController = asyncHandler(async (req, res) => {
 const logout = asyncHandler(async (req, res) => {
   await AdminUser.findByIdAndUpdate(req.user._id, { $inc: { tokenVersion: 1 } });
 
+  // Look up the most recent login log to pair the logout event to the same sessionId
+  const lastLoginLog = await AdminActivityLog.findOne({
+    adminId: req.user._id,
+    type: 'login',
+  }).sort({ createdAt: -1 });
+
+  const sessionId = lastLoginLog?.sessionId || crypto.randomUUID();
+
   // Record admin logout activity log
   try {
     await AdminActivityLog.create({
+      sessionId,
       adminId: req.user._id,
       mobile: req.user.mobile,
       name: req.user.name || '',
