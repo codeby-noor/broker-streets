@@ -1736,8 +1736,9 @@ export const propertyTitleTranslationsGu = {
   'Commercial NA Plot': 'વ્યાવસાયિક બિન-કૃષિ પ્લોટ',
   'Industrial NA Plot': 'ઔદ્યોગિક બિન-કૃષિ પ્લોટ',
   'Investment NA Plot': 'રોકાણ બિન-કૃષિ પ્લોટ',
-  'Modern Villa with Garden View': 'બગીચાના દૃશ્ય સાથેનો આધુનિક વિલા',
-  'Non-Agricultural Land in Dhamdachha': 'ધામડાછામાં બિનખેતી જમીન',
+  'Modern Villa with Garden View': 'ગાર્ડન વ્યૂ સાથેનો આધુનિક વિલા',
+  'Non-Agricultural Land in Dhamdachha': 'ધમડાછામાં બિન-કૃષિ જમીન',
+  'Non-Agricultural Land in Dhamdacha': 'ધમડાછામાં બિન-કૃષિ જમીન',
   'Spacious Flat': 'મોટો ફ્લેટ',
   'Sea-facing Penthouse': 'દરિયા કિનારે પેન્ટહાઉસ',
   'Premium Office Space': 'પ્રિમિયમ ઓફિસ સ્પેસ',
@@ -2414,6 +2415,14 @@ export function getPropertyDisplayTitle(title, language) {
   const rawStr = String(title).trim();
   if (!rawStr) return '';
   if (language !== 'gu') return rawStr;
+
+  // Handle "(Copy)" suffix for duplicated properties
+  const copyMatch = rawStr.match(/^(.*?)\s*\(Copy\)\s*$/i);
+  if (copyMatch) {
+    const baseTitle = copyMatch[1].trim();
+    const translatedBase = getPropertyDisplayTitle(baseTitle, 'gu');
+    return `${translatedBase} (નકલ)`;
+  }
 
   if (propertyTitleTranslationsGu[rawStr]) {
     return propertyTitleTranslationsGu[rawStr];

@@ -474,7 +474,7 @@ function Dashboard() {
 
 /* ---------------- PROPERTIES PAGE ---------------- */
 function PropertiesPage({ navigate }) {
-  const { t, isGujarati } = useLanguage();
+  const { t, isGujarati, getPropertyDisplayTitle } = useLanguage();
   const [query, setQuery] = useState('');
   const [status, setStatus] = useState('All');
   const [type, setType] = useState('All');
@@ -535,7 +535,7 @@ function PropertiesPage({ navigate }) {
   const row = (p) => (
     <tr key={p.id}>
       <td>
-        <div className="fw-semibold">{p.title || p.name}</div>
+        <div className="fw-semibold">{getPropertyDisplayTitle(p.title || p.name)}</div>
         <div className="small text-muted">{p.id}</div>
       </td>
       <td>{p.sellerName || p.ownerName || '—'}</td>
@@ -633,7 +633,7 @@ function PropertiesPage({ navigate }) {
           {filtered.map((p) => (
             <div key={p.id} className="admin-mobile-card">
               <div className="card-head">
-                <div className="fw-semibold">{p.title || p.name}</div>
+                <div className="fw-semibold">{getPropertyDisplayTitle(p.title || p.name)}</div>
                 <span className={`admin-status-badge ${statusBadgeClass(p.status)}`}>{translateDisplayValue(p.status, t, isGujarati)}</span>
               </div>
               <div className="mt-2">
@@ -672,7 +672,7 @@ function PropertiesPage({ navigate }) {
         <div className="modal fade show d-block" tabIndex="-1" style={{ background: 'rgba(2,6,23,0.65)' }}>
           <div className="modal-dialog modal-lg modal-dialog-centered">
             <div className="modal-content border-0 rounded-4">
-              <div className="modal-header border-0"><h5 className="modal-title fw-bold">{viewing.title || viewing.name}</h5><button className="btn-close" onClick={() => setViewing(null)} /></div>
+              <div className="modal-header border-0"><h5 className="modal-title fw-bold">{getPropertyDisplayTitle(viewing.title || viewing.name)}</h5><button className="btn-close" onClick={() => setViewing(null)} /></div>
               <div className="modal-body p-4">
                 <div className="admin-detail-row"><span className="detail-label">ID</span><span className="detail-value">{viewing.id}</span></div>
                 <div className="admin-detail-row"><span className="detail-label">{t('admin.status')}</span><span className={`admin-status-badge ${statusBadgeClass(viewing.status)}`}>{translateDisplayValue(viewing.status, t, isGujarati)}</span></div>

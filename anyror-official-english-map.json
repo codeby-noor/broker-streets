@@ -312,10 +312,10 @@
     "taluka": "Jalalpore"
   },
   "Dihen": {
-    "gujarati": "ઉધના",
-    "code": "024",
+    "gujarati": "દીહેણ",
+    "code": "083",
     "district": "Surat",
-    "taluka": "Udhna"
+    "taluka": "Olpad"
   },
   "Narthan": {
     "gujarati": "નરથાણ",
@@ -450,10 +450,10 @@
     "taluka": "Olpad"
   },
   "Mor": {
-    "gujarati": "ઉમરા",
-    "code": "059",
+    "gujarati": "મોર",
+    "code": "036",
     "district": "Surat",
-    "taluka": "Ambika"
+    "taluka": "Olpad"
   },
   "Morthan": {
     "gujarati": "મોરથાણ",
@@ -2694,10 +2694,10 @@
     "taluka": "Navsari City"
   },
   "Isroli": {
-    "gujarati": "સુરાલી",
-    "code": "038",
+    "gujarati": "ઈસરોલી",
+    "code": "028",
     "district": "Surat",
-    "taluka": "Bardoli"
+    "taluka": "Palsana"
   },
   "Ena": {
     "gujarati": "એના",
@@ -2724,8 +2724,8 @@
     "taluka": "Palsana"
   },
   "Karala": {
-    "gujarati": "કારેલી",
-    "code": "017",
+    "gujarati": "કરાળા",
+    "code": "013",
     "district": "Surat",
     "taluka": "Palsana"
   },

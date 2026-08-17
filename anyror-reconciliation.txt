@@ -1889,7 +1889,7 @@ Current villages: 46 | AnyRoR villages: 49 | Matched: 5
   Vadadala [વદદલ]
   Vanesa [વનેસ]
   Vankaneda [વનકનેદ]
-  Vanzolia [વનzોલિઆ]
+  Vanzolia [વન્ઝોલિયા]
 
 -- IN ANYROR BUT NOT FOUND IN CURRENT (44) --
   અંત્રોલી [english? (no reverse match)]

@@ -134,32 +134,26 @@ for (const [district, talukas] of Object.entries(current)) {
     }
 }
 
-// Pick best English candidate for a given AnyRoR village
+// Pick best English candidate for a given AnyRoR village.
+// IMPORTANT: matches are ONLY accepted when the English village is in the SAME
+// district AND SAME taluka as the Gujarati village. Cross-taluka matches are
+// rejected because village codes are NOT unique across talukas — accepting a
+// cross-taluka match caused wrong mappings (e.g. Dihen/Olpad -> ઉધના/Udhna).
 function pickEnglish(guj, district, talukaEng) {
     const norm = normalizeGuj(guj);
-    // 1. normalized Gujarati match
-    const normCands = gujNormToEnglish.get(norm) || [];
+    // 1. normalized Gujarati match — same taluka only
+    const normCands = (gujNormToEnglish.get(norm) || []).filter((c) => c.district === district && c.taluka === talukaEng);
     if (normCands.length) {
-        let best = normCands[0];
-        for (const c of normCands) {
-            if (c.district === district && best.district !== district) { best = c; continue; }
-            if (c.district === district && c.taluka === talukaEng && (best.district !== district || best.taluka !== talukaEng)) { best = c; continue; }
-        }
-        return { english: best.english, source: 'gujarati-match' };
+        return { english: normCands[0].english, source: 'gujarati-match' };
     }
-    // 2. transliteration skeleton match
+    // 2. transliteration skeleton match — same taluka only
     const translit = transliterate(guj).toLowerCase();
     const sk = skeleton(translit);
-    const skCands = skeletonToEnglish.get(sk) || [];
+    const skCands = (skeletonToEnglish.get(sk) || []).filter((c) => c.district === district && c.taluka === talukaEng);
     if (skCands.length) {
-        let best = skCands[0];
-        for (const c of skCands) {
-            if (c.district === district && best.district !== district) { best = c; continue; }
-            if (c.district === district && c.taluka === talukaEng && (best.district !== district || best.taluka !== talukaEng)) { best = c; continue; }
-        }
-        return { english: best.english, source: 'transliteration-match' };
+        return { english: skCands[0].english, source: 'transliteration-match' };
     }
-    // 3. fallback: transliterate
+    // 3. fallback: transliterate (no English counterpart found in same taluka)
     return { english: transliterate(guj), source: 'transliterated' };
 }
 
