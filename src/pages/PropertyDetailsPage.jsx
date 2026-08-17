@@ -662,6 +662,20 @@ function PropertyDetailsPage() {
             </section>
 
             <section className="lg:rounded-[28px] lg:border lg:border-slate-200 lg:bg-white lg:p-6 lg:shadow-card">
+              <h2 className="text-[22px] font-semibold tracking-tight text-ink lg:text-2xl">{t('propertyDetails.propertyFeatures')}</h2>
+              <div className="mt-3 border-t border-slate-200/60 pt-1 lg:mt-5 lg:border-t-0 lg:pt-0">
+                <div className="grid grid-cols-2 gap-x-4 gap-y-4 lg:grid-cols-2 lg:gap-3">
+                  {featureItems.filter((item) => item.available).map((item) => (
+                    <div key={item.label} className="lg:rounded-[20px] lg:border lg:border-slate-200 lg:bg-slate-50 lg:p-4">
+                      <p className="text-[11px] font-semibold uppercase tracking-[0.3em] text-slate-500">{item.label}</p>
+                      <p className="mt-1 text-[15px] font-semibold text-ink lg:mt-2 lg:text-sm">{item.value}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </section>
+
+            <section className="lg:rounded-[28px] lg:border lg:border-slate-200 lg:bg-white lg:p-6 lg:shadow-card">
               <h2 className="text-[22px] font-semibold tracking-tight text-ink lg:text-2xl">{t('propertyDetails.propertyDocuments')}</h2>
               <div className="mt-4 lg:mt-5">
                 {documentItems.length ? (
