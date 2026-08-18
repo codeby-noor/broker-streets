@@ -42,7 +42,7 @@ function RegisterPage() {
       await signUp.authenticateWithRedirect({
         strategy: 'oauth_google',
         redirectUrl: '/sso-callback',
-        redirectUrlComplete: '/',
+        redirectUrlComplete: '/complete-profile',
       });
     } catch (err) {
       console.error('Google Sign-Up error:', err);

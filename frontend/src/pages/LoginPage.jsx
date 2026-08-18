@@ -25,7 +25,7 @@ function LoginPage() {
       await signIn.authenticateWithRedirect({
         strategy: 'oauth_google',
         redirectUrl: '/sso-callback',
-        redirectUrlComplete: '/',
+        redirectUrlComplete: '/complete-profile',
       });
     } catch (err) {
       console.error('Google Sign-In error:', err);
