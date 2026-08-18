@@ -15,6 +15,7 @@ import {
   Calculator,
   Compass,
   Scale,
+  ChevronDown,
 } from 'lucide-react';
 import { getSubmissionDestination } from '../utils/formNavigation';
 import { sampleProperties } from '../utils/data';
@@ -57,11 +58,21 @@ const locationCardThemes = [
   { iconBg: 'bg-rose-100 text-rose-700', border: 'border-rose-200/70 hover:border-rose-400', from: 'from-rose-50', to: 'to-white' },
 ];
 
+// FAQ items (translation keys)
+const faqItems = [
+  { q: 'home.faq1Q', a: 'home.faq1A' },
+  { q: 'home.faq2Q', a: 'home.faq2A' },
+  { q: 'home.faq3Q', a: 'home.faq3A' },
+  { q: 'home.faq4Q', a: 'home.faq4A' },
+  { q: 'home.faq5Q', a: 'home.faq5A' },
+];
+
 function HomePage() {
   const navigate = useNavigate();
   const { t, getPropertyDisplayTitle, isGujarati } = useLanguage();
   const [latestProperties, setLatestProperties] = useState([]);
   const [contactModal, setContactModal] = useState(null);
+  const [openFaq, setOpenFaq] = useState(null);
 
   // Search state
   const [searchType, setSearchType] = useState('');
@@ -121,7 +132,7 @@ function HomePage() {
           <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
             <div className="space-y-4">
               <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-sage">
-                <Sparkles size={13} /> {t('app.subtitle')}
+                <Sparkles size={13} /> {t('home.hero.heading')}
               </span>
               <h1 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl lg:text-4xl">
                 {t('home.hero.title')}
@@ -359,27 +370,65 @@ function HomePage() {
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
             <div className="rounded-xl border border-slate-100 bg-slate-50/60 p-3">
               <ShieldCheck size={18} className="text-sage" />
-              <h4 className="mt-1.5 text-xs font-bold text-slate-900">{t('home.verifiedListingTitle')}</h4>
-              <p className="mt-0.5 text-[11px] text-slate-500 line-clamp-2">{t('home.verifiedListingDescription')}</p>
+              <h4 className="mt-1.5 text-xs font-bold text-slate-900">{t('home.whyChoose1Title')}</h4>
+              <p className="mt-0.5 text-[11px] text-slate-500 line-clamp-2">{t('home.whyChoose1Desc')}</p>
             </div>
 
             <div className="rounded-xl border border-slate-100 bg-slate-50/60 p-3">
               <MapPin size={18} className="text-sage" />
-              <h4 className="mt-1.5 text-xs font-bold text-slate-900">{t('home.localExpertiseTitle')}</h4>
-              <p className="mt-0.5 text-[11px] text-slate-500 line-clamp-2">{t('home.localExpertiseDescription')}</p>
+              <h4 className="mt-1.5 text-xs font-bold text-slate-900">{t('home.whyChoose2Title')}</h4>
+              <p className="mt-0.5 text-[11px] text-slate-500 line-clamp-2">{t('home.whyChoose2Desc')}</p>
             </div>
 
             <div className="rounded-xl border border-slate-100 bg-slate-50/60 p-3">
               <Users size={18} className="text-sage" />
-              <h4 className="mt-1.5 text-xs font-bold text-slate-900">{t('home.directContactTitle')}</h4>
-              <p className="mt-0.5 text-[11px] text-slate-500 line-clamp-2">{t('home.directContactDescription')}</p>
+              <h4 className="mt-1.5 text-xs font-bold text-slate-900">{t('home.whyChoose3Title')}</h4>
+              <p className="mt-0.5 text-[11px] text-slate-500 line-clamp-2">{t('home.whyChoose3Desc')}</p>
             </div>
 
             <div className="rounded-xl border border-slate-100 bg-slate-50/60 p-3">
               <Sparkles size={18} className="text-sage" />
-              <h4 className="mt-1.5 text-xs font-bold text-slate-900">{t('home.trustedPlatformTitle')}</h4>
-              <p className="mt-0.5 text-[11px] text-slate-500 line-clamp-2">{t('home.trustedPlatformDesc')}</p>
+              <h4 className="mt-1.5 text-xs font-bold text-slate-900">{t('home.whyChoose4Title')}</h4>
+              <p className="mt-0.5 text-[11px] text-slate-500 line-clamp-2">{t('home.whyChoose4Desc')}</p>
             </div>
+          </div>
+        </section>
+
+        {/* 7.5 FAQ SECTION */}
+        <section className="rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm sm:p-5">
+          <h2 className="mb-3 text-xs font-bold uppercase tracking-wider text-slate-500">
+            {t('home.faqTitle')}
+          </h2>
+
+          <div className="space-y-2.5">
+            {faqItems.map((item, index) => {
+              const isOpen = openFaq === index;
+              return (
+                <div key={index} className="overflow-hidden rounded-xl border border-slate-100 bg-slate-50/60">
+                  <button
+                    type="button"
+                    onClick={() => setOpenFaq(isOpen ? null : index)}
+                    aria-expanded={isOpen}
+                    className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left transition hover:bg-slate-100/70"
+                  >
+                    <span className="text-sm font-bold text-slate-900">{t(item.q)}</span>
+                    <ChevronDown
+                      size={16}
+                      className={`flex-shrink-0 text-sage transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}
+                    />
+                  </button>
+                  <div
+                    className={`grid transition-all duration-300 ease-in-out ${isOpen ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}`}
+                  >
+                    <div className="overflow-hidden">
+                      <p className="whitespace-pre-line px-4 pb-3 text-xs leading-relaxed text-slate-600 sm:text-sm">
+                        {t(item.a)}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </section>
 

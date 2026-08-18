@@ -222,7 +222,7 @@ h6 {
 /* Small uppercase section labels */
 
 .eyebrow {
-  color: #154d32;
+  color: #1D5CA9;
   font-size: 0.72rem;
   font-weight: 800;
   letter-spacing: 0.16em;
@@ -285,8 +285,8 @@ textarea {
 
 .field-control:focus {
   outline: none;
-  border-color: #154d32;
-  box-shadow: 0 0 0 4px rgba(21, 77, 50, 0.15);
+  border-color: #1D5CA9;
+  box-shadow: 0 0 0 4px rgba(29, 92, 169, 0.15);
 }
 
 .error-style {
@@ -308,9 +308,9 @@ textarea {
 }
 
 .bg-primary {
-  background-color: #2563eb;
+  background-color: #1D5CA9;
 }
 
 .text-primary {
-  color: #2563eb;
+  color: #1D5CA9;
 }

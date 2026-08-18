@@ -8,17 +8,17 @@ function ContactPage() {
       <p className="mt-4 text-base leading-7 text-slate-600">{t('contact.description')}</p>
       <div className="mt-8 grid gap-6 sm:grid-cols-2">
         <div className="rounded-[28px] border border-slate-200 bg-slate-50 p-6">
-          <p className="text-sm font-semibold text-slate-800">{t('contact.phone')}</p>
-          <p className="mt-2 text-base text-slate-700">+91 98765 43210</p>
+          <p className="text-sm font-semibold text-slate-800">{t('contact.callUs')}</p>
+          <a href="tel:+919512722011" className="mt-2 block text-base text-slate-700 hover:text-primary">95127 22011</a>
         </div>
         <div className="rounded-[28px] border border-slate-200 bg-slate-50 p-6">
-          <p className="text-sm font-semibold text-slate-800">{t('contact.email')}</p>
-          <p className="mt-2 text-base text-slate-700">support@brokerstreets.com</p>
+          <p className="text-sm font-semibold text-slate-800">{t('contact.whatsappUs')}</p>
+          <a href="https://wa.me/919512722011" target="_blank" rel="noopener noreferrer" className="mt-2 block text-base text-slate-700 hover:text-primary">95127 22011</a>
         </div>
-      </div>
-      <div className="mt-8 rounded-[28px] border border-slate-200 bg-slate-50 p-6">
-        <p className="text-sm font-semibold text-slate-800">{t('contact.headOffice')}</p>
-        <p className="mt-2 text-base text-slate-700">{t('contact.officeLocation')}</p>
+        <div className="rounded-[28px] border border-slate-200 bg-slate-50 p-6">
+          <p className="text-sm font-semibold text-slate-800">{t('contact.emailId')}</p>
+          <a href="mailto:vibysolution@gmail.com" className="mt-2 block text-base text-slate-700 hover:text-primary">vibysolution@gmail.com</a>
+        </div>
       </div>
     </div>
   );
