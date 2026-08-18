@@ -8,7 +8,8 @@ const corsOptions = require('./config/cors');
 const env = require('./config/env');
 const { apiRateLimiter } = require('./middleware/rateLimiter.middleware');
 const errorHandler = require('./middleware/errorHandler.middleware');
-const authRoutes = require('./routes/auth.routes');
+const { clerkMiddleware } = require('@clerk/express');
+const webhookRoutes = require('./routes/webhook.routes');
 const userRoutes = require('./routes/user.routes');
 const listingRoutes = require('./routes/listing.routes');
 const buyerLeadRoutes = require('./routes/buyerLead.routes');
@@ -49,11 +50,15 @@ if (env.nodeEnv === 'development') {
   app.use(morgan('combined'));
 }
 
-// Item 2: Removed unused authenticateToken import (routes handle their own auth)
+// Mount Webhook endpoints before standard JSON body parser (Svix needs raw body)
+app.use('/api/webhooks', webhookRoutes);
 
 // Body parsers
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+
+// Clerk authentication middleware at app level
+app.use(clerkMiddleware());
 
 // Serve uploaded files statically
 app.use(
@@ -66,10 +71,6 @@ app.use(
 
 // Rate limiting for API endpoints
 app.use('/api', apiRateLimiter);
-
-// Mount auth routes on both the documented /api/auth prefix and the
-// legacy /auth prefix for backward compatibility.
-app.use(['/auth', '/api/auth'], authRoutes);
 
 // User profile routes
 app.use('/api/users', userRoutes);

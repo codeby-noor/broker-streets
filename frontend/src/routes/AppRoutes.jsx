@@ -22,6 +22,8 @@ import SellerForm from '../pages/SellerForm';
 import SellerDashboard from '../pages/SellerDashboard';
 import BuyerRequirementsPage from '../pages/BuyerRequirementsPage';
 import LocationDetailsPage from '../pages/LocationDetailsPage';
+import SSOCallback from '../pages/SSOCallback';
+import CompleteProfilePage from '../pages/CompleteProfilePage';
 import FormGuard from '../components/FormGuard';
 import ProtectedRoute from './ProtectedRoute';
 import AdminApp from '../admin/AdminApp';
@@ -31,12 +33,15 @@ import { useLanguage } from '../i18n/LanguageContext';
 function AppRoutes() {
   return (
     <Routes>
+      <Route path="/sso-callback" element={<SSOCallback />} />
       <Route path="/master-group/*" element={<AdminApp />} />
       <Route path="/" element={<Layout />}>
         <Route index element={<RegisterPage />} />
         <Route path="home" element={<HomePage />} />
         <Route path="register" element={<RegisterPage />} />
         <Route path="login" element={<LoginPage />} />
+        <Route path="complete-profile" element={<CompleteProfilePage />} />
+        <Route path="sso-callback" element={<SSOCallback />} />
         <Route path="otp" element={<OTPPage />} />
         <Route path="sell" element={<SellPage />} />
         <Route

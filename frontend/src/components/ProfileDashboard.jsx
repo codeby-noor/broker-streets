@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { useClerk } from '@clerk/clerk-react';
 import logo from '../assets/images/logo.png';
 import {
   LayoutGrid,
@@ -326,11 +327,18 @@ function ProfileDashboard() {
     toast.success(t('profile.notificationsMarkedRead'));
   };
 
+  const { signOut } = useClerk();
+
   const handleLogout = () => {
     setConfirmAction({
       title: 'Logout',
       description: t('profile.logoutConfirm'),
-      onConfirm: () => {
+      onConfirm: async () => {
+        try {
+          if (signOut) await signOut();
+        } catch (e) {
+          console.warn('Sign out error:', e);
+        }
         logout();
         setConfirmAction(null);
         navigate('/login');

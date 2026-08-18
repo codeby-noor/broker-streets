@@ -16,6 +16,17 @@ const updateProfileSchema = Joi.object({
   address: Joi.string().trim().allow('').optional(),
 });
 
+const completeProfileSchema = Joi.object({
+  phoneNumber: Joi.string().trim().pattern(/^[0-9]{10}$/).optional().messages({
+    'string.pattern.base': 'Mobile number must be exactly 10 digits',
+  }),
+  mobile: Joi.string().trim().pattern(/^[0-9]{10}$/).optional().messages({
+    'string.pattern.base': 'Mobile number must be exactly 10 digits',
+  }),
+  city: Joi.string().trim().allow('').optional(),
+}).or('phoneNumber', 'mobile');
+
 module.exports = {
   updateProfileSchema,
-};
+  completeProfileSchema,
+};

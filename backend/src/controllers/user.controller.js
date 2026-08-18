@@ -68,8 +68,59 @@ const updateProfileImage = asyncHandler(async (req, res) => {
   );
 });
 
+// PATCH /api/users/me/profile — upsert phone number and city, guessing city from IP if omitted
+const completeProfile = asyncHandler(async (req, res) => {
+  const { phoneNumber, city, mobile } = req.body;
+  const phone = (phoneNumber || mobile || '').trim();
+
+  if (!phone) {
+    throw new ApiError(HTTP_STATUS.BAD_REQUEST, 'Phone number is required');
+  }
+
+  const sanitizedPhone = phone.replace(/\D/g, '').slice(0, 10);
+  if (sanitizedPhone.length !== 10) {
+    throw new ApiError(HTTP_STATUS.BAD_REQUEST, 'Phone number must be a valid 10-digit number');
+  }
+
+  let finalCity = (city || '').trim();
+
+  if (!finalCity) {
+    // Derive best-guess city from request IP
+    const clientIp = (
+      req.headers['x-forwarded-for']?.split(',')[0].trim() ||
+      req.ip ||
+      req.socket.remoteAddress ||
+      ''
+    ).replace('::ffff:', '');
+
+    if (clientIp && clientIp !== '127.0.0.1' && clientIp !== '::1') {
+      const geo = geoip.lookup(clientIp);
+      if (geo && geo.city) {
+        finalCity = geo.city;
+      }
+    }
+  }
+
+  const user = await User.findById(req.user._id);
+  if (!user) {
+    throw new ApiError(HTTP_STATUS.NOT_FOUND, 'User not found');
+  }
+
+  user.phoneNumber = sanitizedPhone;
+  user.mobile = sanitizedPhone;
+  if (finalCity) {
+    user.city = finalCity;
+  }
+  await user.save();
+
+  return res.status(HTTP_STATUS.OK).json(
+    new ApiResponse(HTTP_STATUS.OK, { user }, 'Profile completed successfully')
+  );
+});
+
 module.exports = {
   getMe,
   updateMe,
   updateProfileImage,
-};
+  completeProfile,
+};

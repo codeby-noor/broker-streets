@@ -2,19 +2,30 @@ const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema(
   {
+    clerkUserId: {
+      type: String,
+      unique: true,
+      sparse: true,
+      index: true,
+      trim: true,
+    },
     name: {
       type: String,
-      required: [true, 'Name is required'],
+      default: '',
       trim: true,
-      minlength: [2, 'Name must be at least 2 characters'],
       maxlength: [100, 'Name cannot exceed 100 characters'],
+    },
+    phoneNumber: {
+      type: String,
+      default: '',
+      trim: true,
     },
     mobile: {
       type: String,
-      required: [true, 'Mobile number is required'],
-      unique: true,
+      default: '',
       trim: true,
-      match: [/^[0-9]{10}$/, 'Mobile number must be exactly 10 digits'],
+      unique: true,
+      sparse: true,
       index: true,
     },
     whatsapp: {
@@ -30,7 +41,7 @@ const userSchema = new mongoose.Schema(
     },
     city: {
       type: String,
-      required: [true, 'City is required'],
+      default: '',
       trim: true,
     },
     state: {
@@ -83,6 +94,15 @@ const userSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
+
+userSchema.pre('save', function (next) {
+  if (this.phoneNumber && !this.mobile) {
+    this.mobile = this.phoneNumber;
+  } else if (this.mobile && !this.phoneNumber) {
+    this.phoneNumber = this.mobile;
+  }
+  next();
+});
 
 userSchema.set('toJSON', {
   transform: (doc, ret) => {

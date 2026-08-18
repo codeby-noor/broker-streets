@@ -34,25 +34,20 @@ const env = {
   cloudinaryCloudName: process.env.CLOUDINARY_CLOUD_NAME || '',
   cloudinaryApiKey: process.env.CLOUDINARY_API_KEY || '',
   cloudinaryApiSecret: process.env.CLOUDINARY_API_SECRET || '',
+  clerkPublishableKey: process.env.CLERK_PUBLISHABLE_KEY || '',
+  clerkSecretKey: process.env.CLERK_SECRET_KEY || '',
+  clerkWebhookSecret: process.env.CLERK_WEBHOOK_SECRET || '',
   adminDefaultMobile: process.env.ADMIN_DEFAULT_MOBILE || '9876543210',
   adminDefaultName: process.env.ADMIN_DEFAULT_NAME || 'Super Admin',
 };
 
-if (env.nodeEnv === 'production' && !env.enableRealSms) {
-  throw new Error('[FATAL] ENABLE_REAL_SMS must be "true" in production.');
-}
-
-
 const requiredEnvVars = ['MONGODB_URI'];
 if (env.nodeEnv === 'production') {
   requiredEnvVars.push(
-    'JWT_SECRET',
-    'JWT_REFRESH_SECRET',
+    'CLERK_PUBLISHABLE_KEY',
+    'CLERK_SECRET_KEY',
     'ADMIN_DEFAULT_MOBILE',
-    'ADMIN_DEFAULT_NAME',
-    'ENABLE_REAL_SMS',
-    'SMS_API_KEY',
-    'SMS_TEMPLATE_ID'
+    'ADMIN_DEFAULT_NAME'
   );
   if (env.uploadProvider === 'cloudinary') {
     requiredEnvVars.push('CLOUDINARY_CLOUD_NAME', 'CLOUDINARY_API_KEY', 'CLOUDINARY_API_SECRET');

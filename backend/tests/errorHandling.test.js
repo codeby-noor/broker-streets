@@ -8,6 +8,7 @@ describe('Error Handling & Envelopes', () => {
   let user, token;
 
   beforeEach(async () => {
+    await User.init();
     user = await User.create({
       name: 'Test User',
       mobile: testMobile,

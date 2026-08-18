@@ -5,14 +5,17 @@ import logo from '../assets/images/logo.png';
 import { getSubmissionDestination } from '../utils/formNavigation';
 import { useLanguage } from '../i18n/LanguageContext';
 import { useUserStore } from '../store/useUserStore';
+import { useAuth } from '@clerk/clerk-react';
 
 function Navbar() {
   const location = useLocation();
   const navigate = useNavigate();
   const { t, language, setLanguage } = useLanguage();
-  const isAuthenticated = useUserStore((state) => state.isAuthenticated);
+  const { isSignedIn } = useAuth();
+  const storeIsAuth = useUserStore((state) => state.isAuthenticated);
+  const isAuthenticated = isSignedIn || storeIsAuth;
   const [menuOpen, setMenuOpen] = useState(false);
-  const hideNav = ['/', '/login', '/register', '/otp'].includes(location.pathname);
+  const hideNav = ['/', '/login', '/register', '/otp', '/complete-profile', '/sso-callback'].includes(location.pathname);
 
   const navItems = [
     { label: t('nav.home'), to: '/home' },
