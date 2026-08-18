@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useSignUp } from '@clerk/clerk-react';
+import { useSignUp, useAuth } from '@clerk/clerk-react';
 import { toast } from 'react-toastify';
 import { useForm } from 'react-hook-form';
 import { User, Phone, Mail, MapPin, Lock, UserPlus, KeyRound } from 'lucide-react';
@@ -13,6 +13,7 @@ function RegisterPage() {
   const navigate = useNavigate();
   const { t } = useLanguage();
   const { isLoaded, signUp, setActive } = useSignUp();
+  const { isSignedIn } = useAuth();
   const login = useUserStore((state) => state.login);
 
   const [submitting, setSubmitting] = useState(false);
@@ -20,6 +21,12 @@ function RegisterPage() {
   const [pendingVerification, setPendingVerification] = useState(false);
   const [verificationCode, setVerificationCode] = useState('');
   const [formData, setFormData] = useState(null);
+
+  useEffect(() => {
+    if (isSignedIn) {
+      navigate('/complete-profile', { replace: true });
+    }
+  }, [isSignedIn, navigate]);
 
   const {
     handleSubmit,

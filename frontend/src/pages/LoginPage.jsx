@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useSignIn } from '@clerk/clerk-react';
+import { useSignIn, useAuth } from '@clerk/clerk-react';
 import { toast } from 'react-toastify';
 import { Mail, Lock, LogIn } from 'lucide-react';
 import AuthHeader from '../components/AuthHeader';
@@ -12,11 +12,18 @@ function LoginPage() {
   const navigate = useNavigate();
   const { t } = useLanguage();
   const { isLoaded, signIn, setActive } = useSignIn();
+  const { isSignedIn } = useAuth();
   const login = useUserStore((state) => state.login);
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (isSignedIn) {
+      navigate('/complete-profile', { replace: true });
+    }
+  }, [isSignedIn, navigate]);
 
   const handleGoogleSignIn = async () => {
     if (!isLoaded || !signIn) return;
