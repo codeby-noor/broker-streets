@@ -516,7 +516,7 @@ function PropertyDetailsPage() {
                     <p className="text-[11px] font-semibold uppercase tracking-[0.25em] text-sage">
                       {translatePropertyType(propertyTypeLabel, t, isGujarati)}
                     </p>
-                    <h1 className="mt-2 text-[26px] font-bold leading-tight tracking-tight text-ink">{propertyTitle}</h1>
+                    <h1 className="mt-2 text-[28px] font-bold leading-tight tracking-tight text-ink">{propertyTitle}</h1>
                     <div className="mt-3 flex items-center gap-2 text-sm text-slate-600">
                       <MapPin size={16} className="shrink-0 text-sage" />
                       <span>{propertyLocationLabel}</span>
@@ -543,15 +543,6 @@ function PropertyDetailsPage() {
                           {property?.landArea || property?.area ? heroAreaText : ''}
                         </p>
                       ) : null}
-                    </div>
-                    <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-slate-600">
-                      <span>
-                        {t('propertyDetails.posted')}: {postedDate === 'Recently Listed' || postedDate === 'recently listed' ? t('propertyDetails.recentlyListed') : postedDate}
-                      </span>
-                      <span className="text-slate-300">•</span>
-                      <span>
-                        {t('propertyDetails.verified')}: {property.verified ? t('propertyDetails.yes') : t('propertyDetails.no')}
-                      </span>
                     </div>
                   </div>
                 </div>
@@ -650,7 +641,7 @@ function PropertyDetailsPage() {
               <h2 className="text-[22px] font-semibold tracking-tight text-ink lg:hidden">{t('common.propertyDetails')}</h2>
               <h2 className="hidden text-2xl font-semibold text-ink lg:block">{t('propertyDetails.quickOverview')}</h2>
               <div className="mt-3 border-t border-slate-200/60 pt-1 lg:mt-5 lg:border-t-0 lg:pt-0">
-                <div className="grid grid-cols-2 gap-x-4 gap-y-4 lg:grid-cols-2 lg:gap-3">
+                <div className="grid grid-cols-2 gap-x-6 gap-y-5 lg:grid-cols-2 lg:gap-3">
                   {overviewItems.map((item) => (
                     <div key={item.label} className="lg:rounded-[20px] lg:border lg:border-slate-200 lg:bg-slate-50 lg:p-4">
                       <p className="text-[11px] font-semibold uppercase tracking-[0.3em] text-slate-500">{item.label}</p>
@@ -661,14 +652,14 @@ function PropertyDetailsPage() {
               </div>
             </section>
 
-            <section className="lg:rounded-[28px] lg:border lg:border-slate-200 lg:bg-white lg:p-6 lg:shadow-card">
-              <h2 className="text-[22px] font-semibold tracking-tight text-ink lg:text-2xl">{t('propertyDetails.propertyFeatures')}</h2>
-              <div className="mt-3 border-t border-slate-200/60 pt-1 lg:mt-5 lg:border-t-0 lg:pt-0">
-                <div className="grid grid-cols-2 gap-x-4 gap-y-4 lg:grid-cols-2 lg:gap-3">
+            <section className="hidden lg:rounded-[28px] lg:border lg:border-slate-200 lg:bg-white lg:p-6 lg:shadow-card lg:block">
+              <h2 className="text-2xl font-semibold text-ink">{t('propertyDetails.propertyFeatures')}</h2>
+              <div className="mt-5 border-t-0 pt-0">
+                <div className="grid grid-cols-2 gap-3">
                   {featureItems.filter((item) => item.available).map((item) => (
-                    <div key={item.label} className="lg:rounded-[20px] lg:border lg:border-slate-200 lg:bg-slate-50 lg:p-4">
+                    <div key={item.label} className="rounded-[20px] border border-slate-200 bg-slate-50 p-4">
                       <p className="text-[11px] font-semibold uppercase tracking-[0.3em] text-slate-500">{item.label}</p>
-                      <p className="mt-1 text-[15px] font-semibold text-ink lg:mt-2 lg:text-sm">{item.value}</p>
+                      <p className="mt-2 text-sm font-semibold text-ink">{item.value}</p>
                     </div>
                   ))}
                 </div>
@@ -720,7 +711,7 @@ function PropertyDetailsPage() {
             <div className="lg:rounded-[28px] lg:border lg:border-slate-200 lg:bg-white lg:p-6 lg:shadow-card">
               <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500 lg:text-sm">{t('propertyDetails.sellerInformation')}</p>
               <div className="mt-4 flex items-center gap-3 lg:mt-4 lg:gap-4">
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-sage text-base font-semibold text-white lg:h-16 lg:w-16 lg:rounded-3xl lg:text-xl">
+                <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-sage text-lg font-semibold text-white lg:h-16 lg:w-16 lg:rounded-3xl lg:text-xl">
                   {sellerName?.split(' ').map((part) => part[0]).slice(0, 2).join('') || 'S'}
                 </div>
                 <div className="min-w-0">
