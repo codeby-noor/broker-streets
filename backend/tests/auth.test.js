@@ -3,11 +3,13 @@ const { Webhook } = require('svix');
 const app = require('../src/app');
 const User = require('../src/models/User');
 const msg91Router = require('../src/routes/msg91.otp');
+const env = require('../src/config/env');
 const express = require('express');
 
 describe('Clerk Auth & Profile Workflows', () => {
   const webhookSecret = 'whsec_dGVzdF9zZWNyZXRfa2V5XzEyMzQ1Njc4OTA=';
   process.env.CLERK_WEBHOOK_SECRET = webhookSecret;
+  env.clerkWebhookSecret = webhookSecret;
 
   const mockClerkUserId = 'user_clerk_test_12345';
   let testUser;

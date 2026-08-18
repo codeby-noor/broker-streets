@@ -82,7 +82,7 @@ const createAndSendOtp = async (mobile, pendingUserData = null) => {
     mobile,
     expiresAt,
     sessionId: newSession._id,
-    ...(env.nodeEnv === 'development' || !env.enableRealSms ? { otp: rawOtp } : {}),
+    ...(env.nodeEnv === 'development' ? { otp: rawOtp } : {}),
   };
 };
 

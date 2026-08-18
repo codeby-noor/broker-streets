@@ -1,34 +1,36 @@
 # Railway Deployment Runbook — Broker Streets Backend
 
-This runbook outlines step-by-step instructions for deploying the Broker Streets Node.js/Express backend to Railway with MongoDB Atlas for database persistence and Cloudinary for file storage.
+This runbook outlines step-by-step instructions for deploying the Broker Streets Node.js/Express backend to Railway with MongoDB Atlas for database persistence, Clerk for regular user auth, and Cloudinary for file storage.
 
 ---
 
 ## 1. Production Environment Variables
 
-All environment variables must be configured in your Railway project under **Settings > Environment Variables**.
+Configure the following environment variables in your Railway project under **Settings > Environment Variables**:
 
-| Variable | Description | Source / How to Obtain |
-|---|---|---|
-| `NODE_ENV` | Must be set to `production`. | Set manually to `production`. |
-| `PORT` | HTTP port for Express server. | Railway sets `PORT` automatically (defaults to 5000 locally). |
-| `MONGODB_URI` | MongoDB Atlas connection string. | MongoDB Atlas > Database > Connect > Connect your application. |
-| `CORS_ORIGIN` | Comma-separated list of allowed frontend origins. | Your deployed frontend domain (e.g. `https://broker-streets-web.up.railway.app`). |
-| `JWT_SECRET` | 64-character random hex string for signing access tokens. | Generate via `openssl rand -hex 32`. |
-| `JWT_EXPIRES_IN` | Access token expiration duration. | Set to `7d` (or desired lifespan). |
-| `JWT_REFRESH_SECRET` | 64-character random hex string for refresh tokens. | Generate via `openssl rand -hex 32`. |
-| `JWT_REFRESH_EXPIRES_IN` | Refresh token expiration duration. | Set to `30d`. |
-| `ENABLE_REAL_SMS` | Must be `true` in production to prevent fatal boot crash. | Set to `true`. |
-| `SMS_PROVIDER` | SMS Gateway provider name. | Set to `msg91` (or `twilio`). |
-| `SMS_API_KEY` | Production SMS Gateway API key. | MSG91 Dashboard > API Keys. |
-| `SMS_SENDER_ID` | Approved 6-character sender ID. | MSG91 Dashboard > Sender IDs (e.g., `BRKRST`). |
-| `SMS_TEMPLATE_ID` | Approved DLT OTP SMS template ID. | MSG91 Dashboard > Templates. |
-| `UPLOAD_PROVIDER` | Must be `cloudinary` in production (ephemeral filesystem). | Set to `cloudinary`. |
-| `CLOUDINARY_CLOUD_NAME` | Cloudinary account cloud name. | Cloudinary Console Dashboard. |
-| `CLOUDINARY_API_KEY` | Cloudinary account API key. | Cloudinary Console Dashboard. |
-| `CLOUDINARY_API_SECRET` | Cloudinary account API secret. | Cloudinary Console Dashboard. |
-| `ADMIN_DEFAULT_MOBILE` | Initial super admin mobile for seeding on first boot. | 10-digit mobile number (e.g. `9876543210`). |
-| `ADMIN_DEFAULT_NAME` | Initial super admin display name for seeding on first boot. | Super admin name (e.g. `Super Admin`). |
+| Variable | Required in Prod | Description | Source / How to Obtain |
+|---|---|---|---|
+| `NODE_ENV` | Yes | Must be set to `production`. | Set manually to `production`. |
+| `PORT` | Auto | HTTP port for Express server. | Set automatically by Railway (defaults to 5000). |
+| `MONGODB_URI` | Yes | MongoDB Atlas connection string. | MongoDB Atlas > Database > Connect > Connect your application. |
+| `CORS_ORIGIN` | Yes | Allowed frontend origins (comma-separated). | Your deployed frontend domain (e.g. `https://broker-streets-web.up.railway.app`). |
+| `CLERK_PUBLISHABLE_KEY` | Yes | Clerk Publishable Key for authentication. | Clerk Dashboard > API Keys (`pk_test_...` or `pk_live_...`). |
+| `CLERK_SECRET_KEY` | Yes | Clerk Secret Key for backend authentication. | Clerk Dashboard > API Keys (`sk_test_...` or `sk_live_...`). |
+| `CLERK_WEBHOOK_SECRET` | Yes | Clerk Webhook signing secret for `svix` verification. | Clerk Dashboard > Webhooks > Endpoint Signing Secret (`whsec_...`). |
+| `UPLOAD_PROVIDER` | Yes | Must be set to `cloudinary` in production. | Set manually to `cloudinary`. |
+| `CLOUDINARY_CLOUD_NAME` | Yes | Cloudinary account cloud name. | Cloudinary Console Dashboard. |
+| `CLOUDINARY_API_KEY` | Yes | Cloudinary account API key. | Cloudinary Console Dashboard. |
+| `CLOUDINARY_API_SECRET` | Yes | Cloudinary account API secret. | Cloudinary Console Dashboard. |
+| `ADMIN_DEFAULT_MOBILE` | Yes | Initial Super Admin mobile number for first-boot seeding. | 10-digit mobile number you control (e.g. `9876543210`). |
+| `ADMIN_DEFAULT_NAME` | Yes | Initial Super Admin display name. | Display name (e.g. `Super Admin`). |
+| `JWT_SECRET` | Recommended | 64-character random string for admin access tokens. | Generate via `openssl rand -hex 32`. |
+| `JWT_REFRESH_SECRET` | Recommended | 64-character random string for admin refresh tokens. | Generate via `openssl rand -hex 32`. |
+
+### SMS Configuration (Pending DLT Approval — Leave Unset)
+
+> [!NOTE]
+> `ENABLE_REAL_SMS`, `SMS_PROVIDER`, `SMS_API_KEY`, `SMS_SENDER_ID`, `SMS_TEMPLATE_ID`, and `MSG91_AUTH_KEY` are **not required yet**. Leave them unset while MSG91 DLT registration is pending.
+> When unset or `ENABLE_REAL_SMS=false`, admin OTPs are mocked and logged server-side in Railway container logs only — they are never returned in client API responses.
 
 ---
 
@@ -62,7 +64,8 @@ All environment variables must be configured in your Railway project under **Set
 2. On the main Dashboard, locate your **Cloud name**, **API Key**, and **API Secret**.
 3. Set `UPLOAD_PROVIDER=cloudinary`, `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, and `CLOUDINARY_API_SECRET` in Railway.
 
-> **Warning:** Railway containers use an ephemeral filesystem. If `UPLOAD_PROVIDER` is set to `local` in production, `env.js` will throw a fatal error on boot to prevent data loss.
+> [!WARNING]
+> Railway containers use an ephemeral filesystem. If `UPLOAD_PROVIDER` is set to `local` in production, `env.js` will throw a fatal error on boot to prevent data loss.
 
 ---
 
@@ -79,17 +82,16 @@ All environment variables must be configured in your Railway project under **Set
 6. Add all mandatory environment variables listed in Section 1 above.
 7. Trigger deployment. Railway will automatically build, run database seeding/migrations, and start the service.
 
+> [!IMPORTANT]
+> **Admin Account Seeding & First Login**:
+> `ADMIN_DEFAULT_MOBILE` and `ADMIN_DEFAULT_NAME` seed the initial super admin account on first boot. Ensure `ADMIN_DEFAULT_MOBILE` is set to a real phone number you control before first deploy.
+> Since real SMS is not yet enabled, the super admin OTP will be output to Railway server logs (`[MOCK MSG91 SMS] OTP for ... is XXXXXX`). Check the Railway deploy log stream to read the OTP and complete first login at `/master-group`.
+
 ---
 
 ## 5. Post-Deploy Smoke Checklist
 
-After deployment completes, run the automated smoke test script against your live domain:
-
-```bash
-node scripts/smoke-test.js https://your-railway-backend.up.railway.app
-```
-
-Or manually verify using `curl` or Postman:
+After deployment completes, verify the live backend endpoints:
 
 1. **Root Health Check**:
    ```bash
@@ -101,7 +103,7 @@ Or manually verify using `curl` or Postman:
      "statusCode": 200,
      "success": true,
      "message": "Server is healthy",
-     "data": { "status": "healthy", "timestamp": "2026-..." }
+     "data": { "status": "healthy" }
    }
    ```
 

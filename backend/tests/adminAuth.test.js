@@ -4,6 +4,7 @@ const AdminUser = require('../src/models/AdminUser');
 const AdminActivityLog = require('../src/models/AdminActivityLog');
 const OtpSession = require('../src/models/OtpSession');
 const jwtService = require('../src/services/jwt.service');
+const env = require('../src/config/env');
 
 describe('Admin Authentication & Workflows', () => {
   let superAdmin, regularAdmin;
@@ -53,6 +54,24 @@ describe('Admin Authentication & Workflows', () => {
     expect(res.body.data.expiresAt).toBeDefined();
   });
 
+  test('POST /api/admin/auth/send-otp does not leak otp or devOtp when NODE_ENV is production', async () => {
+    const originalEnv = env.nodeEnv;
+    try {
+      env.nodeEnv = 'production';
+      const res = await request(app)
+        .post('/api/admin/auth/send-otp')
+        .send({ mobile: '9876543210' });
+
+      expect(res.statusCode).toBe(200);
+      expect(res.body.success).toBe(true);
+      expect(res.body.data.mobile).toBe('9876543210');
+      expect(res.body.data.otp).toBeUndefined();
+      expect(res.body.data.devOtp).toBeUndefined();
+    } finally {
+      env.nodeEnv = originalEnv;
+    }
+  });
+
   test('POST /api/admin/auth/send-otp rejects unauthorized mobile with 403 Forbidden', async () => {
     const res = await request(app)
       .post('/api/admin/auth/send-otp')
@@ -76,36 +95,43 @@ describe('Admin Authentication & Workflows', () => {
   });
 
   test('POST /api/admin/auth/verify-otp issues tokens, updates lastLogin, and writes AdminActivityLog', async () => {
-    // Send OTP first
-    const sendRes = await request(app)
-      .post('/api/admin/auth/send-otp')
-      .send({ mobile: superAdmin.mobile });
-    const rawOtp = sendRes.body.data.devOtp;
+    // Send OTP first in development mode
+    const originalEnv = env.nodeEnv;
+    env.nodeEnv = 'development';
+    try {
+      const sendRes = await request(app)
+        .post('/api/admin/auth/send-otp')
+        .send({ mobile: superAdmin.mobile });
+      const rawOtp = sendRes.body.data.devOtp;
+      expect(rawOtp).toBeDefined();
 
-    const res = await request(app)
-      .post('/api/admin/auth/verify-otp')
-      .send({ mobile: superAdmin.mobile, otp: rawOtp });
+      const res = await request(app)
+        .post('/api/admin/auth/verify-otp')
+        .send({ mobile: superAdmin.mobile, otp: rawOtp });
 
-    expect(res.statusCode).toBe(200);
-    expect(res.body.success).toBe(true);
-    expect(res.body.data.token).toBeDefined();
-    expect(res.body.data.accessToken).toBeDefined();
-    expect(res.body.data.refreshToken).toBeDefined();
-    expect(res.body.data.user.mobile).toBe(superAdmin.mobile);
-    expect(res.body.data.user.role).toBe('superadmin');
+      expect(res.statusCode).toBe(200);
+      expect(res.body.success).toBe(true);
+      expect(res.body.data.token).toBeDefined();
+      expect(res.body.data.accessToken).toBeDefined();
+      expect(res.body.data.refreshToken).toBeDefined();
+      expect(res.body.data.user.mobile).toBe(superAdmin.mobile);
+      expect(res.body.data.user.role).toBe('superadmin');
 
-    // Verify lastLogin was updated
-    const updatedAdmin = await AdminUser.findById(superAdmin._id);
-    expect(updatedAdmin.lastLogin).not.toBeNull();
+      // Verify lastLogin was updated
+      const updatedAdmin = await AdminUser.findById(superAdmin._id);
+      expect(updatedAdmin.lastLogin).not.toBeNull();
 
-    // Verify activity log was created
-    const activityLog = await AdminActivityLog.findOne({
-      adminId: superAdmin._id,
-      type: 'login',
-    });
-    expect(activityLog).toBeDefined();
-    expect(activityLog.mobile).toBe(superAdmin.mobile);
-    expect(activityLog.role).toBe('superadmin');
+      // Verify activity log was created
+      const activityLog = await AdminActivityLog.findOne({
+        adminId: superAdmin._id,
+        type: 'login',
+      });
+      expect(activityLog).toBeDefined();
+      expect(activityLog.mobile).toBe(superAdmin.mobile);
+      expect(activityLog.role).toBe('superadmin');
+    } finally {
+      env.nodeEnv = originalEnv;
+    }
   });
 
   test('Admin token can access protected admin routes (fixes tokenVersion bug)', async () => {
