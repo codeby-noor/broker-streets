@@ -125,8 +125,8 @@ function PropertyCard({ property, compact = false, onContact }) {
   };
 
   return (
-    <article className={`group flex h-full w-full flex-col overflow-hidden rounded-[22px] border border-slate-200 bg-white shadow-[0_16px_40px_rgba(15,23,42,0.07)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_22px_50px_rgba(15,23,42,0.13)] ${compact ? '' : ''}`}>
-      <div className="relative overflow-hidden bg-slate-200">
+    <article className={`group flex h-full w-full flex-col overflow-hidden rounded-[22px] border border-slate-200 bg-white shadow-[0_16px_40px_rgba(15,23,42,0.07)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_22px_50px_rgba(15,23,42,0.13)] dark:border-dark-border dark:bg-dark-card ${compact ? '' : ''}`}>
+      <div className="relative overflow-hidden bg-slate-200 dark:bg-dark-card">
         <div className="aspect-[4/3] w-full overflow-hidden">
           <AsyncImage src={cardImage} alt={propertyTitle} className="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
         </div>
@@ -134,16 +134,16 @@ function PropertyCard({ property, compact = false, onContact }) {
         <div className="absolute inset-x-4 top-4 flex items-start justify-between gap-3">
           <div className="flex items-center">
             {property?.verified ? (
-              <div className="inline-flex items-center gap-2 rounded-full bg-white/95 px-3 py-1.5 text-[11px] font-semibold text-slate-800 shadow-sm">
-                <ShieldCheck size={13} className="text-sage" /> {t('common.verified')}
+              <div className="inline-flex items-center gap-2 rounded-full bg-white/95 px-3 py-1.5 text-[11px] font-semibold text-slate-800 shadow-sm dark:bg-dark-card/95 dark:text-dark-text">
+                <ShieldCheck size={13} className="text-sage dark:text-emerald-400" /> {t('common.verified')}
               </div>
             ) : null}
           </div>
           <div className="flex items-center gap-2">
-            <button type="button" aria-label={`Share ${propertyTitle}`} onClick={handleShare} className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/95 text-slate-700 shadow-sm transition hover:bg-white">
+            <button type="button" aria-label={`Share ${propertyTitle}`} onClick={handleShare} className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/95 text-slate-700 shadow-sm transition hover:bg-white dark:bg-dark-card/95 dark:text-dark-text dark:hover:bg-dark-card">
               <Share2 size={15} />
             </button>
-            <button type="button" aria-label={`Save ${propertyTitle}`} onClick={handleFavorite} className={`inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/95 shadow-sm transition hover:bg-white ${favorited ? 'text-rose-600' : 'text-slate-700'}`}>
+            <button type="button" aria-label={`Save ${propertyTitle}`} onClick={handleFavorite} className={`inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/95 shadow-sm transition hover:bg-white dark:bg-dark-card/95 dark:hover:bg-dark-card ${favorited ? 'text-rose-600' : 'text-slate-700 dark:text-dark-text'}`}>
               <Heart size={15} fill={favorited ? 'currentColor' : 'none'} />
             </button>
           </div>
@@ -157,20 +157,20 @@ function PropertyCard({ property, compact = false, onContact }) {
 
       <div className="flex flex-1 flex-col gap-4 p-4 sm:p-5">
         <div className="space-y-3">
-          <h3 className="break-words text-base font-semibold leading-tight text-slate-900 sm:text-lg">{propertyTitle}</h3>
-          <p className="break-words text-sm leading-5 text-slate-500">
-            <span className="inline-flex items-center gap-2 text-slate-500">
-              <MapPin size={14} className="text-sage" />
+          <h3 className="break-words text-base font-semibold leading-tight text-slate-900 sm:text-lg dark:text-dark-text">{propertyTitle}</h3>
+          <p className="break-words text-sm leading-5 text-slate-500 dark:text-dark-muted">
+            <span className="inline-flex items-center gap-2 text-slate-500 dark:text-dark-muted">
+              <MapPin size={14} className="text-sage dark:text-emerald-400" />
               <span className="break-words">{locationLine || t('profile.locationPending')}</span>
             </span>
           </p>
           <div className="grid grid-cols-2 gap-3">
-            <div className="rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3 text-sm text-slate-700">
-              <p className="font-semibold text-slate-900">{t('common.area')}</p>
+            <div className="rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3 text-sm text-slate-700 dark:border-dark-border dark:bg-dark-bg dark:text-dark-muted">
+              <p className="font-semibold text-slate-900 dark:text-dark-text">{t('common.area')}</p>
               <p className="mt-1 break-words">{displayArea}</p>
             </div>
-            <div className="rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3 text-sm text-slate-700">
-              <p className="font-semibold text-slate-900">{t('common.price')}</p>
+            <div className="rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3 text-sm text-slate-700 dark:border-dark-border dark:bg-dark-bg dark:text-dark-muted">
+              <p className="font-semibold text-slate-900 dark:text-dark-text">{t('common.price')}</p>
               <p className="mt-1 break-words">{displayPriceWithUnit}</p>
             </div>
           </div>
@@ -180,7 +180,7 @@ function PropertyCard({ property, compact = false, onContact }) {
           <Link to={`/property/${property.id}`} className="flex min-h-[46px] flex-1 items-center justify-center rounded-[16px] bg-sage px-4 py-3 text-sm font-semibold text-white transition hover:bg-sage-dark">
             {t('common.viewDetails')}
           </Link>
-          <button type="button" onClick={() => onContact?.(property)} className="flex min-h-[46px] flex-1 items-center justify-center rounded-[16px] border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50">
+          <button type="button" onClick={() => onContact?.(property)} className="flex min-h-[46px] flex-1 items-center justify-center rounded-[16px] border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 dark:border-dark-border dark:bg-dark-card dark:text-dark-text dark:hover:bg-dark-bg">
             {t('common.contactSeller')}
           </button>
         </div>

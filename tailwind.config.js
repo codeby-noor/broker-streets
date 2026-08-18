@@ -1,4 +1,5 @@
 module.exports = {
+  darkMode: 'media',
   content: [
     './src/**/*.{js,jsx}',
     './public/index.html'
@@ -30,7 +31,12 @@ module.exports = {
         danger: '#DC2626',
         surface: '#F8FAFC',
         panel: '#F1F5F9',
-        glass: 'rgba(255,255,255,0.08)'
+        glass: 'rgba(255,255,255,0.08)',
+        'dark-bg': '#0F1115',
+        'dark-card': '#1A1D23',
+        'dark-border': '#2A2E37',
+        'dark-text': '#E8EAED',
+        'dark-muted': '#9CA3AF'
       }
     }
   },
