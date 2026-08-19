@@ -225,7 +225,7 @@ function BuyerForm() {
   };
 
   return (
-    <div className="-mx-4 -mt-8 bg-[#FFFEFE] pb-20 sm:-mx-6 lg:-mx-8">
+    <div className="-mx-4 -mt-8 bg-cream pb-20 sm:-mx-6 lg:-mx-8">
       <section className="bg-ink px-4 py-12 text-white sm:px-10 sm:py-16 lg:px-12">
         <div className="mx-auto max-w-5xl">
           <p className="eyebrow text-blue-200">{t('buyerForm.eyebrow')}</p>
@@ -340,7 +340,7 @@ function BuyerForm() {
                           value={villageSearch}
                           onChange={(event) => setVillageSearch(event.target.value)}
                           placeholder={t('buyerForm.searchVillages')}
-                          className="field-control w-full bg-slate-50"
+                          className="field-control w-full bg-cream"
                         />
                       </div>
                       <div className="max-h-[280px] overflow-y-auto p-2">
@@ -433,12 +433,12 @@ function BuyerForm() {
                 <span className="field-label">{t('buyerForm.voiceRecording')}</span>
                 <span className="text-xs text-slate-500">{t('common.optional')}</span>
               </div>
-              <div className="rounded-[28px] border border-slate-200 bg-slate-50 p-4 sm:p-6 space-y-4">
+              <div className="rounded-[28px] border border-slate-200 bg-cream p-4 sm:p-6 space-y-4">
                 {!isRecording ? (
                   <button
                     type="button"
                     onClick={startRecording}
-                    className="inline-flex w-full items-center justify-center rounded-2xl bg-red-500 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-red-600 min-h-[44px]"
+                    className="inline-flex w-full items-center justify-center rounded-2xl bg-primary px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-primary-dark min-h-[44px]"
                   >
                     {t('buyerForm.startRecording')}
                   </button>
@@ -446,7 +446,7 @@ function BuyerForm() {
                   <button
                     type="button"
                     onClick={stopRecording}
-                    className="inline-flex w-full items-center justify-center rounded-2xl bg-slate-800 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-slate-900 min-h-[44px]"
+                    className="inline-flex w-full items-center justify-center rounded-2xl bg-primary px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-primary-dark min-h-[44px]"
                   >
                     {t('buyerForm.stopRecording')}
                   </button>

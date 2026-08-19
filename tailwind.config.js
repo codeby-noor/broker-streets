@@ -8,11 +8,11 @@ module.exports = {
     extend: {
       boxShadow: {
         glass: '0 20px 60px rgba(15, 23, 42, 0.18)',
-        card: '0 10px 30px rgba(15, 32, 19, 0.12)',
-        'card-hover': '0 25px 50px rgba(15, 32, 19, 0.14)'
+        card: '0 10px 30px rgba(15, 23, 42, 0.12)',
+        'card-hover': '0 25px 50px rgba(15, 23, 42, 0.14)'
       },
       backgroundImage: {
-        'hero-gradient': 'radial-gradient(circle at top, rgba(29,87,51,0.26), transparent 45%), linear-gradient(180deg, rgba(18,44,31,0.92) 0%, rgba(15,32,19,0.72) 100%)'
+        'hero-gradient': 'radial-gradient(circle at top, rgba(29,92,169,0.26), transparent 45%), linear-gradient(180deg, rgba(13,42,79,0.92) 0%, rgba(10,32,60,0.72) 100%)'
       },
       colors: {
         primary: '#1D5CA9',

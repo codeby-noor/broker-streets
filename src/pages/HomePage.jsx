@@ -38,19 +38,19 @@ const governmentLinks = [
 
 // Distinct subtle accent themes for the government link cards
 const govCardThemes = [
-  { iconBg: 'bg-emerald-100 text-emerald-700', border: 'border-emerald-200/70 hover:border-emerald-400', from: 'from-emerald-50', to: 'to-white', ring: 'hover:ring-emerald-100' },
+  { iconBg: 'bg-blue-100 text-blue-700', border: 'border-blue-200/70 hover:border-blue-400', from: 'from-blue-50', to: 'to-white', ring: 'hover:ring-blue-100' },
   { iconBg: 'bg-sky-100 text-sky-700', border: 'border-sky-200/70 hover:border-sky-400', from: 'from-sky-50', to: 'to-white', ring: 'hover:ring-sky-100' },
   { iconBg: 'bg-violet-100 text-violet-700', border: 'border-violet-200/70 hover:border-violet-400', from: 'from-violet-50', to: 'to-white', ring: 'hover:ring-violet-100' },
   { iconBg: 'bg-amber-100 text-amber-700', border: 'border-amber-200/70 hover:border-amber-400', from: 'from-amber-50', to: 'to-white', ring: 'hover:ring-amber-100' },
   { iconBg: 'bg-teal-100 text-teal-700', border: 'border-teal-200/70 hover:border-teal-400', from: 'from-teal-50', to: 'to-white', ring: 'hover:ring-teal-100' },
   { iconBg: 'bg-rose-100 text-rose-700', border: 'border-rose-200/70 hover:border-rose-400', from: 'from-rose-50', to: 'to-white', ring: 'hover:ring-rose-100' },
   { iconBg: 'bg-indigo-100 text-indigo-700', border: 'border-indigo-200/70 hover:border-indigo-400', from: 'from-indigo-50', to: 'to-white', ring: 'hover:ring-indigo-100' },
-  { iconBg: 'bg-emerald-100 text-emerald-700', border: 'border-emerald-200/70 hover:border-emerald-400', from: 'from-emerald-50', to: 'to-white', ring: 'hover:ring-emerald-100' },
+  { iconBg: 'bg-blue-100 text-blue-700', border: 'border-blue-200/70 hover:border-blue-400', from: 'from-blue-50', to: 'to-white', ring: 'hover:ring-blue-100' },
 ];
 
 // Distinct subtle accent themes for the location cards
 const locationCardThemes = [
-  { iconBg: 'bg-emerald-100 text-emerald-700', border: 'border-emerald-200/70 hover:border-emerald-400', from: 'from-emerald-50', to: 'to-white' },
+  { iconBg: 'bg-blue-100 text-blue-700', border: 'border-blue-200/70 hover:border-blue-400', from: 'from-blue-50', to: 'to-white' },
   { iconBg: 'bg-sky-100 text-sky-700', border: 'border-sky-200/70 hover:border-sky-400', from: 'from-sky-50', to: 'to-white' },
   { iconBg: 'bg-amber-100 text-amber-700', border: 'border-amber-200/70 hover:border-amber-400', from: 'from-amber-50', to: 'to-white' },
   { iconBg: 'bg-violet-100 text-violet-700', border: 'border-violet-200/70 hover:border-violet-400', from: 'from-violet-50', to: 'to-white' },
@@ -131,7 +131,7 @@ function HomePage() {
         <section className="overflow-hidden rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm sm:p-6 lg:p-8">
           <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
             <div className="space-y-4">
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-sage">
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-sage/10 px-3 py-1 text-xs font-bold text-sage">
                 <Sparkles size={13} /> {t('home.hero.heading')}
               </span>
               <h1 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl lg:text-4xl">
@@ -176,9 +176,9 @@ function HomePage() {
         </section>
 
         {/* 2. USEFUL GOVERNMENT LINKS (COLORFUL PREMIUM CARDS) */}
-        <section className="rounded-2xl border border-slate-200/80 bg-gradient-to-br from-emerald-50/80 via-sky-50/60 to-white p-4 shadow-sm sm:p-5">
+        <section className="rounded-2xl border border-slate-200/80 bg-gradient-to-br from-sage/10 via-blue-50/60 to-white p-4 shadow-sm sm:p-5">
           <div className="flex items-center gap-2.5">
-            <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-100 to-teal-50 text-emerald-700 shadow-sm ring-1 ring-emerald-200/60">
+            <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-100 to-blue-50 text-sage shadow-sm ring-1 ring-sage/20">
               <Landmark size={19} />
             </span>
             <div>
@@ -449,7 +449,7 @@ function HomePage() {
             <button
               type="button"
               onClick={() => navigate('/buyer-requirements')}
-              className="inline-flex h-10 flex-shrink-0 items-center justify-center gap-1 rounded-xl border border-sage/30 bg-emerald-50/50 px-4 text-xs font-bold text-sage transition hover:bg-emerald-50"
+              className="inline-flex h-10 flex-shrink-0 items-center justify-center gap-1 rounded-xl border border-sage/30 bg-sage/10 px-4 text-xs font-bold text-sage transition hover:bg-sage/20"
             >
               <span>{t('home.viewRequirements')}</span>
               <ArrowRight size={13} />

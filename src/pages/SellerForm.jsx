@@ -159,7 +159,7 @@ function SellerForm() {
     navigate('/seller-form', { state: { justSubmitted: true, data: lead } });
   };
 
-  return <div className="-mx-4 -mt-8 bg-[#FFFEFE] pb-20 sm:-mx-6 lg:-mx-8">
+  return <div className="-mx-4 -mt-8 bg-cream pb-20 sm:-mx-6 lg:-mx-8">
     <section className="bg-ink px-4 py-12 text-white sm:px-10 sm:py-16 lg:px-12"><div className="mx-auto max-w-5xl"><p className="eyebrow text-blue-200">{t('sellerForm.title')}</p><h1 className="mt-4 text-3xl font-bold sm:text-6xl">{t('sellerForm.smallHeading')}</h1><p className="mt-4 max-w-2xl text-sm text-white/70 sm:text-base">{t('sellerForm.authMessage')}</p><p className="mt-3 max-w-2xl text-sm text-white/60 sm:text-base">{t('sellerForm.helpDescription')}</p></div></section>
     <section className="mx-auto -mt-8 max-w-4xl px-4 sm:px-6">
       <form onSubmit={handleSubmit(submit)} className="space-y-6 rounded-[32px] bg-white p-5 shadow-xl sm:p-10">
@@ -281,7 +281,7 @@ function SellerForm() {
 
           <label className="block">
             <span className="field-label">{t('sellerForm.propertyImages')}</span>
-            <div className="rounded-[28px] border border-slate-200 bg-slate-50 p-4">
+            <div className="rounded-[28px] border border-slate-200 bg-cream p-4">
               <input type="file" accept="image/*" multiple onChange={(event) => addFiles(event, setImages, 'image/')} className="field-control w-full bg-white" />
               <p className="mt-3 text-sm text-slate-500">{t('sellerForm.imageHint')}</p>
               {images.length > 0 && (
@@ -302,7 +302,7 @@ function SellerForm() {
 
           <label className="block">
             <span className="field-label">{t('sellerForm.propertyVideos')}</span>
-            <div className="rounded-[28px] border border-slate-200 bg-slate-50 p-4">
+            <div className="rounded-[28px] border border-slate-200 bg-cream p-4">
               <input type="file" accept="video/*" multiple onChange={(event) => addFiles(event, setVideos, 'video/')} className="field-control w-full bg-white" />
               {videos.length > 0 && (
                 <div className="mt-4 space-y-3">
@@ -322,7 +322,7 @@ function SellerForm() {
 
           <label className="block">
             <span className="field-label">{t('sellerForm.document')} *</span>
-            <div className="rounded-[28px] border border-slate-200 bg-slate-50 p-4">
+            <div className="rounded-[28px] border border-slate-200 bg-cream p-4">
               <input type="file" accept=".pdf,.jpg,.jpeg,.png,.webp" onChange={(event) => setPdf(event.target.files?.[0] || null)} className="field-control w-full bg-white" />
               <p className="mt-3 text-sm text-slate-500">{t('sellerForm.documentHint')}</p>
               {pdf && (

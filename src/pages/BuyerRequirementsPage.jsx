@@ -60,7 +60,7 @@ function BuyerRequirementsPage() {
   }, [query, city, district, propertyType, landType, sort]);
 
   return (
-    <div className="-mx-4 -mt-8 min-h-screen bg-[#FFFEFE] pb-20 sm:-mx-6 lg:-mx-8">
+    <div className="-mx-4 -mt-8 min-h-screen bg-cream pb-20 sm:-mx-6 lg:-mx-8">
       <section className="bg-ink px-6 py-16 text-white sm:px-10 lg:px-12">
         <div className="mx-auto max-w-7xl">
           <p className="eyebrow text-blue-100">{t('profile.buyerRequirements')}</p>
@@ -71,20 +71,20 @@ function BuyerRequirementsPage() {
 
       <main className="mx-auto max-w-7xl px-6 py-10 sm:px-10 lg:px-12">
         <div className="mb-8 grid gap-6 rounded-[32px] border border-slate-200 bg-white p-6 shadow-card sm:grid-cols-[1fr_280px]">
-            <div className="space-y-4">
-              <SectionHeading eyebrow={t('common.search')} title={t('profile.buyerRequirementsTitle')} description={t('buyerForm.description')} />
-              <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-                <label className="block"><span className="field-label">{t('common.state')}</span><input value={city} onChange={(event) => setCity(event.target.value)} className="field-control" placeholder="Ahmedabad" /></label>
-                <label className="block"><span className="field-label">{t('common.district')}</span><input value={district} onChange={(event) => setDistrict(event.target.value)} className="field-control" placeholder="Surat" /></label>
-                <label className="block"><span className="field-label">{t('common.propertyType')}</span><input value={propertyType} onChange={(event) => setPropertyType(event.target.value)} className="field-control" placeholder={t('buyerForm.agriculturalLand')} /></label>
-              </div>
-            </div>
-
-            <div className="grid gap-4">
-              <label className="block"><span className="field-label">{t('dropdown.landSector')}</span><select value={landType} onChange={(event) => setLandType(event.target.value)} className="field-control"><option value="All types">{t('buy.allTypes')}</option><option value="Agricultural Land">{t('buyerForm.agriculturalLand')}</option><option value="Non-Agricultural Land">{t('buyerForm.nonAgriculturalLand')}</option></select></label>
-              <label className="block"><span className="field-label">{t('dropdown.sortBy')}</span><div className="relative"><select value={sort} onChange={(event) => setSort(event.target.value)} className="field-control pr-10"><option value="newest">{t('dropdown.newest')}</option><option value="oldest">{t('dropdown.oldest')}</option></select><ChevronDown size={16} className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-slate-400" /></div></label>
+          <div className="space-y-4">
+            <SectionHeading eyebrow={t('common.search')} title={t('profile.buyerRequirementsTitle')} description={t('buyerForm.description')} />
+            <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+              <label className="block"><span className="field-label">{t('common.state')}</span><input value={city} onChange={(event) => setCity(event.target.value)} className="field-control" placeholder={t('home.allLocations')} /></label>
+              <label className="block"><span className="field-label">{t('common.district')}</span><input value={district} onChange={(event) => setDistrict(event.target.value)} className="field-control" placeholder={t('buy.allDistricts')} /></label>
+              <label className="block"><span className="field-label">{t('common.propertyType')}</span><input value={propertyType} onChange={(event) => setPropertyType(event.target.value)} className="field-control" placeholder={t('buyerForm.agriculturalLand')} /></label>
             </div>
           </div>
+
+          <div className="grid gap-4">
+            <label className="block"><span className="field-label">{t('dropdown.landSector')}</span><select value={landType} onChange={(event) => setLandType(event.target.value)} className="field-control"><option value="All types">{t('buy.allTypes')}</option><option value="Agricultural Land">{t('buyerForm.agriculturalLand')}</option><option value="Non-Agricultural Land">{t('buyerForm.nonAgriculturalLand')}</option></select></label>
+            <label className="block"><span className="field-label">{t('dropdown.sortBy')}</span><div className="relative"><select value={sort} onChange={(event) => setSort(event.target.value)} className="field-control pr-10"><option value="newest">{t('dropdown.newest')}</option><option value="oldest">{t('dropdown.oldest')}</option></select><ChevronDown size={16} className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-slate-400" /></div></label>
+          </div>
+        </div>
         <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-sm font-semibold text-ink">{filteredLeads.length} {t('home.buyerRequirements')}</p>
           <div className="relative inline-flex min-w-0 items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-sm text-slate-600 shadow-sm">
@@ -103,8 +103,8 @@ function BuyerRequirementsPage() {
             const villages = Array.isArray(lead.preferredVillages)
               ? lead.preferredVillages
               : typeof lead.preferredVillages === 'string'
-              ? lead.preferredVillages.split(',').map((s) => s.trim()).filter(Boolean)
-              : [];
+                ? lead.preferredVillages.split(',').map((s) => s.trim()).filter(Boolean)
+                : [];
             const villagesFormatted = villages.length ? villages.join(', ') : t('common.notProvided');
             const initials = lead.userName?.split(' ').map((part) => part[0]).slice(0, 2).join('') || 'B';
             return (
@@ -116,7 +116,7 @@ function BuyerRequirementsPage() {
                       <div>
                         <div className="flex flex-wrap items-center gap-2">
                           <h3 className="text-xl font-semibold text-ink">{lead.userName || t('profile.profileFallbackName')}</h3>
-                          <span className="rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700">{t('home.verifiedBuyer')}</span>
+                          <span className="rounded-full bg-sage/10 px-3 py-1 text-xs font-semibold text-sage">{t('home.verifiedBuyer')}</span>
                         </div>
                         <p className="mt-1 text-sm text-slate-600">{new Date(lead.createdAt || lead.submittedAt || '').toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) || t('common.notAvailable')}</p>
                       </div>

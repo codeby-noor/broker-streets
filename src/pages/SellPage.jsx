@@ -15,16 +15,16 @@ function SellPage() {
   const { t } = useLanguage();
 
   return (
-    <div className="-mx-4 -mt-8 space-y-16 bg-[#FFFEFE] pb-20 sm:-mx-6 lg:-mx-8">
+    <div className="-mx-4 -mt-8 space-y-16 bg-cream pb-20 sm:-mx-6 lg:-mx-8">
       <section className="bg-ink px-6 py-20 text-white sm:px-10 lg:px-12">
         <div className="mx-auto max-w-7xl"><p className="eyebrow text-blue-100">{t('sell.pageEyebrow')}</p>
-        {justSubmitted && (
-          <div className="mb-5 border border-blue-200/30 bg-white/10 p-4 text-center">
-            <p className="text-lg font-semibold text-white">{t('sell.requestReceived')}</p>
-          </div>
-        )}
-        <h1 className="mt-4 max-w-2xl text-5xl font-bold leading-tight text-white sm:text-6xl">{t('sell.heroTitle')}</h1>
-        <p className="mt-5 max-w-xl text-lg leading-8 text-white/70">{t('sell.heroDescription')}</p></div>
+          {justSubmitted && (
+            <div className="mb-5 border border-blue-200/30 bg-white/10 p-4 text-center">
+              <p className="text-lg font-semibold text-white">{t('sell.requestReceived')}</p>
+            </div>
+          )}
+          <h1 className="mt-4 max-w-2xl text-5xl font-bold leading-tight text-white sm:text-6xl">{t('sell.heroTitle')}</h1>
+          <p className="mt-5 max-w-xl text-lg leading-8 text-white/70">{t('sell.heroDescription')}</p></div>
       </section>
 
       <section className="mx-auto grid max-w-7xl gap-5 px-6 sm:grid-cols-3 lg:px-12"><div className="border border-slate-200 bg-white p-6 shadow-card"><strong className="block text-3xl text-primary">1,200+</strong><span className="mt-2 block text-sm text-muted">{t('sell.propertyEnquiries')}</span></div><div className="border border-slate-200 bg-white p-6 shadow-card"><strong className="block text-3xl text-primary">14 days</strong><span className="mt-2 block text-sm text-muted">{t('sell.averageFirstResponse')}</span></div><div className="border border-slate-200 bg-white p-6 shadow-card"><strong className="block text-3xl text-primary">4.8 / 5</strong><span className="mt-2 block text-sm text-muted">{t('sell.sellerSatisfaction')}</span></div></section>

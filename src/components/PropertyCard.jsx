@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Heart, MapPin, Share2, ShieldCheck } from 'lucide-react';
+import { Heart, MapPin, Share2 } from 'lucide-react';
 import { toast } from 'react-toastify';
 import AsyncImage from './AsyncImage';
 import { isPropertySaved, onSavedPropertiesChanged, toggleSavedProperty } from '../utils/storage';
 import { useLanguage } from '../i18n/LanguageContext';
+import { formatIndianPrice, standardizePriceUnit } from '../utils/format';
 
 const getLandImage = (property) => {
   const title = String(property?.title || property?.name || '').toLowerCase();
@@ -84,16 +85,16 @@ function PropertyCard({ property, compact = false, onContact }) {
 
   const displayPrice = useMemo(() => {
     if (!rawPrice || rawPrice === 'Price on request') return t('common.notAvailable');
-    return typeof rawPrice === 'number' ? `₹${rawPrice.toLocaleString('en-IN')}` : rawPrice;
+    return formatIndianPrice(rawPrice);
   }, [rawPrice, t]);
 
   const displayPriceUnit = useMemo(() => {
     if (!priceUnit) return null;
-    const lower = priceUnit.toLowerCase();
-    if (lower.includes('vigha')) return t('sellerForm.vigha');
-    if (lower.includes('yard') || lower.includes('var')) return t('sellerForm.sqYard');
-    if (lower.includes('ft')) return t('sellerForm.sqFt');
-    return priceUnit;
+    const stdUnit = standardizePriceUnit(priceUnit);
+    if (stdUnit === 'Sq.Yard') return 'Sq.Yard';
+    if (stdUnit === 'Sq.Ft') return t('sellerForm.sqFt');
+    if (stdUnit === 'Vigha') return t('sellerForm.vigha');
+    return stdUnit;
   }, [priceUnit, t]);
 
   const displayPriceWithUnit = useMemo(() => {
@@ -132,13 +133,6 @@ function PropertyCard({ property, compact = false, onContact }) {
         </div>
 
         <div className="absolute inset-x-4 top-4 flex items-start justify-between gap-3">
-          <div className="flex items-center">
-            {property?.verified ? (
-              <div className="inline-flex items-center gap-2 rounded-full bg-white/95 px-3 py-1.5 text-[11px] font-semibold text-slate-800 shadow-sm dark:bg-dark-card/95 dark:text-dark-text">
-                <ShieldCheck size={13} className="text-sage dark:text-emerald-400" /> {t('common.verified')}
-              </div>
-            ) : null}
-          </div>
           <div className="flex items-center gap-2">
             <button type="button" aria-label={`Share ${propertyTitle}`} onClick={handleShare} className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/95 text-slate-700 shadow-sm transition hover:bg-white dark:bg-dark-card/95 dark:text-dark-text dark:hover:bg-dark-card">
               <Share2 size={15} />

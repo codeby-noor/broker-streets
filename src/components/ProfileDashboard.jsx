@@ -55,6 +55,7 @@ import {
 import AsyncImage from '../components/AsyncImage';
 import ContactModal from '../components/ContactModal';
 import { useLanguage } from '../i18n/LanguageContext';
+import { formatIndianPrice } from '../utils/format';
 import '../styles/profile-dashboard.css';
 
 const sidebarItems = [
@@ -146,19 +147,16 @@ const sampleNotifications = [
 ];
 
 const statConfigs = [
-  { key: 'listed', labelKey: 'profile.propertiesListed', gradient: 'linear-gradient(135deg, #2563eb, #3b82f6)', icon: Building2, countKey: 'listed' },
+  { key: 'listed', labelKey: 'profile.propertiesListed', gradient: 'linear-gradient(135deg, #1D5CA9, #3D7CCB)', icon: Building2, countKey: 'listed' },
   { key: 'sold', labelKey: 'profile.propertiesSold', gradient: 'linear-gradient(135deg, #0f766e, #14b8a6)', icon: House, countKey: 'sold' },
   { key: 'saved', labelKey: 'profile.savedProperties', gradient: 'linear-gradient(135deg, #7c3aed, #a78bfa)', icon: Bookmark, countKey: 'saved' },
   { key: 'requests', labelKey: 'profile.buyerRequirements', gradient: 'linear-gradient(135deg, #ea580c, #fb923c)', icon: BadgeCheck, countKey: 'requests' },
   { key: 'recent', labelKey: 'profile.recentlyViewed', gradient: 'linear-gradient(135deg, #be185d, #f472b6)', icon: Eye, countKey: 'recent' },
 ];
 
-const formatCurrency = (value) => {
-  const numeric = Number(value || 0);
-  return `₹${numeric.toLocaleString('en-IN')}`;
-};
+const formatCurrency = (value) => formatIndianPrice(value);
 
-const formatDate = (value, fallback = 'Recently updated') => {
+const formatDate = (value, fallback = '') => {
   if (!value) return fallback;
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return value;
@@ -328,7 +326,7 @@ function ProfileDashboard() {
 
   const handleLogout = () => {
     setConfirmAction({
-      title: 'Logout',
+      title: t('profile.logout'),
       description: t('profile.logoutConfirm'),
       onConfirm: () => {
         logout();
@@ -576,12 +574,12 @@ function ProfileDashboard() {
               </div>
               <div className="grid gap-4 md:grid-cols-2">
                 {[
-                  ['name', 'Full Name', 'text'],
-                  ['mobile', 'Mobile', 'text'],
-                  ['email', 'Email', 'email'],
-                  ['address', 'Address', 'text'],
-                  ['district', 'District', 'text'],
-                  ['subDistrict', 'Taluka', 'text'],
+                  ['name', t('profile.fullNameLabel'), 'text'],
+                  ['mobile', t('profile.mobileLabel'), 'text'],
+                  ['email', t('profile.emailLabel'), 'email'],
+                  ['address', t('profile.addressLabel'), 'text'],
+                  ['district', t('common.district'), 'text'],
+                  ['subDistrict', t('common.taluka'), 'text'],
                 ].map(([field, label, type]) => (
                   <label key={field} className="space-y-2 text-sm font-medium text-slate-700">
                     <span>{label}</span>
@@ -717,7 +715,7 @@ function ProfileDashboard() {
                 <div className="flex flex-wrap items-center gap-2">
                   <h2 className="text-lg font-bold text-slate-900 truncate sm:text-2xl">{profile.name || t('profile.profileFallbackName')}</h2>
                   {(user?.verified || profile?.verified) && (
-                    <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 border border-emerald-200/80 px-2.5 py-0.5 text-xs font-bold text-emerald-700">
+                    <span className="inline-flex items-center gap-1 rounded-full bg-sage/10 border border-sage/20 px-2.5 py-0.5 text-xs font-bold text-sage">
                       <ShieldCheck size={12} />
                       {t('profile.verifiedBadge')}
                     </span>
@@ -796,11 +794,10 @@ function ProfileDashboard() {
                       navigate(navMap[item.key] || '/profile');
                     }
                   }}
-                  className={`flex flex-shrink-0 items-center gap-1.5 rounded-xl px-3 py-2 text-xs font-bold transition-all ${
-                    isActive
-                      ? 'bg-primary text-white shadow-sm'
-                      : 'bg-transparent text-slate-700 hover:bg-slate-100 hover:text-slate-900'
-                  }`}
+                  className={`flex flex-shrink-0 items-center gap-1.5 rounded-xl px-3 py-2 text-xs font-bold transition-all ${isActive
+                    ? 'bg-primary text-white shadow-sm'
+                    : 'bg-transparent text-slate-700 hover:bg-slate-100 hover:text-slate-900'
+                    }`}
                 >
                   <Icon size={14} className="flex-shrink-0" />
                   <span className="whitespace-nowrap">{t(item.labelKey)}</span>

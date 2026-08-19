@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { ArrowLeft, ArrowRight, ChevronLeft, ChevronRight, Download, ExternalLink, FileText, Heart, IndianRupee, MapPin, Share2, ShieldCheck, Star, X } from 'lucide-react';
+import { ArrowLeft, ArrowRight, ChevronLeft, ChevronRight, Download, ExternalLink, FileText, Heart, IndianRupee, MapPin, Share2, X } from 'lucide-react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { readStorage, onListingsChanged, onSavedPropertiesChanged, STORAGE_KEYS, addRecentlyViewed, isPropertySaved, toggleSavedProperty } from '../utils/storage';
@@ -8,10 +8,11 @@ import { getSubmissionDestination } from '../utils/formNavigation';
 import AsyncImage from '../components/AsyncImage';
 import ContactModal from '../components/ContactModal';
 import { useLanguage } from '../i18n/LanguageContext';
+import { formatIndianPrice, standardizePriceUnit } from '../utils/format';
 import logo from '../assets/images/logo.png';
 
 const formatPrice = (value, t, isGujarati) => {
-  if (typeof value === 'number') return `₹${value.toLocaleString('en-IN')}`;
+  if (typeof value === 'number') return formatIndianPrice(value);
   if (typeof value === 'string') {
     const trimmed = value.trim();
     if (!trimmed || trimmed.toLowerCase() === 'not provided' || trimmed.toLowerCase() === 'price on request') {
@@ -100,11 +101,13 @@ const translatePriceUnit = (unitStr, isGujarati) => {
     return isGujarati ? 'કિંમત એકમ ઉપલબ્ધ નથી' : 'Price unit not available';
   }
   const str = String(unitStr).trim();
+  const stdUnit = standardizePriceUnit(str);
   if (isGujarati) {
-    if (/sq\.?yard\s*\(var\)/i.test(str) || /sq\.?yard/i.test(str) || /var/i.test(str)) return 'ચોરસ વાર';
-    if (/sq\.?ft/i.test(str) || /sqft/i.test(str)) return 'ચોરસ ફૂટ';
-    if (/acre/i.test(str)) return 'એકર';
-    if (/vigha/i.test(str) || /bigha/i.test(str)) return 'વીઘા';
+    if (stdUnit === 'Sq.Yard' || /var/i.test(str)) return 'ચોરસ વાર';
+    if (stdUnit === 'Sq.Ft') return 'ચોરસ ફૂટ';
+    if (stdUnit === 'Acre') return 'એકર';
+    if (stdUnit === 'Vigha') return 'વીઘા';
+    if (stdUnit === 'Hectare') return 'હેક્ટર';
     if (/total/i.test(str)) return 'કુલ કિંમત';
   }
   return str;
@@ -232,7 +235,7 @@ function RelatedPropertyCard({ property }) {
   const typeText = translatePropertyType(property?.type || property?.propertyType, t, language === 'gu');
 
   const rawPrice = property?.priceAmount || property?.price;
-  const displayPrice = !rawPrice || rawPrice === 'Price on request' ? t('common.notAvailable') : typeof rawPrice === 'number' ? `₹${rawPrice.toLocaleString('en-IN')}` : rawPrice;
+  const displayPrice = !rawPrice || rawPrice === 'Price on request' ? t('common.notAvailable') : formatIndianPrice(rawPrice);
   const priceUnit = property?.priceUnit;
   const displayPriceUnit = priceUnit
     ? translatePriceUnit(priceUnit, language === 'gu')
@@ -268,11 +271,6 @@ function RelatedPropertyCard({ property }) {
         </div>
         <div className="absolute left-2 top-2 flex flex-wrap gap-1.5">
           <span className={`rounded-full px-2.5 py-1 text-[10px] font-bold ${rawStatus === 'Sold' ? 'bg-amber-500/90 text-white' : rawStatus === 'Unavailable' ? 'bg-slate-500/90 text-white' : 'bg-emerald-600/90 text-white'}`}>{statusText}</span>
-          {property?.verified ? (
-            <span className="inline-flex items-center gap-1 rounded-full bg-white/95 px-2.5 py-1 text-[10px] font-bold text-slate-800 shadow-sm dark:bg-dark-card/95 dark:text-dark-text">
-              <ShieldCheck size={11} className="text-sage dark:text-emerald-400" /> {t('common.verified')}
-            </span>
-          ) : null}
         </div>
         <div className="absolute right-2 top-2 flex items-center gap-1.5">
           <button type="button" aria-label={`Share ${propertyTitle}`} onClick={handleShare} className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-white/95 text-slate-700 shadow-sm transition hover:bg-white dark:bg-dark-card/95 dark:text-dark-text dark:hover:bg-dark-card">
@@ -560,14 +558,12 @@ function PropertyDetailsPage() {
 
   const propertyLocationLabel = locationParts.join(' • ');
 
-  const postedDate = property.uploadedDate || property.submittedAt || property.createdAt || property.updatedAt || t('propertyDetails.recentlyListed');
   const sellerName = property.seller?.name || property.sellerName || property.owner || property.ownerName || t('propertyDetails.sellerNameFallback');
   const sellerPhone = property.seller?.phone || property.sellerPhone || property.ownerMobile || property.mobile || '';
   const sellerEmail = property.seller?.email || property.sellerEmail || property.ownerEmail || property.email || '';
   const sellerWhatsApp = sellerPhone ? `https://wa.me/91${String(sellerPhone).replace(/\D/g, '')}` : '';
   const sellerCall = sellerPhone ? `tel:${sellerPhone}` : '';
   const sellerMail = sellerEmail ? `mailto:${sellerEmail}` : '';
-  const sellerRating = property?.rating && property.rating >= 1 ? property.rating : property?.verified ? 5 : null;
 
   const heroPriceText = formatPrice(property.priceAmount || property.price, t, isGujarati);
   const heroPriceIsRequest = heroPriceText === (isGujarati ? 'કિંમત માટે સંપર્ક કરો' : 'Price on request');
@@ -579,7 +575,7 @@ function PropertyDetailsPage() {
 
   return (
     <div className="pb-2 lg:pb-6">
-      <main className="space-y-6 lg:space-y-8">
+      <main className="mx-auto w-full max-w-[1200px] space-y-4 lg:space-y-8">
         {/* ===== BACK TO PROPERTIES ===== */}
         <button
           type="button"
@@ -589,17 +585,21 @@ function PropertyDetailsPage() {
           <ArrowLeft size={16} /> {t('propertyDetails.backToProperties')}
         </button>
 
-        {/* ===== TOP HERO: GALLERY + PROPERTY INFORMATION ===== */}
-        <section className="lg:grid lg:grid-cols-[minmax(0,1.1fr)_minmax(360px,0.9fr)] lg:items-start lg:gap-8">
-          {/* LEFT: Property gallery */}
-          <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-card sm:rounded-[28px] dark:border-dark-border dark:bg-dark-card">
-            <div className="relative overflow-hidden bg-slate-200 dark:bg-dark-bg" onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
-              <div className="relative aspect-[4/3] w-full overflow-hidden sm:aspect-[16/10] lg:aspect-auto lg:h-[520px]">
+        {/* ===== HERO — IMAGE (left) + SELLER INFORMATION (right), balanced heights ===== */}
+        <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-card sm:rounded-[28px] dark:border-dark-border dark:bg-dark-card">
+          <div className="grid lg:grid-cols-[minmax(0,1.1fr)_minmax(360px,0.9fr)] lg:items-stretch">
+            {/* LEFT — PROPERTY IMAGE GALLERY */}
+            <div className="overflow-hidden bg-white dark:bg-dark-card">
+              <div className="relative aspect-[16/10] w-full overflow-hidden bg-slate-200 lg:aspect-[4/3] dark:bg-dark-bg" onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
                 <AsyncImage src={galleryImages[activeIndex] || galleryImages[0]} alt={propertyTitle} className="h-full w-full object-cover" onClick={() => setZoomOpen(true)} />
 
                 {/* Overlay: counter top-left, share + like top-right */}
                 <div className="absolute inset-x-0 top-0 flex items-center justify-between p-3 sm:p-4">
-                  <span className="rounded-full bg-black/60 px-3 py-1 text-[11px] font-semibold text-white backdrop-blur-sm">{activeIndex + 1}/{galleryImages.length}</span>
+                  {galleryImages.length > 1 ? (
+                    <span className="rounded-full bg-black/60 px-3 py-1 text-[11px] font-semibold text-white backdrop-blur-sm">{activeIndex + 1}/{galleryImages.length}</span>
+                  ) : (
+                    <span />
+                  )}
                   <div className="flex items-center gap-2">
                     <button type="button" aria-label={t('propertyDetails.shareProperty')} onClick={handleShare} className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/95 text-ink shadow-sm transition hover:bg-white dark:bg-dark-card/95 dark:text-dark-text dark:hover:bg-dark-card">
                       <Share2 size={17} />
@@ -610,126 +610,69 @@ function PropertyDetailsPage() {
                   </div>
                 </div>
 
-                {/* Overlay: prev / next vertically centered at edges */}
-                <button type="button" onClick={handlePrev} className="absolute left-2 top-1/2 inline-flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-white/80 bg-white/90 text-ink shadow-sm transition hover:bg-white sm:left-3 dark:border-dark-border dark:bg-dark-card/90 dark:text-dark-text dark:hover:bg-dark-card">
-                  <ChevronLeft size={18} />
-                </button>
-                <button type="button" onClick={handleNext} className="absolute right-2 top-1/2 inline-flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-white/80 bg-white/90 text-ink shadow-sm transition hover:bg-white sm:right-3 dark:border-dark-border dark:bg-dark-card/90 dark:text-dark-text dark:hover:bg-dark-card">
-                  <ChevronRight size={18} />
-                </button>
+                {/* Overlay: prev / next vertically centered at edges (hidden when single image) */}
+                {galleryImages.length > 1 ? (
+                  <>
+                    <button type="button" onClick={handlePrev} className="absolute left-2 top-1/2 inline-flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-white/80 bg-white/90 text-ink shadow-sm transition hover:bg-white sm:left-4 dark:border-dark-border dark:bg-dark-card/90 dark:text-dark-text dark:hover:bg-dark-card">
+                      <ChevronLeft size={18} />
+                    </button>
+                    <button type="button" onClick={handleNext} className="absolute right-2 top-1/2 inline-flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-white/80 bg-white/90 text-ink shadow-sm transition hover:bg-white sm:right-4 dark:border-dark-border dark:bg-dark-card/90 dark:text-dark-text dark:hover:bg-dark-card">
+                      <ChevronRight size={18} />
+                    </button>
+                  </>
+                ) : null}
               </div>
-            </div>
 
-            {/* Thumbnails */}
-            <div className="grid grid-cols-4 gap-2 p-3 sm:grid-cols-6 sm:p-4">
-              {galleryImages.map((image, index) => (
-                <button key={`${image}-${index}`} type="button" onClick={() => setActiveIndex(index)} className={`overflow-hidden rounded-lg border dark:border-dark-border ${activeIndex === index ? 'border-sage ring-2 ring-sage/20' : 'border-slate-200'}`}>
-                  <AsyncImage src={image} alt={`${propertyTitle} ${index + 1}`} className="h-14 w-full object-cover sm:h-16" />
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* RIGHT: Property information + price */}
-          <div className="mt-6 lg:mt-0">
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="rounded-full bg-sage/10 px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-sage dark:bg-sage/20 dark:text-emerald-400">
-                {translatePropertyType(propertyTypeLabel, t, isGujarati)}
-              </span>
-              {property?.verified ? (
-                <span className="inline-flex items-center gap-1 rounded-full bg-emerald-600/10 px-3 py-1 text-[11px] font-bold text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400">
-                  <ShieldCheck size={12} /> {t('propertyDetails.verifiedListing')}
-                </span>
-              ) : null}
-              <span className="inline-flex items-center gap-1 rounded-full bg-emerald-600/10 px-3 py-1 text-[11px] font-bold text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400">
-                <span className="h-1.5 w-1.5 rounded-full bg-emerald-600 dark:bg-emerald-400" />
-                {translateStatus(property.status, isGujarati)}
-              </span>
-            </div>
-
-            <h1 className="mt-3 text-2xl font-bold leading-tight tracking-tight text-ink sm:text-3xl dark:text-dark-text">{propertyTitle}</h1>
-
-            <div className="mt-2 flex items-center gap-2 text-sm text-slate-600 sm:text-[15px] dark:text-dark-muted">
-              <MapPin size={16} className="shrink-0 text-sage dark:text-emerald-400" />
-              <span>{propertyLocationLabel}</span>
-            </div>
-
-            {/* Compact premium price card with ₹ icon + Broker Streets logo */}
-            <div className="mt-5 rounded-2xl border border-slate-200 bg-white px-4 py-4 shadow-card sm:px-5 dark:border-dark-border dark:bg-dark-card">
-              <div className="flex items-start justify-between gap-3">
-                <div className="min-w-0">
-                  <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-sage dark:text-emerald-400">{t('propertyDetails.landPrice')}</p>
-                  <div className="mt-1.5 flex items-center gap-2">
-                    {!heroPriceIsRequest ? (
-                      <IndianRupee size={26} strokeWidth={2.5} className="shrink-0 text-sage dark:text-emerald-400" />
-                    ) : null}
-                    <p className="text-[26px] font-bold leading-none tracking-tight text-ink sm:text-3xl dark:text-dark-text">
-                      {heroPriceIsRequest ? heroPriceText : heroPriceText.replace(/^₹\s?/, '')}
-                    </p>
-                  </div>
-                  {!heroPriceIsRequest && (property?.priceUnit || heroAreaText) ? (
-                    <p className="mt-1.5 text-sm font-medium text-slate-500 dark:text-dark-muted">
-                      {property?.priceUnit ? `${isGujarati ? 'પ્રતિ' : 'per'} ${heroUnitText}` : ''}
-                      {property?.priceUnit && heroAreaText ? ' · ' : ''}
-                      {heroAreaText}
-                    </p>
-                  ) : null}
+              {/* Thumbnails — only when there is more than one image */}
+              {galleryImages.length > 1 ? (
+                <div className="grid grid-cols-4 gap-2 p-3 sm:grid-cols-6 sm:p-4">
+                  {galleryImages.map((image, index) => (
+                    <button key={`${image}-${index}`} type="button" onClick={() => setActiveIndex(index)} className={`overflow-hidden rounded-lg border dark:border-dark-border ${activeIndex === index ? 'border-sage ring-2 ring-sage/20' : 'border-slate-200'}`}>
+                      <AsyncImage src={image} alt={`${propertyTitle} ${index + 1}`} className="h-14 w-full object-cover sm:h-16" />
+                    </button>
+                  ))}
                 </div>
-                <img src={logo} alt="Broker Streets" className="h-7 w-auto shrink-0 object-contain opacity-80 sm:h-8" />
-              </div>
+              ) : null}
             </div>
 
-            {/* Compact Seller / Contact row */}
-            <div className="mt-4">
-              <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-sage dark:text-emerald-400">{t('propertyDetails.sellerInformation')}</p>
-              <div className="mt-2 rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-card sm:px-5 dark:border-dark-border dark:bg-dark-card">
-                {/* Avatar + name + location */}
-                <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-sage text-sm font-semibold text-white">
+            {/* RIGHT — SELLER INFORMATION (compact, content-driven, no empty space) */}
+            <div className="flex flex-col p-4 sm:p-6 lg:border-l lg:border-slate-200 lg:p-6 xl:p-7 dark:lg:border-dark-border">
+              <div className="flex flex-col rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6 dark:border-dark-border dark:bg-dark-card">
+                <h2 className="text-[11px] font-bold uppercase tracking-[0.18em] text-sage dark:text-emerald-400">{t('propertyDetails.sellerInformation')}</h2>
+
+                <div className="mt-4 flex items-center gap-3">
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-sage text-base font-semibold text-white sm:h-16 sm:w-16 sm:text-lg">
                     {sellerName?.split(' ').map((part) => part[0]).slice(0, 2).join('') || 'S'}
                   </div>
-                  <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-bold text-ink dark:text-dark-text">{sellerName}</p>
-                    <p className="mt-0.5 flex items-center gap-1.5 truncate text-xs text-slate-600 dark:text-dark-muted">
-                      <MapPin size={12} className="shrink-0 text-sage dark:text-emerald-400" />
+                  <div className="min-w-0">
+                    <p className="truncate text-lg font-bold text-ink dark:text-dark-text">{sellerName}</p>
+                    <p className="mt-0.5 flex items-center gap-1.5 truncate text-sm text-slate-600 dark:text-dark-muted">
+                      <MapPin size={14} className="shrink-0 text-sage dark:text-emerald-400" />
                       {translateLocation(property?.district || property?.location, t, isGujarati)}
                     </p>
+                    <p className="mt-0.5 text-[13px] text-slate-500 dark:text-dark-muted">
+                      <span className="font-semibold text-slate-500 dark:text-dark-muted">{t('propertyDetails.sellerDistrict')}:</span>{' '}
+                      {translateLocation(property?.district || property?.location, t, isGujarati)}{' '}
+                      ·{' '}
+                      <span className="font-semibold text-slate-500 dark:text-dark-muted">{t('propertyDetails.sellerTaluka')}:</span>{' '}
+                      {translateLocation(property?.subDistrict || property?.taluka, t, isGujarati)}
+                    </p>
                   </div>
-                  {sellerRating ? (
-                    <div className="flex shrink-0 items-center gap-0.5">
-                      {[1, 2, 3, 4, 5].map((star) => (
-                        <Star key={star} size={11} className={star <= sellerRating ? 'fill-amber-400 text-amber-400' : 'text-slate-300 dark:text-dark-border'} />
-                      ))}
-                    </div>
-                  ) : null}
                 </div>
 
-                {/* District / Taluka compact inline */}
-                <div className="mt-2.5 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-600 dark:text-dark-muted">
-                  <span>
-                    <span className="font-semibold text-slate-500 dark:text-dark-muted">{t('propertyDetails.sellerDistrict')}:</span>{' '}
-                    {translateLocation(property?.district || property?.location, t, isGujarati)}
-                  </span>
-                  <span>
-                    <span className="font-semibold text-slate-500 dark:text-dark-muted">{t('propertyDetails.sellerTaluka')}:</span>{' '}
-                    {translateLocation(property?.subDistrict || property?.taluka, t, isGujarati)}
-                  </span>
-                </div>
-
-                {/* Contact actions — Call / WhatsApp / Email */}
-                <div className="mt-3 flex flex-wrap gap-2">
+                <div className="mt-4 flex flex-col gap-2">
                   {sellerCall ? (
-                    <a href={sellerCall} className="inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-sage px-4 py-2 text-xs font-semibold text-white transition hover:bg-sage-dark sm:text-sm">
+                    <a href={sellerCall} className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-sage px-4 py-3 text-xs font-semibold text-white transition hover:bg-sage-dark sm:text-sm">
                       {t('propertyDetails.callSeller')}
                     </a>
                   ) : null}
                   {sellerWhatsApp ? (
-                    <a href={sellerWhatsApp} target="_blank" rel="noreferrer" className="inline-flex flex-1 items-center justify-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-semibold text-slate-700 transition hover:bg-slate-50 sm:text-sm dark:border-dark-border dark:bg-dark-card dark:text-dark-text dark:hover:bg-dark-bg">
+                    <a href={sellerWhatsApp} target="_blank" rel="noreferrer" className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-3 text-xs font-semibold text-slate-700 transition hover:bg-slate-50 sm:text-sm dark:border-dark-border dark:bg-dark-card dark:text-dark-text dark:hover:bg-dark-bg">
                       {t('common.whatsapp')}
                     </a>
                   ) : null}
                   {sellerMail ? (
-                    <a href={sellerMail} className="inline-flex flex-1 items-center justify-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-semibold text-slate-700 transition hover:bg-slate-50 sm:text-sm dark:border-dark-border dark:bg-dark-card dark:text-dark-text dark:hover:bg-dark-bg">
+                    <a href={sellerMail} className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-3 text-xs font-semibold text-slate-700 transition hover:bg-slate-50 sm:text-sm dark:border-dark-border dark:bg-dark-card dark:text-dark-text dark:hover:bg-dark-bg">
                       {t('propertyDetails.emailSeller')}
                     </a>
                   ) : null}
@@ -739,16 +682,89 @@ function PropertyDetailsPage() {
           </div>
         </section>
 
-        {/* ===== MAIN GRID: PROPERTY DETAILS | PROPERTY LOCATION ===== */}
-        <section className="grid gap-6 lg:grid-cols-[1.05fr_0.95fr] lg:gap-8">
-          {/* LEFT: Property Details + Features */}
-          <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-card sm:rounded-[28px] sm:p-6 dark:border-dark-border dark:bg-dark-card">
+        {/* ===== PROPERTY TITLE + PRICE — full-width summary ===== */}
+        <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-card sm:rounded-[28px] sm:p-6 dark:border-dark-border dark:bg-dark-card">
+          <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
+            <div className="min-w-0">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="rounded-full bg-sage/10 px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-sage dark:bg-sage/20 dark:text-emerald-400">
+                  {translatePropertyType(propertyTypeLabel, t, isGujarati)}
+                </span>
+                <span className="inline-flex items-center gap-1 rounded-full bg-emerald-600/10 px-3 py-1 text-[11px] font-bold text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400">
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-600 dark:bg-emerald-400" />
+                  {translateStatus(property.status, isGujarati)}
+                </span>
+              </div>
+
+              <h1 className="mt-3 text-2xl font-bold leading-tight tracking-tight text-ink sm:text-3xl dark:text-dark-text">{propertyTitle}</h1>
+
+              <div className="mt-2 flex items-center gap-2 text-sm text-slate-600 sm:text-[15px] dark:text-dark-muted">
+                <MapPin size={16} className="shrink-0 text-sage dark:text-emerald-400" />
+                <span>{propertyLocationLabel}</span>
+              </div>
+            </div>
+
+            {/* Price — prominent, right-aligned on desktop; own card on mobile */}
+            <div className="w-full shrink-0 rounded-2xl border border-slate-200 bg-white px-4 py-4 shadow-sm lg:w-[320px] lg:border-0 lg:bg-cream lg:px-5 lg:py-5 lg:ring-1 lg:ring-slate-200/70 dark:border-dark-border dark:bg-dark-card dark:lg:border-0 dark:lg:bg-dark-bg dark:lg:ring-dark-border">
+              <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-sage dark:text-emerald-400">{t('propertyDetails.landPrice')}</p>
+              <div className="mt-2 flex items-center gap-2">
+                {!heroPriceIsRequest ? (
+                  <IndianRupee size={28} strokeWidth={2.5} className="shrink-0 text-sage dark:text-emerald-400" />
+                ) : null}
+                <p className="text-3xl font-bold leading-none tracking-tight text-ink sm:text-4xl dark:text-dark-text">
+                  {heroPriceIsRequest ? heroPriceText : heroPriceText.replace(/^₹\s?/, '')}
+                </p>
+              </div>
+              {!heroPriceIsRequest && (property?.priceUnit || heroAreaText) ? (
+                <p className="mt-2 text-sm font-medium text-slate-500 dark:text-dark-muted">
+                  {property?.priceUnit ? `${isGujarati ? 'પ્રતિ' : 'per'} ${heroUnitText}` : ''}
+                  {property?.priceUnit && heroAreaText ? ' · ' : ''}
+                  {heroAreaText}
+                </p>
+              ) : null}
+            </div>
+          </div>
+        </section>
+
+        {/* ===== PROPERTY LOCATION + GOOGLE MAP ===== */}
+        <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-card sm:rounded-[28px] sm:p-6 dark:border-dark-border dark:bg-dark-card">
+          <h2 className="text-lg font-bold tracking-tight text-ink sm:text-xl dark:text-dark-text">{t('propertyDetails.propertyLocation')}</h2>
+          <div className="mt-1.5 flex items-center gap-2 text-sm text-slate-600 dark:text-dark-muted">
+            <MapPin size={15} className="shrink-0 text-sage dark:text-emerald-400" />
+            <span>{propertyLocationLabel}</span>
+          </div>
+          <div className="relative mt-4 overflow-hidden rounded-xl border border-slate-200 dark:border-dark-border">
+            <iframe
+              title={`${propertyTitle} location map`}
+              src={getPropertyMapEmbedUrl(property)}
+              className="h-60 w-full border-0 sm:h-[288px] lg:h-80"
+              loading="lazy"
+              allowFullScreen
+              referrerPolicy="no-referrer-when-downgrade"
+            />
+          </div>
+          {property?.mapUrl || property?.googleMaps || property?.mapLink ? (
+            <a
+              href={property.mapUrl || property.googleMaps || property.mapLink}
+              target="_blank"
+              rel="noreferrer"
+              className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-sage px-5 py-2.5 text-xs font-semibold text-white transition hover:bg-sage-dark sm:text-sm"
+            >
+              {t('propertyDetails.openInGoogleMaps')} <ExternalLink size={14} />
+            </a>
+          ) : null}
+        </section>
+
+        {/* ===== LOWER CONTENT GRID — DETAILS | DOCUMENTS | RELATED ===== */}
+        <div className="grid gap-6 lg:grid-cols-[1.1fr_0.8fr_1.5fr] lg:gap-8">
+          {/* PROPERTY DETAILS */}
+          <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-card sm:rounded-[28px] sm:p-6 dark:border-dark-border dark:bg-dark-card">
             <h2 className="text-lg font-bold tracking-tight text-ink sm:text-xl dark:text-dark-text">{t('common.propertyDetails')}</h2>
 
-            {/* Clean hairline grid — 2 columns */}
-            <div className="mt-3 grid grid-cols-2 gap-px overflow-hidden rounded-xl border border-slate-200 bg-slate-200 dark:border-dark-border dark:bg-dark-border">
+            {/* Clean hairline grid — 1 col on mobile, 2 col on sm+ */}
+            <div className="mt-3 grid grid-cols-1 gap-px overflow-hidden rounded-xl border border-slate-200 bg-slate-200 sm:grid-cols-2 dark:border-dark-border dark:bg-dark-border">
               {overviewItems.map((item) => (
-                <div key={item.label} className="bg-white px-3 py-3 dark:bg-dark-card">
+                <div key={item.label} className="bg-white px-4 py-3 dark:bg-dark-card">
                   <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500 dark:text-dark-muted">{item.label}</p>
                   <p className="mt-1 text-sm font-semibold leading-snug text-ink dark:text-dark-text">{item.value}</p>
                 </div>
@@ -762,9 +778,9 @@ function PropertyDetailsPage() {
                   <h3 className="text-sm font-bold uppercase tracking-wide text-ink sm:text-base dark:text-dark-text">{t('propertyDetails.propertyFeatures')}</h3>
                   <span className="h-px flex-1 bg-slate-200 dark:bg-dark-border" />
                 </div>
-                <div className="mt-3 grid grid-cols-2 gap-px overflow-hidden rounded-xl border border-slate-200 bg-slate-200 dark:border-dark-border dark:bg-dark-border">
+                <div className="mt-3 grid grid-cols-1 gap-px overflow-hidden rounded-xl border border-slate-200 bg-slate-200 sm:grid-cols-2 dark:border-dark-border dark:bg-dark-border">
                   {availableFeatures.map((item) => (
-                    <div key={item.label} className="bg-white px-3 py-3 dark:bg-dark-card">
+                    <div key={item.label} className="bg-white px-4 py-3 dark:bg-dark-card">
                       <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500 dark:text-dark-muted">{item.label}</p>
                       <p className="mt-1 text-sm font-semibold leading-snug text-ink dark:text-dark-text">{item.value}</p>
                     </div>
@@ -772,102 +788,74 @@ function PropertyDetailsPage() {
                 </div>
               </>
             ) : null}
-          </div>
+          </section>
 
-          {/* RIGHT: Property Location — single location section */}
-          <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-card sm:rounded-[28px] sm:p-6 dark:border-dark-border dark:bg-dark-card">
-            <div className="flex flex-wrap items-start justify-between gap-3">
-              <div className="min-w-0">
-                <h2 className="text-lg font-bold tracking-tight text-ink sm:text-xl dark:text-dark-text">{t('propertyDetails.propertyLocation')}</h2>
-                <div className="mt-1.5 flex items-center gap-2 text-sm text-slate-600 dark:text-dark-muted">
-                  <MapPin size={15} className="shrink-0 text-sage dark:text-emerald-400" />
-                  <span>{propertyLocationLabel}</span>
-                </div>
-              </div>
-              {property?.mapUrl || property?.googleMaps || property?.mapLink ? (
-                <a href={property.mapUrl || property.googleMaps || property.mapLink} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 rounded-full bg-sage px-3.5 py-2 text-xs font-semibold text-white transition hover:bg-sage-dark">
-                  {t('propertyDetails.openInGoogleMaps')} <ExternalLink size={13} />
-                </a>
-              ) : null}
-            </div>
-            <div className="relative mt-3 overflow-hidden rounded-xl border border-slate-200 dark:border-dark-border">
-              <iframe
-                title={`${propertyTitle} location map`}
-                src={getPropertyMapEmbedUrl(property)}
-                className="h-56 w-full border-0 sm:h-64"
-                loading="lazy"
-                allowFullScreen
-                referrerPolicy="no-referrer-when-downgrade"
-              />
-            </div>
-          </div>
-        </section>
-
-        {/* ===== PROPERTY DOCUMENTS — single section, compact rows ===== */}
-        <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-card sm:rounded-[28px] sm:p-6 dark:border-dark-border dark:bg-dark-card">
-          <h2 className="text-lg font-bold tracking-tight text-ink sm:text-xl dark:text-dark-text">{t('propertyDetails.propertyDocuments')}</h2>
-          <div className="mt-3 space-y-2">
-            {documentItems.length ? (
-              documentItems.map((document, index) => {
-                const isImage = document.type?.startsWith('image') || /\.(png|jpg|jpeg|webp)$/i.test(document.rawName || '');
-                return (
-                  <div key={`${document.rawName}-${index}`} className="flex items-center justify-between gap-3 rounded-xl border border-slate-200 bg-slate-50/70 px-3 py-2.5 sm:px-4 dark:border-dark-border dark:bg-dark-bg/60">
-                    <div className="flex min-w-0 items-center gap-2.5">
-                      <FileText size={16} className="shrink-0 text-sage dark:text-emerald-400" />
-                      <div className="min-w-0">
-                        <p className="truncate text-sm font-semibold text-ink dark:text-dark-text">{translateDocumentName(document.displayName, isGujarati)}</p>
-                        <p className="text-[11px] text-slate-500 dark:text-dark-muted">{documentCountLabel(documentItems.length)}</p>
+          {/* PROPERTY DOCUMENTS */}
+          <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-card sm:rounded-[28px] sm:p-6 dark:border-dark-border dark:bg-dark-card">
+            <h2 className="text-lg font-bold tracking-tight text-ink sm:text-xl dark:text-dark-text">{t('propertyDetails.propertyDocuments')}</h2>
+            <div className="mt-3 space-y-2">
+              {documentItems.length ? (
+                documentItems.map((document, index) => {
+                  const isImage = document.type?.startsWith('image') || /\.(png|jpg|jpeg|webp)$/i.test(document.rawName || '');
+                  return (
+                    <div key={`${document.rawName}-${index}`} className="flex items-center justify-between gap-3 rounded-xl border border-slate-200 bg-slate-50/70 px-3 py-2.5 sm:px-4 dark:border-dark-border dark:bg-dark-bg/60">
+                      <div className="flex min-w-0 items-center gap-2.5">
+                        <FileText size={16} className="shrink-0 text-sage dark:text-emerald-400" />
+                        <div className="min-w-0">
+                          <p className="truncate text-sm font-semibold text-ink dark:text-dark-text">{translateDocumentName(document.displayName, isGujarati)}</p>
+                          <p className="text-[11px] text-slate-500 dark:text-dark-muted">{documentCountLabel(documentItems.length)}</p>
+                        </div>
+                      </div>
+                      <div className="flex shrink-0 items-center gap-1.5">
+                        {isImage && document.url ? (
+                          <a href={document.url} target="_blank" rel="noreferrer" className="rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 transition hover:bg-slate-100 dark:border-dark-border dark:bg-dark-card dark:text-dark-text">
+                            {t('propertyDetails.view')}
+                          </a>
+                        ) : null}
+                        {document.url ? (
+                          <a href={document.url} download={document.rawName || '712-document'} className="inline-flex items-center gap-1 rounded-full bg-sage px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-sage-dark">
+                            {t('propertyDetails.downloadDocument')} <Download size={12} />
+                          </a>
+                        ) : (
+                          <span className="text-xs text-slate-500 dark:text-dark-muted">{t('propertyDetails.notUploaded')}</span>
+                        )}
                       </div>
                     </div>
-                    <div className="flex shrink-0 items-center gap-1.5">
-                      {isImage && document.url ? (
-                        <a href={document.url} target="_blank" rel="noreferrer" className="rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 transition hover:bg-slate-100 dark:border-dark-border dark:bg-dark-card dark:text-dark-text">
-                          {t('propertyDetails.view')}
-                        </a>
-                      ) : null}
-                      {document.url ? (
-                        <a href={document.url} download={document.rawName || '712-document'} className="inline-flex items-center gap-1 rounded-full bg-sage px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-sage-dark">
-                          {t('propertyDetails.downloadDocument')} <Download size={12} />
-                        </a>
-                      ) : (
-                        <span className="text-xs text-slate-500 dark:text-dark-muted">{t('propertyDetails.notUploaded')}</span>
-                      )}
-                    </div>
-                  </div>
-                );
-              })
-            ) : (
-              <div className="rounded-xl border border-dashed border-slate-200 bg-slate-50/70 px-4 py-5 text-sm text-slate-500 dark:border-dark-border dark:bg-dark-bg/60 dark:text-dark-muted">{t('propertyDetails.noDocumentUploaded')}</div>
-            )}
-          </div>
-        </section>
-
-        {/* ===== RELATED PROPERTIES ===== */}
-        <section>
-          <div className="flex items-center justify-between gap-3">
-            <h2 className="text-lg font-bold tracking-tight text-ink sm:text-xl dark:text-dark-text">
-              {similarProperties.length ? (isGujarati ? 'સંબંધિત પ્રોપર્ટીઓ' : 'Related Properties') : t('propertyDetails.noSimilarListings')}
-            </h2>
-            {similarProperties.length ? (
-              <button
-                type="button"
-                onClick={() => navigate(getSubmissionDestination('buyerFormSubmitted', '/buyer-form', '/buy'))}
-                className="inline-flex shrink-0 items-center gap-1 text-sm font-semibold text-sage transition hover:text-sage-dark"
-              >
-                {isGujarati ? 'બધા જુઓ' : 'View All'} <ArrowRight size={15} />
-              </button>
-            ) : null}
-          </div>
-          {similarProperties.length ? (
-            <div className="mt-4 flex snap-x gap-3 overflow-x-auto pb-2 lg:grid lg:grid-cols-4 lg:gap-5 lg:overflow-visible lg:pb-0">
-              {similarProperties.map((item) => (
-                <RelatedPropertyCard key={item.id} property={item} />
-              ))}
+                  );
+                })
+              ) : (
+                <div className="rounded-xl border border-dashed border-slate-200 bg-slate-50/70 px-4 py-5 text-sm text-slate-500 dark:border-dark-border dark:bg-dark-bg/60 dark:text-dark-muted">{t('propertyDetails.noDocumentUploaded')}</div>
+              )}
             </div>
-          ) : (
-            <div className="mt-4 rounded-xl border border-dashed border-slate-200 bg-slate-50/70 px-4 py-6 text-sm text-slate-500 dark:border-dark-border dark:bg-dark-bg/60 dark:text-dark-muted">{t('propertyDetails.noSimilarListings')}</div>
-          )}
-        </section>
+          </section>
+
+          {/* RELATED PROPERTIES */}
+          <section>
+            <div className="flex items-center justify-between gap-3">
+              <h2 className="text-lg font-bold tracking-tight text-ink sm:text-xl dark:text-dark-text">
+                {similarProperties.length ? t('common.relatedProperties') : t('propertyDetails.noSimilarListings')}
+              </h2>
+              {similarProperties.length ? (
+                <button
+                  type="button"
+                  onClick={() => navigate(getSubmissionDestination('buyerFormSubmitted', '/buyer-form', '/buy'))}
+                  className="inline-flex shrink-0 items-center gap-1 text-sm font-semibold text-sage transition hover:text-sage-dark"
+                >
+                  {t('common.viewAllShort')} <ArrowRight size={15} />
+                </button>
+              ) : null}
+            </div>
+            {similarProperties.length ? (
+              <div className="mt-4 flex snap-x gap-3 overflow-x-auto pb-2 lg:grid lg:grid-cols-2 lg:gap-4 lg:overflow-visible lg:pb-0">
+                {similarProperties.map((item) => (
+                  <RelatedPropertyCard key={item.id} property={item} />
+                ))}
+              </div>
+            ) : (
+              <div className="mt-4 rounded-xl border border-dashed border-slate-200 bg-slate-50/70 px-4 py-6 text-sm text-slate-500 dark:border-dark-border dark:bg-dark-bg/60 dark:text-dark-muted">{t('propertyDetails.noSimilarListings')}</div>
+            )}
+          </section>
+        </div>
       </main>
 
       {zoomOpen ? (

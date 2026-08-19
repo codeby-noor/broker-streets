@@ -297,7 +297,7 @@ function BuyPage() {
   );
 
   return (
-    <div className="min-h-screen w-full overflow-x-clip bg-[#FFFEFE] pb-20">
+    <div className="min-h-screen w-full overflow-x-clip bg-cream pb-20">
       <section className="bg-ink px-4 py-10 text-white sm:px-10 sm:py-14 lg:px-12">
         <div className="mx-auto max-w-7xl">
           <p className="eyebrow text-blue-100">{t('buy.heroCollection')}</p>

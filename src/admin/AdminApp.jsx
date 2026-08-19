@@ -792,7 +792,7 @@ function AddPropertyPage() {
               <select className="form-select input-glow" value={form.priceUnit} onChange={(e) => update('priceUnit', e.target.value)}>
                 <option value="">{t('admin.unit')}</option>
                 <option value="Vigha">{t('admin.priceUnitVigha')}</option>
-                <option value="sq.yard (var)">{t('admin.priceUnitVar')}</option>
+                <option value="Sq.Yard">{t('admin.priceUnitVar')}</option>
                 <option value="Sq.Ft">{t('admin.priceUnitSqFt')}</option>
               </select>
             </div>

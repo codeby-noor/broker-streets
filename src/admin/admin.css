@@ -1,4 +1,4 @@
-.admin-app {
+4.admin-app {
   min-height: 100vh;
   background: linear-gradient(135deg, #f7f9ff 0%, #f4f7fc 100%);
   color: #0f172a;
@@ -124,7 +124,7 @@
 .chart-bars .bar {
   flex: 1;
   border-radius: 999px 999px 10px 10px;
-  background: linear-gradient(180deg, #4f8df6 0%, #2563eb 100%);
+  background: linear-gradient(180deg, #5B9BD5 0%, #1D5CA9 100%);
   min-height: 20px;
   position: relative;
 }
@@ -151,12 +151,12 @@
   justify-content: center;
   font-weight: 700;
   color: #fff;
-  background: linear-gradient(135deg, #2563eb, #3b82f6);
+  background: linear-gradient(135deg, #1D5CA9, #3D7CCB);
 }
 
 .badge-soft {
-  background: rgba(37, 99, 235, 0.12);
-  color: #1d4ed8;
+  background: rgba(29, 92, 169, 0.12);
+  color: #174A87;
 }
 
 .page-title {
@@ -170,8 +170,8 @@
 }
 
 .input-glow:focus {
-  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15);
-  border-color: #2563eb;
+  box-shadow: 0 0 0 4px rgba(29, 92, 169, 0.15);
+  border-color: #1D5CA9;
 }
 
 .image-preview {
@@ -318,8 +318,8 @@
 }
 
 .role-buyer {
-  background: rgba(37, 99, 235, 0.12);
-  color: #1d4ed8;
+  background: rgba(29, 92, 169, 0.12);
+  color: #174A87;
 }
 
 .role-seller {
@@ -468,7 +468,7 @@
 .location-bar-track {
   flex: 1;
   min-width: 0;
-  background: rgba(37, 99, 235, 0.08);
+  background: rgba(29, 92, 169, 0.08);
   border-radius: 999px;
   height: 28px;
   overflow: hidden;
@@ -477,7 +477,7 @@
 .location-bar-fill {
   height: 100%;
   border-radius: 999px;
-  background: linear-gradient(90deg, #2563eb, #4f8df6);
+  background: linear-gradient(90deg, #1D5CA9, #5B9BD5);
   display: flex;
   align-items: center;
   justify-content: flex-end;
@@ -650,8 +650,8 @@
 }
 
 .stat-icon-blue {
-  background: rgba(37, 99, 235, 0.12);
-  color: #1d4ed8;
+  background: rgba(29, 92, 169, 0.12);
+  color: #174A87;
 }
 
 .stat-icon-green {
@@ -748,7 +748,7 @@
   width: 56px;
   height: 170px;
   border-radius: 16px;
-  background: rgba(37, 99, 235, 0.06);
+  background: rgba(29, 92, 169, 0.06);
   display: flex;
   align-items: flex-end;
   overflow: hidden;
@@ -757,7 +757,7 @@
 .city-bar-fill {
   width: 100%;
   border-radius: 16px;
-  background: linear-gradient(180deg, #60a5fa 0%, #2563eb 100%);
+  background: linear-gradient(180deg, #5B9BD5 0%, #1D5CA9 100%);
   position: relative;
   transition: height 0.5s ease;
   min-height: 14px;
@@ -983,9 +983,9 @@
 }
 
 .admin-lang-btn.active {
-  background: #2563eb;
+  background: #1D5CA9;
   color: #ffffff;
-  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.35);
+  box-shadow: 0 2px 8px rgba(29, 92, 169, 0.35);
 }
 
 /* Login page variant — slightly larger for standalone screen */

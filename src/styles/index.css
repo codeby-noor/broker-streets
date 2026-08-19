@@ -83,7 +83,7 @@ textarea {
 }
 
 .mobile-bottom-nav__item.is-active {
-  color: #2563eb;
+  color: #1D5CA9;
   background: #eff6ff;
 }
 
@@ -97,7 +97,7 @@ textarea {
 
 .mobile-bottom-nav__item.is-active .mobile-bottom-nav__icon-wrap {
   background: #dbeafe;
-  color: #1d4ed8;
+  color: #174A87;
 }
 
 .mobile-bottom-nav__label {
@@ -131,8 +131,8 @@ textarea {
 }
 
 .otp-input-box:focus {
-  border-color: #2563eb;
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+  border-color: #1D5CA9;
+  box-shadow: 0 0 0 3px rgba(29, 92, 169, 0.12);
 }
 
 @media (max-width: 340px) {
@@ -185,7 +185,7 @@ input:focus,
 select:focus,
 textarea:focus,
 button:focus {
-  outline: 3px solid rgba(37, 99, 235, 0.18);
+  outline: 3px solid rgba(29, 92, 169, 0.18);
   outline-offset: 2px;
 }
 

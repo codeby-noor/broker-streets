@@ -24,15 +24,13 @@ const sampleListings = [
   },
 ];
 
-const formatCurrency = (value) => {
-  const numeric = Number(value || 0);
-  return `₹${numeric.toLocaleString('en-IN')}`;
-};
+import { formatIndianPrice, standardizePriceUnit } from '../utils/format';
 
 const formatPriceWithUnit = (listing) => {
-  const priceText = formatCurrency(listing?.price || listing?.priceAmount || 0);
+  const priceText = formatIndianPrice(listing?.price || listing?.priceAmount || 0);
   if (!listing?.priceUnit) return priceText;
-  return `${priceText} per ${listing.priceUnit}`;
+  const stdUnit = standardizePriceUnit(listing.priceUnit);
+  return `${priceText} per ${stdUnit}`;
 };
 
 function ProfilePropertiesPage() {

@@ -74,6 +74,7 @@ export const translations = {
       readLess: 'Read Less',
       readMore: 'Read More',
       backToHome: 'Back to Home',
+      browseProperties: 'Browse Properties',
     },
     dropdown: {
       under1000SqFt: 'Under 1000 Sq Ft',
@@ -405,7 +406,6 @@ export const translations = {
       propertyStatusAvailable: 'Available',
       propertyStatusSold: 'Sold',
       propertyStatusPending: 'Pending',
-      verifiedListing: 'Verified listing',
       notUploaded: 'Not uploaded',
       sellerLabel: 'Seller',
       sellerMobile: 'Mobile',
@@ -584,6 +584,8 @@ export const translations = {
       legal: 'Legal',
       privacy: 'Privacy',
       terms: 'Terms',
+      legalDisclaimer: 'Legal Disclaimer',
+      listingPolicy: 'Listing Policy',
       about: 'About',
       contact: 'Contact',
       description: 'Broker Streets helps people buy and sell property with a simple, trustworthy experience.',
@@ -696,6 +698,7 @@ export const translations = {
       readLess: 'ઓછું વાંચો',
       readMore: 'વધુ વાંચો',
       backToHome: 'હોમ પર પાછા જાઓ',
+      browseProperties: 'પ્રોપર્ટી બ્રાઉઝ કરો',
       view: 'જુઓ',
       edit: 'ફેરફાર કરો',
       delete: 'કાઢી નાખો',
@@ -754,7 +757,7 @@ export const translations = {
       whyBroker: 'બ્રોકર સ્ટ્રીટ્સ શા માટે',
       whyBrokerTitle: 'ગુજરાતમાં જમીન ખરીદદારો અને વેચનારાઓ માટે પ્રીમિયમ પ્લેટફોર્મ.',
       whyBrokerDescription: 'ચકાસેલી જમીનની તકો જુઓ, વેચનારાઓ સાથે સીધો સંપર્ક કરો અને સુરત તથા નવસારી માટે સ્થાનિક બજારની સ્પષ્ટતા મેળવો.',
-      verifiedListingTitle: 'ચકાસેલી લિસ્ટિંગ્સ',
+      verifiedListingTitle: 'Verified Listings',
       verifiedListingDescription: 'દરેક લિસ્ટિંગ પર જમીનની સ્પષ્ટ વિગતો અને વેચનારની વિશ્વસનીયતા.',
       localExpertiseTitle: 'સ્થાનિક નિષ્ણાતતા',
       localExpertiseDescription: 'સુરત અને નવસારી પર ધ્યાન કેન્દ્રિત જમીન કવરેજ અને વિશ્વાસપાત્ર માહિતી.',
@@ -955,6 +958,8 @@ export const translations = {
       legal: 'કાનૂની',
       privacy: 'પ્રાઈવસી',
       terms: 'શરતો',
+      legalDisclaimer: 'કાનૂની હેતુઓ',
+      listingPolicy: 'લિસ્ટિંગ નીતિ',
       about: 'અમારા વિશે',
       contact: 'સંપર્ક',
       description: 'બ્રોકર સ્ટ્રીટ્સ લોકોને સાદા અને વિશ્વાસપાત્ર અનુભવ સાથે પ્રોપર્ટી ખરીદી અને વેચાણ કરવામાં મદદ કરે છે.',
@@ -1099,7 +1104,8 @@ const batchThreeTranslations = {
       localExpertiseTitle: 'સ્થાનિક નિષ્ણાતી', localExpertiseDescription: 'સુરત અને નવસારી કેન્દ્રિત જમીન કવરેજ સાથે વિશ્વસનીય માર્ગદર્શન.', locationDescription: 'સુરત અને નવસારીમાં વધુ માંગ ધરાવતા કૃષિ અને બિન-કૃષિ જમીન સ્થાનો શોધો.',
       premiumPresentationTitle: 'ઉત્તમ રજૂઆત', premiumPresentationDescription: 'વ્યાવસાયિક લિસ્ટિંગ કાર્ડ અને વિશ્વસનીય બજાર માહિતી.', quoteTitle: 'વ્યાવસાયિક પસંદગી', quoteText: 'ગંભીર ખરીદદારો માટે પસંદ કરેલી પ્રિમિયમ કૃષિ અને બિન-કૃષિ જમીન.', quoteDescription: 'અમારી ટીમ સ્થાનિક સ્પષ્ટતા, મજબૂત દસ્તાવેજીકરણ અને સાર્થક રોકાણ ક્ષમતા પર ધ્યાન આપે છે.',
       readyTitle: 'યોગ્ય જમીન શોધવા તૈયાર છો?', readySubtitle: 'પ્રોપર્ટીઓ જુઓ અથવા આજે તમારી જરૂરિયાત પોસ્ટ કરો.', sellerSectionTitle: 'વેચનાર વિભાગ', sellerHeading: 'આજે તમારી જમીન લિસ્ટ કરો અને સાચા ખરીદદારો સુધી પહોંચો.', sellerStats: '250થી વધુ વેચનાર', sellerText: 'ગંભીર ખરીદદારોને આકર્ષવા માટે વેચનારની લિસ્ટિંગમાં સ્પષ્ટ જમીન વિગતો, ચકાસેલી માહિતી અને સ્થાનિક બજાર સંદર્ભ આપવામાં આવે છે.', sellerTrusted: 'વિશ્વસનીય પહોંચ', sellerVerifDesc: 'સ્પષ્ટ પ્રોપર્ટી સમીક્ષાઓ', sellerVerified: 'ચકાસેલી પ્રક્રિયા',
-      submit: 'જરૂરિયાત સબમિટ કરો', submitDesc: 'તમે શું ખરીદવા માંગો છો તે જણાવો', verifiedListingTitle: 'ચકાસેલી લિસ્ટિંગ', verifiedListingDescription: 'દરેક લિસ્ટિંગમાં સ્પષ્ટ જમીન વિગતો અને વેચનારની વિશ્વસનીયતા.', viewRequirements: 'બધી જરૂરિયાતો જુઓ', whyBrokerTitle: 'ગુજરાતમાં જમીન ખરીદદારો અને વેચનાર માટે પ્રિમિયમ પ્લેટફોર્મ.', whyBrokerDescription: 'ચકાસેલી જમીન તકો જુઓ, વેચનાર સાથે સીધો સંપર્ક કરો અને સ્થાનિક બજારની સ્પષ્ટ માહિતી મેળવો.',
+      submit: 'જરૂરિયાત સબમિટ કરો', submitDesc: 'તમે શું ખરીદવા માંગો છો તે જણાવો',
+      verifiedListingTitle: 'Verified Listings', verifiedListingDescription: 'દરેક લિસ્ટિંગમાં સ્પષ્ટ જમીન વિગતો અને વેચનારની વિશ્વસનીયતા.', viewRequirements: 'બધી જરૂરિયાતો જુઓ', whyBrokerTitle: 'ગુજરાતમાં જમીન ખરીદદારો અને વેચનાર માટે પ્રિમિયમ પ્લેટફોર્મ.', whyBrokerDescription: 'ચકાસેલી જમીન તકો જુઓ, વેચનાર સાથે સીધો સંપર્ક કરો અને સ્થાનિક બજારની સ્પષ્ટ માહિતી મેળવો.',
     },
     profile: { aboutBrokerStreets: 'Broker Streets વિશે', accountDashboard: 'એકાઉન્ટ ડેશબોર્ડ', addListing: 'લિસ્ટિંગ ઉમેરો', addProperty: 'પ્રોપર્ટી ઉમેરો', available: 'ઉપલબ્ધ', cancelEdit: 'ફેરફાર રદ કરો', changePassword: 'પાસવર્ડ બદલો', clearAll: 'બધું સાફ કરો', confirmPassword: 'પાસવર્ડની પુષ્ટિ કરો', contactBuyer: 'ખરીદદારનો સંપર્ક કરો', contactSupport: 'સહાયનો સંપર્ક કરો', currentPassword: 'હાલનો પાસવર્ડ', deleteRequirementDescription: 'શું તમે આ ખરીદદારની જરૂરિયાત દૂર કરવા માંગો છો?', deleteRequirementTitle: 'જરૂરિયાત દૂર કરવી છે?', editProfile: 'પ્રોફાઇલમાં ફેરફાર કરો' },
   },
@@ -1462,7 +1468,6 @@ const missingKeysFix = {
       propertyStatusAvailable: 'ઉપલબ્ધ',
       propertyStatusSold: 'વેચાયેલ',
       propertyStatusPending: 'બાકી',
-      verifiedListing: 'ચકાસેલ લિસ્ટિંગ',
       sellerLabel: 'વેચનાર',
       sellerDistrict: 'જિલ્લો',
       sellerTaluka: 'તાલુકો',
@@ -2443,6 +2448,113 @@ const adminCompletionTranslations = {
 
 addMissingTranslations(translations.en, adminCompletionTranslations.en);
 addMissingTranslations(translations.gu, adminCompletionTranslations.gu);
+
+const addPropertyTranslations = {
+  en: {
+    sellerForm: {
+      bedrooms: 'Bedrooms / BHK',
+      bathrooms: 'Bathrooms',
+      amenities: 'Amenities',
+      titlePlaceholder: 'e.g. Spacious 3 BHK near the city center',
+      addressPlaceholder: 'Locality, landmark and street',
+      pricePlaceholderShort: 'e.g. 75 Lakh',
+      areaPlaceholderShort: 'e.g. 1,250 sqft',
+      locationPlaceholder: 'e.g. Satellite',
+      descriptionPlaceholder: 'Tell buyers what makes this property special',
+      completeRequired: 'Please complete the required listing details.',
+      listingUpdated: 'Listing updated successfully.',
+      propertyAdded: 'Property added successfully.',
+    },
+  },
+  gu: {
+    sellerForm: {
+      bedrooms: 'બેડરૂમ / BHK',
+      bathrooms: 'બાથરૂમ',
+      amenities: 'સગવડો',
+      titlePlaceholder: 'દા.ત. શહેર કેન્દ્ર નજીક વિશાળ 3 BHK',
+      addressPlaceholder: 'વિસ્તાર, સીમાચિહ્ન અને શેરી',
+      pricePlaceholderShort: 'દા.ત. 75 લાખ',
+      areaPlaceholderShort: 'દા.ત. 1,250 ચોરસ ફૂટ',
+      locationPlaceholder: 'દા.ત. સેટેલાઇટ',
+      descriptionPlaceholder: 'ખરીદદારોને જણાવો કે આ પ્રોપર્ટી શું ખાસ બનાવે છે',
+      completeRequired: 'કૃપા કરીને જરૂરી લિસ્ટિંગ વિગતો પૂર્ણ કરો.',
+      listingUpdated: 'લિસ્ટિંગ સફળતાપૂર્વક અપડેટ થઈ.',
+      propertyAdded: 'પ્રોપર્ટી સફળતાપૂર્વક ઉમેરાઈ.',
+    },
+  },
+};
+
+addMissingTranslations(translations.en, addPropertyTranslations.en);
+addMissingTranslations(translations.gu, addPropertyTranslations.gu);
+
+const legalPageTranslations = {
+  en: {
+    notFoundPage: {
+      title: 'Page Not Found',
+      description: "Sorry, the page you're looking for doesn't exist or may have been moved.",
+    },
+    legalPage: {
+      lastUpdated: 'Last Updated',
+      termsTitle: 'Terms & Conditions',
+      privacyTitle: 'Privacy Policy',
+      disclaimerTitle: 'Legal Disclaimer',
+      listingPolicyTitle: 'Listing Policy',
+    },
+    common: {
+      relatedProperties: 'Related Properties',
+      viewAllShort: 'View All',
+      documentsLabel: 'documents',
+      documentLabel: 'document',
+    },
+  },
+  gu: {
+    notFoundPage: {
+      title: 'પૃષ્ઠ મળ્યું નથી',
+      description: 'માફ કરશો, તમે જે પૃષ્ઠ શોધી રહ્યા છો તે અસ્તિત્વમાં નથી અથવા ખસેડવામાં આવ્યું હશે.',
+    },
+    legalPage: {
+      lastUpdated: 'છેલ્લે અપડેટ',
+      termsTitle: 'નિયમો અને શરતો',
+      privacyTitle: 'ગોપનીયતા નીતિ',
+      disclaimerTitle: 'કાનૂની હેતુઓ',
+      listingPolicyTitle: 'લિસ્ટિંગ નીતિ',
+    },
+    common: {
+      relatedProperties: 'સંબંધિત પ્રોપર્ટીઓ',
+      viewAllShort: 'બધા જુઓ',
+      documentsLabel: 'દસ્તાવેજો',
+      documentLabel: 'દસ્તાવેજ',
+    },
+  },
+};
+
+addMissingTranslations(translations.en, legalPageTranslations.en);
+addMissingTranslations(translations.gu, legalPageTranslations.gu);
+
+// Legal page content translations (complete Gujarati versions of Terms, Privacy, Disclaimer, Listing Policy)
+const legalContentTranslations = {
+  en: {
+    terms: {
+      intro1: 'Welcome to Broker Streets. These Terms & Conditions govern your access to and use of the Broker Streets website, platform, listings, and related services.',
+      intro2: 'By accessing or using Broker Streets, creating an account, submitting a property listing, submitting a land requirement, or contacting another user through the platform, you agree to these Terms & Conditions.',
+      intro3: 'If you do not agree with these terms, please do not use the platform.',
+      section1Title: '1. About Broker Streets',
+      section1Content: 'Broker Streets is an online marketplace designed to connect people interested in buying and selling agricultural land and non-agricultural (NA) land. Broker Streets currently focuses on real estate in Gujarat, specifically Surat & Navsari only and may expand its reach. Broker Streets provides a digital platform for real estate sellers and buyers to connect.',
+    },
+  },
+  gu: {
+    terms: {
+      intro: 'બ્રોકર સ્ટ્રીટ્સમાં આપનું સ્વાગત છે. આ નિયમો અને શરતો બ્રોકર સ્ટ્રીટ્સ વેબસાઇટ, પ્લેટફોર્મ, લિસ્ટિંગ્સ અને સંબંધિત સેવાઓની ઍક્સેસ અને ઉપયોગને નિયંત્રિત કરે છે.',
+      intro2: 'બ્રોકર સ્ટ્રીટ્સનો ઉપયોગ કરીને, એકાઉન્ટ બનાવી, મિલકત લિસ્ટિંગ સબમિટ કરી, જમીનની જરૂરિયાત સબમિટ કરી, અથવા પ્લેટફોર્મ દ્વારા બીજા વપરાશકર્તાનો સંપર્ક કરી, તમે આ નિયમો અને શરતો સાથે સહમત થાઓ છો.',
+      intro3: 'જો તમે આ શરતો સાથે સહમત નથી, તો કૃપા કરીને પ્લેટફોર્મનો ઉપયોગ ન કરો.',
+      section1Title: '1. બ્રોકર સ્ટ્રીટ્સ વિશે',
+      section1Content: 'બ્રોકર સ્ટ્રીટ્સ એ ઓનલાઇન માર્કેટપ્લેસ છે જે ખેતીની જમીન અને બિન-ખેતી (NA) જમીન ખરી-વેચાણ કરવા ઇચ્છતા લોકોને જોડે છે. બ્રોકર સ્ટ્રીટ્સ હાલમાં ગુજરાતમાં મુખ્યત્વે સુરત અને નવસારી પર ધ્યાન આપે છે અને ભવિષ્યમાં વિસ્તરે શકે છે. બ્રોકર સ્ટ્રીટ્સ ઉપયોગ કર્તાઓ ને દિલ તથા મિલક માહિતી પ્રકાશીત કરવા માટે એક ડિજિટલ પ્લેટફોર્મ પ્રદાન કરે છે.',
+    },
+  },
+};
+
+addMissingTranslations(translations.en, legalContentTranslations.en);
+addMissingTranslations(translations.gu, legalContentTranslations.gu);
 
 export function getPropertyDisplayTitle(title, language) {
   if (!title && title !== 0) return '';

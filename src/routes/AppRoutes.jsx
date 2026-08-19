@@ -9,6 +9,10 @@ import SellPage from '../pages/SellPage';
 import PropertyDetailsPage from '../pages/PropertyDetailsPage';
 import AboutPage from '../pages/AboutPage';
 import ContactPage from '../pages/ContactPage';
+import TermsPage from '../pages/TermsPage';
+import PrivacyPage from '../pages/PrivacyPage';
+import LegalDisclaimerPage from '../pages/LegalDisclaimerPage';
+import ListingPolicyPage from '../pages/ListingPolicyPage';
 import ProfilePage from '../pages/ProfilePage';
 import ProfilePropertiesPage from '../pages/ProfilePropertiesPage';
 import ProfileSavedPage from '../pages/ProfileSavedPage';
@@ -49,6 +53,11 @@ function AppRoutes() {
         />
         <Route path="about" element={<AboutPage />} />
         <Route path="contact" element={<ContactPage />} />
+        <Route path="terms" element={<TermsPage />} />
+        <Route path="privacy" element={<PrivacyPage />} />
+        <Route path="legal-disclaimer" element={<LegalDisclaimerPage />} />
+        <Route path="listing-policy" element={<ListingPolicyPage />} />
+        <Route path="404" element={<NotFoundPage />} />
         <Route element={<ProtectedRoute />}>
           <Route
             path="buyer-form"

@@ -62,7 +62,7 @@ function LoginPage() {
 
       <main className="flex flex-1 items-center justify-center px-4 py-8 sm:px-6">
         <div className="w-full max-w-md rounded-[28px] border border-slate-200/80 bg-white p-6 shadow-[0_10px_35px_rgba(15,23,42,0.05)] sm:p-8">
-          <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-50 text-sage">
+          <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-2xl bg-sage/10 text-sage">
             <LogIn size={24} />
           </div>
 

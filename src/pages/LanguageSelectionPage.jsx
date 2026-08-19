@@ -24,7 +24,7 @@ function LanguageSelectionPage() {
       <div className="mx-auto flex min-h-[calc(100vh-5rem)] max-w-xl items-center justify-center">
         <section className="w-full rounded-[34px] border border-slate-200 bg-white p-6 shadow-[0_24px_80px_rgba(15,23,42,0.10)] sm:p-10">
           <div className="text-center">
-            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-3xl bg-emerald-50">
+            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-3xl bg-sage/10">
               <span className="text-2xl font-bold text-sage">BS</span>
             </div>
             <h1 className="mt-6 text-3xl font-semibold leading-tight text-slate-900 sm:text-4xl">{t('app.brand')}</h1>

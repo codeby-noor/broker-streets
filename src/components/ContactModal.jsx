@@ -26,7 +26,7 @@ function ContactModal({ open, onClose, data = {}, title }) {
 
   if (!open) return null;
 
-  const fullName = data.sellerName || data.ownerName || data.userName || data.name || t('contact.modalName') || 'Contact';
+  const fullName = data.sellerName || data.ownerName || data.userName || data.name || t('contact.modalName');
   const mobile = data.sellerPhone || data.ownerMobile || data.mobile || data.userMobile || '';
   const email = data.sellerEmail || data.ownerEmail || data.email || data.userEmail || '';
   const cleanedMobile = String(mobile).replace(/\D/g, '');

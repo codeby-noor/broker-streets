@@ -32,8 +32,10 @@ function Footer() {
           <div>
             <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-800">{t('footer.legal')}</p>
             <ul className="mt-3 space-y-2 text-sm text-slate-600">
-              <li>{t('footer.privacy')}</li>
-              <li>{t('footer.terms')}</li>
+              <li><Link to="/privacy" className="hover:text-primary">{t('footer.privacy')}</Link></li>
+              <li><Link to="/terms" className="hover:text-primary">{t('footer.terms')}</Link></li>
+              <li><Link to="/legal-disclaimer" className="hover:text-primary">{t('footer.legalDisclaimer')}</Link></li>
+              <li><Link to="/listing-policy" className="hover:text-primary">{t('footer.listingPolicy')}</Link></li>
             </ul>
           </div>
         </div>

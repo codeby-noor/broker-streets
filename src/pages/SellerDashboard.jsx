@@ -5,6 +5,7 @@ import { toast } from 'react-toastify';
 import { onListingsChanged, readStorage, STORAGE_KEYS, writeStorage } from '../utils/storage';
 import AsyncImage from '../components/AsyncImage';
 import { useLanguage } from '../i18n/LanguageContext';
+import { formatIndianPrice } from '../utils/format';
 
 function SellerDashboard() {
   const navigate = useNavigate();
@@ -82,7 +83,7 @@ function SellerDashboard() {
   };
 
   return (
-    <div className="-mx-4 -mt-8 min-h-screen bg-[#FFFEFE] px-3 pb-20 pt-6 sm:-mx-6 sm:px-6 sm:pt-10 lg:-mx-8 lg:px-8">
+    <div className="-mx-4 -mt-8 min-h-screen bg-cream px-3 pb-20 pt-6 sm:-mx-6 sm:px-6 sm:pt-10 lg:-mx-8 lg:px-8">
       <div className="mx-auto max-w-6xl">
         <section className="rounded-[32px] bg-ink p-5 text-white shadow-card sm:p-10">
           <p className="eyebrow text-blue-100">{t('sellerDashboard.eyebrow')}</p>
@@ -122,7 +123,7 @@ function SellerDashboard() {
                         <span className={`rounded-full px-3 py-1 text-xs font-semibold ${listing.status === 'Sold' ? 'bg-amber-500/15 text-amber-700' : listing.status === 'Pending' ? 'bg-slate-700/10 text-slate-700' : 'bg-success/15 text-success'}`}>{statusLabel(listing.status)}</span>
                       </div>
                       <p className="mt-2 flex items-center gap-2 text-sm text-muted"><MapPin size={14} className="text-primary" />{listing.address}, {listing.city}</p>
-                      <p className="mt-2 text-sm text-muted">{listing.price} • {listing.area}</p>
+                      <p className="mt-2 text-sm text-muted">{formatIndianPrice(listing.price || listing.priceAmount)} • {listing.area}</p>
                     </div>
                   </div>
                   <div className="flex flex-wrap gap-2">
@@ -144,7 +145,7 @@ function SellerDashboard() {
                 <h3 className="mt-3 text-xl font-semibold text-ink">{getPropertyDisplayTitle(selectedListing.title)}</h3>
                 <p className="mt-3 text-sm leading-7 text-muted">{selectedListing.description}</p>
                 <div className="mt-6 space-y-3 rounded-[24px] border border-slate-200 bg-slate-50 p-4 text-sm text-slate-700">
-                  <div className="flex items-center justify-between"><span>{t('common.price')}</span><strong>{selectedListing.price}</strong></div>
+                  <div className="flex items-center justify-between"><span>{t('common.price')}</span><strong>{formatIndianPrice(selectedListing.price || selectedListing.priceAmount)}</strong></div>
                   <div className="flex items-center justify-between"><span>{t('common.area')}</span><strong>{selectedListing.area}</strong></div>
                   <div className="flex items-center justify-between"><span>{t('sellerDashboard.status')}</span><strong>{statusLabel(selectedListing.status)}</strong></div>
                   <div className="flex items-center justify-between"><span>{t('sellerDashboard.location')}</span><strong>{selectedListing.city}</strong></div>
