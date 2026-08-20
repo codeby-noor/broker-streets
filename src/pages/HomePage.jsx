@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   ShieldCheck,
@@ -20,6 +20,8 @@ import {
   FileSpreadsheet,
   ChevronDown,
   MessageSquare,
+  ChevronLeft,
+  ChevronRight,
 } from 'lucide-react';
 import { getSubmissionDestination } from '../utils/formNavigation';
 import { sampleProperties } from '../utils/data';
@@ -171,6 +173,41 @@ function HomePage() {
   // Search state
   const [searchType, setSearchType] = useState('');
   const [searchLocation, setSearchLocation] = useState('');
+
+  // Review Slider State
+  const [currentReview, setCurrentReview] = useState(0);
+  const reviewScrollRef = useRef(null);
+
+  const reviews = [
+    { text: t('home.review1Text'), author: t('home.review1Author') },
+    { text: t('home.review2Text'), author: t('home.review2Author') },
+    { text: t('home.review3Text'), author: t('home.review3Author') },
+    { text: t('home.review4Text'), author: t('home.review4Author') },
+  ];
+
+  const scrollToReview = (index) => {
+    if (reviewScrollRef.current) {
+      const cardWidth = reviewScrollRef.current.offsetWidth;
+      reviewScrollRef.current.scrollTo({
+        left: index * cardWidth,
+        behavior: 'smooth',
+      });
+      setCurrentReview(index);
+    }
+  };
+
+  const handleReviewScroll = () => {
+    if (reviewScrollRef.current) {
+      const scrollLeft = reviewScrollRef.current.scrollLeft;
+      const cardWidth = reviewScrollRef.current.offsetWidth;
+      if (cardWidth > 0) {
+        const index = Math.round(scrollLeft / cardWidth);
+        if (index >= 0 && index < reviews.length) {
+          setCurrentReview(index);
+        }
+      }
+    }
+  };
 
   const goToBuy = () => navigate(getSubmissionDestination('buyerFormSubmitted', '/buyer-form', '/buy'));
   const goToSell = () => navigate(getSubmissionDestination('sellerFormSubmitted', '/seller-form', '/sell'));
@@ -556,13 +593,9 @@ function HomePage() {
             </h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-            {[
-              { text: t('home.review1Text'), author: t('home.review1Author') },
-              { text: t('home.review2Text'), author: t('home.review2Author') },
-              { text: t('home.review3Text'), author: t('home.review3Author') },
-              { text: t('home.review4Text'), author: t('home.review4Author') },
-            ].map((review, idx) => (
+          {/* DESKTOP 4-COLUMN LAYOUT (lg:grid UNCHANGED) */}
+          <div className="hidden lg:grid lg:grid-cols-4 lg:gap-6">
+            {reviews.map((review, idx) => (
               <div
                 key={idx}
                 className="flex flex-col justify-between rounded-xl border border-slate-200/80 bg-[#FDFDFD] p-5 shadow-[0_4px_16px_rgba(29,92,169,0.04)] transition hover:border-[#1D5CA9]/30 hover:shadow-[0_8px_24px_rgba(29,92,169,0.08)]"
@@ -580,6 +613,71 @@ function HomePage() {
                 </div>
               </div>
             ))}
+          </div>
+
+          {/* MOBILE & TABLET SLIDER (<1024px) */}
+          <div className="block lg:hidden relative">
+            <div
+              ref={reviewScrollRef}
+              onScroll={handleReviewScroll}
+              className="flex w-full overflow-x-auto snap-x snap-mandatory scroll-smooth pb-2 pt-1 no-scrollbar space-x-4"
+              style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+            >
+              {reviews.map((review, idx) => (
+                <div
+                  key={idx}
+                  className="w-full sm:w-[calc(50%-8px)] flex-none snap-center flex flex-col justify-between rounded-xl border border-slate-200/80 bg-[#FDFDFD] p-5 shadow-[0_4px_16px_rgba(29,92,169,0.04)] min-h-[160px]"
+                >
+                  <div>
+                    <span className="block font-serif text-3xl font-bold leading-none text-[#1D5CA9]/40 select-none mb-2">“</span>
+                    <p className="text-xs leading-relaxed text-slate-700 sm:text-sm">
+                      {review.text}
+                    </p>
+                  </div>
+                  <div className="mt-4 pt-3 border-t border-slate-100">
+                    <span className="text-xs font-semibold text-[#1D5CA9]">
+                      {review.author}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Slider Navigation Controls (Arrows & Pagination Dots) */}
+            <div className="mt-4 flex items-center justify-between px-1">
+              <button
+                type="button"
+                aria-label="Previous review"
+                onClick={() => scrollToReview(Math.max(0, currentReview - 1))}
+                disabled={currentReview === 0}
+                className={`inline-flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-700 shadow-2xs transition ${currentReview === 0 ? 'opacity-30 cursor-not-allowed' : 'hover:border-[#1D5CA9] hover:text-[#1D5CA9]'}`}
+              >
+                <ChevronLeft size={16} />
+              </button>
+
+              {/* Pagination Dots */}
+              <div className="flex items-center gap-1.5">
+                {reviews.map((_, idx) => (
+                  <button
+                    key={idx}
+                    type="button"
+                    aria-label={`Go to review slide ${idx + 1}`}
+                    onClick={() => scrollToReview(idx)}
+                    className={`h-2 rounded-full transition-all duration-300 ${currentReview === idx ? 'w-6 bg-[#1D5CA9]' : 'w-2 bg-slate-300 hover:bg-slate-400'}`}
+                  />
+                ))}
+              </div>
+
+              <button
+                type="button"
+                aria-label="Next review"
+                onClick={() => scrollToReview(Math.min(reviews.length - 1, currentReview + 1))}
+                disabled={currentReview === reviews.length - 1}
+                className={`inline-flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-700 shadow-2xs transition ${currentReview === reviews.length - 1 ? 'opacity-30 cursor-not-allowed' : 'hover:border-[#1D5CA9] hover:text-[#1D5CA9]'}`}
+              >
+                <ChevronRight size={16} />
+              </button>
+            </div>
           </div>
         </section>
 

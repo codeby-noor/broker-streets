@@ -63,7 +63,8 @@ function BuyPage() {
   });
 
   const MIN_PRICE = 0;
-  const MAX_PRICE = 100000000; // ₹10 Cr
+  const MAX_PRICE = 200000000; // ₹20 Cr
+  const PRICE_STEP = 100000;   // ₹1 Lakh
 
   const [priceRange, setPriceRange] = useState([MIN_PRICE, MAX_PRICE]);
 
@@ -258,16 +259,16 @@ function BuyPage() {
         </label>
       ) : null}
 
-      {/* DUAL-HANDLE PRICE RANGE SLIDER (FIXED RANGE: ₹0 - ₹10 Cr) */}
-      <div className="space-y-2">
-        <div className="flex items-center justify-between">
-          <span className="field-label">{t('buy.price')}</span>
-          <span className="text-xs font-bold text-[#1D5CA9]">
+      {/* DUAL-HANDLE PRICE RANGE SLIDER (FIXED RANGE: ₹0 - ₹20 Cr, Step = ₹1 Lakh) */}
+      <div className="space-y-2 rounded-xl border border-slate-100 bg-slate-50/50 p-3.5">
+        <div className="flex items-center justify-between gap-2">
+          <span className="text-xs font-bold text-slate-700">{t('buy.price')}</span>
+          <span className="text-xs font-bold text-[#1D5CA9] whitespace-nowrap">
             {formatIndianPrice(priceRange[0])} — {formatIndianPrice(priceRange[1])}
           </span>
         </div>
 
-        <div className="relative my-3 flex h-6 w-full items-center select-none">
+        <div className="relative my-3 flex h-7 w-full items-center select-none">
           {/* Background Track */}
           <div className="absolute inset-x-0 h-2 rounded-full bg-slate-200" />
 
@@ -285,14 +286,14 @@ function BuyPage() {
             type="range"
             min={MIN_PRICE}
             max={MAX_PRICE}
-            step={500000}
+            step={PRICE_STEP}
             value={priceRange[0]}
             onChange={(e) => {
-              const val = Math.min(Number(e.target.value), priceRange[1] - 500000);
+              const val = Math.min(Number(e.target.value), priceRange[1] - PRICE_STEP);
               setPriceRange([val, priceRange[1]]);
               setPage(1);
             }}
-            className="pointer-events-auto absolute z-30 h-6 w-full appearance-none bg-transparent opacity-0 cursor-pointer"
+            className="pointer-events-auto absolute z-30 h-7 w-full appearance-none bg-transparent opacity-0 cursor-pointer touch-none"
           />
 
           {/* Max Thumb Input */}
@@ -300,14 +301,14 @@ function BuyPage() {
             type="range"
             min={MIN_PRICE}
             max={MAX_PRICE}
-            step={500000}
+            step={PRICE_STEP}
             value={priceRange[1]}
             onChange={(e) => {
-              const val = Math.max(Number(e.target.value), priceRange[0] + 500000);
+              const val = Math.max(Number(e.target.value), priceRange[0] + PRICE_STEP);
               setPriceRange([priceRange[0], val]);
               setPage(1);
             }}
-            className="pointer-events-auto absolute z-30 h-6 w-full appearance-none bg-transparent opacity-0 cursor-pointer"
+            className="pointer-events-auto absolute z-30 h-7 w-full appearance-none bg-transparent opacity-0 cursor-pointer touch-none"
           />
 
           {/* Visible Min Circle */}
@@ -329,7 +330,7 @@ function BuyPage() {
 
         <div className="flex justify-between text-[11px] font-semibold text-slate-400">
           <span>₹0</span>
-          <span>₹10 Cr</span>
+          <span>₹20 Cr</span>
         </div>
       </div>
 
@@ -412,24 +413,48 @@ function BuyPage() {
 
         {/* MOBILE FILTER MODAL DRAWER */}
         {mobileFilters ? (
-          <div className="fixed inset-0 z-50 overflow-hidden bg-slate-950/70 px-3 py-4 sm:px-6">
-            <div className="absolute inset-0 overflow-y-auto">
-              <div className="mx-auto mt-12 max-w-md max-h-[85vh] overflow-y-auto rounded-3xl bg-white p-5 shadow-xl">
-                <div className="flex items-center justify-between gap-4 border-b border-slate-100 pb-3">
-                  <div>
-                    <p className="text-xs font-bold uppercase tracking-wider text-slate-800">{t('buy.filters')}</p>
-                    <p className="text-xs text-slate-500">{t('buy.mobileFilters')}</p>
-                  </div>
-                  <button type="button" onClick={() => setMobileFilters(false)} className="rounded-full border border-slate-200 bg-slate-50 p-2.5 text-slate-700 transition hover:bg-slate-100">
+          <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-slate-950/70 p-0 sm:p-4">
+            <div className="fixed inset-0" onClick={() => setMobileFilters(false)} />
+            <div className="relative z-10 flex flex-col w-full max-w-lg max-h-[85vh] rounded-t-3xl sm:rounded-3xl bg-white p-5 sm:p-6 shadow-2xl transition-all">
+              {/* Drawer Header */}
+              <div className="flex items-center justify-between border-b border-slate-100 pb-3.5">
+                <div className="flex items-center gap-2">
+                  <Filter size={18} className="text-[#1D5CA9]" />
+                  <h2 className="text-base font-bold text-slate-900">{t('buy.filterHeading') || 'Filters'}</h2>
+                </div>
+                <div className="flex items-center gap-3">
+                  <button
+                    type="button"
+                    onClick={clearFilters}
+                    className="text-xs font-bold uppercase tracking-wider text-[#1D5CA9] hover:underline"
+                  >
+                    {t('buy.reset') || 'Reset'}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setMobileFilters(false)}
+                    aria-label="Close filters"
+                    className="rounded-full border border-slate-200 bg-slate-50 p-2 text-slate-700 transition hover:bg-slate-100"
+                  >
                     <X size={16} />
                   </button>
                 </div>
-                <div className="mt-5">{filters}</div>
-                <div className="sticky bottom-0 left-0 right-0 mt-6 bg-white pt-4">
-                  <button type="button" onClick={() => setMobileFilters(false)} className="w-full rounded-xl bg-[#1D5CA9] px-5 py-3 text-xs font-bold text-white shadow-md transition hover:bg-[#1D5CA9]/90">
-                    {t('buy.applyFilters')}
-                  </button>
-                </div>
+              </div>
+
+              {/* Scrollable Filter Form Controls */}
+              <div className="flex-1 overflow-y-auto py-4 pr-1">
+                {filters}
+              </div>
+
+              {/* Sticky Action Footer */}
+              <div className="border-t border-slate-100 pt-3.5 pb-2">
+                <button
+                  type="button"
+                  onClick={() => setMobileFilters(false)}
+                  className="w-full rounded-xl bg-[#1D5CA9] px-5 py-3 text-xs sm:text-sm font-bold text-white shadow-md transition hover:bg-[#1D5CA9]/90 active:scale-[0.99]"
+                >
+                  {t('buy.applyFilters') || 'Apply Filters'} ({filtered.length})
+                </button>
               </div>
             </div>
           </div>
