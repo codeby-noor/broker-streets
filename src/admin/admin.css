@@ -1,3 +1,37 @@
+:root {
+  --bs-primary: #1D5CA9 !important;
+  --bs-primary-rgb: 29, 92, 169 !important;
+  --bs-link-color: #1D5CA9 !important;
+  --bs-link-hover-color: #174A87 !important;
+}
+
+.bg-primary {
+  background-color: #1D5CA9 !important;
+}
+
+.btn-primary {
+  background-color: #1D5CA9 !important;
+  border-color: #1D5CA9 !important;
+  color: #FDFDFD !important;
+}
+
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active {
+  background-color: #1D5CA9 !important;
+  border-color: #1D5CA9 !important;
+  color: #FDFDFD !important;
+  opacity: 0.92;
+}
+
+.text-primary {
+  color: #1D5CA9 !important;
+}
+
+.border-primary {
+  border-color: #1D5CA9 !important;
+}
+
 .admin-app {
   min-height: 100vh;
   background: linear-gradient(135deg, #f7f9ff 0%, #f4f7fc 100%);
@@ -20,14 +54,15 @@
 .admin-shell {
   display: flex;
   min-height: 100vh;
-  background: #f8fafc;
+  background: #FDFDFD;
 }
 
 .admin-sidebar {
   width: 260px;
   flex-shrink: 0;
-  background: linear-gradient(180deg, #07111f 0%, #0f172a 100%);
-  color: white;
+  background: #FDFDFD;
+  border-right: 1px solid rgba(29, 92, 169, 0.12);
+  color: #102122;
   min-height: 100vh;
   padding: 20px 14px;
   position: sticky;
@@ -37,30 +72,33 @@
 
 .admin-sidebar a,
 .admin-sidebar button {
-  color: #e2e8f0;
+  color: #102122;
   text-decoration: none;
-  border-radius: 14px;
-  padding: 11px 12px;
+  border-radius: 12px;
+  padding: 11px 14px;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   width: 100%;
   border: 0;
   background: transparent;
   text-align: left;
   transition: all 0.2s ease;
+  font-weight: 500;
+  font-size: 0.9rem;
 }
 
 .admin-sidebar a:hover,
 .admin-sidebar button:hover {
-  background: rgba(255, 255, 255, 0.08);
-  color: white;
+  background: rgba(29, 92, 169, 0.08);
+  color: #1D5CA9;
 }
 
 .admin-sidebar a.active {
-  background: rgba(255, 255, 255, 0.16);
-  color: white;
-  font-weight: 600;
+  background: #1D5CA9;
+  color: #FDFDFD;
+  font-weight: 700;
+  box-shadow: 0 4px 14px rgba(29, 92, 169, 0.18);
 }
 
 .admin-content {
@@ -73,8 +111,8 @@
   top: 0;
   z-index: 15;
   backdrop-filter: blur(18px);
-  background: rgba(255, 255, 255, 0.9);
-  border-bottom: 1px solid rgba(226, 232, 240, 0.9);
+  background: #FDFDFD;
+  border-bottom: 1px solid rgba(29, 92, 169, 0.12);
 }
 
 .dashboard-card {
@@ -124,7 +162,7 @@
 .chart-bars .bar {
   flex: 1;
   border-radius: 999px 999px 10px 10px;
-  background: linear-gradient(180deg, #5B9BD5 0%, #1D5CA9 100%);
+  background: linear-gradient(180deg, #1D5CA9 0%, rgba(29, 92, 169, 0.82) 100%);
   min-height: 20px;
   position: relative;
 }
@@ -151,12 +189,12 @@
   justify-content: center;
   font-weight: 700;
   color: #fff;
-  background: linear-gradient(135deg, #1D5CA9, #3D7CCB);
+  background: #1D5CA9;
 }
 
 .badge-soft {
   background: rgba(29, 92, 169, 0.12);
-  color: #174A87;
+  color: #1D5CA9;
 }
 
 .page-title {
@@ -317,19 +355,18 @@
   display: inline-block;
 }
 
-.role-buyer {
-  background: rgba(29, 92, 169, 0.12);
-  color: #174A87;
-}
-
-.role-seller {
-  background: rgba(5, 150, 105, 0.12);
-  color: #047857;
-}
-
-.role-both {
-  background: rgba(124, 58, 237, 0.12);
-  color: #6d28d9;
+.role-buyer,
+.role-seller,
+.role-both,
+.admin-role-badge {
+  font-size: 0.74rem;
+  font-weight: 600;
+  border-radius: 999px;
+  padding: 4px 10px;
+  display: inline-block;
+  background: rgba(29, 92, 169, 0.1);
+  color: #1D5CA9;
+  border: 1px solid rgba(29, 92, 169, 0.2);
 }
 
 /* Status badges */
@@ -339,33 +376,25 @@
   border-radius: 999px;
   padding: 4px 10px;
   display: inline-block;
+  background: rgba(29, 92, 169, 0.1);
+  color: #1D5CA9;
+  border: 1px solid rgba(29, 92, 169, 0.2);
 }
 
-.status-available {
-  background: rgba(5, 150, 105, 0.12);
-  color: #047857;
+.status-available,
+.status-active,
+.status-login {
+  background: #1D5CA9;
+  color: #FDFDFD;
 }
 
 .status-unavailable,
-.status-inactive {
-  background: rgba(100, 116, 139, 0.14);
-  color: #475569;
-}
-
-.status-sold {
-  background: rgba(225, 29, 72, 0.12);
-  color: #be123c;
-}
-
-.status-active,
-.status-login {
-  background: rgba(5, 150, 105, 0.12);
-  color: #047857;
-}
-
+.status-inactive,
+.status-sold,
 .status-loggedout {
-  background: rgba(100, 116, 139, 0.14);
-  color: #475569;
+  background: rgba(29, 92, 169, 0.08);
+  color: #1D5CA9;
+  border: 1px solid rgba(29, 92, 169, 0.25);
 }
 
 /* Responsive filters stack */
@@ -477,7 +506,7 @@
 .location-bar-fill {
   height: 100%;
   border-radius: 999px;
-  background: linear-gradient(90deg, #1D5CA9, #5B9BD5);
+  background: linear-gradient(90deg, #1D5CA9, rgba(29, 92, 169, 0.82));
   display: flex;
   align-items: center;
   justify-content: flex-end;
@@ -619,17 +648,17 @@
 
 /* Premium white stat cards with soft icon backgrounds */
 .stat-card {
-  border: 1px solid #eef1f6;
+  border: 1px solid rgba(29, 92, 169, 0.12);
   border-radius: 20px;
-  background: #ffffff;
-  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+  background: #FDFDFD;
+  box-shadow: 0 4px 16px rgba(29, 92, 169, 0.04);
   transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
 .stat-card:hover {
   transform: translateY(-3px);
-  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.1);
-  border-color: #e2e8f0;
+  box-shadow: 0 8px 24px rgba(29, 92, 169, 0.08);
+  border-color: rgba(29, 92, 169, 0.25);
 }
 
 .stat-card .card-body {
@@ -641,47 +670,14 @@
   flex-shrink: 0;
   width: 48px;
   height: 48px;
-  border-radius: 16px;
+  border-radius: 14px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.3rem;
+  font-size: 1.25rem;
   font-weight: 700;
-}
-
-.stat-icon-blue {
-  background: rgba(29, 92, 169, 0.12);
-  color: #174A87;
-}
-
-.stat-icon-green {
-  background: rgba(5, 150, 105, 0.12);
-  color: #047857;
-}
-
-.stat-icon-slate {
-  background: rgba(100, 116, 139, 0.14);
-  color: #475569;
-}
-
-.stat-icon-red {
-  background: rgba(225, 29, 72, 0.12);
-  color: #be123c;
-}
-
-.stat-icon-indigo {
-  background: rgba(99, 102, 241, 0.12);
-  color: #4f46e5;
-}
-
-.stat-icon-amber {
-  background: rgba(245, 158, 11, 0.14);
-  color: #b45309;
-}
-
-.stat-icon-violet {
-  background: rgba(124, 58, 237, 0.12);
-  color: #6d28d9;
+  background: rgba(29, 92, 169, 0.08);
+  color: #1D5CA9;
 }
 
 .stat-copy {
@@ -757,18 +753,18 @@
 .city-bar-fill {
   width: 100%;
   border-radius: 16px;
-  background: linear-gradient(180deg, #5B9BD5 0%, #1D5CA9 100%);
+  background: linear-gradient(180deg, #1D5CA9 0%, rgba(29, 92, 169, 0.82) 100%);
   position: relative;
   transition: height 0.5s ease;
   min-height: 14px;
 }
 
 .city-bar-fill[data-city="Surat"] {
-  background: linear-gradient(180deg, #a78bfa 0%, #6d28d9 100%);
+  background: linear-gradient(180deg, #1D5CA9 0%, rgba(29, 92, 169, 0.82) 100%);
 }
 
 .city-bar-fill[data-city="Navsari"] {
-  background: linear-gradient(180deg, #34d399 0%, #059669 100%);
+  background: linear-gradient(180deg, #1D5CA9 0%, rgba(29, 92, 169, 0.82) 100%);
 }
 
 .city-bar-tooltip {
@@ -778,7 +774,7 @@
   transform: translateX(-50%);
   width: max-content;
   max-width: 160px;
-  background: #0f172a;
+  background: #1D5CA9;
   color: #ffffff;
   font-size: 0.7rem;
   font-weight: 600;
@@ -824,8 +820,8 @@
   margin-top: 18px;
   padding: 14px 18px;
   border-radius: 16px;
-  background: linear-gradient(135deg, #f8fafc, #f1f5f9);
-  border: 1px solid #eef1f6;
+  background: rgba(29, 92, 169, 0.04);
+  border: 1px solid rgba(29, 92, 169, 0.12);
 }
 
 .city-summary-item {
@@ -836,7 +832,7 @@
   display: block;
   font-size: 1.35rem;
   font-weight: 800;
-  color: #0f172a;
+  color: #102122;
   line-height: 1.1;
 }
 
@@ -846,21 +842,21 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  color: #64748b;
+  color: #1D5CA9;
   margin-top: 3px;
 }
 
 .city-summary-divider {
   width: 1px;
   height: 38px;
-  background: #e2e8f0;
+  background: rgba(29, 92, 169, 0.12);
 }
 
 .chart-card {
-  border: 1px solid #eef1f6;
+  border: 1px solid rgba(29, 92, 169, 0.12);
   border-radius: 22px;
-  background: #ffffff;
-  box-shadow: 0 14px 36px rgba(15, 23, 42, 0.06);
+  background: #FDFDFD;
+  box-shadow: 0 4px 16px rgba(29, 92, 169, 0.04);
 }
 
 .chart-card .card-body {

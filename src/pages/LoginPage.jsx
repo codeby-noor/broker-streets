@@ -57,27 +57,27 @@ function LoginPage() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col bg-[#F8FAFC] text-slate-900">
+    <div className="flex min-h-screen flex-col bg-[#F8FAFC] text-slate-900 dark:bg-dark-bg dark:text-dark-text">
       <AuthHeader />
 
       <main className="flex flex-1 items-center justify-center px-4 py-8 sm:px-6">
-        <div className="w-full max-w-md rounded-[28px] border border-slate-200/80 bg-white p-6 shadow-[0_10px_35px_rgba(15,23,42,0.05)] sm:p-8">
-          <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-2xl bg-sage/10 text-sage">
+        <div className="w-full max-w-md rounded-[28px] border border-slate-200/80 bg-white p-6 shadow-[0_10px_35px_rgba(15,23,42,0.05)] sm:p-8 dark:border-dark-border dark:bg-dark-card">
+          <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-2xl bg-sage/10 text-sage dark:bg-sage/20 dark:text-sage">
             <LogIn size={24} />
           </div>
 
           <div className="space-y-1">
-            <h1 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+            <h1 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl dark:text-dark-text">
               {t('auth.loginHeading')}
             </h1>
-            <p className="text-sm leading-relaxed text-slate-500">
+            <p className="text-sm leading-relaxed text-slate-500 dark:text-dark-muted">
               {t('auth.loginDescription')}
             </p>
           </div>
 
           <form onSubmit={handleSubmit} className="mt-6 space-y-5">
             <div>
-              <label className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-700">
+              <label className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-dark-muted">
                 {t('auth.mobileNumber')}
               </label>
               <div className="relative flex items-center">
@@ -88,7 +88,7 @@ function LoginPage() {
                   maxLength={10}
                   value={mobile}
                   onChange={handleMobileChange}
-                  className="min-h-[48px] w-full rounded-2xl border border-slate-200 bg-slate-50/50 pl-10 pr-4 text-sm font-medium text-slate-900 outline-none transition focus:border-sage focus:bg-white focus:ring-2 focus:ring-sage/20"
+                  className="min-h-[48px] w-full rounded-2xl border border-slate-200 bg-slate-50/50 pl-10 pr-4 text-sm font-medium text-slate-900 outline-none transition focus:border-sage focus:bg-white focus:ring-2 focus:ring-sage/20 dark:border-dark-border dark:bg-dark-bg dark:text-dark-text dark:focus:bg-dark-card"
                   placeholder={t('auth.placeholderMobile')}
                 />
               </div>
@@ -103,12 +103,12 @@ function LoginPage() {
             </button>
           </form>
 
-          <div className="mt-6 border-t border-slate-100 pt-4 text-center text-sm text-slate-600">
+          <div className="mt-6 border-t border-slate-100 pt-4 text-center text-sm text-slate-600 dark:border-dark-border dark:text-dark-muted">
             {t('auth.noAccount')}{' '}
             <button
               type="button"
               onClick={() => navigate('/register')}
-              className="font-bold text-sage underline-offset-4 hover:underline"
+              className="font-bold text-sage underline-offset-4 hover:underline dark:text-sage"
             >
               {t('auth.createOneNow')}
             </button>

@@ -144,7 +144,7 @@ function PropertyCard({ property, compact = false, onContact }) {
         </div>
 
         <div className="absolute bottom-4 left-4 flex flex-wrap gap-2">
-          <span className={`rounded-full px-3 py-1.5 text-[11px] font-semibold ${rawStatus === 'Sold' ? 'bg-amber-500/90 text-white' : rawStatus === 'Unavailable' ? 'bg-slate-500/90 text-white' : 'bg-emerald-600/90 text-white'}`}>{statusText}</span>
+          <span className={`rounded-full px-3 py-1.5 text-[11px] font-semibold ${rawStatus === 'Sold' ? 'bg-amber-500/90 text-white' : rawStatus === 'Unavailable' ? 'bg-slate-500/90 text-white' : 'bg-primary text-white'}`}>{statusText}</span>
           <span className="rounded-full bg-slate-900/80 px-3 py-1.5 text-[11px] font-semibold text-white">{typeText}</span>
         </div>
       </div>
@@ -154,7 +154,7 @@ function PropertyCard({ property, compact = false, onContact }) {
           <h3 className="break-words text-base font-semibold leading-tight text-slate-900 sm:text-lg dark:text-dark-text">{propertyTitle}</h3>
           <p className="break-words text-sm leading-5 text-slate-500 dark:text-dark-muted">
             <span className="inline-flex items-center gap-2 text-slate-500 dark:text-dark-muted">
-              <MapPin size={14} className="text-sage dark:text-emerald-400" />
+              <MapPin size={14} className="text-sage dark:text-sage" />
               <span className="break-words">{locationLine || t('profile.locationPending')}</span>
             </span>
           </p>

@@ -396,7 +396,7 @@
   width: 90px;
   height: 90px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #1D5CA9, #5B9BD5);
+  background: #1D5CA9;
   display: grid;
   place-items: center;
   overflow: hidden;
@@ -421,8 +421,8 @@
   gap: 8px;
   margin-top: 12px;
   border-radius: 14px;
-  background: #eff6ff;
-  color: #174A87;
+  background: rgba(29, 92, 169, 0.08);
+  color: #1D5CA9;
   border: 1px solid rgba(29, 92, 169, 0.16);
   padding: 10px 14px;
   font-size: 13px;
@@ -547,7 +547,7 @@
   width: 96px;
   height: 96px;
   border-radius: 28px;
-  background: linear-gradient(135deg, #1D5CA9, #5B9BD5);
+  background: #1D5CA9;
   display: grid;
   place-items: center;
   color: white;
@@ -1088,7 +1088,7 @@
   border-radius: 16px;
   display: grid;
   place-items: center;
-  background: linear-gradient(135deg, #1D5CA9, #5B9BD5);
+  background: #1D5CA9;
   color: white;
   font-weight: 700;
 }
@@ -1111,8 +1111,8 @@
 
 .dashboard-sidebar__link:hover,
 .dashboard-sidebar__link.active {
-  background: linear-gradient(90deg, rgba(29, 92, 169, 0.12), rgba(91, 155, 213, 0.12));
-  color: #174A87;
+  background: rgba(29, 92, 169, 0.12);
+  color: #1D5CA9;
   transform: translateX(2px);
 }
 
@@ -1387,4 +1387,40 @@
   .dashboard-stat-card {
     min-height: 128px;
   }
+}
+
+/* Dark Mode Overrides for Profile Dashboard */
+.dark .dashboard-shell {
+  background: #0F1115;
+}
+
+.dark .profile-subpage-shell {
+  background: #1A1D23;
+  color: #E8EAED;
+}
+
+.dark .profile-subpage-back,
+.dark .profile-subpage-secondary-button,
+.dark .profile-subpage-row-button {
+  background: #1A1D23;
+  border-color: #2A2E37;
+  color: #E8EAED;
+}
+
+.dark .profile-subpage-title {
+  color: #E8EAED;
+}
+
+.dark .profile-subpage-description {
+  color: #9CA3AF;
+}
+
+.dark .dashboard-property-card {
+  background: #1A1D23;
+  border-color: #2A2E37;
+}
+
+.dark .dashboard-empty-state {
+  background: #1A1D23;
+  border-color: #2A2E37;
 }

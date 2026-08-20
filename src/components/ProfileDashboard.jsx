@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import logo from '../assets/images/logo.png';
+import logo from '../assets/images/logo-cropped.png';
 import {
   LayoutGrid,
   UserCircle2,
@@ -147,11 +147,11 @@ const sampleNotifications = [
 ];
 
 const statConfigs = [
-  { key: 'listed', labelKey: 'profile.propertiesListed', gradient: 'linear-gradient(135deg, #1D5CA9, #3D7CCB)', icon: Building2, countKey: 'listed' },
-  { key: 'sold', labelKey: 'profile.propertiesSold', gradient: 'linear-gradient(135deg, #0f766e, #14b8a6)', icon: House, countKey: 'sold' },
-  { key: 'saved', labelKey: 'profile.savedProperties', gradient: 'linear-gradient(135deg, #7c3aed, #a78bfa)', icon: Bookmark, countKey: 'saved' },
-  { key: 'requests', labelKey: 'profile.buyerRequirements', gradient: 'linear-gradient(135deg, #ea580c, #fb923c)', icon: BadgeCheck, countKey: 'requests' },
-  { key: 'recent', labelKey: 'profile.recentlyViewed', gradient: 'linear-gradient(135deg, #be185d, #f472b6)', icon: Eye, countKey: 'recent' },
+  { key: 'listed', labelKey: 'profile.propertiesListed', gradient: 'linear-gradient(135deg, #1D5CA9, rgba(29, 92, 169, 0.85))', icon: Building2, countKey: 'listed' },
+  { key: 'sold', labelKey: 'profile.propertiesSold', gradient: 'linear-gradient(135deg, #1D5CA9, rgba(29, 92, 169, 0.85))', icon: House, countKey: 'sold' },
+  { key: 'saved', labelKey: 'profile.savedProperties', gradient: 'linear-gradient(135deg, #1D5CA9, rgba(29, 92, 169, 0.85))', icon: Bookmark, countKey: 'saved' },
+  { key: 'requests', labelKey: 'profile.buyerRequirements', gradient: 'linear-gradient(135deg, #1D5CA9, rgba(29, 92, 169, 0.85))', icon: BadgeCheck, countKey: 'requests' },
+  { key: 'recent', labelKey: 'profile.recentlyViewed', gradient: 'linear-gradient(135deg, #1D5CA9, rgba(29, 92, 169, 0.85))', icon: Eye, countKey: 'recent' },
 ];
 
 const formatCurrency = (value) => formatIndianPrice(value);
@@ -427,7 +427,7 @@ function ProfileDashboard() {
                           <h3 className="text-lg font-semibold text-slate-900">{getPropertyDisplayTitle(listing.title)}</h3>
                           <p className="mt-2 text-sm text-slate-600">{listing.district || t('common.district')} • {listing.subDistrict || listing.taluka || t('common.taluka')} • {listing.village || t('common.village')}</p>
                         </div>
-                        <span className={`rounded-full px-3 py-1 text-xs font-semibold ${listing.status === 'Sold' ? 'bg-amber-100 text-amber-700' : listing.status === 'Pending' ? 'bg-slate-200 text-slate-700' : 'bg-emerald-100 text-emerald-700'}`}>{listing.status}</span>
+                        <span className={`rounded-full px-3 py-1 text-xs font-semibold ${listing.status === 'Sold' ? 'bg-amber-100 text-amber-700' : listing.status === 'Pending' ? 'bg-slate-200 text-slate-700' : 'bg-primary/10 text-primary'}`}>{listing.status}</span>
                       </div>
                       <div className="mt-4 grid gap-3 sm:grid-cols-2">
                         <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3 text-sm text-slate-700">
@@ -453,7 +453,7 @@ function ProfileDashboard() {
                         <button type="button" onClick={() => navigate(`/property/${listing.id}`)} className="dashboard-action-btn bg-white text-slate-700">{t('common.view')}</button>
                         <button type="button" onClick={() => navigate('/seller-form', { state: { editProperty: listing } })} className="dashboard-action-btn bg-slate-900 text-white">{t('common.edit')}</button>
                         <button type="button" onClick={() => handleDuplicateListing(listing)} className="dashboard-action-btn bg-primary/10 text-primary">{t('common.duplicate')}</button>
-                        <button type="button" onClick={() => handleToggleListingStatus(listing)} className="dashboard-action-btn bg-emerald-50 text-emerald-700">{listing.status === 'Sold' ? t('common.markAvailable') : t('common.markSold')}</button>
+                        <button type="button" onClick={() => handleToggleListingStatus(listing)} className="dashboard-action-btn bg-primary/10 text-primary">{listing.status === 'Sold' ? t('common.markAvailable') : t('common.markSold')}</button>
                       </div>
                     </div>
                   </div>
@@ -529,7 +529,7 @@ function ProfileDashboard() {
                     <div className="flex flex-wrap items-center gap-2">
                       <p className="text-sm text-slate-500">{t('profile.viewedLabel')} {formatDate(item.viewedAt, t('profile.recentlyUpdated'))}</p>
                       <button type="button" onClick={() => navigate(`/property/${item.id}`)} className="dashboard-action-btn bg-white text-slate-700">{t('common.viewAgain')}</button>
-                      <button type="button" onClick={() => handleSaveProperty(item)} className={`dashboard-action-btn ${isSavedProperty(item.id) ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-900 text-white'}`}>{isSavedProperty(item.id) ? t('profile.savedBadge') : t('profile.saveAction')}</button>
+                      <button type="button" onClick={() => handleSaveProperty(item)} className={`dashboard-action-btn ${isSavedProperty(item.id) ? 'bg-primary/10 text-primary' : 'bg-slate-900 text-white'}`}>{isSavedProperty(item.id) ? t('profile.savedBadge') : t('profile.saveAction')}</button>
                       <button type="button" onClick={() => setContactModal({ ...item, modalTitle: t('contact.modalTitle') })} className="dashboard-action-btn bg-primary/10 text-primary">{t('common.contactSeller')}</button>
                       <button type="button" onClick={() => handleRemoveRecentlyViewed(item.id)} className="dashboard-action-btn bg-rose-50 text-rose-700">{t('common.remove')}</button>
                     </div>
@@ -562,7 +562,7 @@ function ProfileDashboard() {
 
             <div className="grid gap-6 lg:grid-cols-[240px,1fr]">
               <div className="rounded-[28px] border border-slate-200 bg-slate-50 p-5 text-center">
-                <div className="mx-auto flex h-24 w-24 items-center justify-center overflow-hidden rounded-full bg-gradient-to-br from-primary to-sky-400 text-3xl font-semibold text-white">
+                <div className="mx-auto flex h-24 w-24 items-center justify-center overflow-hidden rounded-full bg-gradient-to-br from-primary to-primary-dark text-3xl font-semibold text-white">
                   {profile.profileImage ? <img src={profile.profileImage} alt="Profile preview" className="h-full w-full object-cover" /> : <span>{(profile.name || 'U').charAt(0).toUpperCase()}</span>}
                 </div>
                 <h3 className="mt-4 text-xl font-semibold text-slate-900">{profile.name || t('profile.profileFallbackName')}</h3>
@@ -639,9 +639,8 @@ function ProfileDashboard() {
       {/* Desktop Sticky Sidebar (Hidden on Mobile) */}
       <aside className="dashboard-sidebar hidden lg:flex">
         <div className="dashboard-sidebar__brand">
-          <Link to="/home" className="flex items-center gap-3">
-            <img src={logo} alt="Broker Streets" className="h-9 w-auto object-contain" />
-            <span className="text-lg font-bold tracking-tight text-slate-900">Broker Streets</span>
+          <Link to="/home" className="flex items-center">
+            <img src={logo} alt="Broker Streets logo" className="h-8 w-auto max-w-[180px] object-contain" />
           </Link>
         </div>
         {sidebarItems.map((item) => {

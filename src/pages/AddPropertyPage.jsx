@@ -184,7 +184,7 @@ function AddPropertyPage() {
             </div>
           </section>
           <aside className="space-y-6">
-            <section className="rounded-[32px] border border-slate-200 bg-blue-50 p-6">
+            <section className="rounded-[32px] border border-slate-200 bg-slate-50 p-6">
               <div className="flex items-center gap-3"><ImagePlus className="text-primary" /><h2 className="text-lg font-bold text-ink">{t('sellerForm.propertyImages')}</h2></div>
               <p className="mt-3 text-sm leading-6 text-muted">{t('sellerForm.imageHint')}</p>
               <div onDragOver={(event) => event.preventDefault()} onDrop={handleDrop} className="mt-5 flex cursor-pointer flex-col items-center justify-center gap-3 rounded-2xl border-2 border-dashed border-primary/30 bg-white px-5 py-8 text-center hover:border-primary">

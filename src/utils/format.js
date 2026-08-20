@@ -11,9 +11,22 @@
  */
 export function formatIndianPrice(value) {
     if (value === undefined || value === null || value === '') return '';
-    const num = Number(String(value).replace(/[^\d]/g, ''));
-    if (!num) return String(value);
-    return `₹${num.toLocaleString('en-IN')}`;
+    const strVal = String(value).trim();
+    if (strVal === 'Price on request' || strVal === 'Price not specified' || strVal === '—' || strVal.toLowerCase().includes('request')) {
+        return strVal;
+    }
+    if (/lakh|lac|cr|crore/i.test(strVal)) {
+        const cleanText = strVal.replace(/^₹\s*/, '');
+        return `₹${cleanText}`;
+    }
+    const digitsOnly = strVal.replace(/[^\d.]/g, '');
+    if (!digitsOnly || isNaN(Number(digitsOnly))) {
+        return strVal;
+    }
+    const num = Number(digitsOnly);
+    if (num === 0 && strVal !== '0') return strVal;
+    const formattedNum = num.toLocaleString('en-IN');
+    return `₹${formattedNum}`;
 }
 
 /**

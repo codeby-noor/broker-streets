@@ -8,6 +8,48 @@
   font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   background-color: #F5F6F7;
   color: #102122;
+  --bs-primary: #1D5CA9 !important;
+  --bs-primary-rgb: 29, 92, 169 !important;
+}
+
+/* Explicitly override Bootstrap & default framework primary classes to force Broker Streets official brand blue #1D5CA9 */
+.bg-primary {
+  background-color: #1D5CA9 !important;
+}
+
+.btn-primary {
+  background-color: #1D5CA9 !important;
+  border-color: #1D5CA9 !important;
+  color: #FDFDFD !important;
+}
+
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active {
+  background-color: #1D5CA9 !important;
+  border-color: #1D5CA9 !important;
+  color: #FDFDFD !important;
+  opacity: 0.92;
+}
+
+.text-primary {
+  color: #1D5CA9 !important;
+}
+
+.border-primary {
+  border-color: #1D5CA9 !important;
+}
+
+.btn-outline-primary {
+  color: #1D5CA9 !important;
+  border-color: rgba(29, 92, 169, 0.3) !important;
+}
+
+.btn-outline-primary:hover,
+.btn-outline-primary:active {
+  background-color: #1D5CA9 !important;
+  border-color: #1D5CA9 !important;
+  color: #FDFDFD !important;
 }
 
 
@@ -96,8 +138,8 @@ textarea {
 }
 
 .mobile-bottom-nav__item.is-active .mobile-bottom-nav__icon-wrap {
-  background: #dbeafe;
-  color: #174A87;
+  background: rgba(29, 92, 169, 0.12);
+  color: #1D5CA9;
 }
 
 .mobile-bottom-nav__label {
@@ -313,4 +355,36 @@ textarea {
 
 .text-primary {
   color: #1D5CA9;
+}
+
+/* Dark Mode Overrides */
+.dark .mobile-bottom-nav {
+  border-top-color: #2A2E37;
+  background: rgba(26, 29, 35, 0.98);
+}
+
+.dark .mobile-bottom-nav__item {
+  color: #9CA3AF;
+}
+
+.dark .mobile-bottom-nav__item.is-active {
+  color: #1D5CA9;
+  background: rgba(29, 92, 169, 0.2);
+}
+
+.dark .mobile-bottom-nav__item.is-active .mobile-bottom-nav__icon-wrap {
+  background: rgba(29, 92, 169, 0.35);
+  color: #1D5CA9;
+}
+
+.dark .field-label,
+.dark .label-style {
+  color: #E8EAED;
+}
+
+.dark .field-control,
+.dark .input-style {
+  background-color: #1A1D23;
+  border-color: #2A2E37;
+  color: #E8EAED;
 }

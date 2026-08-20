@@ -225,20 +225,20 @@ function BuyerForm() {
   };
 
   return (
-    <div className="-mx-4 -mt-8 bg-cream pb-20 sm:-mx-6 lg:-mx-8">
-      <section className="bg-ink px-4 py-12 text-white sm:px-10 sm:py-16 lg:px-12">
+    <div className="-mx-4 -mt-8 bg-cream pb-28 sm:pb-20 sm:-mx-6 lg:-mx-8 dark:bg-dark-bg">
+      <section className="bg-[#1D5CA9] px-4 py-12 text-white sm:px-10 sm:py-16 lg:px-12 dark:bg-dark-card dark:border-b dark:border-dark-border">
         <div className="mx-auto max-w-5xl">
-          <p className="eyebrow text-blue-200">{t('buyerForm.eyebrow')}</p>
-          <h1 className="mt-4 text-3xl font-bold sm:text-6xl">{t('buyerForm.heading')}</h1>
-          <p className="mt-4 max-w-2xl text-sm text-white/70 sm:text-base">{t('buyerForm.description')}</p>
+          <p className="eyebrow text-white/80">{t('buyerForm.eyebrow')}</p>
+          <h1 className="mt-4 text-3xl font-bold text-white sm:text-6xl">{t('buyerForm.heading')}</h1>
+          <p className="mt-4 max-w-2xl text-sm text-white/80 sm:text-base">{t('buyerForm.description')}</p>
         </div>
       </section>
 
-      <section className="mx-auto -mt-8 max-w-4xl px-4 sm:px-6">
-        <form onSubmit={handleSubmit} className="space-y-6 rounded-[32px] bg-white p-5 shadow-xl sm:p-10">
+      <section className="mx-auto mt-4 max-w-4xl px-4 sm:-mt-8 sm:px-6">
+        <form onSubmit={handleSubmit} className="space-y-6 rounded-[32px] bg-white p-5 shadow-xl sm:p-10 dark:bg-dark-card dark:border dark:border-dark-border">
           <div>
             <p className="eyebrow">{t('buyerForm.eyebrow')}</p>
-            <h2 className="mt-2 text-3xl font-bold text-ink">{t('buyerForm.preference')}</h2>
+            <h2 className="mt-2 text-3xl font-bold text-ink dark:text-dark-text">{t('buyerForm.preference')}</h2>
           </div>
 
           <div className="space-y-6">

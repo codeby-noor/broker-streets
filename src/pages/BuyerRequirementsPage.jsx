@@ -60,10 +60,10 @@ function BuyerRequirementsPage() {
   }, [query, city, district, propertyType, landType, sort]);
 
   return (
-    <div className="-mx-4 -mt-8 min-h-screen bg-cream pb-20 sm:-mx-6 lg:-mx-8">
-      <section className="bg-ink px-6 py-16 text-white sm:px-10 lg:px-12">
+    <div className="-mx-4 -mt-8 min-h-screen bg-cream pb-28 sm:pb-20 sm:-mx-6 lg:-mx-8 dark:bg-dark-bg">
+      <section className="bg-[#1D5CA9] px-6 py-16 text-white sm:px-10 lg:px-12 dark:bg-dark-card dark:border-b dark:border-dark-border">
         <div className="mx-auto max-w-7xl">
-          <p className="eyebrow text-blue-100">{t('profile.buyerRequirements')}</p>
+          <p className="eyebrow text-white/80">{t('profile.buyerRequirements')}</p>
           <h1 className="mt-4 text-5xl font-bold">{t('profile.buyerRequirementsTitle')}</h1>
           <p className="mt-5 max-w-2xl text-lg text-white/70">{t('buyerForm.description')}</p>
         </div>

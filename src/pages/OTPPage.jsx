@@ -148,31 +148,31 @@ function OTPPage() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col bg-[#F8FAFC] text-slate-900">
+    <div className="flex min-h-screen flex-col bg-[#F8FAFC] text-slate-900 dark:bg-dark-bg dark:text-dark-text">
       <AuthHeader />
 
       <main className="flex flex-1 items-center justify-center px-4 py-8 sm:px-6">
-        <div className="w-full max-w-md rounded-[28px] border border-slate-200/80 bg-white p-6 shadow-[0_10px_35px_rgba(15,23,42,0.05)] sm:p-8">
-          <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-2xl bg-sage/10 text-sage">
+        <div className="w-full max-w-md rounded-[28px] border border-slate-200/80 bg-white p-6 shadow-[0_10px_35px_rgba(15,23,42,0.05)] sm:p-8 dark:border-dark-border dark:bg-dark-card">
+          <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-2xl bg-sage/10 text-sage dark:bg-sage/20 dark:text-sage">
             <ShieldCheck size={24} />
           </div>
 
           <div className="space-y-1">
-            <h1 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+            <h1 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl dark:text-dark-text">
               {t('auth.verifyAccount')}
             </h1>
-            <p className="text-sm leading-relaxed text-slate-500">
+            <p className="text-sm leading-relaxed text-slate-500 dark:text-dark-muted">
               {t('auth.verifyDescription')}
             </p>
-            <p className="mt-1 text-sm font-semibold text-slate-700">
-              {t('auth.otpSentTo')} <span className="font-bold text-slate-900">+91 {phone}</span>
+            <p className="mt-1 text-sm font-semibold text-slate-700 dark:text-dark-text">
+              {t('auth.otpSentTo')} <span className="font-bold text-slate-900 dark:text-dark-text">+91 {phone}</span>
             </p>
           </div>
 
           {devOtp ? (
-            <div className="mt-4 rounded-2xl border border-amber-200/80 bg-amber-50/80 p-3.5 text-xs text-amber-900 shadow-sm">
+            <div className="mt-4 rounded-2xl border border-amber-200/80 bg-amber-50/80 p-3.5 text-xs text-amber-900 shadow-sm dark:border-amber-900/50 dark:bg-amber-950/40 dark:text-amber-300">
               <p className="font-bold">{t('auth.developmentOtp')}: <span className="font-mono text-sm tracking-widest">{devOtp}</span></p>
-              <p className="mt-0.5 text-slate-600">{t('auth.useOtpToComplete')}</p>
+              <p className="mt-0.5 text-slate-600 dark:text-amber-200/70">{t('auth.useOtpToComplete')}</p>
             </div>
           ) : null}
 
@@ -189,22 +189,22 @@ function OTPPage() {
                   onChange={(e) => updateDigit(index, e.target.value.replace(/\D/g, ''))}
                   onKeyDown={(e) => handleKeyDown(index, e)}
                   onPaste={handlePaste}
-                  className="h-12 w-full rounded-2xl border border-slate-200 bg-slate-50/50 text-center text-lg font-bold text-slate-900 outline-none transition focus:border-sage focus:bg-white focus:ring-2 focus:ring-sage/20"
+                  className="h-12 w-full rounded-2xl border border-slate-200 bg-slate-50/50 text-center text-lg font-bold text-slate-900 outline-none transition focus:border-sage focus:bg-white focus:ring-2 focus:ring-sage/20 dark:border-dark-border dark:bg-dark-bg dark:text-dark-text dark:focus:bg-dark-card"
                 />
               ))}
             </div>
 
-            <div className="flex items-center justify-between rounded-2xl border border-slate-100 bg-slate-50/50 px-4 py-3 text-xs text-slate-600">
+            <div className="flex items-center justify-between rounded-2xl border border-slate-100 bg-slate-50/50 px-4 py-3 text-xs text-slate-600 dark:border-dark-border dark:bg-dark-bg dark:text-dark-muted">
               <button
                 type="button"
                 disabled={!isComplete}
                 onClick={resendOTPHandler}
-                className="font-bold text-sage hover:underline disabled:cursor-not-allowed disabled:opacity-40"
+                className="font-bold text-sage hover:underline disabled:cursor-not-allowed disabled:opacity-40 dark:text-sage"
               >
                 {t('auth.resendOtp')}
               </button>
 
-              <span className="font-medium text-slate-500">
+              <span className="font-medium text-slate-500 dark:text-dark-muted">
                 {isComplete ? t('auth.readyToResend') : `${t('auth.resendIn')} ${seconds}s`}
               </span>
             </div>
@@ -221,7 +221,7 @@ function OTPPage() {
               <button
                 type="button"
                 onClick={() => navigate(-1)}
-                className="inline-flex min-h-[46px] w-full items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
+                className="inline-flex min-h-[46px] w-full items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 dark:border-dark-border dark:bg-dark-card dark:text-dark-text dark:hover:bg-dark-bg"
               >
                 <ArrowLeft size={16} />
                 {t('common.back')}

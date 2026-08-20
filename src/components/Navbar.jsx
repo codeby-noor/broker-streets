@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
-import logo from '../assets/images/logo.png';
+import logo from '../assets/images/logo-cropped.png';
 import { getSubmissionDestination } from '../utils/formNavigation';
 import { useLanguage } from '../i18n/LanguageContext';
 import { useUserStore } from '../store/useUserStore';
@@ -46,9 +46,8 @@ function Navbar() {
   return (
     <header className="sticky top-0 z-50 border-b border-slate-200/70 bg-background/95 backdrop-blur-sm supports-[backdrop-filter]:bg-background/90 dark:border-dark-border dark:bg-dark-bg/95">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-2 px-3 py-2.5 sm:px-6 lg:px-8">
-        <Link to="/home" className="flex items-center gap-2 flex-shrink-0">
-          <img src={logo} alt="Broker Streets logo" className="h-8 w-auto object-contain sm:h-11" />
-          <span className="hidden text-base font-bold tracking-tight text-ink dark:text-dark-text sm:inline-block">Broker Streets</span>
+        <Link to="/home" className="flex items-center flex-shrink-0">
+          <img src={logo} alt="Broker Streets logo" className="h-8 w-auto max-w-[180px] object-contain sm:h-9 sm:max-w-[220px]" />
         </Link>
 
         {!hideNav && (
@@ -121,7 +120,7 @@ function Navbar() {
       {menuOpen && !hideNav ? (
         <>
           <div className="fixed inset-0 z-30 bg-slate-950/70 md:hidden" onClick={() => setMenuOpen(false)} />
-          <div className="absolute inset-x-0 top-full z-40 border-t border-slate-200 bg-white shadow-xl md:hidden">
+          <div className="absolute inset-x-0 top-full z-40 border-t border-slate-200 bg-white shadow-xl md:hidden dark:border-dark-border dark:bg-dark-card">
             <div className="mx-auto max-w-7xl px-3 py-4 sm:px-6">
               <div className="space-y-2">
                 {navItems.map((item) => (
@@ -134,22 +133,22 @@ function Navbar() {
                       if (item.label === t('nav.sell')) return navigateSell();
                       return navigate(item.to);
                     }}
-                    className="w-full rounded-2xl px-4 py-3.5 text-left text-base font-semibold text-slate-800 transition hover:bg-slate-50"
+                    className="w-full rounded-2xl px-4 py-3.5 text-left text-base font-semibold text-slate-800 transition hover:bg-slate-50 dark:text-dark-text dark:hover:bg-dark-bg"
                   >
                     {item.label}
                   </button>
                 ))}
-                <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
+                <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 dark:border-dark-border dark:bg-dark-bg">
                   <div className="flex items-center justify-center gap-2">
-                    <button type="button" onClick={() => { setLanguage('en'); setMenuOpen(false); }} className={`rounded-full px-3 py-2 text-sm font-semibold ${language === 'en' ? 'bg-sage text-white' : 'text-slate-700'}`}>EN</button>
-                    <button type="button" onClick={() => { setLanguage('gu'); setMenuOpen(false); }} className={`rounded-full px-3 py-2 text-sm font-semibold ${language === 'gu' ? 'bg-sage text-white' : 'text-slate-700'}`}>ગુજરાતી</button>
+                    <button type="button" onClick={() => { setLanguage('en'); setMenuOpen(false); }} className={`rounded-full px-3 py-2 text-sm font-semibold ${language === 'en' ? 'bg-sage text-white' : 'text-slate-700 dark:text-dark-muted'}`}>EN</button>
+                    <button type="button" onClick={() => { setLanguage('gu'); setMenuOpen(false); }} className={`rounded-full px-3 py-2 text-sm font-semibold ${language === 'gu' ? 'bg-sage text-white' : 'text-slate-700 dark:text-dark-muted'}`}>ગુજરાતી</button>
                   </div>
                 </div>
                 {isAuthenticated ? (
                   <Link
                     to="/profile"
                     onClick={() => setMenuOpen(false)}
-                    className="block rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3.5 text-center text-base font-semibold text-slate-900 transition hover:bg-slate-100"
+                    className="block rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3.5 text-center text-base font-semibold text-slate-900 transition hover:bg-slate-100 dark:border-dark-border dark:bg-dark-bg dark:text-dark-text dark:hover:bg-dark-card"
                   >
                     {t('nav.profile')}
                   </Link>
@@ -158,7 +157,7 @@ function Navbar() {
                     <Link
                       to="/login"
                       onClick={() => setMenuOpen(false)}
-                      className="block rounded-2xl border border-slate-200 bg-white px-4 py-3 text-center text-base font-semibold text-slate-900 transition hover:bg-slate-50"
+                      className="block rounded-2xl border border-slate-200 bg-white px-4 py-3 text-center text-base font-semibold text-slate-900 transition hover:bg-slate-50 dark:border-dark-border dark:bg-dark-bg dark:text-dark-text dark:hover:bg-dark-card"
                     >
                       {t('auth.login')}
                     </Link>

@@ -3,6 +3,7 @@ import { Navigate, NavLink, Route, Routes, useLocation, useNavigate } from 'reac
 import { toast } from 'react-toastify';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './admin.css';
+import logo from '../assets/images/logo-cropped.png';
 import {
   writeStorage,
   appendAdminActivity,
@@ -216,7 +217,7 @@ function AdminLogin() {
             <AdminLanguageToggle />
           </div>
           <div className="text-center mb-4">
-            <div className="avatar mx-auto mb-3">BS</div>
+            <img src={logo} alt="Broker Streets logo" className="mx-auto mb-3 h-9 w-auto max-w-[220px] object-contain" />
             <h2 className="fw-bold page-title">{t('admin.loginTitle')}</h2>
             <p className="text-muted mb-0">{t('admin.loginSubtitle')}</p>
           </div>
@@ -318,9 +319,9 @@ function Dashboard() {
     const unavailable = properties.filter((p) => String(p.status).toLowerCase() === 'unavailable').length;
     const sold = properties.filter((p) => String(p.status).toLowerCase() === 'sold').length;
     return [
-      { label: t('admin.statusAvailable'), value: available, color: '#10b981' },
-      { label: t('admin.statusUnavailable'), value: unavailable, color: '#94a3b8' },
-      { label: t('admin.statusSold'), value: sold, color: '#ef4444' },
+      { label: t('admin.statusAvailable'), value: available, color: '#1D5CA9' },
+      { label: t('admin.statusSold'), value: sold, color: 'rgba(29, 92, 169, 0.65)' },
+      { label: t('admin.statusUnavailable'), value: unavailable, color: 'rgba(29, 92, 169, 0.25)' },
     ].filter((d) => d.value > 0);
   }, [properties, t]);
 
@@ -337,13 +338,13 @@ function Dashboard() {
   });
 
   const statCards = [
-    { key: 'total', label: t('admin.totalProperties'), value: stats.totalProperties, icon: '▦', tone: 'blue' },
-    { key: 'available', label: t('admin.availableProperties'), value: stats.availableProperties, icon: '✓', tone: 'green' },
-    { key: 'unavailable', label: t('admin.unavailableProperties'), value: stats.unavailableProperties, icon: '✕', tone: 'slate' },
-    { key: 'sold', label: t('admin.soldProperties'), value: stats.soldProperties, icon: '★', tone: 'red' },
-    { key: 'buyers', label: t('admin.totalBuyers'), value: stats.totalBuyers, icon: '◉', tone: 'indigo' },
-    { key: 'sellers', label: t('admin.totalSellers'), value: stats.totalSellers, icon: '◈', tone: 'amber' },
-    { key: 'users', label: t('admin.registeredUsers'), value: stats.registeredUsers, icon: '◎', tone: 'violet' },
+    { key: 'total', label: t('admin.totalProperties'), value: stats.totalProperties, icon: '▦' },
+    { key: 'available', label: t('admin.availableProperties'), value: stats.availableProperties, icon: '✓' },
+    { key: 'unavailable', label: t('admin.unavailableProperties'), value: stats.unavailableProperties, icon: '✕' },
+    { key: 'sold', label: t('admin.soldProperties'), value: stats.soldProperties, icon: '★' },
+    { key: 'buyers', label: t('admin.totalBuyers'), value: stats.totalBuyers, icon: '◉' },
+    { key: 'sellers', label: t('admin.totalSellers'), value: stats.totalSellers, icon: '◈' },
+    { key: 'users', label: t('admin.registeredUsers'), value: stats.registeredUsers, icon: '◎' },
   ];
 
   return (
@@ -364,7 +365,7 @@ function Dashboard() {
           <div className="col-6 col-xl-3" key={card.key}>
             <div className="card stat-card h-100">
               <div className="card-body d-flex align-items-center gap-3">
-                <span className={`stat-icon stat-icon-${card.tone}`}>{card.icon}</span>
+                <span className="stat-icon">{card.icon}</span>
                 <div className="stat-copy">
                   <div className="stat-label">{card.label}</div>
                   <div className="stat-value">{card.value}</div>
@@ -1213,13 +1214,10 @@ function AdminShell({ onLogout }) {
       <div className="admin-shell">
         <aside className={`admin-sidebar ${sidebarOpen ? 'open' : ''}`}>
           <div className="px-2 pb-3 border-bottom border-secondary-subtle mb-3">
-            <div className="d-flex align-items-center gap-2 mb-2">
-              <div className="avatar">BS</div>
-              <div>
-                <div className="fw-bold">Broker Streets</div>
-                <div className="small text-white-50">{t('admin.masterGroupPortal')}</div>
-              </div>
+            <div className="d-flex align-items-center mb-2">
+              <img src={logo} alt="Broker Streets logo" className="h-8 w-auto max-w-[180px] object-contain" />
             </div>
+            <div className="small text-muted">{t('admin.masterGroupPortal')}</div>
           </div>
           <nav className="d-flex flex-column gap-1">
             {navItems.map((item) => (
@@ -1228,7 +1226,7 @@ function AdminShell({ onLogout }) {
                 <span>{item.label}</span>
               </NavLink>
             ))}
-            <button className="btn btn-outline-light mt-3" onClick={onLogout}>{t('admin.logout')}</button>
+            <button className="btn btn-outline-primary mt-3" onClick={onLogout}>{t('admin.logout')}</button>
           </nav>
         </aside>
 

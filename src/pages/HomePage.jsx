@@ -36,26 +36,25 @@ const governmentLinks = [
   { id: 8, titleKey: 'home.govRevenueDepartment', icon: ShieldCheck, url: 'https://revenuedepartment.gujarat.gov.in/' },
 ];
 
-// Distinct subtle accent themes for the government link cards
 const govCardThemes = [
-  { iconBg: 'bg-blue-100 text-blue-700', border: 'border-blue-200/70 hover:border-blue-400', from: 'from-blue-50', to: 'to-white', ring: 'hover:ring-blue-100' },
-  { iconBg: 'bg-sky-100 text-sky-700', border: 'border-sky-200/70 hover:border-sky-400', from: 'from-sky-50', to: 'to-white', ring: 'hover:ring-sky-100' },
-  { iconBg: 'bg-violet-100 text-violet-700', border: 'border-violet-200/70 hover:border-violet-400', from: 'from-violet-50', to: 'to-white', ring: 'hover:ring-violet-100' },
-  { iconBg: 'bg-amber-100 text-amber-700', border: 'border-amber-200/70 hover:border-amber-400', from: 'from-amber-50', to: 'to-white', ring: 'hover:ring-amber-100' },
-  { iconBg: 'bg-teal-100 text-teal-700', border: 'border-teal-200/70 hover:border-teal-400', from: 'from-teal-50', to: 'to-white', ring: 'hover:ring-teal-100' },
-  { iconBg: 'bg-rose-100 text-rose-700', border: 'border-rose-200/70 hover:border-rose-400', from: 'from-rose-50', to: 'to-white', ring: 'hover:ring-rose-100' },
-  { iconBg: 'bg-indigo-100 text-indigo-700', border: 'border-indigo-200/70 hover:border-indigo-400', from: 'from-indigo-50', to: 'to-white', ring: 'hover:ring-indigo-100' },
-  { iconBg: 'bg-blue-100 text-blue-700', border: 'border-blue-200/70 hover:border-blue-400', from: 'from-blue-50', to: 'to-white', ring: 'hover:ring-blue-100' },
+  { iconBg: 'bg-primary/10 text-primary', border: 'border-slate-200/70 hover:border-primary/40', from: 'from-slate-50', to: 'to-white', ring: 'hover:ring-primary/20' },
+  { iconBg: 'bg-primary/10 text-primary', border: 'border-slate-200/70 hover:border-primary/40', from: 'from-slate-50', to: 'to-white', ring: 'hover:ring-primary/20' },
+  { iconBg: 'bg-primary/10 text-primary', border: 'border-slate-200/70 hover:border-primary/40', from: 'from-slate-50', to: 'to-white', ring: 'hover:ring-primary/20' },
+  { iconBg: 'bg-primary/10 text-primary', border: 'border-slate-200/70 hover:border-primary/40', from: 'from-slate-50', to: 'to-white', ring: 'hover:ring-primary/20' },
+  { iconBg: 'bg-primary/10 text-primary', border: 'border-slate-200/70 hover:border-primary/40', from: 'from-slate-50', to: 'to-white', ring: 'hover:ring-primary/20' },
+  { iconBg: 'bg-primary/10 text-primary', border: 'border-slate-200/70 hover:border-primary/40', from: 'from-slate-50', to: 'to-white', ring: 'hover:ring-primary/20' },
+  { iconBg: 'bg-primary/10 text-primary', border: 'border-slate-200/70 hover:border-primary/40', from: 'from-slate-50', to: 'to-white', ring: 'hover:ring-primary/20' },
+  { iconBg: 'bg-primary/10 text-primary', border: 'border-slate-200/70 hover:border-primary/40', from: 'from-slate-50', to: 'to-white', ring: 'hover:ring-primary/20' },
 ];
 
 // Distinct subtle accent themes for the location cards
 const locationCardThemes = [
-  { iconBg: 'bg-blue-100 text-blue-700', border: 'border-blue-200/70 hover:border-blue-400', from: 'from-blue-50', to: 'to-white' },
-  { iconBg: 'bg-sky-100 text-sky-700', border: 'border-sky-200/70 hover:border-sky-400', from: 'from-sky-50', to: 'to-white' },
-  { iconBg: 'bg-amber-100 text-amber-700', border: 'border-amber-200/70 hover:border-amber-400', from: 'from-amber-50', to: 'to-white' },
-  { iconBg: 'bg-violet-100 text-violet-700', border: 'border-violet-200/70 hover:border-violet-400', from: 'from-violet-50', to: 'to-white' },
-  { iconBg: 'bg-teal-100 text-teal-700', border: 'border-teal-200/70 hover:border-teal-400', from: 'from-teal-50', to: 'to-white' },
-  { iconBg: 'bg-rose-100 text-rose-700', border: 'border-rose-200/70 hover:border-rose-400', from: 'from-rose-50', to: 'to-white' },
+  { iconBg: 'bg-primary/10 text-primary', border: 'border-slate-200/70 hover:border-primary/40', from: 'from-slate-50', to: 'to-white' },
+  { iconBg: 'bg-primary/10 text-primary', border: 'border-slate-200/70 hover:border-primary/40', from: 'from-slate-50', to: 'to-white' },
+  { iconBg: 'bg-primary/10 text-primary', border: 'border-slate-200/70 hover:border-primary/40', from: 'from-slate-50', to: 'to-white' },
+  { iconBg: 'bg-primary/10 text-primary', border: 'border-slate-200/70 hover:border-primary/40', from: 'from-slate-50', to: 'to-white' },
+  { iconBg: 'bg-primary/10 text-primary', border: 'border-slate-200/70 hover:border-primary/40', from: 'from-slate-50', to: 'to-white' },
+  { iconBg: 'bg-primary/10 text-primary', border: 'border-slate-200/70 hover:border-primary/40', from: 'from-slate-50', to: 'to-white' },
 ];
 
 // FAQ items (translation keys)
@@ -176,9 +175,9 @@ function HomePage() {
         </section>
 
         {/* 2. USEFUL GOVERNMENT LINKS (COLORFUL PREMIUM CARDS) */}
-        <section className="rounded-2xl border border-slate-200/80 bg-gradient-to-br from-sage/10 via-blue-50/60 to-white p-4 shadow-sm sm:p-5">
+        <section className="rounded-2xl border border-slate-200/80 bg-gradient-to-br from-sage/10 via-primary/5 to-white p-4 shadow-sm sm:p-5">
           <div className="flex items-center gap-2.5">
-            <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-100 to-blue-50 text-sage shadow-sm ring-1 ring-sage/20">
+            <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-primary/10 to-primary/5 text-sage shadow-sm ring-1 ring-sage/20">
               <Landmark size={19} />
             </span>
             <div>
@@ -269,8 +268,8 @@ function HomePage() {
           </h2>
 
           <div className="grid grid-cols-2 gap-3 sm:gap-4">
-            <div className="group flex flex-col justify-between rounded-2xl border border-slate-200/80 bg-white p-4 text-left shadow-xs transition duration-300 hover:border-emerald-300 sm:hover:-translate-y-0.5 sm:hover:shadow-md">
-              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-50 text-emerald-700 transition duration-300 group-hover:scale-105">
+            <div className="group flex flex-col justify-between rounded-2xl border border-slate-200/80 bg-white p-4 text-left shadow-xs transition duration-300 hover:border-primary/40 sm:hover:-translate-y-0.5 sm:hover:shadow-md">
+              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 text-primary transition duration-300 group-hover:scale-105">
                 <Sprout size={22} />
               </div>
               <div className="mt-3">
@@ -283,8 +282,8 @@ function HomePage() {
               </div>
             </div>
 
-            <div className="group flex flex-col justify-between rounded-2xl border border-slate-200/80 bg-white p-4 text-left shadow-xs transition duration-300 hover:border-sky-300 sm:hover:-translate-y-0.5 sm:hover:shadow-md">
-              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-sky-50 text-sky-700 transition duration-300 group-hover:scale-105">
+            <div className="group flex flex-col justify-between rounded-2xl border border-slate-200/80 bg-white p-4 text-left shadow-xs transition duration-300 hover:border-primary/40 sm:hover:-translate-y-0.5 sm:hover:shadow-md">
+              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 text-primary transition duration-300 group-hover:scale-105">
                 <Building2 size={22} />
               </div>
               <div className="mt-3">

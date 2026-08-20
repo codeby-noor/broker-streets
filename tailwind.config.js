@@ -12,18 +12,18 @@ module.exports = {
         'card-hover': '0 25px 50px rgba(15, 23, 42, 0.14)'
       },
       backgroundImage: {
-        'hero-gradient': 'radial-gradient(circle at top, rgba(29,92,169,0.26), transparent 45%), linear-gradient(180deg, rgba(13,42,79,0.92) 0%, rgba(10,32,60,0.72) 100%)'
+        'hero-gradient': 'radial-gradient(circle at top, rgba(29,92,169,0.35), transparent 50%), linear-gradient(180deg, #1D5CA9 0%, rgba(29,92,169,0.92) 100%)'
       },
       colors: {
         primary: '#1D5CA9',
-        'primary-dark': '#174A87',
+        'primary-dark': '#1D5CA9',
         background: '#F5F6F7',
         text: '#102122',
         ink: '#102122',
         muted: '#556470',
         cream: '#FDFDFD',
         sage: '#1D5CA9',
-        'sage-dark': '#174A87',
+        'sage-dark': '#1D5CA9',
         clay: '#B78F28',
         accent: '#B78F28',
         accentSoft: '#E3C77D',

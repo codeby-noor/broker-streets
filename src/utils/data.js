@@ -8,10 +8,12 @@ const normalizeLocationData = (data) => {
   Object.entries(data || {}).forEach(([district, talukas]) => {
     normalized[district] = {};
     Object.entries(talukas || {}).forEach(([taluka, villages]) => {
-      const normalizedTaluka = taluka === 'Bansda' ? 'Vansda' : taluka;
       const normalizedVillages = [...new Set((villages || []).map((village) => village.trim()).filter(Boolean))]
         .sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }));
-      normalized[district][normalizedTaluka] = normalizedVillages;
+      normalized[district][taluka] = normalizedVillages;
+      if (taluka === 'Bansda' && !normalized[district]['Vansda']) {
+        normalized[district]['Vansda'] = normalizedVillages;
+      }
     });
   });
 

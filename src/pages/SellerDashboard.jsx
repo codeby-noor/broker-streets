@@ -83,10 +83,10 @@ function SellerDashboard() {
   };
 
   return (
-    <div className="-mx-4 -mt-8 min-h-screen bg-cream px-3 pb-20 pt-6 sm:-mx-6 sm:px-6 sm:pt-10 lg:-mx-8 lg:px-8">
+    <div className="-mx-4 -mt-8 min-h-screen bg-cream px-3 pb-28 pt-6 sm:-mx-6 sm:px-6 sm:pb-20 sm:pt-10 lg:-mx-8 lg:px-8 dark:bg-dark-bg">
       <div className="mx-auto max-w-6xl">
-        <section className="rounded-[32px] bg-ink p-5 text-white shadow-card sm:p-10">
-          <p className="eyebrow text-blue-100">{t('sellerDashboard.eyebrow')}</p>
+        <section className="rounded-[32px] bg-[#1D5CA9] p-5 text-white shadow-card sm:p-10 dark:bg-dark-card dark:border dark:border-dark-border">
+          <p className="eyebrow text-white/80">{t('sellerDashboard.eyebrow')}</p>
           <h1 className="mt-3 text-3xl font-bold sm:text-4xl">{t('sellerDashboard.title')}</h1>
           <p className="mt-4 max-w-2xl text-sm leading-7 text-white/70 sm:text-base">{t('sellerDashboard.description')}</p>
         </section>
@@ -107,7 +107,7 @@ function SellerDashboard() {
 
         <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <h2 className="text-2xl font-semibold text-ink">{t('sellerDashboard.yourListings')}</h2>
-          <button type="button" onClick={() => navigate('/seller-form')} className="inline-flex items-center justify-center gap-2 rounded-full border border-primary px-5 py-3 font-semibold text-primary hover:bg-blue-50"><Plus size={18} /> {t('profile.addProperty')}</button>
+          <button type="button" onClick={() => navigate('/seller-form')} className="inline-flex items-center justify-center gap-2 rounded-full border border-primary px-5 py-3 font-semibold text-primary hover:bg-primary/10"><Plus size={18} /> {t('profile.addProperty')}</button>
         </div>
 
         <div className="mt-6 grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">

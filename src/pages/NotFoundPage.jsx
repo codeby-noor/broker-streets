@@ -10,7 +10,7 @@ function NotFoundPage() {
         <div className="px-6 pt-12 sm:px-10">
           <p className="eyebrow">Broker Streets</p>
           <p
-            className="display-heading mt-4 bg-gradient-to-br from-primary to-primary-dark bg-clip-text text-7xl font-extrabold tracking-tight text-transparent sm:text-8xl"
+            className="display-heading mt-4 text-7xl font-extrabold tracking-tight text-primary sm:text-8xl"
             aria-label="404"
           >
             404

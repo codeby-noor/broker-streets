@@ -297,18 +297,18 @@ function BuyPage() {
   );
 
   return (
-    <div className="min-h-screen w-full overflow-x-clip bg-cream pb-20">
-      <section className="bg-ink px-4 py-10 text-white sm:px-10 sm:py-14 lg:px-12">
+    <div className="min-h-screen w-full overflow-x-clip bg-cream pb-28 sm:pb-20 dark:bg-dark-bg">
+      <section className="bg-[#1D5CA9] px-4 py-10 text-white sm:px-10 sm:py-14 lg:px-12 dark:bg-dark-card dark:border-b dark:border-dark-border">
         <div className="mx-auto max-w-7xl">
-          <p className="eyebrow text-blue-100">{t('buy.heroCollection')}</p>
-          <h1 className="display-heading mt-4 text-3xl leading-tight sm:text-6xl">{t('buy.pageTitle')}</h1>
-          <p className="mt-5 max-w-xl text-sm leading-6 text-white/65 sm:text-lg">{t('buy.subtitle')}</p>
+          <p className="eyebrow text-white/80">{t('buy.heroCollection')}</p>
+          <h1 className="display-heading mt-4 text-3xl leading-tight text-white sm:text-6xl">{t('buy.pageTitle')}</h1>
+          <p className="mt-5 max-w-xl text-sm leading-6 text-white/80 sm:text-lg">{t('buy.subtitle')}</p>
         </div>
       </section>
 
       <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-10 lg:px-12">
         {location.state?.justSubmitted && (
-          <div className="mb-8 flex items-center justify-between border border-blue-200 bg-blue-50 px-5 py-4 text-sm font-semibold text-primary">
+          <div className="mb-8 flex items-center justify-between border border-slate-200 bg-slate-50 px-5 py-4 text-sm font-semibold text-primary">
             <span>{t('contact.modalDescription')}</span>
             <button type="button" onClick={() => window.history.replaceState({}, '', '/buy')}>
               <X size={18} />
