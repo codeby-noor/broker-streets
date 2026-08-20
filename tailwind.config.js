@@ -17,7 +17,7 @@ module.exports = {
       colors: {
         primary: '#1D5CA9',
         'primary-dark': '#1D5CA9',
-        background: '#F5F6F7',
+        background: '#FFFFFF',
         text: '#102122',
         ink: '#102122',
         muted: '#556470',
@@ -29,7 +29,7 @@ module.exports = {
         accentSoft: '#E3C77D',
         success: '#22C55E',
         danger: '#DC2626',
-        surface: '#F8FAFC',
+        surface: '#FFFFFF',
         panel: '#F1F5F9',
         glass: 'rgba(255,255,255,0.08)',
         'dark-bg': '#0F1115',

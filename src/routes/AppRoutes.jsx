@@ -36,12 +36,17 @@ function AppRoutes() {
   return (
     <Routes>
       <Route path="/master-group/*" element={<AdminApp />} />
-      <Route path="/" element={<Layout />}>
-        <Route index element={<RegisterPage />} />
+      
+      {/* Standalone Authentication Routes (Render AuthHeader only) */}
+      <Route path="/" element={<RegisterPage />} />
+      <Route path="/register" element={<RegisterPage />} />
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/otp" element={<OTPPage />} />
+      <Route path="/language-selection" element={<LanguageSelectionPage />} />
+
+      {/* Main Public Application Routes (Render Navbar, Footer, MobileBottomNav via Layout) */}
+      <Route element={<Layout />}>
         <Route path="home" element={<HomePage />} />
-        <Route path="register" element={<RegisterPage />} />
-        <Route path="login" element={<LoginPage />} />
-        <Route path="otp" element={<OTPPage />} />
         <Route path="sell" element={<SellPage />} />
         <Route
           path="seller-form"

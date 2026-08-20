@@ -16,6 +16,7 @@ import {
   Compass,
   Scale,
   ChevronDown,
+  MessageSquare,
 } from 'lucide-react';
 import { getSubmissionDestination } from '../utils/formNavigation';
 import { sampleProperties } from '../utils/data';
@@ -123,7 +124,7 @@ function HomePage() {
   const latestActiveProperties = latestProperties.slice(0, 6);
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] pb-16 text-slate-900">
+    <div className="min-h-screen bg-white pb-16 text-slate-900">
       <main className="mx-auto max-w-6xl space-y-6 px-4 py-4 sm:px-6 lg:space-y-8 lg:px-8">
 
         {/* 1. COMPACT HERO SECTION */}
@@ -431,7 +432,45 @@ function HomePage() {
           </div>
         </section>
 
-        {/* 8. BUYER REQUIREMENTS (ONE COMPACT CARD) */}
+        {/* 8. REVIEWS / TESTIMONIALS SECTION */}
+        <section className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm sm:p-6 lg:p-8">
+          <div className="text-center max-w-2xl mx-auto mb-6 sm:mb-8">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-[#1D5CA9]/10 px-3 py-1 text-xs font-bold uppercase tracking-wider text-[#1D5CA9]">
+              <MessageSquare size={13} /> {t('home.reviewsSectionLabel')}
+            </span>
+            <h2 className="mt-2 text-xl font-bold tracking-tight text-slate-900 sm:text-2xl lg:text-3xl">
+              {t('home.reviewsTitle')}
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+            {[
+              { text: t('home.review1Text'), author: t('home.review1Author') },
+              { text: t('home.review2Text'), author: t('home.review2Author') },
+              { text: t('home.review3Text'), author: t('home.review3Author') },
+              { text: t('home.review4Text'), author: t('home.review4Author') },
+            ].map((review, idx) => (
+              <div
+                key={idx}
+                className="flex flex-col justify-between rounded-xl border border-slate-200/80 bg-[#FDFDFD] p-5 shadow-[0_4px_16px_rgba(29,92,169,0.04)] transition hover:border-[#1D5CA9]/30 hover:shadow-[0_8px_24px_rgba(29,92,169,0.08)]"
+              >
+                <div>
+                  <span className="block font-serif text-3xl font-bold leading-none text-[#1D5CA9]/40 select-none mb-2">“</span>
+                  <p className="text-xs leading-relaxed text-slate-700 sm:text-sm">
+                    {review.text}
+                  </p>
+                </div>
+                <div className="mt-4 pt-3 border-t border-slate-100">
+                  <span className="text-xs font-semibold text-[#1D5CA9]">
+                    {review.author}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* 9. BUYER REQUIREMENTS (ONE COMPACT CARD) */}
         <section className="rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm sm:p-5">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div className="space-y-1">
