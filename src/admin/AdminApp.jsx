@@ -3,7 +3,7 @@ import { Navigate, NavLink, Route, Routes, useLocation, useNavigate } from 'reac
 import { toast } from 'react-toastify';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './admin.css';
-import logo from '../assets/images/logo-cropped.png';
+import logo from '../assets/images/logo.png';
 import {
   writeStorage,
   appendAdminActivity,
@@ -1215,7 +1215,7 @@ function AdminShell({ onLogout }) {
         <aside className={`admin-sidebar ${sidebarOpen ? 'open' : ''}`}>
           <div className="px-2 pb-3 border-bottom border-secondary-subtle mb-3">
             <div className="d-flex align-items-center mb-2">
-              <img src={logo} alt="Broker Streets logo" className="h-8 w-auto max-w-[180px] object-contain" />
+              <img src={logo} alt="Broker Streets" className="broker-streets-logo" />
             </div>
             <div className="small text-muted">{t('admin.masterGroupPortal')}</div>
           </div>

@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import logo from '../assets/images/logo-cropped.png';
+import logo from '../assets/images/logo.png';
 import { useLanguage } from '../i18n/LanguageContext';
 
 function Footer() {
@@ -10,7 +10,7 @@ function Footer() {
       <div className="mx-auto flex max-w-7xl flex-col gap-8 lg:flex-row lg:items-start lg:justify-between">
         <div className="max-w-sm text-center sm:text-left">
           <Link to="/home" className="inline-flex items-center gap-3">
-            <img src={logo} alt="Broker Streets logo" className="h-9 w-auto max-w-[220px] object-contain" />
+            <img src={logo} alt="Broker Streets" className="broker-streets-logo" />
           </Link>
           <p className="mt-4 max-w-sm text-sm leading-7 text-slate-600 dark:text-dark-muted">
             {t('footer.description')}

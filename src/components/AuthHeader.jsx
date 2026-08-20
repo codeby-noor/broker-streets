@@ -1,15 +1,15 @@
 import { Link } from 'react-router-dom';
-import logo from '../assets/images/logo-cropped.png';
+import logo from '../assets/images/logo.png';
 import { useLanguage } from '../i18n/LanguageContext';
 
 function AuthHeader() {
   const { language, setLanguage, t } = useLanguage();
 
   return (
-    <header className="w-full border-b border-slate-200/80 bg-white/90 backdrop-blur-md dark:border-dark-border dark:bg-dark-card/90">
-      <div className="mx-auto flex max-w-md items-center justify-between px-4 py-3.5 sm:max-w-xl sm:px-6">
+    <header className="broker-streets-header w-full">
+      <div className="header-inner mx-auto flex max-w-md items-center justify-between px-4 sm:max-w-xl sm:px-6">
         <Link to="/home" className="flex items-center transition hover:opacity-90">
-          <img src={logo} alt="Broker Streets logo" className="h-8 w-auto max-w-[180px] object-contain sm:h-9 sm:max-w-[220px]" />
+          <img src={logo} alt="Broker Streets" className="broker-streets-logo" />
         </Link>
 
         {/* Direct Language Switcher - visible on screen for mobile & desktop */}

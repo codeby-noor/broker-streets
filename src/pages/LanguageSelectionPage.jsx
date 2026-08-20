@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../i18n/LanguageContext';
 import { languageStorageKey } from '../i18n/translations';
-import logo from '../assets/images/logo-cropped.png';
+import logo from '../assets/images/logo.png';
 
 function LanguageSelectionPage() {
   const navigate = useNavigate();
