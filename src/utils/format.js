@@ -56,19 +56,22 @@ export function formatIndianRealEstatePrice(value) {
   }
 
   // Formatting tiers:
-  // Tier 1: Below 1 Lakh (< 100000) -> Comma formatted (e.g. ₹1,500, ₹25,000)
+  // Tier 1: Below 1 Lakh (< 100000)
   if (num < 100000) {
+    if (num >= 1000 && num % 1000 === 0) {
+      return `₹${num / 1000} Thousand`;
+    }
     return `₹${num.toLocaleString('en-IN')}`;
   }
 
-  // Tier 2: 1 Lakh to < 1 Cr (100000 to 9999999) -> Lakh (e.g. ₹1 Lakh, ₹1.25 Lakh, ₹25 Lakh)
+  // Tier 2: 1 Lakh to < 1 Cr (100000 to 9999999) -> Lakh (e.g. ₹1 Lakh, ₹1.25 Lakh, ₹25 Lakh, ₹50 Lakh)
   if (num < 10000000) {
     const lakhs = num / 100000;
     const formattedLakhs = parseFloat(lakhs.toFixed(2)).toString();
     return `₹${formattedLakhs} Lakh`;
   }
 
-  // Tier 3: 1 Cr and above (>= 10000000) -> Cr (e.g. ₹1 Cr, ₹1.25 Cr, ₹10 Cr)
+  // Tier 3: 1 Cr and above (>= 10000000) -> Cr / Crore (e.g. ₹1 Cr, ₹1.25 Cr, ₹10 Cr)
   const crores = num / 10000000;
   const formattedCrores = parseFloat(crores.toFixed(2)).toString();
   return `₹${formattedCrores} Cr`;
@@ -134,4 +137,38 @@ export function formatPriceWithUnit(value, unit, perWord = 'per') {
     const stdUnit = standardizePriceUnit(unit);
     if (!stdUnit) return priceText;
     return `${priceText} ${perWord} ${stdUnit}`;
+}
+
+/**
+ * Parse natural Indian price strings (e.g., "50000", "5 lakh", "25 lakh", "1 crore", "1.5 crore", "₹25,00,000") into numeric values.
+ *
+ * @param {string|number} input - Raw user input
+ * @returns {number|string} Parsed numeric price
+ */
+export function parseNaturalIndianPrice(input) {
+  if (input === undefined || input === null || input === '') return '';
+  const str = String(input).trim().toLowerCase();
+  if (!str) return '';
+
+  const numMatch = str.match(/[\d.]+/);
+  if (!numMatch) return str;
+  const num = parseFloat(numMatch[0]);
+  if (isNaN(num)) return str;
+
+  if (/\bcrore\b|\bcrores\b|\bcr\b/i.test(str)) {
+    return Math.round(num * 10000000);
+  }
+  if (/\blakh\b|\blakhs\b|\blac\b|\blacs\b/i.test(str)) {
+    return Math.round(num * 100000);
+  }
+  if (/\bthousand\b|\bthousands\b|\bk\b/i.test(str)) {
+    return Math.round(num * 1000);
+  }
+
+  const digitsOnly = str.replace(/[^\d.]/g, '');
+  if (digitsOnly && !isNaN(Number(digitsOnly))) {
+    return Number(digitsOnly);
+  }
+
+  return str;
 }

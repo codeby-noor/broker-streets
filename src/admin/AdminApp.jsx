@@ -26,6 +26,7 @@ import {
 } from './masterGroupAuth';
 import { useLanguage } from '../i18n/LanguageContext';
 import { locationTranslationsGu } from '../i18n/translations';
+import { formatIndianPrice, parseNaturalIndianPrice } from '../utils/format';
 import AdminLanguageToggle from './AdminLanguageToggle';
 import {
   ADMIN_NAMES,
@@ -740,8 +741,8 @@ function AddPropertyPage() {
       location: form.district,
       city: form.district,
       address: [form.village, form.taluka, form.district, 'Gujarat'].filter(Boolean).join(', '),
-      price: form.priceAmount ? (Number(form.priceAmount) || form.priceAmount) : t('admin.priceOnRequest'),
-      priceAmount: form.priceAmount,
+      price: form.priceAmount ? parseNaturalIndianPrice(form.priceAmount) : t('admin.priceOnRequest'),
+      priceAmount: form.priceAmount ? String(parseNaturalIndianPrice(form.priceAmount)) : '',
       priceUnit: form.priceUnit,
       landArea: form.area,
       area: form.area,
@@ -787,7 +788,21 @@ function AddPropertyPage() {
                 <option value="Non-Agricultural Land">{t('admin.propertyTypeNonAgricultural')}</option>
               </select>
             </div>
-            <div className="col-6 col-md-3"><label className="form-label">{t('admin.price')}</label><input className="form-control input-glow" type="number" value={form.priceAmount} onChange={(e) => update('priceAmount', e.target.value)} placeholder={t('admin.amount')} /></div>
+            <div className="col-6 col-md-3">
+              <label className="form-label">{t('admin.price')}</label>
+              <input
+                className="form-control input-glow"
+                type="text"
+                value={form.priceAmount}
+                onChange={(e) => update('priceAmount', e.target.value)}
+                placeholder={t('admin.amount')}
+              />
+              {form.priceAmount ? (
+                <small className="text-primary font-bold mt-1 block">
+                  ≈ {formatIndianPrice(parseNaturalIndianPrice(form.priceAmount))}
+                </small>
+              ) : null}
+            </div>
             <div className="col-6 col-md-3">
               <label className="form-label">{t('admin.priceUnit')}</label>
               <select className="form-select input-glow" value={form.priceUnit} onChange={(e) => update('priceUnit', e.target.value)}>

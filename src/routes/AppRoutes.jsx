@@ -32,6 +32,8 @@ import AdminApp from '../admin/AdminApp';
 import LanguageSelectionPage from '../pages/LanguageSelectionPage';
 import { useLanguage } from '../i18n/LanguageContext';
 
+import SellListingsPage from '../pages/SellListingsPage';
+
 function AppRoutes() {
   return (
     <Routes>
@@ -48,6 +50,7 @@ function AppRoutes() {
       <Route element={<Layout />}>
         <Route path="home" element={<HomePage />} />
         <Route path="sell" element={<SellPage />} />
+        <Route path="sell-listings" element={<SellListingsPage />} />
         <Route
           path="seller-form"
           element={

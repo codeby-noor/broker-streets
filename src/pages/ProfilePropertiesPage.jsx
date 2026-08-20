@@ -9,18 +9,18 @@ import { useLanguage } from '../i18n/LanguageContext';
 const sampleListings = [
   {
     id: 'p1',
-    title: 'Luxury 3BHK Waterfront Apartment',
-    type: 'Apartment',
-    district: 'Ahmedabad',
-    subDistrict: 'Bodakdev',
-    village: 'Prahlad Nagar',
-    price: 8900000,
+    title: 'Mango Farm Navsari',
+    type: 'Agricultural Land',
+    district: 'Navsari',
+    subDistrict: 'Gandevi',
+    village: 'Gandevi',
+    price: 12500000,
     status: 'Available',
     views: 182,
     enquiries: 24,
     favorites: 18,
     updatedAt: '2026-08-01',
-    images: ['https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd?auto=format&fit=crop&w=900&q=80'],
+    images: ['https://images.unsplash.com/photo-1500937386664-56d1dfef3854?auto=format&fit=crop&w=900&q=80'],
   },
 ];
 

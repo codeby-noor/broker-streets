@@ -155,12 +155,21 @@ function BuyerForm() {
     setIsRecording(false);
   };
 
-  const talukaOptions = useMemo(() => (form.district ? gujaratSubDistricts[form.district] || [] : []), [form.district]);
+  const talukaOptions = useMemo(() => {
+    if (!form.district) return [];
+    const rawList = gujaratSubDistricts[form.district] || [];
+    return [...new Set(rawList.map((item) => item.trim()))].sort((a, b) =>
+      (t(a) || a).localeCompare(t(b) || b, undefined, { sensitivity: 'base' })
+    );
+  }, [form.district, t]);
 
   const allVillageOptions = useMemo(() => {
     if (!form.district || !form.taluka) return [];
-    return [...(gujaratVillages[form.district]?.[form.taluka] || [])].sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }));
-  }, [form.district, form.taluka]);
+    const rawList = gujaratVillages[form.district]?.[form.taluka] || [];
+    return [...new Set(rawList.map((item) => item.trim()))].sort((a, b) =>
+      (t(a) || a).localeCompare(t(b) || b, undefined, { sensitivity: 'base' })
+    );
+  }, [form.district, form.taluka, t]);
 
   const filteredVillageOptions = useMemo(() => {
     const query = villageSearch.trim().toLowerCase();

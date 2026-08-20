@@ -7,16 +7,11 @@ import { useLanguage } from '../i18n/LanguageContext';
 
 const amenityOptions = ['Lift', 'Parking', 'Power Backup', 'Security', 'Garden', 'Clubhouse', 'Balcony', 'CCTV'];
 const statusOptions = ['Available', 'Sold', 'Pending'];
-const propertyTypeOptions = ['Apartment', 'Villa', 'House', 'Plot', 'Farm House', 'Commercial', 'Office'];
+const propertyTypeOptions = ['Agricultural Land', 'Non-Agricultural Land'];
 
 const propertyTypeTranslationKeys = {
-  Apartment: 'dropdown.apartment',
-  Villa: 'dropdown.villa',
-  House: 'dropdown.house',
-  Plot: 'dropdown.plot',
-  'Farm House': 'dropdown.farmHouse',
-  Commercial: 'dropdown.commercial',
-  Office: 'dropdown.office',
+  'Agricultural Land': 'buyerForm.agriculturalLand',
+  'Non-Agricultural Land': 'buyerForm.nonAgriculturalLand',
 };
 
 const amenityTranslationKeys = {
@@ -47,7 +42,7 @@ const initialDetails = {
   title: '',
   city: 'Ahmedabad',
   address: '',
-  propertyType: 'Apartment',
+  propertyType: 'Agricultural Land',
   price: '',
   bedrooms: '2',
   bathrooms: '1',
@@ -79,7 +74,7 @@ function AddPropertyPage() {
       title: currentListing.title || '',
       city: currentListing.city || 'Ahmedabad',
       address: currentListing.address || '',
-      propertyType: currentListing.propertyType || 'Apartment',
+      propertyType: currentListing.propertyType || 'Agricultural Land',
       price: currentListing.price || '',
       bedrooms: currentListing.bedrooms || '2',
       bathrooms: currentListing.bathrooms || '1',

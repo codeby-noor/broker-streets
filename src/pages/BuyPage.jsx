@@ -9,6 +9,7 @@ import ContactModal from '../components/ContactModal';
 import PropertyCard from '../components/PropertyCard';
 import SectionHeading from '../components/SectionHeading';
 import { useLanguage } from '../i18n/LanguageContext';
+import { formatIndianPrice } from '../utils/format';
 
 const priceNumber = (value) => Number(String(value || '').replace(/[^0-9]/g, '')) || 0;
 const landSizeInSqFt = (value) => {
@@ -29,9 +30,6 @@ function BuyPage() {
   const [selectedTaluka, setSelectedTaluka] = useState(t('buy.allTalukas') || 'All talukas');
   const [selectedVillage, setSelectedVillage] = useState(t('buy.allVillages') || 'All villages');
   const [type, setType] = useState(t('buy.allTypes') || 'All types');
-  const [minPrice, setMinPrice] = useState('');
-  const [maxPrice, setMaxPrice] = useState('');
-  const [landArea, setLandArea] = useState(t('buy.allAreas') || 'Any area');
   const [showSoldProperties, setShowSoldProperties] = useState(false);
   const [sort, setSort] = useState('relevance');
   const [page, setPage] = useState(1);
@@ -47,6 +45,12 @@ function BuyPage() {
     });
     return Array.from(uniqueMap.values());
   });
+
+  const MIN_PRICE = 0;
+  const MAX_PRICE = 100000000; // ₹10 Cr
+
+  const [priceRange, setPriceRange] = useState([MIN_PRICE, MAX_PRICE]);
+
   const perPage = 9;
   const districtOptions = ['All districts', ...gujaratDistricts];
   const talukaOptions = selectedDistrict === 'All districts' ? [] : ['All talukas', ...(gujaratSubDistricts[selectedDistrict] || [])];
@@ -114,8 +118,8 @@ function BuyPage() {
 
   const filtered = useMemo(() => {
     const normalized = query.trim().toLowerCase();
-    const minimum = Number(minPrice) || 0;
-    const maximum = Number(maxPrice) || Number.POSITIVE_INFINITY;
+    const minimum = priceRange[0];
+    const maximum = priceRange[1] >= MAX_PRICE ? Number.POSITIVE_INFINITY : priceRange[1];
 
     const result = listings.filter((property) => {
       const searchText = `${property.title || ''} ${property.city || ''} ${property.location || ''} ${property.type || property.propertyType || ''}`.toLowerCase();
@@ -126,21 +130,19 @@ function BuyPage() {
       const matchesType = type === 'All types' || property.type === type || property.propertyType === type;
       const price = priceNumber(property.priceAmount || property.price);
       const matchesBudget = price >= minimum && price <= maximum;
-      const size = landSizeInSqFt(property.landArea || property.area);
-      const matchesArea =
-        landArea === 'Any area' ||
-        (landArea === 'Under 1000 Sq Ft' && size < 1000) ||
-        (landArea === '1000–5000 Sq Ft' && size >= 1000 && size <= 5000) ||
-        (landArea === '5000+ Sq Ft' && size > 5000);
       const isSold = String(property.status || 'Available').toLowerCase() === 'sold';
       const isUnavailable = String(property.status || 'Available').toLowerCase() === 'unavailable';
       const matchesStatus = showSoldProperties || (!isSold && !isUnavailable);
 
-      return matchesSearch && matchesDistrict && matchesTaluka && matchesVillage && matchesType && matchesBudget && matchesArea && matchesStatus;
+      return matchesSearch && matchesDistrict && matchesTaluka && matchesVillage && matchesType && matchesBudget && matchesStatus;
     });
 
     if (sort === 'newest') {
       return [...result].sort((a, b) => new Date(b.updatedAt || b.createdAt || b.submittedAt || b.uploadedDate || 0) - new Date(a.updatedAt || a.createdAt || a.submittedAt || a.uploadedDate || 0));
+    }
+
+    if (sort === 'oldest') {
+      return [...result].sort((a, b) => new Date(a.updatedAt || a.createdAt || a.submittedAt || a.uploadedDate || 0) - new Date(b.updatedAt || b.createdAt || b.submittedAt || b.uploadedDate || 0));
     }
 
     if (sort === 'price_asc') {
@@ -151,8 +153,16 @@ function BuyPage() {
       return [...result].sort((a, b) => priceNumber(b.priceAmount || b.price) - priceNumber(a.priceAmount || a.price));
     }
 
+    if (sort === 'area_asc') {
+      return [...result].sort((a, b) => landSizeInSqFt(a.landArea || a.area) - landSizeInSqFt(b.landArea || b.area));
+    }
+
+    if (sort === 'area_desc') {
+      return [...result].sort((a, b) => landSizeInSqFt(b.landArea || b.area) - landSizeInSqFt(a.landArea || a.area));
+    }
+
     return result;
-  }, [listings, query, selectedDistrict, selectedTaluka, selectedVillage, type, minPrice, maxPrice, landArea, showSoldProperties, sort]);
+  }, [listings, query, selectedDistrict, selectedTaluka, selectedVillage, type, priceRange, showSoldProperties, sort]);
 
   const pageCount = Math.max(1, Math.ceil(filtered.length / perPage));
   const activePage = Math.min(page, pageCount);
@@ -169,9 +179,7 @@ function BuyPage() {
     setSelectedTaluka('All talukas');
     setSelectedVillage('All villages');
     setType('All types');
-    setMinPrice('');
-    setMaxPrice('');
-    setLandArea('Any area');
+    setPriceRange([MIN_PRICE, MAX_PRICE]);
     setShowSoldProperties(false);
     setSort('relevance');
     setPage(1);
@@ -186,19 +194,19 @@ function BuyPage() {
 
   const filters = (
     <div className="space-y-6">
-      <div className="flex items-center justify-between gap-4">
+      <div className="flex items-center justify-between gap-4 border-b border-slate-100 pb-4">
         <div className="flex items-center gap-2">
           <Filter size={18} className="text-sage" />
-          <h2 className="text-lg font-semibold text-ink">{t('buy.filterHeading')}</h2>
+          <h2 className="text-base font-bold text-slate-900">{t('buy.filterHeading')}</h2>
         </div>
-        <button type="button" onClick={clearFilters} className="text-xs font-bold uppercase tracking-[0.12em] text-sage">
+        <button type="button" onClick={clearFilters} className="text-xs font-bold uppercase tracking-wider text-sage hover:underline">
           {t('buy.reset')}
         </button>
       </div>
 
-      <label>
+      <label className="block">
         <span className="field-label">{t('buy.propertyType')}</span>
-        <select value={type} onChange={change(setType)} className="field-control">
+        <select value={type} onChange={change(setType)} className="field-control w-full">
           <option value="All types">{t('buy.allTypes')}</option>
           {propertyTypes.map((item) => (
             <option key={item} value={item}>
@@ -208,9 +216,9 @@ function BuyPage() {
         </select>
       </label>
 
-      <label>
+      <label className="block">
         <span className="field-label">{t('buy.district')}</span>
-        <select value={selectedDistrict} onChange={(event) => { setSelectedDistrict(event.target.value); setPage(1); }} className="field-control">
+        <select value={selectedDistrict} onChange={(event) => { setSelectedDistrict(event.target.value); setPage(1); }} className="field-control w-full">
           {districtOptions.map((district) => (
             <option key={district} value={district}>
               {district === 'All districts' ? t('buy.allDistricts') : t(district)}
@@ -220,9 +228,9 @@ function BuyPage() {
       </label>
 
       {selectedDistrict !== 'All districts' ? (
-        <label>
+        <label className="block">
           <span className="field-label">{t('common.taluka')}</span>
-          <select value={selectedTaluka} onChange={(event) => { setSelectedTaluka(event.target.value); setPage(1); }} className="field-control">
+          <select value={selectedTaluka} onChange={(event) => { setSelectedTaluka(event.target.value); setPage(1); }} className="field-control w-full">
             {talukaOptions.map((taluka) => (
               <option key={taluka} value={taluka}>
                 {taluka === 'All talukas' ? t('buy.allTalukas') : t(taluka)}
@@ -233,9 +241,9 @@ function BuyPage() {
       ) : null}
 
       {selectedDistrict !== 'All districts' && selectedTaluka !== 'All talukas' ? (
-        <label>
+        <label className="block">
           <span className="field-label">{t('buy.village')}</span>
-          <select value={selectedVillage} onChange={(event) => { setSelectedVillage(event.target.value); setPage(1); }} className="field-control">
+          <select value={selectedVillage} onChange={(event) => { setSelectedVillage(event.target.value); setPage(1); }} className="field-control w-full">
             {villageOptions.map((village) => (
               <option key={village} value={village}>
                 {village === 'All villages' ? t('buy.allVillages') : t(village)}
@@ -245,140 +253,178 @@ function BuyPage() {
         </label>
       ) : null}
 
-      <div>
-        <span className="field-label">{t('buy.price')}</span>
-        <div className="grid grid-cols-2 gap-3">
-          <input
-            aria-label={t('buy.minPrice')}
-            type="number"
-            min="0"
-            value={minPrice}
-            onChange={change(setMinPrice)}
-            className="field-control"
-            placeholder={t('buy.minPrice')}
+      {/* DUAL-HANDLE PRICE RANGE SLIDER (FIXED RANGE: ₹0 - ₹10 Cr) */}
+      <div className="space-y-2">
+        <div className="flex items-center justify-between">
+          <span className="field-label">{t('buy.price')}</span>
+          <span className="text-xs font-bold text-[#1D5CA9]">
+            {formatIndianPrice(priceRange[0])} — {formatIndianPrice(priceRange[1])}
+          </span>
+        </div>
+
+        <div className="relative my-3 flex h-6 w-full items-center select-none">
+          {/* Background Track */}
+          <div className="absolute inset-x-0 h-2 rounded-full bg-slate-200" />
+
+          {/* Active Range Bar */}
+          <div
+            className="absolute h-2 rounded-full bg-[#1D5CA9]"
+            style={{
+              left: `${(priceRange[0] / MAX_PRICE) * 100}%`,
+              right: `${100 - (priceRange[1] / MAX_PRICE) * 100}%`,
+            }}
           />
+
+          {/* Min Thumb Input */}
           <input
-            aria-label={t('buy.maxPrice')}
-            type="number"
-            min="0"
-            value={maxPrice}
-            onChange={change(setMaxPrice)}
-            className="field-control"
-            placeholder={t('buy.maxPrice')}
+            type="range"
+            min={MIN_PRICE}
+            max={MAX_PRICE}
+            step={500000}
+            value={priceRange[0]}
+            onChange={(e) => {
+              const val = Math.min(Number(e.target.value), priceRange[1] - 500000);
+              setPriceRange([val, priceRange[1]]);
+              setPage(1);
+            }}
+            className="pointer-events-auto absolute z-30 h-6 w-full appearance-none bg-transparent opacity-0 cursor-pointer"
           />
+
+          {/* Max Thumb Input */}
+          <input
+            type="range"
+            min={MIN_PRICE}
+            max={MAX_PRICE}
+            step={500000}
+            value={priceRange[1]}
+            onChange={(e) => {
+              const val = Math.max(Number(e.target.value), priceRange[0] + 500000);
+              setPriceRange([priceRange[0], val]);
+              setPage(1);
+            }}
+            className="pointer-events-auto absolute z-30 h-6 w-full appearance-none bg-transparent opacity-0 cursor-pointer"
+          />
+
+          {/* Visible Min Circle */}
+          <div
+            className="pointer-events-none absolute z-20 h-5 w-5 -translate-x-1/2 rounded-full border-2 border-white bg-[#1D5CA9] shadow-md transition-transform"
+            style={{
+              left: `${(priceRange[0] / MAX_PRICE) * 100}%`,
+            }}
+          />
+
+          {/* Visible Max Circle */}
+          <div
+            className="pointer-events-none absolute z-20 h-5 w-5 -translate-x-1/2 rounded-full border-2 border-white bg-[#1D5CA9] shadow-md transition-transform"
+            style={{
+              left: `${(priceRange[1] / MAX_PRICE) * 100}%`,
+            }}
+          />
+        </div>
+
+        <div className="flex justify-between text-[11px] font-semibold text-slate-400">
+          <span>₹0</span>
+          <span>₹10 Cr</span>
         </div>
       </div>
 
-      <label>
-        <span className="field-label">{t('buy.landArea')}</span>
-        <select value={landArea} onChange={change(setLandArea)} className="field-control">
-          <option value="Any area">{t('buy.allAreas')}</option>
-          <option value="Under 1000 Sq Ft">{t('dropdown.under1000SqFt')}</option>
-          <option value="1000–5000 Sq Ft">{t('dropdown.sqFt1000To5000')}</option>
-          <option value="5000+ Sq Ft">{t('dropdown.sqFt5000Plus')}</option>
-        </select>
-      </label>
-
-      <label>
-        <span className="field-label">{t('buy.sortBy')}</span>
-        <select value={sort} onChange={change(setSort)} className="field-control">
-          <option value="relevance">{t('dropdown.relevance')}</option>
-          <option value="newest">{t('dropdown.newest')}</option>
-          <option value="price_asc">{t('dropdown.priceLowToHigh')}</option>
-          <option value="price_desc">{t('dropdown.priceHighToLow')}</option>
-        </select>
-      </label>
-
-      <label className="flex items-center gap-2 rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3">
-        <input type="checkbox" checked={showSoldProperties} onChange={(event) => { setShowSoldProperties(event.target.checked); setPage(1); }} className="h-4 w-4 rounded border-slate-300 text-primary focus:ring-primary" />
-        <span className="text-sm font-medium text-slate-700">{t('buy.showSold')}</span>
+      <label className="flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 p-3">
+        <input type="checkbox" checked={showSoldProperties} onChange={(event) => { setShowSoldProperties(event.target.checked); setPage(1); }} className="h-4 w-4 rounded border-slate-300 text-[#1D5CA9] focus:ring-[#1D5CA9]" />
+        <span className="text-xs font-semibold text-slate-700">{t('buy.showSold')}</span>
       </label>
     </div>
   );
 
   return (
-    <div className="min-h-screen w-full overflow-x-clip bg-cream pb-28 sm:pb-20 dark:bg-dark-bg">
-      <section className="bg-[#1D5CA9] px-4 py-10 text-white sm:px-10 sm:py-14 lg:px-12 dark:bg-dark-card dark:border-b dark:border-dark-border">
+    <div className="min-h-screen w-full bg-[#FDFDFD] pb-28 sm:pb-20 dark:bg-dark-bg">
+      <section className="bg-[#1D5CA9] px-4 py-8 text-white sm:px-8 sm:py-12 lg:px-12 dark:bg-dark-card dark:border-b dark:border-dark-border">
         <div className="mx-auto max-w-7xl">
           <p className="eyebrow text-white/80">{t('buy.heroCollection')}</p>
-          <h1 className="display-heading mt-4 text-3xl leading-tight text-white sm:text-6xl">{t('buy.pageTitle')}</h1>
-          <p className="mt-5 max-w-xl text-sm leading-6 text-white/80 sm:text-lg">{t('buy.subtitle')}</p>
+          <h1 className="display-heading mt-2 text-2xl font-bold leading-tight text-white sm:text-4xl lg:text-5xl">{t('buy.pageTitle')}</h1>
+          <p className="mt-3 max-w-xl text-xs leading-relaxed text-white/80 sm:text-base">{t('buy.subtitle')}</p>
         </div>
       </section>
 
-      <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-10 lg:px-12">
+      <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
         {location.state?.justSubmitted && (
-          <div className="mb-8 flex items-center justify-between border border-slate-200 bg-slate-50 px-5 py-4 text-sm font-semibold text-primary">
+          <div className="mb-6 flex items-center justify-between rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-xs font-semibold text-[#1D5CA9]">
             <span>{t('contact.modalDescription')}</span>
             <button type="button" onClick={() => window.history.replaceState({}, '', '/buy')}>
-              <X size={18} />
+              <X size={16} />
             </button>
           </div>
         )}
 
-        <div className="mb-8 space-y-6 border-b border-stone-200 pb-8">
-          <div className="grid gap-4 sm:grid-cols-[1.4fr_auto] sm:items-end">
-            <div>
-              <p className="eyebrow text-sage">{t('buy.findYourLandTitle')}</p>
-              <h2 className="mt-3 text-2xl font-semibold text-ink sm:text-4xl">{t('buy.findYourLandHeading')}</h2>
-              <p className="mt-3 max-w-2xl text-sm leading-6 text-muted sm:leading-7">{t('buy.findYourLandDescription')}</p>
-            </div>
-            <div className="flex flex-wrap gap-3">
-              <button
-                type="button"
-                onClick={() => setMobileFilters(true)}
-                className="inline-flex min-h-[46px] items-center justify-center rounded-full border border-stone-200 bg-white px-5 py-3 text-sm font-semibold text-slate-800 transition hover:bg-slate-50 lg:hidden"
-              >
-                <SlidersHorizontal size={18} className="mr-2" /> {t('buy.filterButton')}
-              </button>
-              <button
-                type="button"
-                onClick={() => setMobileFilters(true)}
-                className="hidden min-h-[46px] items-center justify-center rounded-full border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-800 transition hover:bg-slate-50 lg:inline-flex"
-              >
-                {t('buy.sortButton')}
-                <ChevronDown size={16} className="ml-2" />
-              </button>
-            </div>
-          </div>
-
-          <div className="grid gap-3 sm:grid-cols-[1fr_auto]">
-            <label className="flex items-center gap-3 rounded-3xl border border-slate-200 bg-white px-4 py-3 text-sm shadow-sm">
-              <Search size={18} className="text-sage" />
+        {/* TOP SEARCH & UNIFIED SORT BAR */}
+        <div className="mb-6 rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            {/* Search Input */}
+            <div className="relative flex-1">
+              <Search size={17} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
               <input
                 aria-label={t('buy.searchTitle')}
                 value={query}
                 onChange={change(setQuery)}
                 placeholder={t('buy.searchAll')}
-                className="min-w-0 flex-1 border-0 bg-transparent text-sm text-slate-800 outline-none"
+                className="w-full rounded-xl border border-slate-200 bg-slate-50/60 pl-10 pr-4 py-2.5 text-xs sm:text-sm font-medium text-slate-800 outline-none transition focus:border-[#1D5CA9] focus:bg-white"
               />
-            </label>
-            <div className="flex gap-3">
-              <button type="button" onClick={() => setMobileFilters(true)} className="inline-flex min-h-[46px] items-center justify-center rounded-full border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-800 transition hover:bg-slate-50 lg:hidden">
-                {t('buy.filterButton')}
+            </div>
+
+            <div className="flex flex-wrap items-center gap-3">
+              {/* Mobile Filter Button */}
+              <button
+                type="button"
+                onClick={() => setMobileFilters(true)}
+                className="inline-flex min-h-[42px] items-center justify-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-4 py-2 text-xs font-bold text-slate-800 transition hover:bg-slate-100 lg:hidden"
+              >
+                <SlidersHorizontal size={15} className="text-[#1D5CA9]" />
+                <span>{t('buy.filterButton')}</span>
               </button>
-              <button type="button" className="hidden min-h-[46px] items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-800 transition hover:bg-slate-50 lg:inline-flex">
-                {t('buy.sortButton')}
-                <ChevronDown size={16} />
-              </button>
+
+              {/* SINGLE UNIFIED SORT BY DROPDOWN */}
+              <div className="relative flex min-h-[42px] items-center rounded-xl border border-slate-200 bg-slate-50/80 px-3 py-1.5 transition hover:bg-slate-100">
+                <span className="mr-2 text-xs font-bold uppercase tracking-wider text-slate-500 hidden sm:inline">{t('buy.sortBy')}:</span>
+                <select
+                  value={sort}
+                  onChange={change(setSort)}
+                  className="bg-transparent pr-6 text-xs font-bold text-slate-800 outline-none cursor-pointer"
+                >
+                  <option value="relevance">{t('dropdown.relevance')}</option>
+                  <option value="newest">{t('dropdown.newest')}</option>
+                  <option value="oldest">{t('dropdown.oldest')}</option>
+                  <option value="price_asc">{t('dropdown.priceLowToHigh')}</option>
+                  <option value="price_desc">{t('dropdown.priceHighToLow')}</option>
+                  <option value="area_asc">{t('dropdown.areaLowToHigh')}</option>
+                  <option value="area_desc">{t('dropdown.areaHighToLow')}</option>
+                </select>
+                <ChevronDown size={14} className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-slate-500" />
+              </div>
+
+              {/* Matching Property Count */}
+              <span className="rounded-xl bg-[#1D5CA9]/10 px-3 py-2 text-xs font-bold text-[#1D5CA9]">
+                {filtered.length} {t('buy.propertyResultLabel')}
+              </span>
             </div>
           </div>
         </div>
 
+        {/* MOBILE FILTER MODAL DRAWER */}
         {mobileFilters ? (
           <div className="fixed inset-0 z-50 overflow-hidden bg-slate-950/70 px-3 py-4 sm:px-6">
             <div className="absolute inset-0 overflow-y-auto">
-              <div className="mx-auto mt-12 max-w-md max-h-[85vh] overflow-y-auto rounded-[32px] bg-white p-4 shadow-xl sm:p-6">
-                <div className="flex items-center justify-between gap-4">
+              <div className="mx-auto mt-12 max-w-md max-h-[85vh] overflow-y-auto rounded-3xl bg-white p-5 shadow-xl">
+                <div className="flex items-center justify-between gap-4 border-b border-slate-100 pb-3">
                   <div>
-                    <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-800">{t('buy.filters')}</p>
-                    <p className="text-sm text-slate-600">{t('buy.mobileFilters')}</p>
+                    <p className="text-xs font-bold uppercase tracking-wider text-slate-800">{t('buy.filters')}</p>
+                    <p className="text-xs text-slate-500">{t('buy.mobileFilters')}</p>
                   </div>
-                  <button type="button" onClick={() => setMobileFilters(false)} className="rounded-full border border-slate-200 bg-slate-50 p-3.5 text-slate-700 transition hover:bg-slate-100">{t('buy.close')}</button>
+                  <button type="button" onClick={() => setMobileFilters(false)} className="rounded-full border border-slate-200 bg-slate-50 p-2.5 text-slate-700 transition hover:bg-slate-100">
+                    <X size={16} />
+                  </button>
                 </div>
-                <div className="mt-6">{filters}</div>
+                <div className="mt-5">{filters}</div>
                 <div className="sticky bottom-0 left-0 right-0 mt-6 bg-white pt-4">
-                  <button type="button" onClick={() => setMobileFilters(false)} className="w-full rounded-full bg-primary px-5 py-3.5 text-sm font-semibold text-white transition hover:bg-primary-dark">
+                  <button type="button" onClick={() => setMobileFilters(false)} className="w-full rounded-xl bg-[#1D5CA9] px-5 py-3 text-xs font-bold text-white shadow-md transition hover:bg-[#1D5CA9]/90">
                     {t('buy.applyFilters')}
                   </button>
                 </div>
@@ -387,38 +433,14 @@ function BuyPage() {
           </div>
         ) : null}
 
-        <div className="grid gap-6 lg:grid-cols-[280px_1fr]">
-          <aside className="hidden self-start border border-stone-200 bg-white p-6 shadow-card lg:sticky lg:top-24 lg:block">{filters}</aside>
-          <div className="space-y-7">
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-              <p className="text-sm font-semibold text-ink">{filtered.length} {t('buy.propertyResultLabel')}</p>
-              <div className="flex flex-wrap gap-3">
-                <label className="flex min-w-0 flex-1 items-center gap-2 border border-stone-200 bg-white px-4 py-2.5 sm:min-w-[210px]">
-                  <Search size={17} className="text-sage" />
-                  <input
-                    aria-label={t('buy.searchTitle')}
-                    value={query}
-                    onChange={change(setQuery)}
-                    placeholder={t('buy.searchAll')}
-                    className="min-w-0 flex-1 border-0 bg-transparent text-sm outline-none"
-                  />
-                </label>
-                <label className="flex items-center gap-1 border border-stone-200 bg-white px-3">
-                  <select value={sort} onChange={change(setSort)} className="border-0 bg-transparent text-sm outline-none">
-                    <option value="relevance">{t('dropdown.relevance')}</option>
-                    <option value="newest">{t('dropdown.newest')}</option>
-                    <option value="price_asc">{t('dropdown.priceLowToHigh')}</option>
-                    <option value="price_desc">{t('dropdown.priceHighToLow')}</option>
-                  </select>
-                  <ChevronDown size={15} />
-                </label>
-              </div>
-            </div>
-
+        {/* MAIN DESKTOP GRID: SIDEBAR & CARDS */}
+        <div className="grid gap-6 lg:grid-cols-[260px_1fr]">
+          <aside className="hidden self-start rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm lg:sticky lg:top-24 lg:block">{filters}</aside>
+          <div className="space-y-6">
             {loading ? (
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
                 {Array.from({ length: 6 }).map((_, index) => (
-                  <div key={index} className="h-80 animate-pulse bg-slate-200" />
+                  <div key={index} className="h-80 animate-pulse rounded-2xl bg-slate-200/60" />
                 ))}
               </div>
             ) : paged.length ? (
@@ -428,13 +450,13 @@ function BuyPage() {
                 ))}
               </div>
             ) : (
-              <div className="border border-stone-200 bg-white px-8 py-16 text-center">
-                <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-sage/10 text-sage">
-                  <Search size={28} />
+              <div className="rounded-2xl border border-slate-200/80 bg-white px-8 py-16 text-center shadow-sm">
+                <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-[#1D5CA9]/10 text-[#1D5CA9]">
+                  <Search size={24} />
                 </div>
-                <h2 className="mt-6 text-2xl font-semibold text-ink">{t('buy.noResults')}</h2>
-                <p className="mt-3 text-sm text-muted">{t('buy.noResultsDetail')}</p>
-                <button type="button" onClick={clearFilters} className="mt-6 rounded-full bg-sage px-5 py-3 text-sm font-semibold text-white">
+                <h2 className="mt-4 text-xl font-bold text-slate-900">{t('buy.noResults')}</h2>
+                <p className="mt-2 text-xs text-slate-500">{t('buy.noResultsDetail')}</p>
+                <button type="button" onClick={clearFilters} className="mt-5 rounded-xl bg-[#1D5CA9] px-5 py-2.5 text-xs font-bold text-white shadow-sm transition hover:bg-[#1D5CA9]/90">
                   {t('buy.clearFilters')}
                 </button>
               </div>

@@ -9,7 +9,7 @@ import { appendStorageArray, readStorage, writeStorage, STORAGE_KEYS } from '../
 import logo from '../assets/images/logo.png';
 import { useLanguage } from '../i18n/LanguageContext';
 
-import { formatIndianPrice } from '../utils/format';
+import { formatIndianPrice, parseNaturalIndianPrice } from '../utils/format';
 
 const fallbackPropertyImage = logo;
 const metadata = (files) => Array.from(files || []).map((file) => ({ name: file.name, type: file.type, size: file.size, lastModified: file.lastModified }));
@@ -47,11 +47,23 @@ function SellerForm() {
   ], [t]);
   const selectedDistrict = watch('district');
   const selectedTaluka = watch('subDistrict');
-  const subDistrictOptions = selectedDistrict ? gujaratSubDistricts[selectedDistrict] || [] : [];
+  const selectedType = watch('type');
+  const priceAmountValue = watch('priceAmount');
+  const subDistrictOptions = useMemo(() => {
+    if (!selectedDistrict) return [];
+    const rawList = gujaratSubDistricts[selectedDistrict] || [];
+    return [...new Set(rawList.map((item) => item.trim()))].sort((a, b) =>
+      (t(a) || a).localeCompare(t(b) || b, undefined, { sensitivity: 'base' })
+    );
+  }, [selectedDistrict, t]);
+
   const villageOptions = useMemo(() => {
     if (!selectedDistrict || !selectedTaluka) return [];
-    return (gujaratVillages[selectedDistrict]?.[selectedTaluka] || []).slice().sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }));
-  }, [selectedDistrict, selectedTaluka]);
+    const rawList = gujaratVillages[selectedDistrict]?.[selectedTaluka] || [];
+    return [...new Set(rawList.map((item) => item.trim()))].sort((a, b) =>
+      (t(a) || a).localeCompare(t(b) || b, undefined, { sensitivity: 'base' })
+    );
+  }, [selectedDistrict, selectedTaluka, t]);
 
   useEffect(() => {
     setValue('subDistrict', '');
@@ -79,9 +91,10 @@ function SellerForm() {
 
   const handlePriceInput = (event) => {
     const value = event.target.value;
-    const digitsOnly = String(value).replace(/[^\d]/g, '');
-    setDisplayPrice(formatIndianNumber(digitsOnly));
-    setValue('priceAmount', digitsOnly, { shouldDirty: true, shouldValidate: true });
+    setDisplayPrice(value);
+    const parsed = parseNaturalIndianPrice(value);
+    const numValue = typeof parsed === 'number' ? String(parsed) : String(value).replace(/[^\d]/g, '');
+    setValue('priceAmount', numValue, { shouldDirty: true, shouldValidate: true });
   };
 
   const submit = (data) => {
@@ -242,18 +255,33 @@ function SellerForm() {
             {errors.village && <p className="error-style">{errors.village.message}</p>}
           </label>
 
-          <label className="block">
+          <div className="block space-y-2">
             <span className="field-label">{t('sellerForm.propertyType')} *</span>
-            <select {...register('type', { required: t('sellerForm.propertyTypeRequired') })} className="field-control w-full">
-              <option value="">{t('sellerForm.selectPropertyType')}</option>
-              {propertyTypeOptions.map((type) => (
-                <option key={type.value} value={type.value}>
-                  {type.label}
-                </option>
-              ))}
-            </select>
+            <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
+              {propertyTypeOptions.map((opt) => {
+                const isSelected = selectedType === opt.value;
+                return (
+                  <button
+                    key={opt.value}
+                    type="button"
+                    onClick={() => {
+                      setValue('type', opt.value, { shouldDirty: true, shouldValidate: true });
+                      clearErrors('type');
+                    }}
+                    className={`flex h-12 w-full items-center justify-center rounded-xl border text-xs font-bold transition ${
+                      isSelected
+                        ? 'border-[#1D5CA9] bg-[#1D5CA9] text-white shadow-sm'
+                        : 'border-slate-200 bg-white text-slate-700 hover:border-[#1D5CA9]/50 hover:bg-slate-50'
+                    }`}
+                  >
+                    {opt.label}
+                  </button>
+                );
+              })}
+            </div>
+            <input type="hidden" {...register('type', { required: t('sellerForm.propertyTypeRequired') })} />
             {errors.type && <p className="error-style">{errors.type.message}</p>}
-          </label>
+          </div>
 
           <label className="block">
             <span className="field-label">{t('sellerForm.priceUnit')} *</span>
@@ -278,9 +306,9 @@ function SellerForm() {
               placeholder={t('sellerForm.pricePlaceholder')}
               inputMode="numeric"
             />
-            {priceValue ? (
+            {priceAmountValue ? (
               <p className="mt-1.5 text-xs font-semibold text-[#1D5CA9]">
-                ≈ {formatIndianPrice(priceValue)}
+                ≈ {formatIndianPrice(priceAmountValue)}
               </p>
             ) : null}
             {errors.priceAmount && <p className="error-style">{errors.priceAmount.message}</p>}

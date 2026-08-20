@@ -6,13 +6,21 @@ const normalizeLocationData = (data) => {
   const normalized = {};
 
   Object.entries(data || {}).forEach(([district, talukas]) => {
-    normalized[district] = {};
+    const cleanDistrict = district.trim();
+    if (!normalized[cleanDistrict]) {
+      normalized[cleanDistrict] = {};
+    }
+
     Object.entries(talukas || {}).forEach(([taluka, villages]) => {
-      const normalizedVillages = [...new Set((villages || []).map((village) => village.trim()).filter(Boolean))]
+      const cleanTaluka = taluka.trim();
+      const normalizedVillages = [...new Set((villages || []).map((v) => (v ? String(v).trim() : '')).filter(Boolean))]
         .sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }));
-      normalized[district][taluka] = normalizedVillages;
-      if (taluka === 'Bansda' && !normalized[district]['Vansda']) {
-        normalized[district]['Vansda'] = normalizedVillages;
+
+      if (!normalized[cleanDistrict][cleanTaluka]) {
+        normalized[cleanDistrict][cleanTaluka] = normalizedVillages;
+      } else {
+        normalized[cleanDistrict][cleanTaluka] = [...new Set([...normalized[cleanDistrict][cleanTaluka], ...normalizedVillages])]
+          .sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }));
       }
     });
   });

@@ -85,6 +85,8 @@ export const translations = {
       oldest: 'Oldest',
       priceLowToHigh: 'Price: Low to High',
       priceHighToLow: 'Price: High to Low',
+      areaLowToHigh: 'Area: Small to Large',
+      areaHighToLow: 'Area: Large to Small',
       available: 'Available',
       sold: 'Sold',
       unavailable: 'Unavailable',
@@ -114,6 +116,8 @@ export const translations = {
         buyLandDesc: 'Browse verified land listings',
         sellLand: 'Sell Land',
         sellLandDesc: 'List your land with confidence',
+        buyListing: 'Buy Listing',
+        sellListing: 'Sell Listing',
         marketplace: 'Premium Land Marketplace',
         verified: 'Verified listings, local context, and transparent land details.',
         curated: 'Curated opportunities for agricultural and non-agricultural land investors.',
@@ -725,6 +729,8 @@ export const translations = {
       oldest: 'જૂનું',
       priceLowToHigh: 'કિંમત: ઓછી થી વધુ',
       priceHighToLow: 'કિંમત: વધુ થી ઓછી',
+      areaLowToHigh: 'વિસ્તાર: નાનું થી મોટું',
+      areaHighToLow: 'વિસ્તાર: મોટું થી નાનું',
       available: 'ઉપલબ્ધ',
       sold: 'વેચાયેલ',
       unavailable: 'ઉપલબ્ધ નથી',
@@ -748,6 +754,8 @@ export const translations = {
         buyLandDesc: 'ચકાસેલી જમીનની યાદીઓ જુઓ',
         sellLand: 'જમીન વેચો',
         sellLandDesc: 'વિશ્વાસ સાથે તમારી જમીન લિસ્ટ કરો',
+        buyListing: 'જમીન ખરીદો',
+        sellListing: 'જમીન વેચો',
         browse: 'પ્રોપર્ટી જુઓ',
       },
       heroTitle: 'ગુજરાતનું વિશ્વસનીય કૃષિ અને બિન-કૃષિ જમીન માર્કેટપ્લેસ',
@@ -1451,6 +1459,23 @@ const dropdownTranslations = {
 addMissingTranslations(translations.en, dropdownTranslations.en);
 addMissingTranslations(translations.gu, dropdownTranslations.gu);
 
+const sellListingsHeroTranslations = {
+  en: {
+    home: {
+      sellListingsTitle: 'Properties for Sale',
+      sellListingsDescription: 'Browse Agricultural and Non-Agricultural Land available for sale across Gujarat. Search by location, property type and price.',
+    },
+  },
+  gu: {
+    home: {
+      sellListingsTitle: 'વેચાણ માટેની મિલકતો',
+      sellListingsDescription: 'સમગ્ર ગુજરાતમાં વેચાણ માટે ઉપલબ્ધ કૃષિ અને બિન-કૃષિ જમીન બ્રાઉઝ કરો. સ્થાન, જમીનના પ્રકાર અને કિંમત દ્વારા શોધો.',
+    },
+  },
+};
+addMissingTranslations(translations.en, sellListingsHeroTranslations.en);
+addMissingTranslations(translations.gu, sellListingsHeroTranslations.gu);
+
 const missingKeysFix = {
   en: {
     home: {
@@ -1784,6 +1809,23 @@ export const locationTranslationsGu = {
   'Acres': 'એકર',
   'Vigha': 'વીઘા',
 };
+
+// Populate Gujarati translations map with district, taluka, and village names
+if (locationTranslationsGu && typeof locationTranslationsGu === 'object') {
+  Object.entries(locationTranslationsGu).forEach(([key, val]) => {
+    if (key && val && typeof val === 'string') {
+      translations.gu[key.trim()] = val.trim();
+    }
+  });
+}
+
+if (generatedVillageTranslations && typeof generatedVillageTranslations === 'object') {
+  Object.entries(generatedVillageTranslations).forEach(([key, val]) => {
+    if (key && val && typeof val === 'string' && !translations.gu[key.trim()]) {
+      translations.gu[key.trim()] = val.trim();
+    }
+  });
+}
 
 export const propertyTitleTranslationsGu = {
   'Mango Farm': 'કેરીનું ખેતર',
