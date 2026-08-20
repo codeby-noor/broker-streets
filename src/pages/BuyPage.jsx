@@ -31,7 +31,7 @@ function BuyPage() {
   const [selectedVillage, setSelectedVillage] = useState(t('buy.allVillages') || 'All villages');
   const [type, setType] = useState(t('buy.allTypes') || 'All types');
   const [showSoldProperties, setShowSoldProperties] = useState(false);
-  const [sort, setSort] = useState('relevance');
+  const [sort, setSort] = useState('newest');
   const [page, setPage] = useState(1);
   const [mobileFilters, setMobileFilters] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -137,10 +137,6 @@ function BuyPage() {
       return matchesSearch && matchesDistrict && matchesTaluka && matchesVillage && matchesType && matchesBudget && matchesStatus;
     });
 
-    if (sort === 'newest') {
-      return [...result].sort((a, b) => new Date(b.updatedAt || b.createdAt || b.submittedAt || b.uploadedDate || 0) - new Date(a.updatedAt || a.createdAt || a.submittedAt || a.uploadedDate || 0));
-    }
-
     if (sort === 'oldest') {
       return [...result].sort((a, b) => new Date(a.updatedAt || a.createdAt || a.submittedAt || a.uploadedDate || 0) - new Date(b.updatedAt || b.createdAt || b.submittedAt || b.uploadedDate || 0));
     }
@@ -153,15 +149,8 @@ function BuyPage() {
       return [...result].sort((a, b) => priceNumber(b.priceAmount || b.price) - priceNumber(a.priceAmount || a.price));
     }
 
-    if (sort === 'area_asc') {
-      return [...result].sort((a, b) => landSizeInSqFt(a.landArea || a.area) - landSizeInSqFt(b.landArea || b.area));
-    }
-
-    if (sort === 'area_desc') {
-      return [...result].sort((a, b) => landSizeInSqFt(b.landArea || b.area) - landSizeInSqFt(a.landArea || a.area));
-    }
-
-    return result;
+    // Default: newest
+    return [...result].sort((a, b) => new Date(b.updatedAt || b.createdAt || b.submittedAt || b.uploadedDate || 0) - new Date(a.updatedAt || a.createdAt || a.submittedAt || a.uploadedDate || 0));
   }, [listings, query, selectedDistrict, selectedTaluka, selectedVillage, type, priceRange, showSoldProperties, sort]);
 
   const pageCount = Math.max(1, Math.ceil(filtered.length / perPage));
@@ -181,7 +170,7 @@ function BuyPage() {
     setType('All types');
     setPriceRange([MIN_PRICE, MAX_PRICE]);
     setShowSoldProperties(false);
-    setSort('relevance');
+    setSort('newest');
     setPage(1);
   };
 
@@ -389,13 +378,10 @@ function BuyPage() {
                   onChange={change(setSort)}
                   className="bg-transparent pr-6 text-xs font-bold text-slate-800 outline-none cursor-pointer"
                 >
-                  <option value="relevance">{t('dropdown.relevance')}</option>
                   <option value="newest">{t('dropdown.newest')}</option>
                   <option value="oldest">{t('dropdown.oldest')}</option>
                   <option value="price_asc">{t('dropdown.priceLowToHigh')}</option>
                   <option value="price_desc">{t('dropdown.priceHighToLow')}</option>
-                  <option value="area_asc">{t('dropdown.areaLowToHigh')}</option>
-                  <option value="area_desc">{t('dropdown.areaHighToLow')}</option>
                 </select>
                 <ChevronDown size={14} className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-slate-500" />
               </div>

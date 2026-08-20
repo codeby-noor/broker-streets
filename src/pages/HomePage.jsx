@@ -175,7 +175,7 @@ function HomePage() {
           </div>
         </section>
 
-        {/* PROMINENT HERO ACTION BAR: BUY LISTING & SELL LISTING */}
+        {/* PROMINENT HERO ACTION BAR: VIEW ALL BUY LISTINGS & VIEW ALL SELL LISTINGS */}
         <section className="rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm sm:p-5">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
             <button
@@ -183,7 +183,7 @@ function HomePage() {
               onClick={() => navigate('/buy')}
               className="inline-flex min-h-[50px] items-center justify-center gap-2.5 rounded-xl bg-[#1D5CA9] px-6 py-3.5 text-base font-bold text-white shadow-md transition hover:bg-[#1D5CA9]/90 active:scale-[0.99]"
             >
-              <span>{t('home.hero.buyListing')}</span>
+              <span>{t('home.viewAllBuyListings')}</span>
               <ArrowRight size={18} />
             </button>
             <button
@@ -191,7 +191,7 @@ function HomePage() {
               onClick={() => navigate('/sell-listings')}
               className="inline-flex min-h-[50px] items-center justify-center gap-2.5 rounded-xl border-2 border-[#1D5CA9] bg-[#FDFDFD] px-6 py-3.5 text-base font-bold text-[#1D5CA9] shadow-sm transition hover:bg-[#1D5CA9]/10 active:scale-[0.99]"
             >
-              <span>{t('home.hero.sellListing')}</span>
+              <span>{t('home.viewAllSellListings')}</span>
               <ArrowRight size={18} />
             </button>
           </div>

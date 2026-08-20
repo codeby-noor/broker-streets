@@ -1102,6 +1102,8 @@ const batchTwoTranslations = {
       directContactTitle: 'Direct Contact', directContactDescription: 'Speak directly with sellers and verified buyers.', explore: 'Explore', featured: 'Featured', featuredTitle: 'Featured Land Opportunities',
       featuredDescriptionLong: 'Hand-picked agricultural and non-agricultural land with verified details.',
       hero: { browse: 'Browse Properties', buyLand: 'Buy Land', buyLandDesc: 'Browse verified land listings', curated: 'Curated opportunities for agricultural and non-agricultural land investors.', description: 'Discover verified farmland, investment plots, and non-agricultural land across Surat, Navsari, and Gujarat. Buy and sell with confidence.', eyebrow: 'Invest in land. Invest in the future.', marketplace: 'Premium Land Marketplace', postLand: 'Post Your Land' },
+      viewAllBuyListings: 'View All Buy Listings',
+      viewAllSellListings: 'View All Sell Listings',
     },
   },
   gu: {
@@ -1113,6 +1115,8 @@ const batchTwoTranslations = {
       directContactTitle: 'સીધો સંપર્ક', directContactDescription: 'વેચનાર અને ચકાસેલા ખરીદદારો સાથે સીધી વાત કરો.', explore: 'શોધો', featured: 'વિશેષ', featuredTitle: 'વિશેષ જમીન તકો',
       featuredDescriptionLong: 'ચકાસેલી વિગતો સાથે પસંદ કરેલી કૃષિ અને બિન-કૃષિ જમીન.',
       hero: { browse: 'પ્રોપર્ટીઓ જુઓ', buyLand: 'જમીન ખરીદો', buyLandDesc: 'ચકાસેલી જમીન લિસ્ટિંગ જુઓ', curated: 'કૃષિ અને બિન-કૃષિ જમીન રોકાણકારો માટે પસંદ કરેલી તકો.', description: 'સુરત, નવસારી અને ગુજરાતભરમાં ચકાસેલી ખેતીની જમીન, રોકાણ પ્લોટ અને બિન-કૃષિ જમીન શોધો. વિશ્વાસ સાથે ખરીદો અને વેચો.', eyebrow: 'જમીનમાં રોકાણ કરો. ભવિષ્યમાં રોકાણ કરો.', marketplace: 'પ્રિમિયમ જમીન માર્કેટપ્લેસ', postLand: 'તમારી જમીન લિસ્ટ કરો' },
+      viewAllBuyListings: 'બધી ખરીદ લિસ્ટિંગ જુઓ',
+      viewAllSellListings: 'બધી વેચાણ લિસ્ટિંગ જુઓ',
     },
   },
 };

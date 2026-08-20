@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Search, Filter, ChevronDown } from 'lucide-react';
-import { sampleProperties, gujaratDistricts } from '../utils/data';
+import { Search, ChevronDown } from 'lucide-react';
+import { sampleProperties } from '../utils/data';
 import { onListingsChanged, readStorage, STORAGE_KEYS } from '../utils/storage';
 import Pagination from '../components/Pagination';
 import ContactModal from '../components/ContactModal';
@@ -12,8 +12,6 @@ const priceNumber = (value) => Number(String(value || '').replace(/[^0-9]/g, '')
 function SellListingsPage() {
   const { t } = useLanguage();
   const [query, setQuery] = useState('');
-  const [selectedType, setSelectedType] = useState('All types');
-  const [selectedDistrict, setSelectedDistrict] = useState('All districts');
   const [sort, setSort] = useState('newest');
   const [page, setPage] = useState(1);
   const [contactModal, setContactModal] = useState(null);
@@ -28,7 +26,6 @@ function SellListingsPage() {
   });
 
   const perPage = 9;
-  const districtOptions = ['All districts', ...gujaratDistricts];
 
   useEffect(() => {
     const stored = readStorage(STORAGE_KEYS.listings, []);
@@ -55,19 +52,21 @@ function SellListingsPage() {
     const normalized = query.trim().toLowerCase();
 
     const result = listings.filter((property) => {
-      const searchText = `${property.title || ''} ${property.city || ''} ${property.location || ''} ${property.district || ''} ${property.type || property.propertyType || ''}`.toLowerCase();
+      const titleText = property.title || property.name || '';
+      const villageText = property.village || '';
+      const talukaText = property.subDistrict || property.taluka || '';
+      const districtText = property.district || property.city || property.location || '';
+      const searchText = `${titleText} ${villageText} ${talukaText} ${districtText}`.toLowerCase();
+
       const matchesSearch = !normalized || searchText.includes(normalized);
-      const matchesDistrict = selectedDistrict === 'All districts' || property.district === selectedDistrict || property.location === selectedDistrict || property.city === selectedDistrict;
-      const rawType = property.type || property.propertyType || '';
-      const matchesType = selectedType === 'All types' || rawType === selectedType;
       const isSold = String(property.status || 'Available').toLowerCase() === 'sold';
       const isUnavailable = String(property.status || 'Available').toLowerCase() === 'unavailable';
 
-      return matchesSearch && matchesDistrict && matchesType && !isSold && !isUnavailable;
+      return matchesSearch && !isSold && !isUnavailable;
     });
 
-    if (sort === 'newest') {
-      return [...result].sort((a, b) => new Date(b.updatedAt || b.createdAt || b.submittedAt || b.uploadedDate || 0) - new Date(a.updatedAt || a.createdAt || a.submittedAt || a.uploadedDate || 0));
+    if (sort === 'oldest') {
+      return [...result].sort((a, b) => new Date(a.updatedAt || a.createdAt || a.submittedAt || a.uploadedDate || 0) - new Date(b.updatedAt || b.createdAt || b.submittedAt || b.uploadedDate || 0));
     }
     if (sort === 'price_asc') {
       return [...result].sort((a, b) => priceNumber(a.priceAmount || a.price) - priceNumber(b.priceAmount || b.price));
@@ -76,8 +75,9 @@ function SellListingsPage() {
       return [...result].sort((a, b) => priceNumber(b.priceAmount || b.price) - priceNumber(a.priceAmount || a.price));
     }
 
-    return result;
-  }, [listings, query, selectedDistrict, selectedType, sort]);
+    // Default: newest
+    return [...result].sort((a, b) => new Date(b.updatedAt || b.createdAt || b.submittedAt || b.uploadedDate || 0) - new Date(a.updatedAt || a.createdAt || a.submittedAt || a.uploadedDate || 0));
+  }, [listings, query, sort]);
 
   const pageCount = Math.max(1, Math.ceil(filtered.length / perPage));
   const activePage = Math.min(page, pageCount);
@@ -100,58 +100,44 @@ function SellListingsPage() {
 
       {/* MAIN CONTENT AREA */}
       <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
-        {/* FILTER & SEARCH BAR */}
+        {/* TOP SEARCH & UNIFIED SORT BAR — EXACTLY MATCHING BUY PAGE */}
         <div className="mb-6 rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm">
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            <div className="relative col-span-full lg:col-span-1">
-              <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            {/* Search Input */}
+            <div className="relative flex-1">
+              <Search size={17} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
               <input
+                aria-label={t('buy.searchTitle')}
                 value={query}
                 onChange={(e) => { setQuery(e.target.value); setPage(1); }}
-                placeholder={t('common.search')}
-                className="w-full rounded-xl border border-slate-200 bg-slate-50/60 pl-9 pr-3 py-2 text-xs font-medium text-slate-800 outline-none transition focus:border-[#1D5CA9] focus:bg-white"
+                placeholder={t('buy.searchAll')}
+                className="w-full rounded-xl border border-slate-200 bg-slate-50/60 pl-10 pr-4 py-2.5 text-xs sm:text-sm font-medium text-slate-800 outline-none transition focus:border-[#1D5CA9] focus:bg-white"
               />
             </div>
 
-            <select
-              value={selectedType}
-              onChange={(e) => { setSelectedType(e.target.value); setPage(1); }}
-              className="rounded-xl border border-slate-200 bg-slate-50/60 px-3 py-2 text-xs font-medium text-slate-800 outline-none focus:border-[#1D5CA9]"
-            >
-              <option value="All types">{t('buy.allTypes')}</option>
-              <option value="Agricultural Land">{t('buyerForm.agriculturalLand')}</option>
-              <option value="Non-Agricultural Land">{t('buyerForm.nonAgriculturalLand')}</option>
-            </select>
+            <div className="flex flex-wrap items-center gap-3">
+              {/* SINGLE UNIFIED SORT BY DROPDOWN */}
+              <div className="relative flex min-h-[42px] items-center rounded-xl border border-slate-200 bg-slate-50/80 px-3 py-1.5 transition hover:bg-slate-100">
+                <span className="mr-2 text-xs font-bold uppercase tracking-wider text-slate-500 hidden sm:inline">{t('buy.sortBy')}:</span>
+                <select
+                  value={sort}
+                  onChange={(e) => { setSort(e.target.value); setPage(1); }}
+                  className="bg-transparent pr-6 text-xs font-bold text-slate-800 outline-none cursor-pointer"
+                >
+                  <option value="newest">{t('dropdown.newest')}</option>
+                  <option value="oldest">{t('dropdown.oldest')}</option>
+                  <option value="price_asc">{t('dropdown.priceLowToHigh')}</option>
+                  <option value="price_desc">{t('dropdown.priceHighToLow')}</option>
+                </select>
+                <ChevronDown size={14} className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-slate-500" />
+              </div>
 
-            <select
-              value={selectedDistrict}
-              onChange={(e) => { setSelectedDistrict(e.target.value); setPage(1); }}
-              className="rounded-xl border border-slate-200 bg-slate-50/60 px-3 py-2 text-xs font-medium text-slate-800 outline-none focus:border-[#1D5CA9]"
-            >
-              {districtOptions.map((district) => (
-                <option key={district} value={district}>
-                  {district === 'All districts' ? t('buy.allDistricts') : t(district)}
-                </option>
-              ))}
-            </select>
-
-            <select
-              value={sort}
-              onChange={(e) => setSort(e.target.value)}
-              className="rounded-xl border border-slate-200 bg-slate-50/60 px-3 py-2 text-xs font-medium text-slate-800 outline-none focus:border-[#1D5CA9]"
-            >
-              <option value="newest">{t('dropdown.newest')}</option>
-              <option value="price_asc">{t('dropdown.priceLowToHigh')}</option>
-              <option value="price_desc">{t('dropdown.priceHighToLow')}</option>
-            </select>
+              {/* Matching Property Count */}
+              <span className="rounded-xl bg-[#1D5CA9]/10 px-3 py-2 text-xs font-bold text-[#1D5CA9]">
+                {filtered.length} {t('buy.propertyResultLabel')}
+              </span>
+            </div>
           </div>
-        </div>
-
-        {/* RESULTS HEADER */}
-        <div className="mb-4 flex items-center justify-between">
-          <p className="text-xs font-bold text-slate-700">
-            {filtered.length} {t('buy.matchingProperties') || 'Properties Found'}
-          </p>
         </div>
 
         {/* PROPERTIES GRID */}
