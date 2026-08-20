@@ -740,7 +740,7 @@ function AddPropertyPage() {
       location: form.district,
       city: form.district,
       address: [form.village, form.taluka, form.district, 'Gujarat'].filter(Boolean).join(', '),
-      price: form.priceAmount ? formatPrice(form.priceAmount) : t('admin.priceOnRequest'),
+      price: form.priceAmount ? (Number(form.priceAmount) || form.priceAmount) : t('admin.priceOnRequest'),
       priceAmount: form.priceAmount,
       priceUnit: form.priceUnit,
       landArea: form.area,

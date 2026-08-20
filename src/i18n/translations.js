@@ -598,7 +598,7 @@ export const translations = {
       listingPolicy: 'Listing Policy',
       about: 'About',
       contact: 'Contact',
-      description: 'Broker Streets helps people buy and sell property with a simple, trustworthy experience.',
+      description: "Gujarat's Land Marketplace.",
     },
     contact: {
       title: 'Contact Us',
@@ -982,7 +982,7 @@ export const translations = {
       listingPolicy: 'લિસ્ટિંગ નીતિ',
       about: 'અમારા વિશે',
       contact: 'સંપર્ક',
-      description: 'બ્રોકર સ્ટ્રીટ્સ લોકોને સાદા અને વિશ્વાસપાત્ર અનુભવ સાથે પ્રોપર્ટી ખરીદી અને વેચાણ કરવામાં મદદ કરે છે.',
+      description: 'ગુજરાતનું લેન્ડ માર્કેટપ્લેસ.',
     }, contact: {
       title: 'સંપર્ક કરો',
       modalTitle: 'વેચનારનો સંપર્ક કરો',

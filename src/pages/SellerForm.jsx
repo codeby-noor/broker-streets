@@ -118,7 +118,7 @@ function SellerForm() {
       location: data.district || '',
       city: data.district || '',
       address: [data.village || '', data.subDistrict || '', data.district || '', 'Gujarat'].filter(Boolean).join(', '),
-      price: priceValue ? formatIndianPrice(priceValue) : 'Price on request',
+      price: priceValue ? (Number(priceValue) || String(priceValue)) : 'Price on request',
       priceAmount: priceValue ? String(priceValue) : '',
       priceUnit: data.priceUnit || '',
       landArea: data.additionalDetails || 'Area not specified',
@@ -278,6 +278,11 @@ function SellerForm() {
               placeholder={t('sellerForm.pricePlaceholder')}
               inputMode="numeric"
             />
+            {priceValue ? (
+              <p className="mt-1.5 text-xs font-semibold text-[#1D5CA9]">
+                ≈ {formatIndianPrice(priceValue)}
+              </p>
+            ) : null}
             {errors.priceAmount && <p className="error-style">{errors.priceAmount.message}</p>}
           </label>
 

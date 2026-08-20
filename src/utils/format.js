@@ -1,32 +1,86 @@
 /**
- * Shared price formatting utilities for Broker Streets.
- * All price displays should use these helpers to ensure consistent
- * Indian numbering format (₹1,00,000 / ₹12,50,000 / ₹1,25,00,000).
+ * Format a numeric value as Indian real-estate currency (Thousand, Lakh, Cr).
+ *
+ * Test cases:
+ * - 1500 -> ₹1,500
+ * - 25000 -> ₹25,000
+ * - 99999 -> ₹99,999
+ * - 100000 -> ₹1 Lakh
+ * - 125000 -> ₹1.25 Lakh
+ * - 150000 -> ₹1.5 Lakh
+ * - 250000 -> ₹2.5 Lakh
+ * - 500000 -> ₹5 Lakh
+ * - 1000000 -> ₹10 Lakh
+ * - 2500000 -> ₹25 Lakh
+ * - 8900000 -> ₹89 Lakh
+ * - 10000000 -> ₹1 Cr
+ * - 12500000 -> ₹1.25 Cr
+ * - 15000000 -> ₹1.5 Cr
+ * - 25000000 -> ₹2.5 Cr
+ * - 50000000 -> ₹5 Cr
+ * - 100000000 -> ₹10 Cr
+ *
+ * @param {number|string} value - Raw numeric or string price value
+ * @returns {string} Formatted real-estate price string
  */
+export function formatIndianRealEstatePrice(value) {
+  if (value === undefined || value === null || value === '') return '—';
+  
+  const strVal = String(value).trim();
+  
+  // Handle request/custom labels
+  if (/request|not specified|^—$/i.test(strVal)) {
+    return strVal;
+  }
+
+  // Handle strings that already have Lakh / Cr formatting
+  if (/lakh|lac/i.test(strVal)) {
+    const clean = strVal.replace(/^₹\s*/, '').trim();
+    return `₹${clean}`;
+  }
+  if (/cr|crore/i.test(strVal)) {
+    const clean = strVal.replace(/^₹\s*/, '').trim();
+    return `₹${clean}`;
+  }
+
+  // Parse numeric value from string (handling commas like "12,50,000" or "₹12,50,000")
+  const numericOnly = strVal.replace(/[^\d.]/g, '');
+  if (!numericOnly || isNaN(Number(numericOnly))) {
+    return strVal || '—';
+  }
+  
+  const num = Number(numericOnly);
+  if (isNaN(num) || num <= 0) {
+    if (strVal === '0' || num === 0) return '₹0';
+    return strVal || '—';
+  }
+
+  // Formatting tiers:
+  // Tier 1: Below 1 Lakh (< 100000) -> Comma formatted (e.g. ₹1,500, ₹25,000)
+  if (num < 100000) {
+    return `₹${num.toLocaleString('en-IN')}`;
+  }
+
+  // Tier 2: 1 Lakh to < 1 Cr (100000 to 9999999) -> Lakh (e.g. ₹1 Lakh, ₹1.25 Lakh, ₹25 Lakh)
+  if (num < 10000000) {
+    const lakhs = num / 100000;
+    const formattedLakhs = parseFloat(lakhs.toFixed(2)).toString();
+    return `₹${formattedLakhs} Lakh`;
+  }
+
+  // Tier 3: 1 Cr and above (>= 10000000) -> Cr (e.g. ₹1 Cr, ₹1.25 Cr, ₹10 Cr)
+  const crores = num / 10000000;
+  const formattedCrores = parseFloat(crores.toFixed(2)).toString();
+  return `₹${formattedCrores} Cr`;
+}
 
 /**
- * Format a numeric value as Indian currency.
+ * Format a numeric value as Indian real-estate currency (Delegate to formatIndianRealEstatePrice).
  * @param {number|string} value - The price value
- * @returns {string} Formatted price with ₹ symbol and Indian grouping
+ * @returns {string} Formatted price
  */
 export function formatIndianPrice(value) {
-    if (value === undefined || value === null || value === '') return '';
-    const strVal = String(value).trim();
-    if (strVal === 'Price on request' || strVal === 'Price not specified' || strVal === '—' || strVal.toLowerCase().includes('request')) {
-        return strVal;
-    }
-    if (/lakh|lac|cr|crore/i.test(strVal)) {
-        const cleanText = strVal.replace(/^₹\s*/, '');
-        return `₹${cleanText}`;
-    }
-    const digitsOnly = strVal.replace(/[^\d.]/g, '');
-    if (!digitsOnly || isNaN(Number(digitsOnly))) {
-        return strVal;
-    }
-    const num = Number(digitsOnly);
-    if (num === 0 && strVal !== '0') return strVal;
-    const formattedNum = num.toLocaleString('en-IN');
-    return `₹${formattedNum}`;
+  return formatIndianRealEstatePrice(value);
 }
 
 /**
