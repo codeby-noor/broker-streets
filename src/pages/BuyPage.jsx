@@ -11,7 +11,23 @@ import SectionHeading from '../components/SectionHeading';
 import { useLanguage } from '../i18n/LanguageContext';
 import { formatIndianPrice } from '../utils/format';
 
-const priceNumber = (value) => Number(String(value || '').replace(/[^0-9]/g, '')) || 0;
+const priceNumber = (value) => {
+  if (value === undefined || value === null || value === '') return 0;
+  if (typeof value === 'number') return isNaN(value) ? 0 : value;
+  const str = String(value).trim();
+  if (/lakh|lac/i.test(str)) {
+    const num = parseFloat(str.replace(/[^0-9.]/g, ''));
+    return isNaN(num) ? 0 : Math.round(num * 100000);
+  }
+  if (/cr|crore/i.test(str)) {
+    const num = parseFloat(str.replace(/[^0-9.]/g, ''));
+    return isNaN(num) ? 0 : Math.round(num * 10000000);
+  }
+  const digitsOnly = str.replace(/[^0-9]/g, '');
+  if (!digitsOnly) return 0;
+  const parsed = parseInt(digitsOnly, 10);
+  return isNaN(parsed) ? 0 : parsed;
+};
 const landSizeInSqFt = (value) => {
   const normalized = String(value || '').toLowerCase().trim();
   if (!normalized) return 0;
@@ -345,49 +361,49 @@ function BuyPage() {
         )}
 
         {/* TOP SEARCH & UNIFIED SORT BAR */}
-        <div className="mb-6 rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mb-6 rounded-2xl border border-slate-200/80 bg-white p-3.5 sm:p-4 shadow-sm">
+          <div className="flex flex-col gap-2.5 sm:gap-3 lg:flex-row lg:items-center">
             {/* Search Input */}
-            <div className="relative flex-1">
-              <Search size={17} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+            <div className="relative flex-1 min-w-0">
+              <Search size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
               <input
                 aria-label={t('buy.searchTitle')}
                 value={query}
                 onChange={change(setQuery)}
                 placeholder={t('buy.searchAll')}
-                className="w-full rounded-xl border border-slate-200 bg-slate-50/60 pl-10 pr-4 py-2.5 text-xs sm:text-sm font-medium text-slate-800 outline-none transition focus:border-[#1D5CA9] focus:bg-white"
+                className="w-full h-11 sm:h-12 rounded-xl border border-slate-200 bg-slate-50/60 pl-10 pr-4 text-xs sm:text-sm font-medium text-slate-800 outline-none transition focus:border-[#1D5CA9] focus:bg-white"
               />
             </div>
 
-            <div className="flex flex-wrap items-center gap-3">
+            <div className="flex flex-wrap items-center gap-2.5 sm:gap-3 shrink-0">
               {/* Mobile Filter Button */}
               <button
                 type="button"
                 onClick={() => setMobileFilters(true)}
-                className="inline-flex min-h-[42px] items-center justify-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-4 py-2 text-xs font-bold text-slate-800 transition hover:bg-slate-100 lg:hidden"
+                className="inline-flex h-11 sm:h-12 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-4 text-xs font-bold text-slate-800 transition hover:bg-slate-100 lg:hidden"
               >
                 <SlidersHorizontal size={15} className="text-[#1D5CA9]" />
                 <span>{t('buy.filterButton')}</span>
               </button>
 
-              {/* SINGLE UNIFIED SORT BY DROPDOWN */}
-              <div className="relative flex min-h-[42px] items-center rounded-xl border border-slate-200 bg-slate-50/80 px-3 py-1.5 transition hover:bg-slate-100">
-                <span className="mr-2 text-xs font-bold uppercase tracking-wider text-slate-500 hidden sm:inline">{t('buy.sortBy')}:</span>
+              {/* STANDALONE SORT CONTROL */}
+              <div className="relative flex h-11 sm:h-12 items-center rounded-xl border border-slate-200 bg-white text-xs font-bold text-slate-800 shadow-2xs transition hover:border-[#1D5CA9]/50 focus-within:border-[#1D5CA9] focus-within:ring-1 focus-within:ring-[#1D5CA9] lg:w-[210px]">
+                <span className="pl-3.5 shrink-0 text-xs font-bold text-slate-500">{t('buy.sortBy')}:</span>
                 <select
                   value={sort}
                   onChange={change(setSort)}
-                  className="bg-transparent pr-6 text-xs font-bold text-slate-800 outline-none cursor-pointer"
+                  className="w-full appearance-none border-0 bg-transparent pl-1.5 pr-10 text-xs font-bold text-slate-800 outline-none focus:outline-none focus:ring-0 cursor-pointer"
                 >
                   <option value="newest">{t('dropdown.newest')}</option>
                   <option value="oldest">{t('dropdown.oldest')}</option>
                   <option value="price_asc">{t('dropdown.priceLowToHigh')}</option>
                   <option value="price_desc">{t('dropdown.priceHighToLow')}</option>
                 </select>
-                <ChevronDown size={14} className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-slate-500" />
+                <ChevronDown size={15} className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-500 shrink-0" />
               </div>
 
               {/* Matching Property Count */}
-              <span className="rounded-xl bg-[#1D5CA9]/10 px-3 py-2 text-xs font-bold text-[#1D5CA9]">
+              <span className="inline-flex h-11 sm:h-12 items-center justify-center rounded-xl bg-[#1D5CA9]/10 px-4 text-xs font-bold text-[#1D5CA9] whitespace-nowrap">
                 {filtered.length} {t('buy.propertyResultLabel')}
               </span>
             </div>

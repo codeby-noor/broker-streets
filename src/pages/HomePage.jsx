@@ -15,6 +15,9 @@ import {
   Calculator,
   Compass,
   Scale,
+  Download,
+  FileCheck,
+  FileSpreadsheet,
   ChevronDown,
   MessageSquare,
 } from 'lucide-react';
@@ -27,25 +30,116 @@ import PropertyCard from '../components/PropertyCard';
 import { useLanguage } from '../i18n/LanguageContext';
 
 const governmentLinks = [
-  { id: 1, titleKey: 'home.govLandRecords', icon: FileText, url: 'https://anyror.gujarat.gov.in/' },
-  { id: 2, titleKey: 'home.govPropertyCard', icon: Building2, url: 'https://e-milkat.gujarat.gov.in/' },
-  { id: 3, titleKey: 'home.govRegistration', icon: ScrollText, url: 'https://garvi.gujarat.gov.in/' },
-  { id: 4, titleKey: 'home.govJantri', icon: Calculator, url: 'https://garvi.gujarat.gov.in/ViewJantri_New.aspx' },
-  { id: 5, titleKey: 'home.govRevenueServices', icon: Landmark, url: 'https://iora.gujarat.gov.in/' },
-  { id: 6, titleKey: 'home.govRevenueCases', icon: Scale, url: 'https://ircms.gujarat.gov.in/' },
-  { id: 7, titleKey: 'home.govEDhara', icon: Compass, url: 'https://revenuedepartment.gujarat.gov.in/e-dhara-forms' },
-  { id: 8, titleKey: 'home.govRevenueDepartment', icon: ShieldCheck, url: 'https://revenuedepartment.gujarat.gov.in/' },
-];
-
-const govCardThemes = [
-  { iconBg: 'bg-primary/10 text-primary', border: 'border-slate-200/70 hover:border-primary/40', from: 'from-slate-50', to: 'to-white', ring: 'hover:ring-primary/20' },
-  { iconBg: 'bg-primary/10 text-primary', border: 'border-slate-200/70 hover:border-primary/40', from: 'from-slate-50', to: 'to-white', ring: 'hover:ring-primary/20' },
-  { iconBg: 'bg-primary/10 text-primary', border: 'border-slate-200/70 hover:border-primary/40', from: 'from-slate-50', to: 'to-white', ring: 'hover:ring-primary/20' },
-  { iconBg: 'bg-primary/10 text-primary', border: 'border-slate-200/70 hover:border-primary/40', from: 'from-slate-50', to: 'to-white', ring: 'hover:ring-primary/20' },
-  { iconBg: 'bg-primary/10 text-primary', border: 'border-slate-200/70 hover:border-primary/40', from: 'from-slate-50', to: 'to-white', ring: 'hover:ring-primary/20' },
-  { iconBg: 'bg-primary/10 text-primary', border: 'border-slate-200/70 hover:border-primary/40', from: 'from-slate-50', to: 'to-white', ring: 'hover:ring-primary/20' },
-  { iconBg: 'bg-primary/10 text-primary', border: 'border-slate-200/70 hover:border-primary/40', from: 'from-slate-50', to: 'to-white', ring: 'hover:ring-primary/20' },
-  { iconBg: 'bg-primary/10 text-primary', border: 'border-slate-200/70 hover:border-primary/40', from: 'from-slate-50', to: 'to-white', ring: 'hover:ring-primary/20' },
+  {
+    id: 1,
+    titleKey: 'home.govDastavejDownload',
+    icon: FileText,
+    url: 'https://garvi.gujarat.gov.in/FrmViewUploadedScanDocumentsforCitizen_New.aspx',
+    iconBg: 'bg-blue-50 text-blue-600 border border-blue-200/80 group-hover:bg-blue-600 group-hover:text-white',
+    border: 'border-slate-200/80 hover:border-blue-500/60 hover:shadow-blue-500/10',
+    from: 'from-blue-50/40',
+    to: 'to-white',
+    titleHover: 'group-hover:text-blue-600',
+  },
+  {
+    id: 2,
+    titleKey: 'home.govPropertyCard',
+    icon: Building2,
+    url: 'https://e-milkat.gujarat.gov.in/GeneralReport.aspx',
+    iconBg: 'bg-emerald-50 text-emerald-600 border border-emerald-200/80 group-hover:bg-emerald-600 group-hover:text-white',
+    border: 'border-slate-200/80 hover:border-emerald-500/60 hover:shadow-emerald-500/10',
+    from: 'from-emerald-50/40',
+    to: 'to-white',
+    titleHover: 'group-hover:text-emerald-600',
+  },
+  {
+    id: 3,
+    titleKey: 'home.gov712Entry',
+    icon: ScrollText,
+    url: 'https://anyror.gujarat.gov.in/LandRecordRural.aspx',
+    iconBg: 'bg-amber-50 text-amber-600 border border-amber-200/80 group-hover:bg-amber-600 group-hover:text-white',
+    border: 'border-slate-200/80 hover:border-amber-500/60 hover:shadow-amber-500/10',
+    from: 'from-amber-50/40',
+    to: 'to-white',
+    titleHover: 'group-hover:text-amber-600',
+  },
+  {
+    id: 4,
+    titleKey: 'home.govDownloadPropertyCard',
+    icon: Download,
+    url: 'https://e-milkat.gujarat.gov.in/ioraonlinepcard/ioraonlinepcard.aspx',
+    iconBg: 'bg-cyan-50 text-cyan-600 border border-cyan-200/80 group-hover:bg-cyan-600 group-hover:text-white',
+    border: 'border-slate-200/80 hover:border-cyan-500/60 hover:shadow-cyan-500/10',
+    from: 'from-cyan-50/40',
+    to: 'to-white',
+    titleHover: 'group-hover:text-cyan-600',
+  },
+  {
+    id: 5,
+    titleKey: 'home.gov712Download',
+    icon: FileCheck,
+    url: 'https://iora.gujarat.gov.in/ror_online.aspx',
+    iconBg: 'bg-violet-50 text-violet-600 border border-violet-200/80 group-hover:bg-violet-600 group-hover:text-white',
+    border: 'border-slate-200/80 hover:border-violet-500/60 hover:shadow-violet-500/10',
+    from: 'from-violet-50/40',
+    to: 'to-white',
+    titleHover: 'group-hover:text-violet-600',
+  },
+  {
+    id: 6,
+    titleKey: 'home.govJantriRate',
+    icon: Calculator,
+    url: 'https://garvi.gujarat.gov.in/ViewJantri_New.aspx',
+    iconBg: 'bg-rose-50 text-rose-600 border border-rose-200/80 group-hover:bg-rose-600 group-hover:text-white',
+    border: 'border-slate-200/80 hover:border-rose-500/60 hover:shadow-rose-500/10',
+    from: 'from-rose-50/40',
+    to: 'to-white',
+    titleHover: 'group-hover:text-rose-600',
+  },
+  {
+    id: 7,
+    titleKey: 'home.govIndex2',
+    icon: FileSpreadsheet,
+    url: 'https://garvi.gujarat.gov.in/frmIndex2_New.aspx',
+    iconBg: 'bg-indigo-50 text-indigo-600 border border-indigo-200/80 group-hover:bg-indigo-600 group-hover:text-white',
+    border: 'border-slate-200/80 hover:border-indigo-500/60 hover:shadow-indigo-500/10',
+    from: 'from-indigo-50/40',
+    to: 'to-white',
+    titleHover: 'group-hover:text-indigo-600',
+  },
+  {
+    id: 8,
+    titleKey: 'home.govRevenueCaseStatus',
+    icon: Scale,
+    url: 'https://ircms.gujarat.gov.in/ViewCaseStatus',
+    iconBg: 'bg-purple-50 text-purple-600 border border-purple-200/80 group-hover:bg-purple-600 group-hover:text-white',
+    border: 'border-slate-200/80 hover:border-purple-500/60 hover:shadow-purple-500/10',
+    from: 'from-purple-50/40',
+    to: 'to-white',
+    titleHover: 'group-hover:text-purple-600',
+  },
+  {
+    id: 9,
+    titleKey: 'home.govEDharaForms',
+    icon: Compass,
+    url: 'https://revenuedepartment.gujarat.gov.in/e-dhara-forms',
+    iconBg: 'bg-teal-50 text-teal-600 border border-teal-200/80 group-hover:bg-teal-600 group-hover:text-white',
+    border: 'border-slate-200/80 hover:border-teal-500/60 hover:shadow-teal-500/10',
+    from: 'from-teal-50/40',
+    to: 'to-white',
+    titleHover: 'group-hover:text-teal-600',
+  },
+  {
+    id: 10,
+    titleKey: 'home.govIORAServices',
+    icon: Landmark,
+    url: 'https://revenuedepartment.gujarat.gov.in/iora-service',
+    iconBg: 'bg-sky-50 text-sky-600 border border-sky-200/80 group-hover:bg-sky-600 group-hover:text-white',
+    border: 'border-slate-200/80 hover:border-sky-500/60 hover:shadow-sky-500/10',
+    from: 'from-sky-50/40',
+    to: 'to-white',
+    titleHover: 'group-hover:text-sky-600',
+  },
 ];
 
 // Distinct subtle accent themes for the location cards
@@ -180,7 +274,7 @@ function HomePage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
             <button
               type="button"
-              onClick={() => navigate('/buy')}
+              onClick={() => navigate('/buyer-requirements')}
               className="inline-flex min-h-[50px] items-center justify-center gap-2.5 rounded-xl bg-[#1D5CA9] px-6 py-3.5 text-base font-bold text-white shadow-md transition hover:bg-[#1D5CA9]/90 active:scale-[0.99]"
             >
               <span>{t('home.viewAllBuyListings')}</span>
@@ -213,28 +307,25 @@ function HomePage() {
             </div>
           </div>
 
-          <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-            {governmentLinks.map((item, index) => {
+          <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
+            {governmentLinks.map((item) => {
               const Icon = item.icon;
-              const theme = govCardThemes[index % govCardThemes.length];
-              const handleClick = () => {
-                window.open(item.url, '_blank', 'noopener,noreferrer');
-              };
               return (
-                <button
+                <a
                   key={item.id}
-                  type="button"
-                  onClick={handleClick}
+                  href={item.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   aria-label={t(item.titleKey)}
-                  className={`group flex min-h-[120px] flex-col items-center justify-center rounded-2xl border bg-gradient-to-b ${theme.from} ${theme.to} ${theme.border} px-3 py-4 text-center shadow-xs transition-all duration-300 hover:-translate-y-1 hover:shadow-lg active:scale-[0.98] sm:hover:-translate-y-1.5`}
+                  className={`group flex min-h-[110px] flex-col items-center justify-between rounded-2xl border bg-gradient-to-b ${item.from} ${item.to} ${item.border} p-4 text-center shadow-xs transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl active:scale-[0.98] cursor-pointer`}
                 >
-                  <span className={`flex h-11 w-11 items-center justify-center rounded-xl ${theme.iconBg} shadow-sm transition-transform duration-300 group-hover:scale-110 group-hover:-translate-y-0.5`}>
+                  <span className={`flex h-11 w-11 items-center justify-center rounded-xl ${item.iconBg} shadow-sm transition-all duration-300 group-hover:scale-110 group-hover:-translate-y-0.5`}>
                     <Icon size={20} />
                   </span>
-                  <h3 className="mt-2.5 text-sm font-bold leading-snug text-slate-900">
+                  <h3 className={`mt-2.5 text-xs sm:text-sm font-bold leading-snug text-slate-900 transition-colors duration-300 ${item.titleHover}`}>
                     {t(item.titleKey)}
                   </h3>
-                </button>
+                </a>
               );
             })}
           </div>

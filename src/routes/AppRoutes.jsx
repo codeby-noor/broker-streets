@@ -25,6 +25,7 @@ import BuyerForm from '../pages/BuyerForm';
 import SellerForm from '../pages/SellerForm';
 import SellerDashboard from '../pages/SellerDashboard';
 import BuyerRequirementsPage from '../pages/BuyerRequirementsPage';
+import BuyerRequirementDetailsPage from '../pages/BuyerRequirementDetailsPage';
 import LocationDetailsPage from '../pages/LocationDetailsPage';
 import FormGuard from '../components/FormGuard';
 import ProtectedRoute from './ProtectedRoute';
@@ -112,6 +113,7 @@ function AppRoutes() {
           <Route path="profile/notifications" element={<ProfileNotificationsPage />} />
           <Route path="profile/settings" element={<ProfileSettingsPage />} />
           <Route path="buyer-requirements" element={<BuyerRequirementsPage />} />
+          <Route path="buyer-requirement/:id" element={<BuyerRequirementDetailsPage />} />
         </Route>
         <Route path="*" element={<NotFoundPage />} />
       </Route>

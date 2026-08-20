@@ -84,9 +84,9 @@ function Navbar() {
 
         {!hideNav ? (
           <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
-            <div className="mobile-lang-toggle flex items-center gap-0.5 rounded-full border border-slate-200 bg-white p-0.5 shadow-sm">
-              <button type="button" onClick={() => setLanguage('en')} className={`mobile-lang-btn rounded-full px-2 py-0.5 text-[11px] font-bold transition ${language === 'en' ? 'bg-[#1D5CA9] text-white' : 'text-slate-600 hover:text-slate-900'}`}>EN</button>
-              <button type="button" onClick={() => setLanguage('gu')} className={`mobile-lang-btn rounded-full px-2 py-0.5 text-[11px] font-bold transition ${language === 'gu' ? 'bg-[#1D5CA9] text-white' : 'text-slate-600 hover:text-slate-900'}`}>ગુજરાતી</button>
+            <div className="mobile-lang-toggle flex items-center gap-0.5 rounded-full border border-slate-200 bg-[#F8FAFC] p-0.5 shadow-2xs">
+              <button type="button" onClick={() => setLanguage('en')} className={`mobile-lang-btn rounded-full px-2 py-0.5 text-[10px] font-bold transition-all duration-200 ${language === 'en' ? 'bg-[#1D5CA9] text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'}`}>EN</button>
+              <button type="button" onClick={() => setLanguage('gu')} className={`mobile-lang-btn rounded-full px-2 py-0.5 text-[10px] font-bold transition-all duration-200 ${language === 'gu' ? 'bg-[#1D5CA9] text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'}`}>ગુજરાતી</button>
             </div>
 
             {isAuthenticated ? (
