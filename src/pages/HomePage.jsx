@@ -328,20 +328,7 @@ function HomePage() {
 
               <div className="absolute inset-0 bg-gradient-to-t from-slate-950/50 via-transparent to-transparent pointer-events-none" />
 
-              {/* Subtle top-right pagination dots */}
-              <div className="absolute top-2.5 right-2.5 flex items-center gap-1 z-10 bg-black/40 backdrop-blur-sm px-2 py-1 rounded-full">
-                {heroImages.map((_, idx) => (
-                  <button
-                    key={idx}
-                    type="button"
-                    aria-label={`Hero slide ${idx + 1}`}
-                    onClick={() => setHeroImageIndex(idx)}
-                    className={`h-1.5 rounded-full transition-all duration-300 ${
-                      heroImageIndex === idx ? 'w-3.5 bg-white' : 'w-1.5 bg-white/50'
-                    }`}
-                  />
-                ))}
-              </div>
+
 
               <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between rounded-lg bg-white/90 px-3 py-1.5 backdrop-blur-sm z-10">
                 <span className="text-xs font-semibold text-slate-900 truncate">

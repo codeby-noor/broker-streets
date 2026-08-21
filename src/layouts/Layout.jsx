@@ -16,7 +16,7 @@ function Layout() {
     <div className="relative min-h-screen bg-background text-text dark:bg-dark-bg dark:text-dark-text">
       <ScrollToTop />
       <Navbar />
-      <main className="mx-auto w-full max-w-7xl px-4 py-8 pb-28 sm:px-6 lg:px-8 lg:pb-12">
+      <main className="mx-auto w-full max-w-7xl px-4 py-8 pb-12 sm:px-6 lg:px-8 lg:pb-12">
         <Outlet />
       </main>
       <Footer />

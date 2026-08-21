@@ -6,7 +6,7 @@ function Footer() {
   const { t } = useLanguage();
 
   return (
-    <footer className="border-t border-slate-200/70 bg-white px-4 py-8 pb-[calc(4rem+env(safe-area-inset-bottom))] sm:px-6 lg:px-8 dark:border-dark-border dark:bg-dark-card">
+    <footer className="border-t border-slate-200/70 bg-white px-4 pt-8 pb-[calc(6.5rem+env(safe-area-inset-bottom))] sm:px-6 sm:pb-10 lg:px-8 lg:pb-12 dark:border-dark-border dark:bg-dark-card">
       <div className="mx-auto flex max-w-7xl flex-col gap-8 lg:flex-row lg:items-start lg:justify-between">
         <div className="max-w-sm text-center sm:text-left">
           <Link to="/home" className="inline-flex items-center gap-3">
