@@ -51,7 +51,6 @@ function Navbar() {
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-2 px-3 py-2.5 sm:px-6 lg:px-8">
         <Link to="/home" className="flex items-center gap-2 flex-shrink-0">
           <img src={logo} alt="Broker Streets logo" className="h-8 w-auto object-contain sm:h-11" />
-          <span className="hidden text-base font-bold tracking-tight text-ink sm:inline-block">Broker Streets</span>
         </Link>
 
         {!hideNav && (

@@ -33,6 +33,7 @@ function LoginPage() {
         strategy: 'oauth_google',
         redirectUrl: '/sso-callback',
         redirectUrlComplete: '/complete-profile',
+        oidcPrompt: 'select_account',
       });
     } catch (err) {
       console.error('Google Sign-In error:', err);

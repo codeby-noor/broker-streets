@@ -50,6 +50,7 @@ function RegisterPage() {
         strategy: 'oauth_google',
         redirectUrl: '/sso-callback',
         redirectUrlComplete: '/complete-profile',
+        oidcPrompt: 'select_account',
       });
     } catch (err) {
       console.error('Google Sign-Up error:', err);
@@ -301,6 +302,8 @@ function RegisterPage() {
                     />
                   </div>
                 </div>
+
+                <div id="clerk-captcha" className="my-2" />
 
                 <button
                   type="submit"
