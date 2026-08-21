@@ -1,5 +1,5 @@
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Home, Search, PlusCircle, Mail, User } from 'lucide-react';
+import { Home, Building2, FilePlus, Mail, User } from 'lucide-react';
 import { getSubmissionDestination } from '../utils/formNavigation';
 import { useLanguage } from '../i18n/LanguageContext';
 
@@ -11,8 +11,8 @@ function MobileBottomNav() {
 
   const items = [
     { label: t('nav.home'), to: '/home', icon: Home },
-    { label: t('nav.buy'), to: '/buy', icon: Search, action: 'buy' },
-    { label: t('nav.sell'), to: '/sell', icon: PlusCircle, action: 'sell' },
+    { label: t('nav.buy'), to: '/buy', icon: Building2, action: 'buy' },
+    { label: t('nav.sell'), to: '/sell', icon: FilePlus, action: 'sell' },
     { label: t('nav.contact'), to: '/contact', icon: Mail },
     { label: t('nav.profile'), to: '/profile', icon: User },
   ];

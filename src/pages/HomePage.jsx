@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import {
   ShieldCheck,
   MapPin,
@@ -20,8 +21,6 @@ import {
   FileSpreadsheet,
   ChevronDown,
   MessageSquare,
-  ChevronLeft,
-  ChevronRight,
 } from 'lucide-react';
 import { getSubmissionDestination } from '../utils/formNavigation';
 import { sampleProperties } from '../utils/data';
@@ -174,40 +173,28 @@ function HomePage() {
   const [searchType, setSearchType] = useState('');
   const [searchLocation, setSearchLocation] = useState('');
 
-  // Review Slider State
-  const [currentReview, setCurrentReview] = useState(0);
-  const reviewScrollRef = useRef(null);
+  // Review Slider State (Unconditional 4-second Auto Slider)
+  const [currentReviewIndex, setCurrentReviewIndex] = useState(0);
+  const prefersReducedMotion = useReducedMotion();
 
-  const reviews = [
-    { text: t('home.review1Text'), author: t('home.review1Author') },
-    { text: t('home.review2Text'), author: t('home.review2Author') },
-    { text: t('home.review3Text'), author: t('home.review3Author') },
-    { text: t('home.review4Text'), author: t('home.review4Author') },
-  ];
+  const reviews = useMemo(
+    () => [
+      { text: t('home.review1Text'), author: t('home.review1Author') },
+      { text: t('home.review2Text'), author: t('home.review2Author') },
+      { text: t('home.review3Text'), author: t('home.review3Author') },
+      { text: t('home.review4Text'), author: t('home.review4Author') },
+    ],
+    [t]
+  );
 
-  const scrollToReview = (index) => {
-    if (reviewScrollRef.current) {
-      const cardWidth = reviewScrollRef.current.offsetWidth;
-      reviewScrollRef.current.scrollTo({
-        left: index * cardWidth,
-        behavior: 'smooth',
-      });
-      setCurrentReview(index);
-    }
-  };
+  // Auto-slide timer: advances currentReviewIndex every 4000ms continuously (0 -> 1 -> 2 -> 3 -> 0...)
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentReviewIndex((prevIndex) => (prevIndex + 1) % reviews.length);
+    }, 4000);
 
-  const handleReviewScroll = () => {
-    if (reviewScrollRef.current) {
-      const scrollLeft = reviewScrollRef.current.scrollLeft;
-      const cardWidth = reviewScrollRef.current.offsetWidth;
-      if (cardWidth > 0) {
-        const index = Math.round(scrollLeft / cardWidth);
-        if (index >= 0 && index < reviews.length) {
-          setCurrentReview(index);
-        }
-      }
-    }
-  };
+    return () => clearInterval(timer);
+  }, [reviews.length]);
 
   const goToBuy = () => navigate(getSubmissionDestination('buyerFormSubmitted', '/buyer-form', '/buy'));
   const goToSell = () => navigate(getSubmissionDestination('sellerFormSubmitted', '/seller-form', '/sell'));
@@ -344,7 +331,7 @@ function HomePage() {
             </div>
           </div>
 
-          <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
+          <div className="mt-4 grid grid-cols-3 gap-2 sm:gap-3 md:grid-cols-3 lg:grid-cols-5">
             {governmentLinks.map((item) => {
               const Icon = item.icon;
               return (
@@ -354,12 +341,12 @@ function HomePage() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={t(item.titleKey)}
-                  className={`group flex min-h-[110px] flex-col items-center justify-between rounded-2xl border bg-gradient-to-b ${item.from} ${item.to} ${item.border} p-4 text-center shadow-xs transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl active:scale-[0.98] cursor-pointer`}
+                  className={`group flex min-h-[92px] sm:min-h-[110px] flex-col items-center justify-between rounded-xl sm:rounded-2xl border bg-gradient-to-b ${item.from} ${item.to} ${item.border} p-2 sm:p-4 text-center shadow-xs transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl active:scale-[0.98] cursor-pointer`}
                 >
-                  <span className={`flex h-11 w-11 items-center justify-center rounded-xl ${item.iconBg} shadow-sm transition-all duration-300 group-hover:scale-110 group-hover:-translate-y-0.5`}>
-                    <Icon size={20} />
+                  <span className={`flex h-8 w-8 sm:h-11 sm:w-11 items-center justify-center rounded-lg sm:rounded-xl ${item.iconBg} shadow-sm transition-all duration-300 group-hover:scale-110 group-hover:-translate-y-0.5`}>
+                    <Icon className="h-4 w-4 sm:h-5 sm:w-5" />
                   </span>
-                  <h3 className={`mt-2.5 text-xs sm:text-sm font-bold leading-snug text-slate-900 transition-colors duration-300 ${item.titleHover}`}>
+                  <h3 className={`mt-1.5 sm:mt-2.5 text-[10px] sm:text-xs font-bold leading-tight sm:leading-snug text-slate-900 transition-colors duration-300 ${item.titleHover}`}>
                     {t(item.titleKey)}
                   </h3>
                 </a>
@@ -582,102 +569,42 @@ function HomePage() {
           </div>
         </section>
 
-        {/* 8. REVIEWS / TESTIMONIALS SECTION */}
-        <section className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm sm:p-6 lg:p-8">
-          <div className="text-center max-w-2xl mx-auto mb-6 sm:mb-8">
+        {/* 8. REVIEWS / TESTIMONIALS SECTION (AUTOMATIC SLIDER) */}
+        <section className="rounded-2xl border border-slate-200/80 bg-white p-4 sm:p-6 shadow-sm">
+          {/* BADGE & HEADING */}
+          <div className="text-center max-w-2xl mx-auto mb-4 sm:mb-5">
             <span className="inline-flex items-center gap-1.5 rounded-full bg-[#1D5CA9]/10 px-3 py-1 text-xs font-bold uppercase tracking-wider text-[#1D5CA9]">
               <MessageSquare size={13} /> {t('home.reviewsSectionLabel')}
             </span>
-            <h2 className="mt-2 text-xl font-bold tracking-tight text-slate-900 sm:text-2xl lg:text-3xl">
+            <h2 className="mt-1.5 text-xl font-bold tracking-tight text-slate-900 sm:text-2xl lg:text-3xl">
               {t('home.reviewsTitle')}
             </h2>
           </div>
 
-          {/* DESKTOP 4-COLUMN LAYOUT (lg:grid UNCHANGED) */}
-          <div className="hidden lg:grid lg:grid-cols-4 lg:gap-6">
-            {reviews.map((review, idx) => (
-              <div
-                key={idx}
-                className="flex flex-col justify-between rounded-xl border border-slate-200/80 bg-[#FDFDFD] p-5 shadow-[0_4px_16px_rgba(29,92,169,0.04)] transition hover:border-[#1D5CA9]/30 hover:shadow-[0_8px_24px_rgba(29,92,169,0.08)]"
+          {/* SINGLE CENTERED TESTIMONIAL CARD WITH AUTOMATIC SLIDE/FADE TRANSITION */}
+          <div className="max-w-xl mx-auto relative overflow-hidden">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={currentReviewIndex}
+                initial={prefersReducedMotion ? { opacity: 1 } : { opacity: 0, x: 30 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={prefersReducedMotion ? { opacity: 1 } : { opacity: 0, x: -30 }}
+                transition={prefersReducedMotion ? { duration: 0 } : { duration: 0.4, ease: [0.25, 1, 0.5, 1] }}
+                className="flex flex-col justify-between rounded-xl border border-slate-200/80 bg-[#FDFDFD] p-4 sm:p-5 shadow-[0_4px_16px_rgba(29,92,169,0.04)]"
               >
                 <div>
                   <span className="block font-serif text-3xl font-bold leading-none text-[#1D5CA9]/40 select-none mb-2">“</span>
-                  <p className="text-xs leading-relaxed text-slate-700 sm:text-sm">
-                    {review.text}
+                  <p className="text-xs leading-relaxed text-slate-700 sm:text-sm md:text-base">
+                    {reviews[currentReviewIndex]?.text}
                   </p>
                 </div>
                 <div className="mt-4 pt-3 border-t border-slate-100">
-                  <span className="text-xs font-semibold text-[#1D5CA9]">
-                    {review.author}
+                  <span className="text-xs sm:text-sm font-semibold text-[#1D5CA9]">
+                    {reviews[currentReviewIndex]?.author}
                   </span>
                 </div>
-              </div>
-            ))}
-          </div>
-
-          {/* MOBILE & TABLET SLIDER (<1024px) */}
-          <div className="block lg:hidden relative">
-            <div
-              ref={reviewScrollRef}
-              onScroll={handleReviewScroll}
-              className="flex w-full overflow-x-auto snap-x snap-mandatory scroll-smooth pb-2 pt-1 no-scrollbar space-x-4"
-              style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-            >
-              {reviews.map((review, idx) => (
-                <div
-                  key={idx}
-                  className="w-full sm:w-[calc(50%-8px)] flex-none snap-center flex flex-col justify-between rounded-xl border border-slate-200/80 bg-[#FDFDFD] p-5 shadow-[0_4px_16px_rgba(29,92,169,0.04)] min-h-[160px]"
-                >
-                  <div>
-                    <span className="block font-serif text-3xl font-bold leading-none text-[#1D5CA9]/40 select-none mb-2">“</span>
-                    <p className="text-xs leading-relaxed text-slate-700 sm:text-sm">
-                      {review.text}
-                    </p>
-                  </div>
-                  <div className="mt-4 pt-3 border-t border-slate-100">
-                    <span className="text-xs font-semibold text-[#1D5CA9]">
-                      {review.author}
-                    </span>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* Slider Navigation Controls (Arrows & Pagination Dots) */}
-            <div className="mt-4 flex items-center justify-between px-1">
-              <button
-                type="button"
-                aria-label="Previous review"
-                onClick={() => scrollToReview(Math.max(0, currentReview - 1))}
-                disabled={currentReview === 0}
-                className={`inline-flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-700 shadow-2xs transition ${currentReview === 0 ? 'opacity-30 cursor-not-allowed' : 'hover:border-[#1D5CA9] hover:text-[#1D5CA9]'}`}
-              >
-                <ChevronLeft size={16} />
-              </button>
-
-              {/* Pagination Dots */}
-              <div className="flex items-center gap-1.5">
-                {reviews.map((_, idx) => (
-                  <button
-                    key={idx}
-                    type="button"
-                    aria-label={`Go to review slide ${idx + 1}`}
-                    onClick={() => scrollToReview(idx)}
-                    className={`h-2 rounded-full transition-all duration-300 ${currentReview === idx ? 'w-6 bg-[#1D5CA9]' : 'w-2 bg-slate-300 hover:bg-slate-400'}`}
-                  />
-                ))}
-              </div>
-
-              <button
-                type="button"
-                aria-label="Next review"
-                onClick={() => scrollToReview(Math.min(reviews.length - 1, currentReview + 1))}
-                disabled={currentReview === reviews.length - 1}
-                className={`inline-flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-700 shadow-2xs transition ${currentReview === reviews.length - 1 ? 'opacity-30 cursor-not-allowed' : 'hover:border-[#1D5CA9] hover:text-[#1D5CA9]'}`}
-              >
-                <ChevronRight size={16} />
-              </button>
-            </div>
+              </motion.div>
+            </AnimatePresence>
           </div>
         </section>
 

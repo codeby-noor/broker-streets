@@ -758,40 +758,6 @@ function PropertyDetailsPage() {
 
         {/* ===== LOWER CONTENT — VERTICALLY STACKED FULL-WIDTH SECTIONS ===== */}
         <div className="space-y-6 lg:space-y-8">
-          {/* PROPERTY DETAILS */}
-          <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-card sm:rounded-[28px] sm:p-6 dark:border-dark-border dark:bg-dark-card">
-            <h2 className="text-lg font-bold tracking-tight text-ink sm:text-xl dark:text-dark-text">{t('common.propertyDetails')}</h2>
-
-            {/* Clean hairline grid — 1 col on mobile, 2 col on sm+ */}
-            <div className="mt-3 grid grid-cols-1 gap-px overflow-hidden rounded-xl border border-slate-200 bg-slate-200 sm:grid-cols-2 dark:border-dark-border dark:bg-dark-border">
-              {overviewItems.map((item) => (
-                <div key={item.label} className={propertyDetailCellClass}>
-                  <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500 dark:text-dark-muted">{item.label}</p>
-                  <p className="mt-1 text-sm font-semibold leading-snug text-ink dark:text-dark-text">{item.value}</p>
-                </div>
-              ))}
-              {overviewItems.length % 2 === 1 ? <div className={`${propertyDetailCellClass} hidden sm:block`} /> : null}
-            </div>
-
-            {/* Features — compact hairline grid */}
-            {availableFeatures.length ? (
-              <>
-                <div className="mt-5 flex items-center gap-3">
-                  <h3 className="text-sm font-bold uppercase tracking-wide text-ink sm:text-base dark:text-dark-text">{t('propertyDetails.propertyFeatures')}</h3>
-                  <span className="h-px flex-1 bg-slate-200 dark:bg-dark-border" />
-                </div>
-                <div className="mt-3 grid grid-cols-1 gap-px overflow-hidden rounded-xl border border-slate-200 bg-slate-200 sm:grid-cols-2 dark:border-dark-border dark:bg-dark-border">
-                  {availableFeatures.map((item) => (
-                    <div key={item.label} className="bg-white px-4 py-3 dark:bg-dark-card">
-                      <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500 dark:text-dark-muted">{item.label}</p>
-                      <p className="mt-1 text-sm font-semibold leading-snug text-ink dark:text-dark-text">{item.value}</p>
-                    </div>
-                  ))}
-                </div>
-              </>
-            ) : null}
-          </section>
-
           {/* PROPERTY DOCUMENTS */}
           <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-card sm:rounded-[28px] sm:p-6 dark:border-dark-border dark:bg-dark-card">
             <h2 className="text-lg font-bold tracking-tight text-ink sm:text-xl dark:text-dark-text">{t('propertyDetails.propertyDocuments')}</h2>
@@ -829,6 +795,40 @@ function PropertyDetailsPage() {
                 <div className="rounded-xl border border-dashed border-slate-200 bg-slate-50/70 px-4 py-5 text-sm text-slate-500 dark:border-dark-border dark:bg-dark-bg/60 dark:text-dark-muted">{t('propertyDetails.noDocumentUploaded')}</div>
               )}
             </div>
+          </section>
+
+          {/* PROPERTY DETAILS */}
+          <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-card sm:rounded-[28px] sm:p-6 dark:border-dark-border dark:bg-dark-card">
+            <h2 className="text-lg font-bold tracking-tight text-ink sm:text-xl dark:text-dark-text">{t('common.propertyDetails')}</h2>
+
+            {/* Clean hairline grid — 1 col on mobile, 2 col on sm+ */}
+            <div className="mt-3 grid grid-cols-1 gap-px overflow-hidden rounded-xl border border-slate-200 bg-slate-200 sm:grid-cols-2 dark:border-dark-border dark:bg-dark-border">
+              {overviewItems.map((item) => (
+                <div key={item.label} className={propertyDetailCellClass}>
+                  <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500 dark:text-dark-muted">{item.label}</p>
+                  <p className="mt-1 text-sm font-semibold leading-snug text-ink dark:text-dark-text">{item.value}</p>
+                </div>
+              ))}
+              {overviewItems.length % 2 === 1 ? <div className={`${propertyDetailCellClass} hidden sm:block`} /> : null}
+            </div>
+
+            {/* Features — compact hairline grid */}
+            {availableFeatures.length ? (
+              <>
+                <div className="mt-5 flex items-center gap-3">
+                  <h3 className="text-sm font-bold uppercase tracking-wide text-ink sm:text-base dark:text-dark-text">{t('propertyDetails.propertyFeatures')}</h3>
+                  <span className="h-px flex-1 bg-slate-200 dark:bg-dark-border" />
+                </div>
+                <div className="mt-3 grid grid-cols-1 gap-px overflow-hidden rounded-xl border border-slate-200 bg-slate-200 sm:grid-cols-2 dark:border-dark-border dark:bg-dark-border">
+                  {availableFeatures.map((item) => (
+                    <div key={item.label} className="bg-white px-4 py-3 dark:bg-dark-card">
+                      <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500 dark:text-dark-muted">{item.label}</p>
+                      <p className="mt-1 text-sm font-semibold leading-snug text-ink dark:text-dark-text">{item.value}</p>
+                    </div>
+                  ))}
+                </div>
+              </>
+            ) : null}
           </section>
 
           {/* RELATED PROPERTIES */}
