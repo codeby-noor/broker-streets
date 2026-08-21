@@ -1,10 +1,11 @@
 import { useEffect } from 'react';
-import { X } from 'lucide-react';
+import { X, Phone, MessageCircle, Mail, Building2, MapPin } from 'lucide-react';
 import { useLanguage } from '../i18n/LanguageContext';
 
 function ContactModal({ open, onClose, data = {}, title }) {
   const { t, getPropertyDisplayTitle } = useLanguage();
   const displayTitle = title || t('buy.contactSeller');
+
   useEffect(() => {
     if (!open) return undefined;
 
@@ -33,84 +34,132 @@ function ContactModal({ open, onClose, data = {}, title }) {
   const hasMobile = Boolean(cleanedMobile);
   const hasEmail = Boolean(email);
 
+  const propertyTitleText = data.propertyTitle
+    ? getPropertyDisplayTitle(data.propertyTitle)
+    : data.propertyType
+    ? t(data.propertyType)
+    : null;
+  const propertyLocation = [t(data.city || data.taluka), t(data.district)]
+    .filter(Boolean)
+    .join(', ');
+
   return (
-    <div role="dialog" aria-modal="true" aria-labelledby="contact-modal-title" className="fixed inset-0 z-50 overflow-y-auto bg-ink/50 px-4 py-4 sm:px-6 sm:py-8" onClick={onClose}>
-      <div className="flex min-h-full items-end justify-center sm:items-center">
-        <div
-          onClick={(event) => event.stopPropagation()}
-          className="w-full max-w-md rounded-t-[28px] bg-white p-5 shadow-xl sm:rounded-[20px] sm:p-6"
-        >
-          <div className="mb-4 flex items-center justify-between">
-            <div>
-              <h3 id="contact-modal-title" className="text-lg font-semibold text-ink">{displayTitle}</h3>
-              <p className="mt-1 text-sm text-slate-500">{t('contact.modalDescription')}</p>
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="contact-modal-title"
+      className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-xs transition-opacity"
+      onClick={onClose}
+    >
+      <div
+        onClick={(event) => event.stopPropagation()}
+        className="relative w-[calc(100%-32px)] max-w-[440px] max-h-[85vh] flex flex-col rounded-2xl bg-[#FDFDFD] shadow-xl border border-slate-200 overflow-hidden text-slate-900 animate-in fade-in zoom-in-95 duration-150"
+      >
+        {/* HEADER */}
+        <div className="flex items-start justify-between border-b border-slate-100 p-5 bg-slate-50/60">
+          <div>
+            <span className="inline-flex items-center gap-1 text-[11px] font-bold uppercase tracking-wider text-[#1D5CA9]">
+              <Building2 size={12} /> Broker Streets
+            </span>
+            <h3 id="contact-modal-title" className="text-base sm:text-lg font-bold text-slate-900 mt-0.5">
+              {displayTitle}
+            </h3>
+            <p className="text-xs text-slate-500 mt-0.5">{t('contact.modalDescription')}</p>
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Close modal"
+            className="rounded-full bg-slate-100 p-1.5 text-slate-500 hover:bg-slate-200 hover:text-slate-800 transition active:scale-95 flex-shrink-0"
+          >
+            <X size={16} />
+          </button>
+        </div>
+
+        {/* BODY (SCROLLABLE IF NEEDED) */}
+        <div className="flex-1 overflow-y-auto p-5 space-y-4">
+          {/* SELLER & PROPERTY INFO LAYOUT */}
+          <div className="rounded-xl border border-slate-200/80 bg-slate-50/50 p-4 space-y-3">
+            {/* NAME */}
+            <div className="flex items-center justify-between text-xs sm:text-sm">
+              <span className="font-medium text-slate-500">{t('contact.modalName')}</span>
+              <span className="font-bold text-slate-900 truncate max-w-[220px]">{fullName}</span>
             </div>
-            <button type="button" onClick={onClose} className="rounded-full bg-slate-100 p-2 text-slate-600 transition hover:bg-slate-200">
-              <X size={18} />
-            </button>
+
+            {/* MOBILE NUMBER */}
+            {hasMobile ? (
+              <div className="pt-2 border-t border-slate-200/60 flex items-center justify-between text-xs sm:text-sm">
+                <span className="font-medium text-slate-500">{t('contact.modalMobile')}</span>
+                <span className="font-bold text-[#1D5CA9] select-all">+91 {mobile}</span>
+              </div>
+            ) : null}
+
+            {/* EMAIL */}
+            {hasEmail ? (
+              <div className="pt-2 border-t border-slate-200/60 flex items-center justify-between text-xs sm:text-sm">
+                <span className="font-medium text-slate-500">{t('contact.modalEmail')}</span>
+                <span className="font-semibold text-slate-700 truncate max-w-[200px] select-all">{email}</span>
+              </div>
+            ) : null}
+
+            {/* PROPERTY (SECONDARY) */}
+            {propertyTitleText || propertyLocation ? (
+              <div className="pt-2 border-t border-slate-200/60 space-y-0.5 text-xs">
+                <span className="font-medium text-slate-400 block text-[11px] uppercase tracking-wider">
+                  {t('contact.modalProperty')}
+                </span>
+                <p className="font-bold text-slate-800 truncate">
+                  {propertyTitleText || t('propertyDetails.propertyNotUploaded')}
+                </p>
+                {propertyLocation ? (
+                  <p className="font-medium text-slate-500 flex items-center gap-1 text-[11px]">
+                    <MapPin size={11} className="text-[#1D5CA9] flex-shrink-0" />
+                    <span className="truncate">{propertyLocation}</span>
+                  </p>
+                ) : null}
+              </div>
+            ) : null}
           </div>
 
-          <div className="space-y-5">
-            <div className="rounded-[24px] bg-slate-50 p-4">
-              <p className="text-sm font-semibold text-slate-500">{t('contact.modalName')}</p>
-              <p className="mt-2 text-base font-semibold text-ink">{fullName}</p>
-            </div>
+          {/* ACTION BUTTONS (BROKER STREETS BLUE #1D5CA9 & WHITE #FDFDFD ONLY) */}
+          <div className="space-y-2.5 pt-1">
+            {hasMobile ? (
+              <a
+                href={`tel:+91${cleanedMobile}`}
+                className="flex min-h-[44px] w-full items-center justify-center gap-2 rounded-xl bg-[#1D5CA9] px-4 py-2.5 text-xs sm:text-sm font-bold text-[#FDFDFD] shadow-sm transition hover:bg-[#1D5CA9]/90 active:scale-[0.98]"
+              >
+                <Phone size={15} />
+                <span>{t('common.call')}</span>
+              </a>
+            ) : null}
 
-            <div className="space-y-4 rounded-[24px] border border-slate-200 bg-white p-4">
-              <div>
-                <p className="text-sm font-semibold text-slate-500">{t('contact.modalMobile')}</p>
-                <p className="mt-2 text-base font-semibold text-ink">{mobile || t('common.notAvailable')}</p>
+            {hasMobile ? (
+              <a
+                href={`https://wa.me/91${cleanedMobile}`}
+                target="_blank"
+                rel="noreferrer"
+                className="flex min-h-[44px] w-full items-center justify-center gap-2 rounded-xl border border-[#1D5CA9] bg-[#FDFDFD] px-4 py-2.5 text-xs sm:text-sm font-bold text-[#1D5CA9] shadow-2xs transition hover:bg-[#1D5CA9]/10 active:scale-[0.98]"
+              >
+                <MessageCircle size={15} />
+                <span>{t('common.whatsapp')}</span>
+              </a>
+            ) : null}
+
+            {hasEmail ? (
+              <a
+                href={`mailto:${email}`}
+                className="flex min-h-[44px] w-full items-center justify-center gap-2 rounded-xl border border-[#1D5CA9] bg-[#FDFDFD] px-4 py-2.5 text-xs sm:text-sm font-bold text-[#1D5CA9] shadow-2xs transition hover:bg-[#1D5CA9]/10 active:scale-[0.98]"
+              >
+                <Mail size={15} />
+                <span>{t('common.email')}</span>
+              </a>
+            ) : null}
+
+            {!hasMobile && !hasEmail ? (
+              <div className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-center text-xs text-slate-600">
+                {t('contact.modalNoContact')}
               </div>
-              {email ? (
-                <div>
-                  <p className="text-sm font-semibold text-slate-500">{t('contact.modalEmail')}</p>
-                  <p className="mt-2 text-base font-semibold text-ink">{email}</p>
-                </div>
-              ) : null}
-              {data.propertyTitle || data.propertyType || data.city || data.district ? (
-                <div>
-                  <p className="text-sm font-semibold text-slate-500">{t('contact.modalProperty')}</p>
-                  <p className="mt-2 text-sm text-slate-700">
-                    {data.propertyTitle ? getPropertyDisplayTitle(data.propertyTitle) : (data.propertyType ? t(data.propertyType) : t('propertyDetails.propertyNotUploaded'))}
-                    {data.city || data.district ? ` • ${[t(data.city), t(data.district)].filter(Boolean).join(', ')}` : ''}
-                  </p>
-                </div>
-              ) : null}
-            </div>
-
-            <div className="space-y-3">
-              {hasMobile ? (
-                <a
-                  href={`tel:+91${cleanedMobile}`}
-                  className="inline-flex w-full items-center justify-center rounded-3xl bg-sage px-4 py-4 text-base font-semibold text-white transition hover:bg-sage-dark"
-                >
-                  {t('common.call')}
-                </a>
-              ) : null}
-              {hasMobile ? (
-                <a
-                  href={`https://wa.me/91${cleanedMobile}`}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex w-full items-center justify-center rounded-3xl border border-slate-200 bg-white px-4 py-4 text-base font-semibold text-slate-900 transition hover:bg-slate-50"
-                >
-                  {t('common.whatsapp')}
-                </a>
-              ) : null}
-              {hasEmail ? (
-                <a
-                  href={`mailto:${email}`}
-                  className="inline-flex w-full items-center justify-center rounded-3xl border border-slate-200 bg-white px-4 py-4 text-base font-semibold text-slate-900 transition hover:bg-slate-50"
-                >
-                  {t('common.email')}
-                </a>
-              ) : null}
-              {!hasMobile && !hasEmail ? (
-                <div className="rounded-3xl border border-slate-200 bg-slate-50 px-4 py-4 text-center text-sm text-slate-600">
-                  {t('contact.modalNoContact')}
-                </div>
-              ) : null}
-            </div>
+            ) : null}
           </div>
         </div>
       </div>

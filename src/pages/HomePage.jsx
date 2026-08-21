@@ -177,26 +177,26 @@ function HomePage() {
   const [currentReviewIndex, setCurrentReviewIndex] = useState(0);
   const prefersReducedMotion = useReducedMotion();
 
-  // Hero Image Carousel State (4-second Auto Slider with 4 land/property images)
+  // Hero Image Carousel State (4-second Auto Slider with realistic Indian agricultural land images)
   const heroImages = useMemo(
     () => [
       {
-        src: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1200&q=85',
+        src: 'https://images.unsplash.com/photo-1592982537447-7440770cbfc9?auto=format&fit=crop&w=1200&q=85',
         location: 'Surat & Navsari',
         titleKey: 'home.verifiedListingTitle',
       },
       {
-        src: 'https://images.unsplash.com/photo-1500937386664-56d1dfef3854?auto=format&fit=crop&w=1200&q=85',
+        src: 'https://images.unsplash.com/photo-1625246333195-78d9c38ad449?auto=format&fit=crop&w=1200&q=85',
         location: 'Surat (Olpad)',
         titleKey: 'buyerForm.agriculturalLand',
       },
       {
-        src: 'https://images.unsplash.com/photo-1464226184884-fa280b87c399?auto=format&fit=crop&w=1200&q=85',
+        src: 'https://images.unsplash.com/photo-1605000797499-95a51c5269ae?auto=format&fit=crop&w=1200&q=85',
         location: 'Navsari (Gandevi)',
         titleKey: 'buyerForm.agriculturalLand',
       },
       {
-        src: 'https://images.unsplash.com/photo-1494526585095-c41746248156?auto=format&fit=crop&w=1200&q=85',
+        src: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1200&q=85',
         location: 'Surat (Kamrej)',
         titleKey: 'buyerForm.nonAgriculturalLand',
       },
@@ -205,6 +205,14 @@ function HomePage() {
   );
 
   const [heroImageIndex, setHeroImageIndex] = useState(0);
+
+  // Preload hero images to ensure zero layout flash or jumping during transition
+  useEffect(() => {
+    heroImages.forEach((item) => {
+      const img = new Image();
+      img.src = item.src;
+    });
+  }, [heroImages]);
 
   useEffect(() => {
     const timer = setInterval(() => {
