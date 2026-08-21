@@ -7,16 +7,11 @@ import { useLanguage } from '../i18n/LanguageContext';
 
 const amenityOptions = ['Lift', 'Parking', 'Power Backup', 'Security', 'Garden', 'Clubhouse', 'Balcony', 'CCTV'];
 const statusOptions = ['Available', 'Sold', 'Pending'];
-const propertyTypeOptions = ['Apartment', 'Villa', 'House', 'Plot', 'Farm House', 'Commercial', 'Office'];
+const propertyTypeOptions = ['Agricultural Land', 'Non-Agricultural Land'];
 
 const propertyTypeTranslationKeys = {
-  Apartment: 'dropdown.apartment',
-  Villa: 'dropdown.villa',
-  House: 'dropdown.house',
-  Plot: 'dropdown.plot',
-  'Farm House': 'dropdown.farmHouse',
-  Commercial: 'dropdown.commercial',
-  Office: 'dropdown.office',
+  'Agricultural Land': 'buyerForm.agriculturalLand',
+  'Non-Agricultural Land': 'buyerForm.nonAgriculturalLand',
 };
 
 const amenityTranslationKeys = {
@@ -47,7 +42,7 @@ const initialDetails = {
   title: '',
   city: 'Ahmedabad',
   address: '',
-  propertyType: 'Apartment',
+  propertyType: 'Agricultural Land',
   price: '',
   bedrooms: '2',
   bathrooms: '1',
@@ -79,7 +74,7 @@ function AddPropertyPage() {
       title: currentListing.title || '',
       city: currentListing.city || 'Ahmedabad',
       address: currentListing.address || '',
-      propertyType: currentListing.propertyType || 'Apartment',
+      propertyType: currentListing.propertyType || 'Agricultural Land',
       price: currentListing.price || '',
       bedrooms: currentListing.bedrooms || '2',
       bathrooms: currentListing.bathrooms || '1',
@@ -130,7 +125,7 @@ function AddPropertyPage() {
   const submitProperty = (event) => {
     event.preventDefault();
     if (!details.title || !details.address || !details.price || !details.area || !details.description) {
-      toast.error('Please complete the required listing details.');
+      toast.error(t('sellerForm.completeRequired'));
       return;
     }
 
@@ -150,12 +145,12 @@ function AddPropertyPage() {
 
     writeStorage(STORAGE_KEYS.listings, nextListings);
     writeStorage(STORAGE_KEYS.lastProperty, listing);
-    toast.success(editId ? 'Listing updated successfully.' : 'Property added successfully.');
+    toast.success(editId ? t('sellerForm.listingUpdated') : t('sellerForm.propertyAdded'));
     navigate('/seller-dashboard', { state: { listing, refreshed: true } });
   };
 
   return (
-    <div className="-mx-4 -mt-8 min-h-screen bg-[#FFFEFE] px-4 pb-20 pt-10 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
+    <div className="-mx-4 -mt-8 min-h-screen bg-cream px-4 pb-20 pt-10 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
       <div className="mx-auto max-w-6xl">
         <div className="mb-8 rounded-[32px] border border-slate-200 bg-white p-8 shadow-card sm:p-10">
           <p className="eyebrow">{t('sellerForm.sectionEyebrow')}</p>
@@ -166,25 +161,25 @@ function AddPropertyPage() {
           <section className="rounded-[32px] border border-slate-200 bg-white p-6 shadow-card sm:p-8">
             <h2 className="text-xl font-semibold text-ink">{t('sellerForm.sectionEyebrow')}</h2>
             <div className="mt-6 grid gap-6 sm:grid-cols-2">
-              <label className="sm:col-span-2"><span className="field-label">{t('sellerForm.title')} *</span><input required name="title" value={details.title} onChange={update} placeholder="e.g. Spacious 3 BHK near the city center" className="field-control" /></label>
+              <label className="sm:col-span-2"><span className="field-label">{t('sellerForm.title')} *</span><input required name="title" value={details.title} onChange={update} placeholder={t('sellerForm.titlePlaceholder')} className="field-control" /></label>
               <label><span className="field-label">{t('sellerForm.propertyType')}</span><select name="propertyType" value={details.propertyType} onChange={update} className="field-control">{propertyTypeOptions.map((option) => <option key={option} value={option}>{t(propertyTypeTranslationKeys[option] || option)}</option>)}</select></label>
               <label><span className="field-label">{t('sellerForm.district')}</span><select name="city" value={details.city} onChange={update} className="field-control">{['Ahmedabad', 'Surat', 'Vadodara', 'Rajkot', 'Gandhinagar', 'Navsari'].map((c) => <option key={c} value={c}>{t(c)}</option>)}</select></label>
-              <label className="sm:col-span-2"><span className="field-label">{t('sellerForm.village')} *</span><div className="relative"><MapPin size={18} className="absolute left-4 top-4 text-primary" /><input required name="address" value={details.address} onChange={update} placeholder="Locality, landmark and street" className="field-control pl-11" /></div></label>
-              <label><span className="field-label">{t('sellerForm.priceAmount')} *</span><input required name="price" value={details.price} onChange={update} placeholder="e.g. 75 Lakh" className="field-control" /></label>
-              <label><span className="field-label">{t('sellerForm.priceUnit')} *</span><input required name="area" value={details.area} onChange={update} placeholder="e.g. 1,250 sqft" className="field-control" /></label>
+              <label className="sm:col-span-2"><span className="field-label">{t('sellerForm.village')} *</span><div className="relative"><MapPin size={18} className="absolute left-4 top-4 text-primary" /><input required name="address" value={details.address} onChange={update} placeholder={t('sellerForm.addressPlaceholder')} className="field-control pl-11" /></div></label>
+              <label><span className="field-label">{t('sellerForm.priceAmount')} *</span><input required name="price" value={details.price} onChange={update} placeholder={t('sellerForm.pricePlaceholderShort')} className="field-control" /></label>
+              <label><span className="field-label">{t('sellerForm.priceUnit')} *</span><input required name="area" value={details.area} onChange={update} placeholder={t('sellerForm.areaPlaceholderShort')} className="field-control" /></label>
               <label><span className="field-label">{t('sellerForm.bedrooms')}</span><select name="bedrooms" value={details.bedrooms} onChange={update} className="field-control"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></label>
               <label><span className="field-label">{t('sellerForm.bathrooms')}</span><select name="bathrooms" value={details.bathrooms} onChange={update} className="field-control"><option>1</option><option>2</option><option>3</option><option>4</option></select></label>
               <label><span className="field-label">{t('dropdown.parking')}</span><select name="parking" value={details.parking} onChange={update} className="field-control"><option value="Yes">{t('dropdown.yes')}</option><option value="No">{t('dropdown.no')}</option></select></label>
               <label><span className="field-label">{t('sellerForm.facing')}</span><select name="facing" value={details.facing} onChange={update} className="field-control"><option value="East">{t(facingTranslationKeys.East)}</option><option value="West">{t(facingTranslationKeys.West)}</option><option value="North">{t(facingTranslationKeys.North)}</option><option value="South">{t(facingTranslationKeys.South)}</option></select></label>
               <label><span className="field-label">{t('common.status')}</span><select name="status" value={details.status} onChange={update} className="field-control">{statusOptions.map((option) => <option key={option} value={option}>{t(statusTranslationKeys[option] || option)}</option>)}</select></label>
-              <label><span className="field-label">{t('buy.location')}</span><input name="location" value={details.location} onChange={update} placeholder="e.g. Satellite" className="field-control" /></label>
+              <label><span className="field-label">{t('buy.location')}</span><input name="location" value={details.location} onChange={update} placeholder={t('sellerForm.locationPlaceholder')} className="field-control" /></label>
               <label className="sm:col-span-2"><span className="field-label">{t('sellerForm.mapLink')}</span><input name="mapUrl" value={details.mapUrl} onChange={update} placeholder="https://www.google.com/maps/.." className="field-control" /></label>
               <div className="sm:col-span-2"><span className="field-label">{t('sellerForm.amenities')}</span><div className="mt-3 flex flex-wrap gap-3">{amenityOptions.map((item) => <label key={item} className="flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-sm text-slate-700"><input type="checkbox" checked={amenities.includes(item)} onChange={(event) => setAmenities((current) => event.target.checked ? [...current, item] : current.filter((value) => value !== item))} className="h-4 w-4 rounded border-slate-300 text-primary" />{t(amenityTranslationKeys[item] || item)}</label>)}</div></div>
-              <label className="sm:col-span-2"><span className="field-label">{t('sellerForm.additionalDetails')} *</span><textarea required name="description" value={details.description} onChange={update} rows="5" placeholder="Tell buyers what makes this property special" className="field-control resize-y" /></label>
+              <label className="sm:col-span-2"><span className="field-label">{t('sellerForm.additionalDetails')} *</span><textarea required name="description" value={details.description} onChange={update} rows="5" placeholder={t('sellerForm.descriptionPlaceholder')} className="field-control resize-y" /></label>
             </div>
           </section>
           <aside className="space-y-6">
-            <section className="rounded-[32px] border border-slate-200 bg-blue-50 p-6">
+            <section className="rounded-[32px] border border-slate-200 bg-slate-50 p-6">
               <div className="flex items-center gap-3"><ImagePlus className="text-primary" /><h2 className="text-lg font-bold text-ink">{t('sellerForm.propertyImages')}</h2></div>
               <p className="mt-3 text-sm leading-6 text-muted">{t('sellerForm.imageHint')}</p>
               <div onDragOver={(event) => event.preventDefault()} onDrop={handleDrop} className="mt-5 flex cursor-pointer flex-col items-center justify-center gap-3 rounded-2xl border-2 border-dashed border-primary/30 bg-white px-5 py-8 text-center hover:border-primary">

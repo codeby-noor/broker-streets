@@ -6,12 +6,22 @@ const normalizeLocationData = (data) => {
   const normalized = {};
 
   Object.entries(data || {}).forEach(([district, talukas]) => {
-    normalized[district] = {};
+    const cleanDistrict = district.trim();
+    if (!normalized[cleanDistrict]) {
+      normalized[cleanDistrict] = {};
+    }
+
     Object.entries(talukas || {}).forEach(([taluka, villages]) => {
-      const normalizedTaluka = taluka === 'Bansda' ? 'Vansda' : taluka;
-      const normalizedVillages = [...new Set((villages || []).map((village) => village.trim()).filter(Boolean))]
+      const cleanTaluka = taluka.trim();
+      const normalizedVillages = [...new Set((villages || []).map((v) => (v ? String(v).trim() : '')).filter(Boolean))]
         .sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }));
-      normalized[district][normalizedTaluka] = normalizedVillages;
+
+      if (!normalized[cleanDistrict][cleanTaluka]) {
+        normalized[cleanDistrict][cleanTaluka] = normalizedVillages;
+      } else {
+        normalized[cleanDistrict][cleanTaluka] = [...new Set([...normalized[cleanDistrict][cleanTaluka], ...normalizedVillages])]
+          .sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }));
+      }
     });
   });
 
@@ -105,20 +115,20 @@ const landImages = [
   'https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=1200&q=85',
 ];
 const landListingSeed = [
-  ['Mango Farm', 'Navsari', 'Gandevi', 'Agricultural Land', '₹1.25 Cr', '4 Acres', 'Gandevi', 'Gandevi'],
-  ['Sugarcane Farm', 'Navsari', 'Chikhli', 'Agricultural Land', '₹88 Lakh', '3 Acres', 'Chikhli', 'Chikhli'],
-  ['Banana Farm', 'Navsari', 'Bilimora', 'Agricultural Land', '₹96 Lakh', '2.7 Acres', 'Gandevi', 'Bilimora'],
-  ['Cotton Farm', 'Navsari', 'Amalsad', 'Agricultural Land', '₹72 Lakh', '2 Acres', 'Gandevi', 'Amalsad'],
-  ['Agricultural Plot', 'Navsari', 'Jalalpore', 'Agricultural Land', '₹48 Lakh', '1.2 Acres', 'Jalalpore', 'Jalalpore'],
-  ['Residential NA Plot', 'Surat', 'Vesu', 'Non-Agricultural Land', '₹1.1 Cr', '540 sq yd', 'Palsana', 'Vesu'],
-  ['Commercial NA Plot', 'Surat', 'Adajan', 'Non-Agricultural Land', '₹1.45 Cr', '410 sq yd', 'Choryasi', 'Adajan'],
-  ['Industrial NA Plot', 'Surat', 'Piplod', 'Non-Agricultural Land', '₹1.8 Cr', '1 Acre', 'Choryasi', 'Piplod'],
-  ['Investment NA Plot', 'Surat', 'Pal', 'Non-Agricultural Land', '₹84 Lakh', '360 sq yd', 'Choryasi', 'Pal'],
+  ['Mango Farm', 'Navsari', 'Gandevi', 'Agricultural Land', 12500000, '4 Acres', 'Gandevi', 'Gandevi'],
+  ['Sugarcane Farm', 'Navsari', 'Chikhli', 'Agricultural Land', 8800000, '3 Acres', 'Chikhli', 'Chikhli'],
+  ['Banana Farm', 'Navsari', 'Bilimora', 'Agricultural Land', 9600000, '2.7 Acres', 'Gandevi', 'Bilimora'],
+  ['Cotton Farm', 'Navsari', 'Amalsad', 'Agricultural Land', 7200000, '2 Acres', 'Gandevi', 'Amalsad'],
+  ['Agricultural Plot', 'Navsari', 'Jalalpore', 'Agricultural Land', 4800000, '1.2 Acres', 'Jalalpore', 'Jalalpore'],
+  ['Residential NA Plot', 'Surat', 'Vesu', 'Non-Agricultural Land', 11000000, '540 sq yd', 'Palsana', 'Vesu'],
+  ['Commercial NA Plot', 'Surat', 'Adajan', 'Non-Agricultural Land', 14500000, '410 sq yd', 'Choryasi', 'Adajan'],
+  ['Industrial NA Plot', 'Surat', 'Piplod', 'Non-Agricultural Land', 18000000, '1 Acre', 'Choryasi', 'Piplod'],
+  ['Investment NA Plot', 'Surat', 'Pal', 'Non-Agricultural Land', 8400000, '360 sq yd', 'Choryasi', 'Pal'],
 ];
 export const sampleProperties = landListingSeed.map(([title, city, location, propertyType, price, landArea, taluka, village], index) => {
   const image = landImages[index % landImages.length];
   const address = `${location}, ${city}, Gujarat`;
-  return { id: `land-${index + 1}`, title, city, location, district: city, subDistrict: taluka || location, taluka: taluka || location, village: village || location, type: propertyType, propertyType, price, area: landArea, landArea, googleMaps: `https://www.google.com/maps?q=${encodeURIComponent(address)}`, mapUrl: `https://www.google.com/maps?q=${encodeURIComponent(address)}&output=embed`, description: `${title} with clear access, local connectivity, and verified land details.`, images: [image, landImages[(index + 1) % landImages.length], landImages[(index + 2) % landImages.length]], gallery: [image, landImages[(index + 1) % landImages.length], landImages[(index + 2) % landImages.length]], image, pdf: '#', documentUrl: '#', seller: { name: `Broker Streets Partner ${index + 1}`, phone: `+91 98765 43${100 + index}` }, sellerName: `Broker Streets Partner ${index + 1}`, sellerPhone: `+91 98765 43${100 + index}`, uploadedDate: '2026-08-04', amenities, owner: `Broker Streets Partner ${index + 1}`, verified: true, status: 'Available', address, tags: ['Verified land'] };
+  return { id: `land-${index + 1}`, title, city, location, district: city, subDistrict: taluka || location, taluka: taluka || location, village: village || location, type: propertyType, propertyType, price, priceAmount: price, area: landArea, landArea, googleMaps: `https://www.google.com/maps?q=${encodeURIComponent(address)}`, mapUrl: `https://www.google.com/maps?q=${encodeURIComponent(address)}&output=embed`, description: `${title} with clear access, local connectivity, and verified land details.`, images: [image, landImages[(index + 1) % landImages.length], landImages[(index + 2) % landImages.length]], gallery: [image, landImages[(index + 1) % landImages.length], landImages[(index + 2) % landImages.length]], image, pdf: '#', documentUrl: '#', seller: { name: `Broker Streets Partner ${index + 1}`, phone: `+91 98765 43${100 + index}` }, sellerName: `Broker Streets Partner ${index + 1}`, sellerPhone: `+91 98765 43${100 + index}`, uploadedDate: '2026-08-04', amenities, owner: `Broker Streets Partner ${index + 1}`, verified: true, status: 'Available', address, tags: ['Verified land'] };
 });
 
 export const popularCities = [

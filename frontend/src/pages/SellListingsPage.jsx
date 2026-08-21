@@ -1,13 +1,10 @@
 import { useEffect, useMemo, useState } from 'react';
-import { ChevronDown, Filter, Search, SlidersHorizontal, X } from 'lucide-react';
-import { useLocation } from 'react-router-dom';
-import { propertyTypes, sampleProperties } from '../utils/data';
-import { gujaratDistricts, gujaratSubDistricts, gujaratVillages } from '../utils/data';
+import { Filter, Search, SlidersHorizontal, X, ChevronDown } from 'lucide-react';
+import { propertyTypes, sampleProperties, gujaratDistricts, gujaratSubDistricts, gujaratVillages } from '../utils/data';
 import { onListingsChanged, readStorage, STORAGE_KEYS } from '../utils/storage';
 import Pagination from '../components/Pagination';
 import ContactModal from '../components/ContactModal';
 import PropertyCard from '../components/PropertyCard';
-import SectionHeading from '../components/SectionHeading';
 import { useLanguage } from '../i18n/LanguageContext';
 import { formatIndianPrice } from '../utils/format';
 
@@ -28,30 +25,25 @@ const priceNumber = (value) => {
   const parsed = parseInt(digitsOnly, 10);
   return isNaN(parsed) ? 0 : parsed;
 };
-const landSizeInSqFt = (value) => {
-  const normalized = String(value || '').toLowerCase().trim();
-  if (!normalized) return 0;
-  const number = Number(normalized.replace(/[^0-9.]/g, '')) || 0;
-  if (normalized.includes('acre')) return number * 43560;
-  if (normalized.includes('sq yd') || normalized.includes('sqyd') || normalized.includes('sq. yd')) return number * 9;
-  if (normalized.includes('sq m') || normalized.includes('sqm')) return number * 10.764;
-  return number;
-};
 
-function BuyPage() {
-  const location = useLocation();
+const MIN_PRICE = 0;
+const MAX_PRICE = 200000000; // ₹20 Cr
+const PRICE_STEP = 100000;   // ₹1 Lakh (Precise increments from ₹0 to ₹20 Cr)
+
+function SellListingsPage() {
   const { t } = useLanguage();
   const [query, setQuery] = useState('');
-  const [selectedDistrict, setSelectedDistrict] = useState(t('buy.allDistricts') || 'All districts');
-  const [selectedTaluka, setSelectedTaluka] = useState(t('buy.allTalukas') || 'All talukas');
-  const [selectedVillage, setSelectedVillage] = useState(t('buy.allVillages') || 'All villages');
-  const [type, setType] = useState(t('buy.allTypes') || 'All types');
-  const [showSoldProperties, setShowSoldProperties] = useState(false);
+  const [selectedDistrict, setSelectedDistrict] = useState('All districts');
+  const [selectedTaluka, setSelectedTaluka] = useState('All talukas');
+  const [selectedVillage, setSelectedVillage] = useState('All villages');
+  const [type, setType] = useState('All types');
+  const [statusFilter, setStatusFilter] = useState('All');
+  const [priceRange, setPriceRange] = useState([MIN_PRICE, MAX_PRICE]);
   const [sort, setSort] = useState('newest');
   const [page, setPage] = useState(1);
   const [mobileFilters, setMobileFilters] = useState(false);
-  const [loading, setLoading] = useState(true);
   const [contactModal, setContactModal] = useState(null);
+
   const [listings, setListings] = useState(() => {
     const stored = readStorage(STORAGE_KEYS.listings, []);
     const source = Array.isArray(stored) && stored.length ? stored : sampleProperties;
@@ -62,21 +54,11 @@ function BuyPage() {
     return Array.from(uniqueMap.values());
   });
 
-  const MIN_PRICE = 0;
-  const MAX_PRICE = 200000000; // ₹20 Cr
-  const PRICE_STEP = 100000;   // ₹1 Lakh
-
-  const [priceRange, setPriceRange] = useState([MIN_PRICE, MAX_PRICE]);
-
   const perPage = 9;
+
   const districtOptions = ['All districts', ...gujaratDistricts];
   const talukaOptions = selectedDistrict === 'All districts' ? [] : ['All talukas', ...(gujaratSubDistricts[selectedDistrict] || [])];
   const villageOptions = selectedDistrict === 'All districts' || selectedTaluka === 'All talukas' || !selectedTaluka ? [] : ['All villages', ...(gujaratVillages[selectedDistrict]?.[selectedTaluka] || [])];
-
-  useEffect(() => {
-    const timer = window.setTimeout(() => setLoading(false), 300);
-    return () => window.clearTimeout(timer);
-  }, []);
 
   useEffect(() => {
     setSelectedTaluka('All talukas');
@@ -87,109 +69,28 @@ function BuyPage() {
     setSelectedVillage('All villages');
   }, [selectedTaluka]);
 
-  const dedupeListings = (source) => {
+  useEffect(() => {
+    const stored = readStorage(STORAGE_KEYS.listings, []);
+    const source = Array.isArray(stored) && stored.length ? stored : sampleProperties;
     const uniqueMap = new Map();
     (Array.isArray(source) ? source : []).forEach((item) => {
       if (item && item.id && !uniqueMap.has(String(item.id))) uniqueMap.set(String(item.id), item);
     });
-    return Array.from(uniqueMap.values());
-  };
-
-  useEffect(() => {
-    const stored = readStorage(STORAGE_KEYS.listings, []);
-    setListings(dedupeListings(Array.isArray(stored) && stored.length ? stored : sampleProperties));
-    const cleanup = onListingsChanged(() => {
-      const updated = readStorage(STORAGE_KEYS.listings, []);
-      setListings(dedupeListings(Array.isArray(updated) && updated.length ? updated : sampleProperties));
-    });
-    return cleanup;
+    setListings(Array.from(uniqueMap.values()));
   }, []);
 
   useEffect(() => {
-    const params = new URLSearchParams(location.search);
-    const districtParam = (params.get('district') || params.get('location'))?.trim();
-    const talukaParam = params.get('taluka')?.trim();
-    const typeParam = params.get('type')?.trim();
-
-    const validDistrict = districtParam
-      ? districtOptions.find((district) => district.toLowerCase() === districtParam.toLowerCase()) || t('buy.allDistricts') || 'All districts'
-      : t('buy.allDistricts') || 'All districts';
-
-    const validTaluka = talukaParam && validDistrict !== (t('buy.allDistricts') || 'All districts')
-      ? (gujaratSubDistricts[validDistrict] || []).find((taluka) => taluka.toLowerCase() === talukaParam.toLowerCase()) || t('buy.allTalukas') || 'All talukas'
-      : t('buy.allTalukas') || 'All talukas';
-
-    if (typeParam) {
-      const validTypes = propertyTypes || ['Agricultural Land', 'Non-Agricultural Land'];
-      const foundType = validTypes.find((tItem) => tItem.toLowerCase() === typeParam.toLowerCase());
-      if (foundType) {
-        setType(foundType);
-      }
-    }
-
-    setSelectedDistrict(validDistrict);
-    setSelectedTaluka(validTaluka);
-    setSelectedVillage(t('buy.allVillages') || 'All villages');
-    setPage(1);
-  }, [location.search, t]);
-
-  const filtered = useMemo(() => {
-    const normalized = query.trim().toLowerCase();
-    const minimum = priceRange[0];
-    const maximum = priceRange[1] >= MAX_PRICE ? Number.POSITIVE_INFINITY : priceRange[1];
-
-    const result = listings.filter((property) => {
-      const searchText = `${property.title || ''} ${property.city || ''} ${property.location || ''} ${property.type || property.propertyType || ''}`.toLowerCase();
-      const matchesSearch = !normalized || searchText.includes(normalized);
-      const matchesDistrict = selectedDistrict === 'All districts' || property.district === selectedDistrict || property.location === selectedDistrict || property.city === selectedDistrict;
-      const matchesTaluka = selectedTaluka === 'All talukas' || property.subDistrict === selectedTaluka || property.taluka === selectedTaluka;
-      const matchesVillage = selectedVillage === 'All villages' || property.village === selectedVillage;
-      const matchesType = type === 'All types' || property.type === type || property.propertyType === type;
-      const price = priceNumber(property.priceAmount || property.price);
-      const matchesBudget = price >= minimum && price <= maximum;
-      const isSold = String(property.status || 'Available').toLowerCase() === 'sold';
-      const isUnavailable = String(property.status || 'Available').toLowerCase() === 'unavailable';
-      const matchesStatus = showSoldProperties || (!isSold && !isUnavailable);
-
-      return matchesSearch && matchesDistrict && matchesTaluka && matchesVillage && matchesType && matchesBudget && matchesStatus;
+    const cleanup = onListingsChanged(() => {
+      const stored = readStorage(STORAGE_KEYS.listings, []);
+      const source = Array.isArray(stored) && stored.length ? stored : sampleProperties;
+      const uniqueMap = new Map();
+      (Array.isArray(source) ? source : []).forEach((item) => {
+        if (item && item.id && !uniqueMap.has(String(item.id))) uniqueMap.set(String(item.id), item);
+      });
+      setListings(Array.from(uniqueMap.values()));
     });
-
-    if (sort === 'oldest') {
-      return [...result].sort((a, b) => new Date(a.updatedAt || a.createdAt || a.submittedAt || a.uploadedDate || 0) - new Date(b.updatedAt || b.createdAt || b.submittedAt || b.uploadedDate || 0));
-    }
-
-    if (sort === 'price_asc') {
-      return [...result].sort((a, b) => priceNumber(a.priceAmount || a.price) - priceNumber(b.priceAmount || b.price));
-    }
-
-    if (sort === 'price_desc') {
-      return [...result].sort((a, b) => priceNumber(b.priceAmount || b.price) - priceNumber(a.priceAmount || a.price));
-    }
-
-    // Default: newest
-    return [...result].sort((a, b) => new Date(b.updatedAt || b.createdAt || b.submittedAt || b.uploadedDate || 0) - new Date(a.updatedAt || a.createdAt || a.submittedAt || a.uploadedDate || 0));
-  }, [listings, query, selectedDistrict, selectedTaluka, selectedVillage, type, priceRange, showSoldProperties, sort]);
-
-  const pageCount = Math.max(1, Math.ceil(filtered.length / perPage));
-  const activePage = Math.min(page, pageCount);
-  const paged = filtered.slice((activePage - 1) * perPage, activePage * perPage);
-
-  const change = (setter) => (event) => {
-    setter(event.target.value);
-    setPage(1);
-  };
-
-  const clearFilters = () => {
-    setQuery('');
-    setSelectedDistrict('All districts');
-    setSelectedTaluka('All talukas');
-    setSelectedVillage('All villages');
-    setType('All types');
-    setPriceRange([MIN_PRICE, MAX_PRICE]);
-    setShowSoldProperties(false);
-    setSort('newest');
-    setPage(1);
-  };
+    return cleanup;
+  }, []);
 
   useEffect(() => {
     document.body.style.overflow = mobileFilters ? 'hidden' : '';
@@ -198,71 +99,162 @@ function BuyPage() {
     };
   }, [mobileFilters]);
 
+  const filtered = useMemo(() => {
+    const normalized = query.trim().toLowerCase();
+    const minimum = priceRange[0];
+    const maximum = priceRange[1] >= MAX_PRICE ? Number.POSITIVE_INFINITY : priceRange[1];
+
+    const result = listings.filter((property) => {
+      const titleText = property.title || property.name || '';
+      const villageText = property.village || '';
+      const talukaText = property.subDistrict || property.taluka || '';
+      const districtText = property.district || property.city || property.location || '';
+      const searchText = `${titleText} ${villageText} ${talukaText} ${districtText}`.toLowerCase();
+
+      const matchesSearch = !normalized || searchText.includes(normalized);
+      const matchesDistrict = selectedDistrict === 'All districts' || property.district === selectedDistrict || property.location === selectedDistrict || property.city === selectedDistrict;
+      const matchesTaluka = selectedTaluka === 'All talukas' || property.subDistrict === selectedTaluka || property.taluka === selectedTaluka;
+      const matchesVillage = selectedVillage === 'All villages' || property.village === selectedVillage;
+      const matchesType = type === 'All types' || property.type === type || property.propertyType === type;
+
+      const price = priceNumber(property.priceAmount || property.price);
+      const matchesPrice = price >= minimum && price <= maximum;
+
+      const pStatus = String(property.status || 'Available');
+      const matchesStatus = statusFilter === 'All'
+        ? pStatus.toLowerCase() !== 'unavailable'
+        : pStatus.toLowerCase() === statusFilter.toLowerCase();
+
+      return matchesSearch && matchesDistrict && matchesTaluka && matchesVillage && matchesType && matchesPrice && matchesStatus;
+    });
+
+    if (sort === 'oldest') {
+      return [...result].sort((a, b) => new Date(a.updatedAt || a.createdAt || a.submittedAt || a.uploadedDate || 0) - new Date(a.updatedAt || a.createdAt || a.submittedAt || a.uploadedDate || 0));
+    }
+    if (sort === 'price_asc') {
+      return [...result].sort((a, b) => priceNumber(a.priceAmount || a.price) - priceNumber(b.priceAmount || b.price));
+    }
+    if (sort === 'price_desc') {
+      return [...result].sort((a, b) => priceNumber(b.priceAmount || b.price) - priceNumber(a.priceAmount || a.price));
+    }
+
+    // Default: newest
+    return [...result].sort((a, b) => new Date(b.updatedAt || b.createdAt || b.submittedAt || b.uploadedDate || 0) - new Date(a.updatedAt || a.createdAt || a.submittedAt || a.uploadedDate || 0));
+  }, [listings, query, selectedDistrict, selectedTaluka, selectedVillage, type, statusFilter, priceRange, sort]);
+
+  const pageCount = Math.max(1, Math.ceil(filtered.length / perPage));
+  const activePage = Math.min(page, pageCount);
+  const paged = filtered.slice((activePage - 1) * perPage, activePage * perPage);
+
+  const clearFilters = () => {
+    setQuery('');
+    setSelectedDistrict('All districts');
+    setSelectedTaluka('All talukas');
+    setSelectedVillage('All villages');
+    setType('All types');
+    setStatusFilter('All');
+    setPriceRange([MIN_PRICE, MAX_PRICE]);
+    setSort('newest');
+    setPage(1);
+  };
+
   const filters = (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between gap-4 border-b border-slate-100 pb-4">
+    <div className="space-y-5">
+      <div className="hidden lg:flex items-center justify-between gap-4 border-b border-slate-100 pb-3.5">
         <div className="flex items-center gap-2">
-          <Filter size={18} className="text-sage" />
-          <h2 className="text-base font-bold text-slate-900">{t('buy.filterHeading')}</h2>
+          <Filter size={18} className="text-[#1D5CA9]" />
+          <h2 className="text-base font-bold text-slate-900">{t('buy.filterHeading') || 'Filters'}</h2>
         </div>
-        <button type="button" onClick={clearFilters} className="text-xs font-bold uppercase tracking-wider text-sage hover:underline">
-          {t('buy.reset')}
+        <button type="button" onClick={clearFilters} className="text-xs font-bold uppercase tracking-wider text-[#1D5CA9] hover:underline">
+          {t('buy.reset') || 'Reset'}
         </button>
       </div>
 
+      {/* PROPERTY TYPE */}
       <label className="block">
-        <span className="field-label">{t('buy.propertyType')}</span>
-        <select value={type} onChange={change(setType)} className="field-control w-full">
-          <option value="All types">{t('buy.allTypes')}</option>
-          {propertyTypes.map((item) => (
-            <option key={item} value={item}>
-              {item === 'Agricultural Land' ? t('buyerForm.agriculturalLand') : item === 'Non-Agricultural Land' ? t('buyerForm.nonAgriculturalLand') : item}
+        <span className="field-label text-xs font-bold text-slate-700">{t('buy.propertyType') || 'Property Type'}</span>
+        <select
+          value={type}
+          onChange={(e) => { setType(e.target.value); setPage(1); }}
+          className="field-control w-full mt-1.5"
+        >
+          <option value="All types">{t('buy.allTypes') || 'All types'}</option>
+          <option value="Agricultural Land">{t('buyerForm.agriculturalLand') || 'Agricultural Land'}</option>
+          <option value="Non-Agricultural Land">{t('buyerForm.nonAgriculturalLand') || 'Non-Agricultural Land'}</option>
+        </select>
+      </label>
+
+      {/* DISTRICT */}
+      <label className="block">
+        <span className="field-label text-xs font-bold text-slate-700">{t('buy.district') || 'District'}</span>
+        <select
+          value={selectedDistrict}
+          onChange={(event) => { setSelectedDistrict(event.target.value); setPage(1); }}
+          className="field-control w-full mt-1.5"
+        >
+          {districtOptions.map((dist) => (
+            <option key={dist} value={dist}>
+              {dist === 'All districts' ? t('buy.allDistricts') || 'All districts' : t(dist)}
             </option>
           ))}
         </select>
       </label>
 
-      <label className="block">
-        <span className="field-label">{t('buy.district')}</span>
-        <select value={selectedDistrict} onChange={(event) => { setSelectedDistrict(event.target.value); setPage(1); }} className="field-control w-full">
-          {districtOptions.map((district) => (
-            <option key={district} value={district}>
-              {district === 'All districts' ? t('buy.allDistricts') : t(district)}
-            </option>
-          ))}
-        </select>
-      </label>
-
-      {selectedDistrict !== 'All districts' ? (
+      {/* TALUKA */}
+      {selectedDistrict !== 'All districts' && (
         <label className="block">
-          <span className="field-label">{t('common.taluka')}</span>
-          <select value={selectedTaluka} onChange={(event) => { setSelectedTaluka(event.target.value); setPage(1); }} className="field-control w-full">
+          <span className="field-label text-xs font-bold text-slate-700">{t('common.taluka') || 'Taluka'}</span>
+          <select
+            value={selectedTaluka}
+            onChange={(event) => { setSelectedTaluka(event.target.value); setPage(1); }}
+            className="field-control w-full mt-1.5"
+          >
             {talukaOptions.map((taluka) => (
               <option key={taluka} value={taluka}>
-                {taluka === 'All talukas' ? t('buy.allTalukas') : t(taluka)}
+                {taluka === 'All talukas' ? t('buy.allTalukas') || 'All talukas' : t(taluka)}
               </option>
             ))}
           </select>
         </label>
-      ) : null}
+      )}
 
-      {selectedDistrict !== 'All districts' && selectedTaluka !== 'All talukas' ? (
+      {/* VILLAGE */}
+      {selectedDistrict !== 'All districts' && selectedTaluka !== 'All talukas' && (
         <label className="block">
-          <span className="field-label">{t('buy.village')}</span>
-          <select value={selectedVillage} onChange={(event) => { setSelectedVillage(event.target.value); setPage(1); }} className="field-control w-full">
+          <span className="field-label text-xs font-bold text-slate-700">{t('buy.village') || 'Village'}</span>
+          <select
+            value={selectedVillage}
+            onChange={(event) => { setSelectedVillage(event.target.value); setPage(1); }}
+            className="field-control w-full mt-1.5"
+          >
             {villageOptions.map((village) => (
               <option key={village} value={village}>
-                {village === 'All villages' ? t('buy.allVillages') : t(village)}
+                {village === 'All villages' ? t('buy.allVillages') || 'All villages' : t(village)}
               </option>
             ))}
           </select>
         </label>
-      ) : null}
+      )}
 
-      {/* DUAL-HANDLE PRICE RANGE SLIDER (FIXED RANGE: ₹0 - ₹20 Cr, Step = ₹1 Lakh) */}
+      {/* LISTING STATUS */}
+      <label className="block">
+        <span className="field-label text-xs font-bold text-slate-700">Listing Status</span>
+        <select
+          value={statusFilter}
+          onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }}
+          className="field-control w-full mt-1.5"
+        >
+          <option value="All">All Statuses</option>
+          <option value="Available">Available</option>
+          <option value="Pending">Pending</option>
+          <option value="Sold">Sold</option>
+        </select>
+      </label>
+
+      {/* DUAL-HANDLE PRICE RANGE SLIDER (₹0 - ₹20 Cr, Step = ₹1 Lakh) */}
       <div className="space-y-2 rounded-xl border border-slate-100 bg-slate-50/50 p-3.5">
         <div className="flex items-center justify-between gap-2">
-          <span className="text-xs font-bold text-slate-700">{t('buy.price')}</span>
+          <span className="text-xs font-bold text-slate-700">Price Range</span>
           <span className="text-xs font-bold text-[#1D5CA9] whitespace-nowrap">
             {formatIndianPrice(priceRange[0])} — {formatIndianPrice(priceRange[1])}
           </span>
@@ -333,34 +325,26 @@ function BuyPage() {
           <span>₹20 Cr</span>
         </div>
       </div>
-
-      <label className="flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 p-3">
-        <input type="checkbox" checked={showSoldProperties} onChange={(event) => { setShowSoldProperties(event.target.checked); setPage(1); }} className="h-4 w-4 rounded border-slate-300 text-[#1D5CA9] focus:ring-[#1D5CA9]" />
-        <span className="text-xs font-semibold text-slate-700">{t('buy.showSold')}</span>
-      </label>
     </div>
   );
 
   return (
     <div className="min-h-screen w-full bg-[#FDFDFD] pb-28 sm:pb-20 dark:bg-dark-bg">
+      {/* HERO SECTION */}
       <section className="bg-[#1D5CA9] px-4 py-8 text-white sm:px-8 sm:py-12 lg:px-12 dark:bg-dark-card dark:border-b dark:border-dark-border">
         <div className="mx-auto max-w-7xl">
-          <p className="eyebrow text-white/80">{t('buy.heroCollection')}</p>
-          <h1 className="display-heading mt-2 text-2xl font-bold leading-tight text-white sm:text-4xl lg:text-5xl">{t('buy.pageTitle')}</h1>
-          <p className="mt-3 max-w-xl text-xs leading-relaxed text-white/80 sm:text-base">{t('buy.subtitle')}</p>
+          <p className="eyebrow text-white/80">{t('home.hero.sellListing') || 'PROPERTIES FOR SALE'}</p>
+          <h1 className="display-heading mt-2 text-2xl font-bold leading-tight text-white sm:text-4xl lg:text-5xl">
+            {t('home.sellListingsTitle') || 'Properties for Sale'}
+          </h1>
+          <p className="mt-3 max-w-2xl text-xs leading-relaxed text-white/80 sm:text-base">
+            {t('home.sellListingsDescription') || 'Browse Agricultural and Non-Agricultural Land available for sale across Gujarat. Search by location, property type and price.'}
+          </p>
         </div>
       </section>
 
+      {/* MAIN CONTENT AREA */}
       <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
-        {location.state?.justSubmitted && (
-          <div className="mb-6 flex items-center justify-between rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-xs font-semibold text-[#1D5CA9]">
-            <span>{t('contact.modalDescription')}</span>
-            <button type="button" onClick={() => window.history.replaceState({}, '', '/buy')}>
-              <X size={16} />
-            </button>
-          </div>
-        )}
-
         {/* TOP SEARCH & UNIFIED SORT BAR */}
         <div className="mb-6 rounded-2xl border border-slate-200/80 bg-white p-3.5 sm:p-4 shadow-sm">
           <div className="flex flex-col gap-2.5 sm:gap-3 lg:flex-row lg:items-center">
@@ -370,7 +354,7 @@ function BuyPage() {
               <input
                 aria-label={t('buy.searchTitle')}
                 value={query}
-                onChange={change(setQuery)}
+                onChange={(e) => { setQuery(e.target.value); setPage(1); }}
                 placeholder={t('buy.searchAll')}
                 className="w-full h-11 sm:h-12 rounded-xl border border-slate-200 bg-slate-50/60 pl-10 pr-4 text-xs sm:text-sm font-medium text-slate-800 outline-none transition focus:border-[#1D5CA9] focus:bg-white"
               />
@@ -384,7 +368,7 @@ function BuyPage() {
                 className="inline-flex h-11 sm:h-12 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-4 text-xs font-bold text-slate-800 transition hover:bg-slate-100 lg:hidden"
               >
                 <SlidersHorizontal size={15} className="text-[#1D5CA9]" />
-                <span>{t('buy.filterButton')}</span>
+                <span>{t('buy.filterButton') || 'Filters'}</span>
               </button>
 
               {/* STANDALONE SORT CONTROL */}
@@ -392,7 +376,7 @@ function BuyPage() {
                 <span className="pl-3.5 shrink-0 text-xs font-bold text-slate-500">{t('buy.sortBy')}:</span>
                 <select
                   value={sort}
-                  onChange={change(setSort)}
+                  onChange={(e) => { setSort(e.target.value); setPage(1); }}
                   className="w-full appearance-none border-0 bg-transparent pl-1.5 pr-10 text-xs font-bold text-slate-800 outline-none focus:outline-none focus:ring-0 cursor-pointer"
                 >
                   <option value="newest">{t('dropdown.newest')}</option>
@@ -462,41 +446,43 @@ function BuyPage() {
 
         {/* MAIN DESKTOP GRID: SIDEBAR & CARDS */}
         <div className="grid gap-6 lg:grid-cols-[260px_1fr]">
-          <aside className="hidden self-start rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm lg:sticky lg:top-24 lg:block">{filters}</aside>
-          <div className="space-y-6">
-            {loading ? (
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
-                {Array.from({ length: 6 }).map((_, index) => (
-                  <div key={index} className="h-80 animate-pulse rounded-2xl bg-slate-200/60" />
-                ))}
-              </div>
-            ) : paged.length ? (
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+          <aside className="hidden self-start rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm lg:sticky lg:top-24 lg:block">
+            {filters}
+          </aside>
+
+          <div>
+            {/* PROPERTIES GRID */}
+            {paged.length > 0 ? (
+              <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
                 {paged.map((property) => (
-                  <PropertyCard key={property.id} property={property} onContact={setContactModal} />
+                  <PropertyCard
+                    key={property.id}
+                    property={property}
+                    onContact={() => setContactModal(property)}
+                  />
                 ))}
               </div>
             ) : (
-              <div className="rounded-2xl border border-slate-200/80 bg-white px-8 py-16 text-center shadow-sm">
-                <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-[#1D5CA9]/10 text-[#1D5CA9]">
-                  <Search size={24} />
-                </div>
-                <h2 className="mt-4 text-xl font-bold text-slate-900">{t('buy.noResults')}</h2>
-                <p className="mt-2 text-xs text-slate-500">{t('buy.noResultsDetail')}</p>
-                <button type="button" onClick={clearFilters} className="mt-5 rounded-xl bg-[#1D5CA9] px-5 py-2.5 text-xs font-bold text-white shadow-sm transition hover:bg-[#1D5CA9]/90">
-                  {t('buy.clearFilters')}
-                </button>
+              <div className="my-12 rounded-2xl border border-slate-200/80 bg-white p-8 text-center shadow-sm">
+                <h3 className="text-base font-bold text-slate-800">{t('buy.noPropertiesFound') || 'No Properties Found'}</h3>
+                <p className="mt-1 text-xs text-slate-500">{t('buy.noPropertiesDesc') || 'Try adjusting your search criteria or filters.'}</p>
               </div>
             )}
 
-            {!loading && <Pagination currentPage={activePage} pageCount={pageCount} onChange={setPage} />}
+            {/* PAGINATION */}
+            <Pagination currentPage={activePage} pageCount={pageCount} onChange={setPage} />
           </div>
         </div>
       </main>
 
-      <ContactModal open={Boolean(contactModal)} onClose={() => setContactModal(null)} data={contactModal || {}} title={t('buy.contactSeller')} />
+      <ContactModal
+        open={Boolean(contactModal)}
+        onClose={() => setContactModal(null)}
+        data={contactModal || {}}
+        title={t('home.buyerContactTitle')}
+      />
     </div>
   );
 }
 
-export default BuyPage;
+export default SellListingsPage;

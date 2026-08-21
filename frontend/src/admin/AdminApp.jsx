@@ -3,6 +3,7 @@ import { Navigate, NavLink, Route, Routes, useLocation, useNavigate } from 'reac
 import { toast } from 'react-toastify';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './admin.css';
+import logo from '../assets/images/logo.png';
 import {
   writeStorage,
   appendAdminActivity,
@@ -24,6 +25,8 @@ import {
   verifyMasterGroupOtp,
 } from './masterGroupAuth';
 import { useLanguage } from '../i18n/LanguageContext';
+import { locationTranslationsGu } from '../i18n/translations';
+import { formatIndianPrice, parseNaturalIndianPrice } from '../utils/format';
 import AdminLanguageToggle from './AdminLanguageToggle';
 import {
   ADMIN_NAMES,
@@ -43,6 +46,37 @@ import {
 function ProtectedAdminRoute({ children }) {
   const auth = readMasterGroupSession();
   return auth ? children : <Navigate to="login" replace />;
+}
+
+/* ---------------- DISPLAY VALUE HELPERS ---------------- */
+function translateDisplayValue(value, t, isGujarati) {
+  if (!value && value !== 0) return '—';
+  const raw = String(value);
+  if (!isGujarati) return raw;
+  // Status values
+  if (raw.toLowerCase() === 'available') return t('admin.statusAvailable');
+  if (raw.toLowerCase() === 'unavailable') return t('admin.statusUnavailable');
+  if (raw.toLowerCase() === 'sold') return t('admin.statusSold');
+  if (raw.toLowerCase() === 'active') return t('admin.active');
+  if (raw.toLowerCase() === 'inactive') return t('admin.inactive');
+  if (raw.toLowerCase() === 'login') return t('admin.active');
+  if (raw.toLowerCase() === 'logout') return t('admin.loggedOut');
+  // Role values
+  if (raw.toLowerCase() === 'buyer') return t('admin.buyer');
+  if (raw.toLowerCase() === 'seller') return t('admin.seller');
+  if (raw.toLowerCase() === 'buyer & seller') return t('admin.buyerAndSeller');
+  if (raw.toLowerCase() === 'super-admin') return t('admin.superAdmin');
+  if (raw.toLowerCase() === 'master-group') return t('admin.masterGroupAdmin');
+  // Property type values
+  if (raw === 'Agricultural Land') return t('admin.propertyTypeAgricultural');
+  if (raw === 'Non-Agricultural Land') return t('admin.propertyTypeNonAgricultural');
+  // Price units
+  if (raw === 'Vigha') return t('admin.priceUnitVigha');
+  if (raw === 'sq.yard (var)' || raw === 'Sq.Yard' || raw === 'Var (Sq.Yard)') return t('admin.priceUnitVar');
+  if (raw === 'Sq.Ft') return t('admin.priceUnitSqFt');
+  // Location values
+  if (locationTranslationsGu[raw]) return locationTranslationsGu[raw];
+  return raw;
 }
 
 /* ---------------- STATUS / ROLE HELPERS ---------------- */
@@ -102,7 +136,11 @@ function AdminLogin() {
     const result = sendMasterGroupOtp(sanitizedMobile);
     if (!result.success) {
       setLoading(false);
-      toast.error(result.message);
+      const msg = result.message || '';
+      if (msg.includes('not authorized')) toast.error(t('admin.authNotAuthorized'));
+      else if (msg.includes('Please wait')) toast.error(t('admin.authWaitCooldown').replace('{seconds}', String(result.cooldownRemaining || '')));
+      else if (msg.includes('Unable to save')) toast.error(t('admin.authUnableToSave'));
+      else toast.error(msg);
       if (result.cooldownRemaining) setCooldown(result.cooldownRemaining);
       return;
     }
@@ -125,7 +163,14 @@ function AdminLogin() {
     const verification = verifyMasterGroupOtp({ mobile: sanitizedMobile, otp: enteredOtp });
     if (!verification.success) {
       setLoading(false);
-      toast.error(verification.message);
+      const msg = verification.message || '';
+      if (msg.includes('expired or not found')) toast.error(t('admin.authOtpExpired'));
+      else if (msg.includes('Too many attempts')) toast.error(t('admin.authTooManyAttempts'));
+      else if (msg.includes('already been used')) toast.error(t('admin.authOtpAlreadyUsed'));
+      else if (msg.includes('OTP expired')) toast.error(t('admin.authOtpExpiredNew'));
+      else if (msg.includes('Please enter the OTP')) toast.error(t('admin.authEnterOtp'));
+      else if (msg.includes('Invalid OTP')) toast.error(t('admin.authInvalidOtp'));
+      else toast.error(msg);
       return;
     }
     const session = createMasterGroupSession(sanitizedMobile);
@@ -149,7 +194,11 @@ function AdminLogin() {
     const sanitizedMobile = mobile.replace(/\D/g, '').slice(0, 10);
     const result = sendMasterGroupOtp(sanitizedMobile);
     if (!result.success) {
-      toast.error(result.message);
+      const msg = result.message || '';
+      if (msg.includes('not authorized')) toast.error(t('admin.authNotAuthorized'));
+      else if (msg.includes('Please wait')) toast.error(t('admin.authWaitCooldown').replace('{seconds}', String(result.cooldownRemaining || '')));
+      else if (msg.includes('Unable to save')) toast.error(t('admin.authUnableToSave'));
+      else toast.error(msg);
       if (result.cooldownRemaining) setCooldown(result.cooldownRemaining);
       return;
     }
@@ -169,7 +218,7 @@ function AdminLogin() {
             <AdminLanguageToggle />
           </div>
           <div className="text-center mb-4">
-            <div className="avatar mx-auto mb-3">BS</div>
+            <img src={logo} alt="Broker Streets logo" className="mx-auto mb-3 h-9 w-auto max-w-[220px] object-contain" />
             <h2 className="fw-bold page-title">{t('admin.loginTitle')}</h2>
             <p className="text-muted mb-0">{t('admin.loginSubtitle')}</p>
           </div>
@@ -219,7 +268,7 @@ function AdminLogin() {
 
 /* ---------------- DASHBOARD ---------------- */
 function Dashboard() {
-  const { t } = useLanguage();
+  const { t, isGujarati } = useLanguage();
   const [state, setState] = useState(() => ({
     properties: getAdminProperties(),
     users: getAdminUsers(),
@@ -261,9 +310,9 @@ function Dashboard() {
       else if (district === 'navsari') map.set('Navsari', (map.get('Navsari') || 0) + 1);
     });
     return ['Surat', 'Navsari']
-      .map((label) => ({ label, count: map.get(label) || 0 }))
+      .map((label) => ({ label: translateDisplayValue(label, t, isGujarati), count: map.get(label) || 0 }))
       .filter((d) => d.count > 0);
-  }, [properties]);
+  }, [properties, t, isGujarati]);
 
   // Property status counts for the donut chart
   const statusData = useMemo(() => {
@@ -271,9 +320,9 @@ function Dashboard() {
     const unavailable = properties.filter((p) => String(p.status).toLowerCase() === 'unavailable').length;
     const sold = properties.filter((p) => String(p.status).toLowerCase() === 'sold').length;
     return [
-      { label: t('admin.statusAvailable'), value: available, color: '#10b981' },
-      { label: t('admin.statusUnavailable'), value: unavailable, color: '#94a3b8' },
-      { label: t('admin.statusSold'), value: sold, color: '#ef4444' },
+      { label: t('admin.statusAvailable'), value: available, color: '#1D5CA9' },
+      { label: t('admin.statusSold'), value: sold, color: 'rgba(29, 92, 169, 0.65)' },
+      { label: t('admin.statusUnavailable'), value: unavailable, color: 'rgba(29, 92, 169, 0.25)' },
     ].filter((d) => d.value > 0);
   }, [properties, t]);
 
@@ -290,24 +339,26 @@ function Dashboard() {
   });
 
   const statCards = [
-    { key: 'total', label: t('admin.totalProperties'), value: stats.totalProperties, icon: '▦', tone: 'blue' },
-    { key: 'available', label: t('admin.availableProperties'), value: stats.availableProperties, icon: '✓', tone: 'green' },
-    { key: 'unavailable', label: t('admin.unavailableProperties'), value: stats.unavailableProperties, icon: '✕', tone: 'slate' },
-    { key: 'sold', label: t('admin.soldProperties'), value: stats.soldProperties, icon: '★', tone: 'red' },
-    { key: 'buyers', label: t('admin.totalBuyers'), value: stats.totalBuyers, icon: '◉', tone: 'indigo' },
-    { key: 'sellers', label: t('admin.totalSellers'), value: stats.totalSellers, icon: '◈', tone: 'amber' },
-    { key: 'users', label: t('admin.registeredUsers'), value: stats.registeredUsers, icon: '◎', tone: 'violet' },
+    { key: 'total', label: t('admin.totalProperties'), value: stats.totalProperties, icon: '▦' },
+    { key: 'available', label: t('admin.availableProperties'), value: stats.availableProperties, icon: '✓' },
+    { key: 'unavailable', label: t('admin.unavailableProperties'), value: stats.unavailableProperties, icon: '✕' },
+    { key: 'sold', label: t('admin.soldProperties'), value: stats.soldProperties, icon: '★' },
+    { key: 'buyers', label: t('admin.totalBuyers'), value: stats.totalBuyers, icon: '◉' },
+    { key: 'sellers', label: t('admin.totalSellers'), value: stats.totalSellers, icon: '◈' },
+    { key: 'users', label: t('admin.registeredUsers'), value: stats.registeredUsers, icon: '◎' },
   ];
 
   return (
     <div className="container-fluid px-0">
-      <div className="d-flex justify-content-between align-items-center mb-4">
+      <div className="d-flex flex-column flex-sm-row align-items-sm-center justify-content-sm-between gap-2 mb-4">
         <div>
           <h2 className="fw-bold mb-1 page-title">{t('admin.dashboard')}</h2>
           <p className="text-muted mb-0">{t('admin.overview')}</p>
         </div>
-        <div className="text-end">
-          <div className="fw-semibold">{new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</div>
+        <div className="text-start text-sm-end">
+          <div className="d-inline-flex align-items-center gap-1.5 px-3 py-1 rounded-pill border bg-white text-secondary small fw-semibold shadow-sm">
+            <span>{new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
+          </div>
         </div>
       </div>
 
@@ -317,7 +368,7 @@ function Dashboard() {
           <div className="col-6 col-xl-3" key={card.key}>
             <div className="card stat-card h-100">
               <div className="card-body d-flex align-items-center gap-3">
-                <span className={`stat-icon stat-icon-${card.tone}`}>{card.icon}</span>
+                <span className="stat-icon">{card.icon}</span>
                 <div className="stat-copy">
                   <div className="stat-label">{card.label}</div>
                   <div className="stat-value">{card.value}</div>
@@ -427,7 +478,7 @@ function Dashboard() {
 
 /* ---------------- PROPERTIES PAGE ---------------- */
 function PropertiesPage({ navigate }) {
-  const { t } = useLanguage();
+  const { t, isGujarati, getPropertyDisplayTitle } = useLanguage();
   const [query, setQuery] = useState('');
   const [status, setStatus] = useState('All');
   const [type, setType] = useState('All');
@@ -488,14 +539,14 @@ function PropertiesPage({ navigate }) {
   const row = (p) => (
     <tr key={p.id}>
       <td>
-        <div className="fw-semibold">{p.title || p.name}</div>
+        <div className="fw-semibold">{getPropertyDisplayTitle(p.title || p.name)}</div>
         <div className="small text-muted">{p.id}</div>
       </td>
       <td>{p.sellerName || p.ownerName || '—'}</td>
-      <td>{p.type || p.propertyType || '—'}</td>
-      <td>{p.district || p.city || p.location || '—'}</td>
+      <td>{translateDisplayValue(p.type || p.propertyType, t, isGujarati)}</td>
+      <td>{translateDisplayValue(p.district || p.city || p.location, t, isGujarati)}</td>
       <td>{formatPrice(p.price || p.priceAmount)}</td>
-      <td><span className={`admin-status-badge ${statusBadgeClass(p.status)}`}>{p.status || '—'}</span></td>
+      <td><span className={`admin-status-badge ${statusBadgeClass(p.status)}`}>{translateDisplayValue(p.status, t, isGujarati)}</span></td>
       <td className="small text-muted">{formatDate(p.updatedAt || p.createdAt || p.submittedAt || p.uploadedDate)}</td>
       <td>
         <div className="btn-group btn-group-sm">
@@ -537,13 +588,13 @@ function PropertiesPage({ navigate }) {
           <div className="col-6 col-md-2">
             <select className="form-select" value={type} onChange={(e) => setType(e.target.value)}>
               <option value="All">{t('admin.allTypes')}</option>
-              {types.filter((x) => x !== 'All').map((x) => <option key={x} value={x}>{x}</option>)}
+              {types.filter((x) => x !== 'All').map((x) => <option key={x} value={x}>{translateDisplayValue(x, t, isGujarati)}</option>)}
             </select>
           </div>
           <div className="col-6 col-md-2">
             <select className="form-select" value={location} onChange={(e) => setLocation(e.target.value)}>
               <option value="All">{t('admin.allLocations')}</option>
-              {locations.filter((x) => x !== 'All').map((x) => <option key={x} value={x}>{x}</option>)}
+              {locations.filter((x) => x !== 'All').map((x) => <option key={x} value={x}>{translateDisplayValue(x, t, isGujarati)}</option>)}
             </select>
           </div>
           <div className="col-6 col-md-2">
@@ -586,14 +637,14 @@ function PropertiesPage({ navigate }) {
           {filtered.map((p) => (
             <div key={p.id} className="admin-mobile-card">
               <div className="card-head">
-                <div className="fw-semibold">{p.title || p.name}</div>
-                <span className={`admin-status-badge ${statusBadgeClass(p.status)}`}>{p.status || '—'}</span>
+                <div className="fw-semibold">{getPropertyDisplayTitle(p.title || p.name)}</div>
+                <span className={`admin-status-badge ${statusBadgeClass(p.status)}`}>{translateDisplayValue(p.status, t, isGujarati)}</span>
               </div>
               <div className="mt-2">
                 <div className="row-label">{t('admin.owner')}</div>
                 <div className="row-value">{p.sellerName || p.ownerName || '—'}</div>
                 <div className="row-label mt-1">{t('admin.location')}</div>
-                <div className="row-value">{p.district || p.city || p.location || '—'} • {p.type || p.propertyType || '—'}</div>
+                <div className="row-value">{translateDisplayValue(p.district || p.city || p.location, t, isGujarati)} • {translateDisplayValue(p.type || p.propertyType, t, isGujarati)}</div>
                 <div className="row-label mt-1">{t('admin.price')}</div>
                 <div className="row-value">{formatPrice(p.price || p.priceAmount)}</div>
                 <div className="row-label mt-1">{t('admin.date')}</div>
@@ -625,13 +676,13 @@ function PropertiesPage({ navigate }) {
         <div className="modal fade show d-block" tabIndex="-1" style={{ background: 'rgba(2,6,23,0.65)' }}>
           <div className="modal-dialog modal-lg modal-dialog-centered">
             <div className="modal-content border-0 rounded-4">
-              <div className="modal-header border-0"><h5 className="modal-title fw-bold">{viewing.title || viewing.name}</h5><button className="btn-close" onClick={() => setViewing(null)} /></div>
+              <div className="modal-header border-0"><h5 className="modal-title fw-bold">{getPropertyDisplayTitle(viewing.title || viewing.name)}</h5><button className="btn-close" onClick={() => setViewing(null)} /></div>
               <div className="modal-body p-4">
                 <div className="admin-detail-row"><span className="detail-label">ID</span><span className="detail-value">{viewing.id}</span></div>
-                <div className="admin-detail-row"><span className="detail-label">{t('admin.status')}</span><span className={`admin-status-badge ${statusBadgeClass(viewing.status)}`}>{viewing.status || '—'}</span></div>
-                <div className="admin-detail-row"><span className="detail-label">{t('admin.type')}</span><span className="detail-value">{viewing.type || viewing.propertyType || '—'}</span></div>
+                <div className="admin-detail-row"><span className="detail-label">{t('admin.status')}</span><span className={`admin-status-badge ${statusBadgeClass(viewing.status)}`}>{translateDisplayValue(viewing.status, t, isGujarati)}</span></div>
+                <div className="admin-detail-row"><span className="detail-label">{t('admin.type')}</span><span className="detail-value">{translateDisplayValue(viewing.type || viewing.propertyType, t, isGujarati)}</span></div>
                 <div className="admin-detail-row"><span className="detail-label">{t('admin.location')}</span><span className="detail-value">{viewing.address || [viewing.village, viewing.subDistrict, viewing.district, viewing.state].filter(Boolean).join(', ') || '—'}</span></div>
-                <div className="admin-detail-row"><span className="detail-label">{t('admin.price')}</span><span className="detail-value">{formatPrice(viewing.price || viewing.priceAmount)} {viewing.priceUnit || ''}</span></div>
+                <div className="admin-detail-row"><span className="detail-label">{t('admin.price')}</span><span className="detail-value">{formatPrice(viewing.price || viewing.priceAmount)} {translateDisplayValue(viewing.priceUnit, t, isGujarati)}</span></div>
                 <div className="admin-detail-row"><span className="detail-label">{t('admin.area')}</span><span className="detail-value">{viewing.area || viewing.landArea || '—'}</span></div>
                 <div className="admin-detail-row"><span className="detail-label">{t('admin.seller')}</span><span className="detail-value">{viewing.sellerName || viewing.ownerName || '—'}</span></div>
                 <div className="admin-detail-row"><span className="detail-label">{t('admin.sellerMobile')}</span><span className="detail-value">{viewing.sellerPhone || viewing.ownerMobile || '—'}</span></div>
@@ -647,7 +698,7 @@ function PropertiesPage({ navigate }) {
 
 /* ---------------- ADD / EDIT PROPERTY PAGE ---------------- */
 function AddPropertyPage() {
-  const { t } = useLanguage();
+  const { t, isGujarati } = useLanguage();
   const location = useLocation();
   const navigate = useNavigate();
   const editing = location.state?.editing || null;
@@ -692,8 +743,8 @@ function AddPropertyPage() {
       location: form.district,
       city: form.district,
       address: [form.village, form.taluka, form.district, 'Gujarat'].filter(Boolean).join(', '),
-      price: form.priceAmount ? formatPrice(form.priceAmount) : t('admin.priceOnRequest'),
-      priceAmount: form.priceAmount,
+      price: form.priceAmount ? parseNaturalIndianPrice(form.priceAmount) : t('admin.priceOnRequest'),
+      priceAmount: form.priceAmount ? String(parseNaturalIndianPrice(form.priceAmount)) : '',
       priceUnit: form.priceUnit,
       landArea: form.area,
       area: form.area,
@@ -735,24 +786,38 @@ function AddPropertyPage() {
               <label className="form-label">{t('admin.propertyType')} *</label>
               <select className="form-select input-glow" value={form.type} onChange={(e) => update('type', e.target.value)} required>
                 <option value="">{t('admin.selectType')}</option>
-                <option value="Agricultural Land">Agricultural Land</option>
-                <option value="Non-Agricultural Land">Non-Agricultural Land</option>
+                <option value="Agricultural Land">{t('admin.propertyTypeAgricultural')}</option>
+                <option value="Non-Agricultural Land">{t('admin.propertyTypeNonAgricultural')}</option>
               </select>
             </div>
-            <div className="col-6 col-md-3"><label className="form-label">{t('admin.price')}</label><input className="form-control input-glow" type="number" value={form.priceAmount} onChange={(e) => update('priceAmount', e.target.value)} placeholder={t('admin.amount')} /></div>
+            <div className="col-6 col-md-3">
+              <label className="form-label">{t('admin.price')}</label>
+              <input
+                className="form-control input-glow"
+                type="text"
+                value={form.priceAmount}
+                onChange={(e) => update('priceAmount', e.target.value)}
+                placeholder={t('admin.amount')}
+              />
+              {form.priceAmount ? (
+                <small className="text-primary font-bold mt-1 block">
+                  ≈ {formatIndianPrice(parseNaturalIndianPrice(form.priceAmount))}
+                </small>
+              ) : null}
+            </div>
             <div className="col-6 col-md-3">
               <label className="form-label">{t('admin.priceUnit')}</label>
               <select className="form-select input-glow" value={form.priceUnit} onChange={(e) => update('priceUnit', e.target.value)}>
                 <option value="">{t('admin.unit')}</option>
-                <option value="Vigha">Vigha</option>
-                <option value="sq.yard (var)">Var (Sq.Yard)</option>
-                <option value="Sq.Ft">Sq.Ft</option>
+                <option value="Vigha">{t('admin.priceUnitVigha')}</option>
+                <option value="Sq.Yard">{t('admin.priceUnitVar')}</option>
+                <option value="Sq.Ft">{t('admin.priceUnitSqFt')}</option>
               </select>
             </div>
-            <div className="col-12 col-md-6"><label className="form-label">{t('admin.location')} / {t('common.district')} *</label><input className="form-control input-glow" value={form.district} onChange={(e) => update('district', e.target.value)} placeholder={`e.g. ${t('admin.surat')}, ${t('admin.navsari')}`} required /></div>
+            <div className="col-12 col-md-6"><label className="form-label">{t('admin.location')} / {t('common.district')} *</label><input className="form-control input-glow" value={form.district} onChange={(e) => update('district', e.target.value)} placeholder={`${t('admin.eg')} ${t('admin.surat')}, ${t('admin.navsari')}`} required /></div>
             <div className="col-6 col-md-3"><label className="form-label">{t('common.taluka')}</label><input className="form-control input-glow" value={form.taluka} onChange={(e) => update('taluka', e.target.value)} placeholder={t('admin.taluka')} /></div>
             <div className="col-6 col-md-3"><label className="form-label">{t('common.village')}</label><input className="form-control input-glow" value={form.village} onChange={(e) => update('village', e.target.value)} placeholder={t('admin.village')} /></div>
-            <div className="col-12 col-md-6"><label className="form-label">{t('admin.area')}</label><input className="form-control input-glow" value={form.area} onChange={(e) => update('area', e.target.value)} placeholder="e.g. 2 Vigha" /></div>
+            <div className="col-12 col-md-6"><label className="form-label">{t('admin.area')}</label><input className="form-control input-glow" value={form.area} onChange={(e) => update('area', e.target.value)} placeholder={t('admin.areaPlaceholder')} /></div>
             <div className="col-12 col-md-6">
               <label className="form-label">{t('admin.status')}</label>
               <select className="form-select input-glow" value={form.status} onChange={(e) => update('status', e.target.value)}>
@@ -779,7 +844,7 @@ function AddPropertyPage() {
 
 /* ---------------- USERS PAGE ---------------- */
 function UsersPage() {
-  const { t } = useLanguage();
+  const { t, isGujarati } = useLanguage();
   const [query, setQuery] = useState('');
   const [role, setRole] = useState('All');
   const [status, setStatus] = useState('All');
@@ -886,10 +951,10 @@ function UsersPage() {
                     <div className="small text-muted ms-0">{u.email || '—'}</div>
                   </td>
                   <td>{maskMobile(u.mobile)}</td>
-                  <td><span className={`admin-role-badge ${roleBadgeClass(u.role)}`}>{u.role}</span></td>
-                  <td>{u.city || u.district || '—'}</td>
+                  <td><span className={`admin-role-badge ${roleBadgeClass(u.role)}`}>{translateDisplayValue(u.role, t, isGujarati)}</span></td>
+                  <td>{translateDisplayValue(u.city || u.district, t, isGujarati)}</td>
                   <td className="small text-muted">{formatDate(u.createdAt)}</td>
-                  <td><span className={`admin-status-badge ${statusBadgeClass(u.status)}`}>{u.status || '—'}</span></td>
+                  <td><span className={`admin-status-badge ${statusBadgeClass(u.status)}`}>{translateDisplayValue(u.status, t, isGujarati)}</span></td>
                   <td>
                     <div className="btn-group btn-group-sm">
                       <button className="btn btn-outline-secondary" onClick={() => setDetail(u)}>{t('admin.view')}</button>
@@ -907,14 +972,14 @@ function UsersPage() {
             <div key={u.id} className="admin-mobile-card">
               <div className="card-head">
                 <div className="d-flex align-items-center gap-2"><span className="avatar" style={{ width: 34, height: 34, fontSize: '0.8rem' }}>{getInitials(u.name)}</span><span className="fw-semibold">{u.name}{u.isDemo ? <span className="admin-demo-badge">{t('admin.demoData')}</span> : null}</span></div>
-                <span className={`admin-status-badge ${statusBadgeClass(u.status)}`}>{u.status || '—'}</span>
+                <span className={`admin-status-badge ${statusBadgeClass(u.status)}`}>{translateDisplayValue(u.status, t, isGujarati)}</span>
               </div>
               <div className="mt-2">
-                <span className={`admin-role-badge ${roleBadgeClass(u.role)}`}>{u.role}</span>
+                <span className={`admin-role-badge ${roleBadgeClass(u.role)}`}>{translateDisplayValue(u.role, t, isGujarati)}</span>
                 <div className="row-label mt-2">{t('admin.mobile')}</div>
                 <div className="row-value">{maskMobile(u.mobile)}</div>
                 <div className="row-label mt-1">{t('admin.location')}</div>
-                <div className="row-value">{u.city || u.district || '—'}</div>
+                <div className="row-value">{translateDisplayValue(u.city || u.district, t, isGujarati)}</div>
                 <div className="row-label mt-1">{t('admin.registeredDate')}</div>
                 <div className="row-value">{formatDate(u.createdAt)}</div>
               </div>
@@ -941,14 +1006,14 @@ function UsersPage() {
                   <span className="avatar" style={{ width: 52, height: 52, fontSize: '1.2rem' }}>{getInitials(detail.name)}</span>
                   <div>
                     <div className="fw-bold">{detail.name}{detail.isDemo ? <span className="admin-demo-badge">{t('admin.demoData')}</span> : null}</div>
-                    <span className={`admin-role-badge ${roleBadgeClass(detail.role)}`}>{detail.role}</span>
+                    <span className={`admin-role-badge ${roleBadgeClass(detail.role)}`}>{translateDisplayValue(detail.role, t, isGujarati)}</span>
                   </div>
                 </div>
                 <div className="admin-detail-row"><span className="detail-label">{t('admin.mobile')}</span><span className="detail-value">{detail.mobile}</span></div>
                 <div className="admin-detail-row"><span className="detail-label">{t('admin.email')}</span><span className="detail-value">{detail.email || '—'}</span></div>
                 <div className="admin-detail-row"><span className="detail-label">{t('admin.registeredDate')}</span><span className="detail-value">{formatDate(detail.createdAt)}</span></div>
-                <div className="admin-detail-row"><span className="detail-label">{t('admin.location')}</span><span className="detail-value">{detail.city || detail.district || '—'}</span></div>
-                <div className="admin-detail-row"><span className="detail-label">{t('admin.accountStatus')}</span><span className={`admin-status-badge ${statusBadgeClass(detail.status)}`}>{detail.status || '—'}</span></div>
+                <div className="admin-detail-row"><span className="detail-label">{t('admin.location')}</span><span className="detail-value">{translateDisplayValue(detail.city || detail.district, t, isGujarati)}</span></div>
+                <div className="admin-detail-row"><span className="detail-label">{t('admin.accountStatus')}</span><span className={`admin-status-badge ${statusBadgeClass(detail.status)}`}>{translateDisplayValue(detail.status, t, isGujarati)}</span></div>
                 <div className="admin-detail-row"><span className="detail-label">{t('admin.buyerRequirements')}</span><span className="detail-value">{detail.buyerCount || 0}</span></div>
                 <div className="admin-detail-row"><span className="detail-label">{t('admin.listedProperties')}</span><span className="detail-value">{detail.sellerCount || 0}</span></div>
               </div>
@@ -965,15 +1030,29 @@ function UsersPage() {
 
 /* ---------------- PROFILE PAGE ---------------- */
 function ProfilePage() {
+  const navigate = useNavigate();
   const { t } = useLanguage();
   const session = readMasterGroupSession();
   const isSuper = isSuperAdminSession();
   const roleLabel = isSuper ? t('admin.superAdmin') : t('admin.masterGroupAdmin');
-  const name = ADMIN_NAMES[session?.mobile] || 'Master Group Admin';
+  const name = ADMIN_NAMES[session?.mobile] || t('admin.masterGroupAdminName');
 
   return (
     <div className="card table-card">
-      <div className="card-body">
+      <div className="card-body p-3 p-sm-4">
+        {/* Master Group Profile Back Button */}
+        <div className="mb-3">
+          <button
+            type="button"
+            onClick={() => navigate(-1)}
+            className="btn btn-sm d-inline-flex align-items-center gap-2 rounded-3 text-xs font-bold transition-all active:scale-95 shadow-sm"
+            style={{ color: '#1D5CA9', backgroundColor: 'rgba(29, 92, 169, 0.08)', borderColor: 'rgba(29, 92, 169, 0.25)', borderStyle: 'solid', borderWidth: '1px' }}
+          >
+            <span style={{ fontSize: '1.1rem', lineHeight: 1 }}>←</span>
+            <span>{t('common.back') || 'Back'}</span>
+          </button>
+        </div>
+
         <h4 className="fw-bold mb-3">{t('admin.profile')}</h4>
         <div className="d-flex align-items-center gap-3 mb-4">
           <span className="avatar" style={{ width: 56, height: 56, fontSize: '1.3rem' }}>{getInitials(name)}</span>
@@ -1166,13 +1245,10 @@ function AdminShell({ onLogout }) {
       <div className="admin-shell">
         <aside className={`admin-sidebar ${sidebarOpen ? 'open' : ''}`}>
           <div className="px-2 pb-3 border-bottom border-secondary-subtle mb-3">
-            <div className="d-flex align-items-center gap-2 mb-2">
-              <div className="avatar">BS</div>
-              <div>
-                <div className="fw-bold">Broker Streets</div>
-                <div className="small text-white-50">{t('admin.masterGroupPortal')}</div>
-              </div>
+            <div className="d-flex align-items-center mb-2">
+              <img src={logo} alt="Broker Streets" className="broker-streets-logo" />
             </div>
+            <div className="small text-muted">{t('admin.masterGroupPortal')}</div>
           </div>
           <nav className="d-flex flex-column gap-1">
             {navItems.map((item) => (
@@ -1181,7 +1257,7 @@ function AdminShell({ onLogout }) {
                 <span>{item.label}</span>
               </NavLink>
             ))}
-            <button className="btn btn-outline-light mt-3" onClick={onLogout}>{t('admin.logout')}</button>
+            <button className="btn btn-outline-primary mt-3" onClick={onLogout}>{t('admin.logout')}</button>
           </nav>
         </aside>
 

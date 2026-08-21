@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import {
   ShieldCheck,
   MapPin,
@@ -15,6 +16,11 @@ import {
   Calculator,
   Compass,
   Scale,
+  Download,
+  FileCheck,
+  FileSpreadsheet,
+  ChevronDown,
+  MessageSquare,
 } from 'lucide-react';
 import { getSubmissionDestination } from '../utils/formNavigation';
 import { sampleProperties } from '../utils/data';
@@ -25,36 +31,135 @@ import PropertyCard from '../components/PropertyCard';
 import { useLanguage } from '../i18n/LanguageContext';
 
 const governmentLinks = [
-  { id: 1, titleKey: 'home.govLandRecords', icon: FileText, url: 'https://anyror.gujarat.gov.in/' },
-  { id: 2, titleKey: 'home.govPropertyCard', icon: Building2, url: 'https://e-milkat.gujarat.gov.in/' },
-  { id: 3, titleKey: 'home.govRegistration', icon: ScrollText, url: 'https://garvi.gujarat.gov.in/' },
-  { id: 4, titleKey: 'home.govJantri', icon: Calculator, url: 'https://garvi.gujarat.gov.in/ViewJantri_New.aspx' },
-  { id: 5, titleKey: 'home.govRevenueServices', icon: Landmark, url: 'https://iora.gujarat.gov.in/' },
-  { id: 6, titleKey: 'home.govRevenueCases', icon: Scale, url: 'https://ircms.gujarat.gov.in/' },
-  { id: 7, titleKey: 'home.govEDhara', icon: Compass, url: 'https://revenuedepartment.gujarat.gov.in/e-dhara-forms' },
-  { id: 8, titleKey: 'home.govRevenueDepartment', icon: ShieldCheck, url: 'https://revenuedepartment.gujarat.gov.in/' },
-];
-
-// Distinct subtle accent themes for the government link cards
-const govCardThemes = [
-  { iconBg: 'bg-emerald-100 text-emerald-700', border: 'border-emerald-200/70 hover:border-emerald-400', from: 'from-emerald-50', to: 'to-white', ring: 'hover:ring-emerald-100' },
-  { iconBg: 'bg-sky-100 text-sky-700', border: 'border-sky-200/70 hover:border-sky-400', from: 'from-sky-50', to: 'to-white', ring: 'hover:ring-sky-100' },
-  { iconBg: 'bg-violet-100 text-violet-700', border: 'border-violet-200/70 hover:border-violet-400', from: 'from-violet-50', to: 'to-white', ring: 'hover:ring-violet-100' },
-  { iconBg: 'bg-amber-100 text-amber-700', border: 'border-amber-200/70 hover:border-amber-400', from: 'from-amber-50', to: 'to-white', ring: 'hover:ring-amber-100' },
-  { iconBg: 'bg-teal-100 text-teal-700', border: 'border-teal-200/70 hover:border-teal-400', from: 'from-teal-50', to: 'to-white', ring: 'hover:ring-teal-100' },
-  { iconBg: 'bg-rose-100 text-rose-700', border: 'border-rose-200/70 hover:border-rose-400', from: 'from-rose-50', to: 'to-white', ring: 'hover:ring-rose-100' },
-  { iconBg: 'bg-indigo-100 text-indigo-700', border: 'border-indigo-200/70 hover:border-indigo-400', from: 'from-indigo-50', to: 'to-white', ring: 'hover:ring-indigo-100' },
-  { iconBg: 'bg-emerald-100 text-emerald-700', border: 'border-emerald-200/70 hover:border-emerald-400', from: 'from-emerald-50', to: 'to-white', ring: 'hover:ring-emerald-100' },
+  {
+    id: 1,
+    titleKey: 'home.govDastavejDownload',
+    icon: FileText,
+    url: 'https://garvi.gujarat.gov.in/FrmViewUploadedScanDocumentsforCitizen_New.aspx',
+    iconBg: 'bg-blue-50 text-blue-600 border border-blue-200/80 group-hover:bg-blue-600 group-hover:text-white',
+    border: 'border-slate-200/80 hover:border-blue-500/60 hover:shadow-blue-500/10',
+    from: 'from-blue-50/40',
+    to: 'to-white',
+    titleHover: 'group-hover:text-blue-600',
+  },
+  {
+    id: 2,
+    titleKey: 'home.govPropertyCard',
+    icon: Building2,
+    url: 'https://e-milkat.gujarat.gov.in/GeneralReport.aspx',
+    iconBg: 'bg-emerald-50 text-emerald-600 border border-emerald-200/80 group-hover:bg-emerald-600 group-hover:text-white',
+    border: 'border-slate-200/80 hover:border-emerald-500/60 hover:shadow-emerald-500/10',
+    from: 'from-emerald-50/40',
+    to: 'to-white',
+    titleHover: 'group-hover:text-emerald-600',
+  },
+  {
+    id: 3,
+    titleKey: 'home.gov712Entry',
+    icon: ScrollText,
+    url: 'https://anyror.gujarat.gov.in/LandRecordRural.aspx',
+    iconBg: 'bg-amber-50 text-amber-600 border border-amber-200/80 group-hover:bg-amber-600 group-hover:text-white',
+    border: 'border-slate-200/80 hover:border-amber-500/60 hover:shadow-amber-500/10',
+    from: 'from-amber-50/40',
+    to: 'to-white',
+    titleHover: 'group-hover:text-amber-600',
+  },
+  {
+    id: 4,
+    titleKey: 'home.govDownloadPropertyCard',
+    icon: Download,
+    url: 'https://e-milkat.gujarat.gov.in/ioraonlinepcard/ioraonlinepcard.aspx',
+    iconBg: 'bg-cyan-50 text-cyan-600 border border-cyan-200/80 group-hover:bg-cyan-600 group-hover:text-white',
+    border: 'border-slate-200/80 hover:border-cyan-500/60 hover:shadow-cyan-500/10',
+    from: 'from-cyan-50/40',
+    to: 'to-white',
+    titleHover: 'group-hover:text-cyan-600',
+  },
+  {
+    id: 5,
+    titleKey: 'home.gov712Download',
+    icon: FileCheck,
+    url: 'https://iora.gujarat.gov.in/ror_online.aspx',
+    iconBg: 'bg-violet-50 text-violet-600 border border-violet-200/80 group-hover:bg-violet-600 group-hover:text-white',
+    border: 'border-slate-200/80 hover:border-violet-500/60 hover:shadow-violet-500/10',
+    from: 'from-violet-50/40',
+    to: 'to-white',
+    titleHover: 'group-hover:text-violet-600',
+  },
+  {
+    id: 6,
+    titleKey: 'home.govJantriRate',
+    icon: Calculator,
+    url: 'https://garvi.gujarat.gov.in/ViewJantri_New.aspx',
+    iconBg: 'bg-rose-50 text-rose-600 border border-rose-200/80 group-hover:bg-rose-600 group-hover:text-white',
+    border: 'border-slate-200/80 hover:border-rose-500/60 hover:shadow-rose-500/10',
+    from: 'from-rose-50/40',
+    to: 'to-white',
+    titleHover: 'group-hover:text-rose-600',
+  },
+  {
+    id: 7,
+    titleKey: 'home.govIndex2',
+    icon: FileSpreadsheet,
+    url: 'https://garvi.gujarat.gov.in/frmIndex2_New.aspx',
+    iconBg: 'bg-indigo-50 text-indigo-600 border border-indigo-200/80 group-hover:bg-indigo-600 group-hover:text-white',
+    border: 'border-slate-200/80 hover:border-indigo-500/60 hover:shadow-indigo-500/10',
+    from: 'from-indigo-50/40',
+    to: 'to-white',
+    titleHover: 'group-hover:text-indigo-600',
+  },
+  {
+    id: 8,
+    titleKey: 'home.govRevenueCaseStatus',
+    icon: Scale,
+    url: 'https://ircms.gujarat.gov.in/ViewCaseStatus',
+    iconBg: 'bg-purple-50 text-purple-600 border border-purple-200/80 group-hover:bg-purple-600 group-hover:text-white',
+    border: 'border-slate-200/80 hover:border-purple-500/60 hover:shadow-purple-500/10',
+    from: 'from-purple-50/40',
+    to: 'to-white',
+    titleHover: 'group-hover:text-purple-600',
+  },
+  {
+    id: 9,
+    titleKey: 'home.govEDharaForms',
+    icon: Compass,
+    url: 'https://revenuedepartment.gujarat.gov.in/e-dhara-forms',
+    iconBg: 'bg-teal-50 text-teal-600 border border-teal-200/80 group-hover:bg-teal-600 group-hover:text-white',
+    border: 'border-slate-200/80 hover:border-teal-500/60 hover:shadow-teal-500/10',
+    from: 'from-teal-50/40',
+    to: 'to-white',
+    titleHover: 'group-hover:text-teal-600',
+  },
+  {
+    id: 10,
+    titleKey: 'home.govIORAServices',
+    icon: Landmark,
+    url: 'https://revenuedepartment.gujarat.gov.in/iora-service',
+    iconBg: 'bg-sky-50 text-sky-600 border border-sky-200/80 group-hover:bg-sky-600 group-hover:text-white',
+    border: 'border-slate-200/80 hover:border-sky-500/60 hover:shadow-sky-500/10',
+    from: 'from-sky-50/40',
+    to: 'to-white',
+    titleHover: 'group-hover:text-sky-600',
+  },
 ];
 
 // Distinct subtle accent themes for the location cards
 const locationCardThemes = [
-  { iconBg: 'bg-emerald-100 text-emerald-700', border: 'border-emerald-200/70 hover:border-emerald-400', from: 'from-emerald-50', to: 'to-white' },
-  { iconBg: 'bg-sky-100 text-sky-700', border: 'border-sky-200/70 hover:border-sky-400', from: 'from-sky-50', to: 'to-white' },
-  { iconBg: 'bg-amber-100 text-amber-700', border: 'border-amber-200/70 hover:border-amber-400', from: 'from-amber-50', to: 'to-white' },
-  { iconBg: 'bg-violet-100 text-violet-700', border: 'border-violet-200/70 hover:border-violet-400', from: 'from-violet-50', to: 'to-white' },
-  { iconBg: 'bg-teal-100 text-teal-700', border: 'border-teal-200/70 hover:border-teal-400', from: 'from-teal-50', to: 'to-white' },
-  { iconBg: 'bg-rose-100 text-rose-700', border: 'border-rose-200/70 hover:border-rose-400', from: 'from-rose-50', to: 'to-white' },
+  { iconBg: 'bg-primary/10 text-primary', border: 'border-slate-200/70 hover:border-primary/40', from: 'from-slate-50', to: 'to-white' },
+  { iconBg: 'bg-primary/10 text-primary', border: 'border-slate-200/70 hover:border-primary/40', from: 'from-slate-50', to: 'to-white' },
+  { iconBg: 'bg-primary/10 text-primary', border: 'border-slate-200/70 hover:border-primary/40', from: 'from-slate-50', to: 'to-white' },
+  { iconBg: 'bg-primary/10 text-primary', border: 'border-slate-200/70 hover:border-primary/40', from: 'from-slate-50', to: 'to-white' },
+  { iconBg: 'bg-primary/10 text-primary', border: 'border-slate-200/70 hover:border-primary/40', from: 'from-slate-50', to: 'to-white' },
+  { iconBg: 'bg-primary/10 text-primary', border: 'border-slate-200/70 hover:border-primary/40', from: 'from-slate-50', to: 'to-white' },
+];
+
+// FAQ items (translation keys)
+const faqItems = [
+  { q: 'home.faq1Q', a: 'home.faq1A' },
+  { q: 'home.faq2Q', a: 'home.faq2A' },
+  { q: 'home.faq3Q', a: 'home.faq3A' },
+  { q: 'home.faq4Q', a: 'home.faq4A' },
+  { q: 'home.faq5Q', a: 'home.faq5A' },
 ];
 
 function HomePage() {
@@ -62,10 +167,78 @@ function HomePage() {
   const { t, getPropertyDisplayTitle, isGujarati } = useLanguage();
   const [latestProperties, setLatestProperties] = useState([]);
   const [contactModal, setContactModal] = useState(null);
+  const [openFaq, setOpenFaq] = useState(null);
 
   // Search state
   const [searchType, setSearchType] = useState('');
   const [searchLocation, setSearchLocation] = useState('');
+
+  // Review Slider State (Unconditional 4-second Auto Slider)
+  const [currentReviewIndex, setCurrentReviewIndex] = useState(0);
+  const prefersReducedMotion = useReducedMotion();
+
+  // Hero Image Carousel State (4-second Auto Slider with realistic Indian agricultural land images)
+  const heroImages = useMemo(
+    () => [
+      {
+        src: 'https://images.unsplash.com/photo-1592982537447-7440770cbfc9?auto=format&fit=crop&w=1200&q=85',
+        location: 'Surat & Navsari',
+        titleKey: 'home.verifiedListingTitle',
+      },
+      {
+        src: 'https://images.unsplash.com/photo-1625246333195-78d9c38ad449?auto=format&fit=crop&w=1200&q=85',
+        location: 'Surat (Olpad)',
+        titleKey: 'buyerForm.agriculturalLand',
+      },
+      {
+        src: 'https://images.unsplash.com/photo-1605000797499-95a51c5269ae?auto=format&fit=crop&w=1200&q=85',
+        location: 'Navsari (Gandevi)',
+        titleKey: 'buyerForm.agriculturalLand',
+      },
+      {
+        src: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1200&q=85',
+        location: 'Surat (Kamrej)',
+        titleKey: 'buyerForm.nonAgriculturalLand',
+      },
+    ],
+    []
+  );
+
+  const [heroImageIndex, setHeroImageIndex] = useState(0);
+
+  // Preload hero images to ensure zero layout flash or jumping during transition
+  useEffect(() => {
+    heroImages.forEach((item) => {
+      const img = new Image();
+      img.src = item.src;
+    });
+  }, [heroImages]);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setHeroImageIndex((prev) => (prev + 1) % heroImages.length);
+    }, 4000);
+    return () => clearInterval(timer);
+  }, [heroImages.length]);
+
+  const reviews = useMemo(
+    () => [
+      { text: t('home.review1Text'), author: t('home.review1Author') },
+      { text: t('home.review2Text'), author: t('home.review2Author') },
+      { text: t('home.review3Text'), author: t('home.review3Author') },
+      { text: t('home.review4Text'), author: t('home.review4Author') },
+    ],
+    [t]
+  );
+
+  // Auto-slide timer: advances currentReviewIndex every 4000ms continuously (0 -> 1 -> 2 -> 3 -> 0...)
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentReviewIndex((prevIndex) => (prevIndex + 1) % reviews.length);
+    }, 4000);
+
+    return () => clearInterval(timer);
+  }, [reviews.length]);
 
   const goToBuy = () => navigate(getSubmissionDestination('buyerFormSubmitted', '/buyer-form', '/buy'));
   const goToSell = () => navigate(getSubmissionDestination('sellerFormSubmitted', '/seller-form', '/sell'));
@@ -113,15 +286,15 @@ function HomePage() {
   const latestActiveProperties = latestProperties.slice(0, 6);
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] pb-16 text-slate-900">
+    <div className="min-h-screen bg-white pb-16 text-slate-900">
       <main className="mx-auto max-w-6xl space-y-6 px-4 py-4 sm:px-6 lg:space-y-8 lg:px-8">
 
         {/* 1. COMPACT HERO SECTION */}
         <section className="overflow-hidden rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm sm:p-6 lg:p-8">
           <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
             <div className="space-y-4">
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-sage">
-                <Sparkles size={13} /> {t('app.subtitle')}
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-sage/10 px-3 py-1 text-xs font-bold text-sage">
+                <Sparkles size={13} /> {t('home.hero.heading')}
               </span>
               <h1 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl lg:text-4xl">
                 {t('home.hero.title')}
@@ -148,26 +321,61 @@ function HomePage() {
             </div>
 
             <div className="relative h-44 w-full overflow-hidden rounded-xl bg-slate-100 sm:h-52 lg:h-60">
-              <img
-                src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1200&q=85"
-                alt="Agricultural & NA Land in Gujarat"
-                className="h-full w-full object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/40 via-transparent to-transparent" />
-              <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between rounded-lg bg-white/90 px-3 py-1.5 backdrop-blur-sm">
-                <span className="text-xs font-semibold text-slate-900">
-                  {t('home.verifiedListingTitle')}
+              <AnimatePresence mode="wait">
+                <motion.img
+                  key={heroImageIndex}
+                  src={heroImages[heroImageIndex].src}
+                  alt="Agricultural & NA Land in Gujarat"
+                  initial={prefersReducedMotion ? { opacity: 1 } : { opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={prefersReducedMotion ? { opacity: 1 } : { opacity: 0 }}
+                  transition={prefersReducedMotion ? { duration: 0 } : { duration: 0.5 }}
+                  className="absolute inset-0 h-full w-full object-cover"
+                />
+              </AnimatePresence>
+
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/50 via-transparent to-transparent pointer-events-none" />
+
+
+
+              <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between rounded-lg bg-white/90 px-3 py-1.5 backdrop-blur-sm z-10">
+                <span className="text-xs font-semibold text-slate-900 truncate">
+                  {t(heroImages[heroImageIndex].titleKey)}
                 </span>
-                <span className="text-[11px] font-bold text-sage">Surat & Navsari</span>
+                <span className="text-[11px] font-bold text-sage shrink-0">
+                  {heroImages[heroImageIndex].location}
+                </span>
               </div>
             </div>
           </div>
         </section>
 
+        {/* PROMINENT HERO ACTION BAR: VIEW ALL BUY LISTINGS & VIEW ALL SELL LISTINGS */}
+        <section className="rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm sm:p-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+            <button
+              type="button"
+              onClick={() => navigate('/buyer-requirements')}
+              className="inline-flex min-h-[50px] items-center justify-center gap-2.5 rounded-xl bg-[#1D5CA9] px-6 py-3.5 text-base font-bold text-white shadow-md transition hover:bg-[#1D5CA9]/90 active:scale-[0.99]"
+            >
+              <span>{t('home.viewAllBuyListings')}</span>
+              <ArrowRight size={18} />
+            </button>
+            <button
+              type="button"
+              onClick={() => navigate('/sell-listings')}
+              className="inline-flex min-h-[50px] items-center justify-center gap-2.5 rounded-xl border-2 border-[#1D5CA9] bg-[#FDFDFD] px-6 py-3.5 text-base font-bold text-[#1D5CA9] shadow-sm transition hover:bg-[#1D5CA9]/10 active:scale-[0.99]"
+            >
+              <span>{t('home.viewAllSellListings')}</span>
+              <ArrowRight size={18} />
+            </button>
+          </div>
+        </section>
+
         {/* 2. USEFUL GOVERNMENT LINKS (COLORFUL PREMIUM CARDS) */}
-        <section className="rounded-2xl border border-slate-200/80 bg-gradient-to-br from-emerald-50/80 via-sky-50/60 to-white p-4 shadow-sm sm:p-5">
+        <section className="rounded-2xl border border-slate-200/80 bg-gradient-to-br from-sage/10 via-primary/5 to-white p-4 shadow-sm sm:p-5">
           <div className="flex items-center gap-2.5">
-            <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-100 to-teal-50 text-emerald-700 shadow-sm ring-1 ring-emerald-200/60">
+            <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-primary/10 to-primary/5 text-sage shadow-sm ring-1 ring-sage/20">
               <Landmark size={19} />
             </span>
             <div>
@@ -180,28 +388,25 @@ function HomePage() {
             </div>
           </div>
 
-          <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-            {governmentLinks.map((item, index) => {
+          <div className="mt-4 grid grid-cols-3 gap-2 sm:gap-3 md:grid-cols-3 lg:grid-cols-5">
+            {governmentLinks.map((item) => {
               const Icon = item.icon;
-              const theme = govCardThemes[index % govCardThemes.length];
-              const handleClick = () => {
-                window.open(item.url, '_blank', 'noopener,noreferrer');
-              };
               return (
-                <button
+                <a
                   key={item.id}
-                  type="button"
-                  onClick={handleClick}
+                  href={item.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   aria-label={t(item.titleKey)}
-                  className={`group flex min-h-[120px] flex-col items-center justify-center rounded-2xl border bg-gradient-to-b ${theme.from} ${theme.to} ${theme.border} px-3 py-4 text-center shadow-xs transition-all duration-300 hover:-translate-y-1 hover:shadow-lg active:scale-[0.98] sm:hover:-translate-y-1.5`}
+                  className={`group flex min-h-[92px] sm:min-h-[110px] flex-col items-center justify-between rounded-xl sm:rounded-2xl border bg-gradient-to-b ${item.from} ${item.to} ${item.border} p-2 sm:p-4 text-center shadow-xs transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl active:scale-[0.98] cursor-pointer`}
                 >
-                  <span className={`flex h-11 w-11 items-center justify-center rounded-xl ${theme.iconBg} shadow-sm transition-transform duration-300 group-hover:scale-110 group-hover:-translate-y-0.5`}>
-                    <Icon size={20} />
+                  <span className={`flex h-8 w-8 sm:h-11 sm:w-11 items-center justify-center rounded-lg sm:rounded-xl ${item.iconBg} shadow-sm transition-all duration-300 group-hover:scale-110 group-hover:-translate-y-0.5`}>
+                    <Icon className="h-4 w-4 sm:h-5 sm:w-5" />
                   </span>
-                  <h3 className="mt-2.5 text-sm font-bold leading-snug text-slate-900">
+                  <h3 className={`mt-1.5 sm:mt-2.5 text-[10px] sm:text-xs font-bold leading-tight sm:leading-snug text-slate-900 transition-colors duration-300 ${item.titleHover}`}>
                     {t(item.titleKey)}
                   </h3>
-                </button>
+                </a>
               );
             })}
           </div>
@@ -258,8 +463,8 @@ function HomePage() {
           </h2>
 
           <div className="grid grid-cols-2 gap-3 sm:gap-4">
-            <div className="group flex flex-col justify-between rounded-2xl border border-slate-200/80 bg-white p-4 text-left shadow-xs transition duration-300 hover:border-emerald-300 sm:hover:-translate-y-0.5 sm:hover:shadow-md">
-              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-50 text-emerald-700 transition duration-300 group-hover:scale-105">
+            <div className="group flex flex-col justify-between rounded-2xl border border-slate-200/80 bg-white p-4 text-left shadow-xs transition duration-300 hover:border-primary/40 sm:hover:-translate-y-0.5 sm:hover:shadow-md">
+              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 text-primary transition duration-300 group-hover:scale-105">
                 <Sprout size={22} />
               </div>
               <div className="mt-3">
@@ -272,8 +477,8 @@ function HomePage() {
               </div>
             </div>
 
-            <div className="group flex flex-col justify-between rounded-2xl border border-slate-200/80 bg-white p-4 text-left shadow-xs transition duration-300 hover:border-sky-300 sm:hover:-translate-y-0.5 sm:hover:shadow-md">
-              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-sky-50 text-sky-700 transition duration-300 group-hover:scale-105">
+            <div className="group flex flex-col justify-between rounded-2xl border border-slate-200/80 bg-white p-4 text-left shadow-xs transition duration-300 hover:border-primary/40 sm:hover:-translate-y-0.5 sm:hover:shadow-md">
+              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 text-primary transition duration-300 group-hover:scale-105">
                 <Building2 size={22} />
               </div>
               <div className="mt-3">
@@ -359,31 +564,108 @@ function HomePage() {
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
             <div className="rounded-xl border border-slate-100 bg-slate-50/60 p-3">
               <ShieldCheck size={18} className="text-sage" />
-              <h4 className="mt-1.5 text-xs font-bold text-slate-900">{t('home.verifiedListingTitle')}</h4>
-              <p className="mt-0.5 text-[11px] text-slate-500 line-clamp-2">{t('home.verifiedListingDescription')}</p>
+              <h4 className="mt-1.5 text-xs font-bold text-slate-900">{t('home.whyChoose1Title')}</h4>
+              <p className="mt-0.5 text-[11px] text-slate-500 line-clamp-2">{t('home.whyChoose1Desc')}</p>
             </div>
 
             <div className="rounded-xl border border-slate-100 bg-slate-50/60 p-3">
               <MapPin size={18} className="text-sage" />
-              <h4 className="mt-1.5 text-xs font-bold text-slate-900">{t('home.localExpertiseTitle')}</h4>
-              <p className="mt-0.5 text-[11px] text-slate-500 line-clamp-2">{t('home.localExpertiseDescription')}</p>
+              <h4 className="mt-1.5 text-xs font-bold text-slate-900">{t('home.whyChoose2Title')}</h4>
+              <p className="mt-0.5 text-[11px] text-slate-500 line-clamp-2">{t('home.whyChoose2Desc')}</p>
             </div>
 
             <div className="rounded-xl border border-slate-100 bg-slate-50/60 p-3">
               <Users size={18} className="text-sage" />
-              <h4 className="mt-1.5 text-xs font-bold text-slate-900">{t('home.directContactTitle')}</h4>
-              <p className="mt-0.5 text-[11px] text-slate-500 line-clamp-2">{t('home.directContactDescription')}</p>
+              <h4 className="mt-1.5 text-xs font-bold text-slate-900">{t('home.whyChoose3Title')}</h4>
+              <p className="mt-0.5 text-[11px] text-slate-500 line-clamp-2">{t('home.whyChoose3Desc')}</p>
             </div>
 
             <div className="rounded-xl border border-slate-100 bg-slate-50/60 p-3">
               <Sparkles size={18} className="text-sage" />
-              <h4 className="mt-1.5 text-xs font-bold text-slate-900">{t('home.trustedPlatformTitle')}</h4>
-              <p className="mt-0.5 text-[11px] text-slate-500 line-clamp-2">{t('home.trustedPlatformDesc')}</p>
+              <h4 className="mt-1.5 text-xs font-bold text-slate-900">{t('home.whyChoose4Title')}</h4>
+              <p className="mt-0.5 text-[11px] text-slate-500 line-clamp-2">{t('home.whyChoose4Desc')}</p>
             </div>
           </div>
         </section>
 
-        {/* 8. BUYER REQUIREMENTS (ONE COMPACT CARD) */}
+        {/* 7.5 FAQ SECTION */}
+        <section className="rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm sm:p-5">
+          <h2 className="mb-3 text-xs font-bold uppercase tracking-wider text-slate-500">
+            {t('home.faqTitle')}
+          </h2>
+
+          <div className="space-y-2.5">
+            {faqItems.map((item, index) => {
+              const isOpen = openFaq === index;
+              return (
+                <div key={index} className="overflow-hidden rounded-xl border border-slate-100 bg-slate-50/60">
+                  <button
+                    type="button"
+                    onClick={() => setOpenFaq(isOpen ? null : index)}
+                    aria-expanded={isOpen}
+                    className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left transition hover:bg-slate-100/70"
+                  >
+                    <span className="text-sm font-bold text-slate-900">{t(item.q)}</span>
+                    <ChevronDown
+                      size={16}
+                      className={`flex-shrink-0 text-sage transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}
+                    />
+                  </button>
+                  <div
+                    className={`grid transition-all duration-300 ease-in-out ${isOpen ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}`}
+                  >
+                    <div className="overflow-hidden">
+                      <p className="whitespace-pre-line px-4 pb-3 text-xs leading-relaxed text-slate-600 sm:text-sm">
+                        {t(item.a)}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </section>
+
+        {/* 8. REVIEWS / TESTIMONIALS SECTION (AUTOMATIC SLIDER) */}
+        <section className="rounded-2xl border border-slate-200/80 bg-white p-4 sm:p-6 shadow-sm">
+          {/* BADGE & HEADING */}
+          <div className="text-center max-w-2xl mx-auto mb-4 sm:mb-5">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-[#1D5CA9]/10 px-3 py-1 text-xs font-bold uppercase tracking-wider text-[#1D5CA9]">
+              <MessageSquare size={13} /> {t('home.reviewsSectionLabel')}
+            </span>
+            <h2 className="mt-1.5 text-xl font-bold tracking-tight text-slate-900 sm:text-2xl lg:text-3xl">
+              {t('home.reviewsTitle')}
+            </h2>
+          </div>
+
+          {/* SINGLE CENTERED TESTIMONIAL CARD WITH AUTOMATIC SLIDE/FADE TRANSITION */}
+          <div className="max-w-xl mx-auto relative overflow-hidden">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={currentReviewIndex}
+                initial={prefersReducedMotion ? { opacity: 1 } : { opacity: 0, x: 30 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={prefersReducedMotion ? { opacity: 1 } : { opacity: 0, x: -30 }}
+                transition={prefersReducedMotion ? { duration: 0 } : { duration: 0.4, ease: [0.25, 1, 0.5, 1] }}
+                className="flex flex-col justify-between rounded-xl border border-slate-200/80 bg-[#FDFDFD] p-4 sm:p-5 shadow-[0_4px_16px_rgba(29,92,169,0.04)]"
+              >
+                <div>
+                  <span className="block font-serif text-3xl font-bold leading-none text-[#1D5CA9]/40 select-none mb-2">“</span>
+                  <p className="text-xs leading-relaxed text-slate-700 sm:text-sm md:text-base">
+                    {reviews[currentReviewIndex]?.text}
+                  </p>
+                </div>
+                <div className="mt-4 pt-3 border-t border-slate-100">
+                  <span className="text-xs sm:text-sm font-semibold text-[#1D5CA9]">
+                    {reviews[currentReviewIndex]?.author}
+                  </span>
+                </div>
+              </motion.div>
+            </AnimatePresence>
+          </div>
+        </section>
+
+        {/* 9. BUYER REQUIREMENTS (ONE COMPACT CARD) */}
         <section className="rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm sm:p-5">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div className="space-y-1">
@@ -400,7 +682,7 @@ function HomePage() {
             <button
               type="button"
               onClick={() => navigate('/buyer-requirements')}
-              className="inline-flex h-10 flex-shrink-0 items-center justify-center gap-1 rounded-xl border border-sage/30 bg-emerald-50/50 px-4 text-xs font-bold text-sage transition hover:bg-emerald-50"
+              className="inline-flex h-10 flex-shrink-0 items-center justify-center gap-1 rounded-xl border border-sage/30 bg-sage/10 px-4 text-xs font-bold text-sage transition hover:bg-sage/20"
             >
               <span>{t('home.viewRequirements')}</span>
               <ArrowRight size={13} />

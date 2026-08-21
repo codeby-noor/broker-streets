@@ -1,4 +1,5 @@
 import { readStorage, writeStorage, STORAGE_KEYS } from '../utils/storage';
+import { formatIndianPrice } from '../utils/format';
 
 /**
  * ADMIN DEMO DATA + HELPERS
@@ -440,9 +441,7 @@ export function maskMobile(mobile) {
 
 export function formatPrice(value) {
     if (value === undefined || value === null || value === '') return '—';
-    const num = Number(String(value).replace(/[^\d]/g, ''));
-    if (!num) return String(value);
-    return `₹${num.toLocaleString('en-IN')}`;
+    return formatIndianPrice(value);
 }
 
 export function formatDate(value) {

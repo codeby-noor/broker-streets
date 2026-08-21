@@ -15,21 +15,21 @@ function SellPage() {
   const { t } = useLanguage();
 
   return (
-    <div className="-mx-4 -mt-8 space-y-16 bg-[#FFFEFE] pb-20 sm:-mx-6 lg:-mx-8">
-      <section className="bg-ink px-6 py-20 text-white sm:px-10 lg:px-12">
-        <div className="mx-auto max-w-7xl"><p className="eyebrow text-blue-100">{t('sell.pageEyebrow')}</p>
-        {justSubmitted && (
-          <div className="mb-5 border border-blue-200/30 bg-white/10 p-4 text-center">
-            <p className="text-lg font-semibold text-white">{t('sell.requestReceived')}</p>
-          </div>
-        )}
-        <h1 className="mt-4 max-w-2xl text-5xl font-bold leading-tight text-white sm:text-6xl">{t('sell.heroTitle')}</h1>
-        <p className="mt-5 max-w-xl text-lg leading-8 text-white/70">{t('sell.heroDescription')}</p></div>
+    <div className="-mx-4 -mt-8 space-y-16 bg-cream pb-28 sm:pb-20 sm:-mx-6 lg:-mx-8 dark:bg-dark-bg">
+      <section className="bg-[#1D5CA9] px-6 py-20 text-white sm:px-10 lg:px-12 dark:bg-dark-card dark:border-b dark:border-dark-border">
+        <div className="mx-auto max-w-7xl"><p className="eyebrow text-white/80">{t('sell.pageEyebrow')}</p>
+          {justSubmitted && (
+            <div className="mb-5 border border-white/30 bg-white/10 p-4 text-center">
+              <p className="text-lg font-semibold text-white">{t('sell.requestReceived')}</p>
+            </div>
+          )}
+          <h1 className="mt-4 max-w-2xl text-5xl font-bold leading-tight text-white sm:text-6xl">{t('sell.heroTitle')}</h1>
+          <p className="mt-5 max-w-xl text-lg leading-8 text-white/80">{t('sell.heroDescription')}</p></div>
       </section>
 
       <section className="mx-auto grid max-w-7xl gap-5 px-6 sm:grid-cols-3 lg:px-12"><div className="border border-slate-200 bg-white p-6 shadow-card"><strong className="block text-3xl text-primary">1,200+</strong><span className="mt-2 block text-sm text-muted">{t('sell.propertyEnquiries')}</span></div><div className="border border-slate-200 bg-white p-6 shadow-card"><strong className="block text-3xl text-primary">14 days</strong><span className="mt-2 block text-sm text-muted">{t('sell.averageFirstResponse')}</span></div><div className="border border-slate-200 bg-white p-6 shadow-card"><strong className="block text-3xl text-primary">4.8 / 5</strong><span className="mt-2 block text-sm text-muted">{t('sell.sellerSatisfaction')}</span></div></section>
 
-      <section className="mx-auto max-w-7xl px-6 lg:px-12"><SectionHeading eyebrow={t('sell.benefitsEyebrow')} title={t('sell.benefitsTitle')} /><div className="mt-8 grid gap-4 md:grid-cols-3"><div className="border border-slate-200 bg-blue-50 p-6"><h2 className="text-lg font-semibold text-ink">{t('sell.reachBuyersTitle')}</h2><p className="mt-3 text-sm leading-6 text-muted">{t('sell.reachBuyersDescription')}</p></div><div className="border border-slate-200 bg-blue-50 p-6"><h2 className="text-lg font-semibold text-ink">{t('sell.nextStepsTitle')}</h2><p className="mt-3 text-sm leading-6 text-muted">{t('sell.nextStepsDescription')}</p></div><div className="border border-slate-200 bg-blue-50 p-6"><h2 className="text-lg font-semibold text-ink">{t('sell.localContextTitle')}</h2><p className="mt-3 text-sm leading-6 text-muted">{t('sell.localContextDescription')}</p></div></div></section>
+      <section className="mx-auto max-w-7xl px-6 lg:px-12"><SectionHeading eyebrow={t('sell.benefitsEyebrow')} title={t('sell.benefitsTitle')} /><div className="mt-8 grid gap-4 md:grid-cols-3"><div className="border border-slate-200 bg-slate-50 p-6"><h2 className="text-lg font-semibold text-ink">{t('sell.reachBuyersTitle')}</h2><p className="mt-3 text-sm leading-6 text-muted">{t('sell.reachBuyersDescription')}</p></div><div className="border border-slate-200 bg-slate-50 p-6"><h2 className="text-lg font-semibold text-ink">{t('sell.nextStepsTitle')}</h2><p className="mt-3 text-sm leading-6 text-muted">{t('sell.nextStepsDescription')}</p></div><div className="border border-slate-200 bg-slate-50 p-6"><h2 className="text-lg font-semibold text-ink">{t('sell.localContextTitle')}</h2><p className="mt-3 text-sm leading-6 text-muted">{t('sell.localContextDescription')}</p></div></div></section>
 
       {justSubmitted && (
         <section className="rounded-[30px] border border-slate-200 bg-white p-8 text-slate-700 shadow-sm">

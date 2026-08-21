@@ -9,6 +9,8 @@ import { appendStorageArray, readStorage, writeStorage, STORAGE_KEYS } from '../
 import logo from '../assets/images/logo.png';
 import { useLanguage } from '../i18n/LanguageContext';
 
+import { formatIndianPrice, parseNaturalIndianPrice } from '../utils/format';
+
 const fallbackPropertyImage = logo;
 const metadata = (files) => Array.from(files || []).map((file) => ({ name: file.name, type: file.type, size: file.size, lastModified: file.lastModified }));
 
@@ -45,11 +47,23 @@ function SellerForm() {
   ], [t]);
   const selectedDistrict = watch('district');
   const selectedTaluka = watch('subDistrict');
-  const subDistrictOptions = selectedDistrict ? gujaratSubDistricts[selectedDistrict] || [] : [];
+  const selectedType = watch('type');
+  const priceAmountValue = watch('priceAmount');
+  const subDistrictOptions = useMemo(() => {
+    if (!selectedDistrict) return [];
+    const rawList = gujaratSubDistricts[selectedDistrict] || [];
+    return [...new Set(rawList.map((item) => item.trim()))].sort((a, b) =>
+      (t(a) || a).localeCompare(t(b) || b, undefined, { sensitivity: 'base' })
+    );
+  }, [selectedDistrict, t]);
+
   const villageOptions = useMemo(() => {
     if (!selectedDistrict || !selectedTaluka) return [];
-    return (gujaratVillages[selectedDistrict]?.[selectedTaluka] || []).slice().sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }));
-  }, [selectedDistrict, selectedTaluka]);
+    const rawList = gujaratVillages[selectedDistrict]?.[selectedTaluka] || [];
+    return [...new Set(rawList.map((item) => item.trim()))].sort((a, b) =>
+      (t(a) || a).localeCompare(t(b) || b, undefined, { sensitivity: 'base' })
+    );
+  }, [selectedDistrict, selectedTaluka, t]);
 
   useEffect(() => {
     setValue('subDistrict', '');
@@ -77,9 +91,10 @@ function SellerForm() {
 
   const handlePriceInput = (event) => {
     const value = event.target.value;
-    const digitsOnly = String(value).replace(/[^\d]/g, '');
-    setDisplayPrice(formatIndianNumber(digitsOnly));
-    setValue('priceAmount', digitsOnly, { shouldDirty: true, shouldValidate: true });
+    setDisplayPrice(value);
+    const parsed = parseNaturalIndianPrice(value);
+    const numValue = typeof parsed === 'number' ? String(parsed) : String(value).replace(/[^\d]/g, '');
+    setValue('priceAmount', numValue, { shouldDirty: true, shouldValidate: true });
   };
 
   const submit = (data) => {
@@ -116,7 +131,7 @@ function SellerForm() {
       location: data.district || '',
       city: data.district || '',
       address: [data.village || '', data.subDistrict || '', data.district || '', 'Gujarat'].filter(Boolean).join(', '),
-      price: priceValue ? `₹${priceValue.toLocaleString('en-IN')}` : 'Price on request',
+      price: priceValue ? (Number(priceValue) || String(priceValue)) : 'Price on request',
       priceAmount: priceValue ? String(priceValue) : '',
       priceUnit: data.priceUnit || '',
       landArea: data.additionalDetails || 'Area not specified',
@@ -159,13 +174,21 @@ function SellerForm() {
     navigate('/seller-form', { state: { justSubmitted: true, data: lead } });
   };
 
-  return <div className="-mx-4 -mt-8 bg-[#FFFEFE] pb-20 sm:-mx-6 lg:-mx-8">
-    <section className="bg-ink px-4 py-12 text-white sm:px-10 sm:py-16 lg:px-12"><div className="mx-auto max-w-5xl"><p className="eyebrow text-blue-200">{t('sellerForm.title')}</p><h1 className="mt-4 text-3xl font-bold sm:text-6xl">{t('sellerForm.smallHeading')}</h1><p className="mt-4 max-w-2xl text-sm text-white/70 sm:text-base">{t('sellerForm.authMessage')}</p><p className="mt-3 max-w-2xl text-sm text-white/60 sm:text-base">{t('sellerForm.helpDescription')}</p></div></section>
-    <section className="mx-auto -mt-8 max-w-4xl px-4 sm:px-6">
-      <form onSubmit={handleSubmit(submit)} className="space-y-6 rounded-[32px] bg-white p-5 shadow-xl sm:p-10">
+  return (
+    <div className="-mx-4 -mt-8 bg-cream pb-28 sm:pb-20 sm:-mx-6 lg:-mx-8 dark:bg-dark-bg">
+      <section className="bg-[#1D5CA9] px-4 py-7 text-white sm:px-10 sm:py-12 lg:px-12 dark:bg-dark-card dark:border-b dark:border-dark-border">
+        <div className="mx-auto max-w-5xl">
+          <p className="eyebrow text-white/80">{t('sellerForm.title')}</p>
+          <h1 className="mt-2 text-2xl font-bold sm:text-4xl lg:text-5xl">{t('sellerForm.smallHeading')}</h1>
+          <p className="mt-2 max-w-2xl text-xs text-white/80 sm:text-base">{t('sellerForm.authMessage')}</p>
+          <p className="mt-1.5 max-w-2xl text-xs text-white/70 sm:text-base">{t('sellerForm.helpDescription')}</p>
+        </div>
+      </section>
+      <section className="mx-auto mt-4 max-w-4xl px-4 sm:-mt-6 sm:px-6">
+      <form onSubmit={handleSubmit(submit)} className="space-y-6 rounded-[32px] bg-white p-5 shadow-xl sm:p-10 dark:bg-dark-card dark:border dark:border-dark-border">
         <div>
           <p className="eyebrow">{t('sellerForm.sectionEyebrow')}</p>
-          <h2 className="mt-2 text-3xl font-bold text-ink">{t('sellerForm.headline')}</h2>
+          <h2 className="mt-2 text-3xl font-bold text-ink dark:text-dark-text">{t('sellerForm.headline')}</h2>
         </div>
 
         <div className="space-y-6">
@@ -240,18 +263,33 @@ function SellerForm() {
             {errors.village && <p className="error-style">{errors.village.message}</p>}
           </label>
 
-          <label className="block">
+          <div className="block space-y-2">
             <span className="field-label">{t('sellerForm.propertyType')} *</span>
-            <select {...register('type', { required: t('sellerForm.propertyTypeRequired') })} className="field-control w-full">
-              <option value="">{t('sellerForm.selectPropertyType')}</option>
-              {propertyTypeOptions.map((type) => (
-                <option key={type.value} value={type.value}>
-                  {type.label}
-                </option>
-              ))}
-            </select>
+            <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
+              {propertyTypeOptions.map((opt) => {
+                const isSelected = selectedType === opt.value;
+                return (
+                  <button
+                    key={opt.value}
+                    type="button"
+                    onClick={() => {
+                      setValue('type', opt.value, { shouldDirty: true, shouldValidate: true });
+                      clearErrors('type');
+                    }}
+                    className={`flex h-12 w-full items-center justify-center rounded-xl border text-xs font-bold transition ${
+                      isSelected
+                        ? 'border-[#1D5CA9] bg-[#1D5CA9] text-white shadow-sm'
+                        : 'border-slate-200 bg-white text-slate-700 hover:border-[#1D5CA9]/50 hover:bg-slate-50'
+                    }`}
+                  >
+                    {opt.label}
+                  </button>
+                );
+              })}
+            </div>
+            <input type="hidden" {...register('type', { required: t('sellerForm.propertyTypeRequired') })} />
             {errors.type && <p className="error-style">{errors.type.message}</p>}
-          </label>
+          </div>
 
           <label className="block">
             <span className="field-label">{t('sellerForm.priceUnit')} *</span>
@@ -276,12 +314,17 @@ function SellerForm() {
               placeholder={t('sellerForm.pricePlaceholder')}
               inputMode="numeric"
             />
+            {priceAmountValue ? (
+              <p className="mt-1.5 text-xs font-semibold text-[#1D5CA9]">
+                ≈ {formatIndianPrice(priceAmountValue)}
+              </p>
+            ) : null}
             {errors.priceAmount && <p className="error-style">{errors.priceAmount.message}</p>}
           </label>
 
           <label className="block">
             <span className="field-label">{t('sellerForm.propertyImages')}</span>
-            <div className="rounded-[28px] border border-slate-200 bg-slate-50 p-4">
+            <div className="rounded-[28px] border border-slate-200 bg-cream p-4">
               <input type="file" accept="image/*" multiple onChange={(event) => addFiles(event, setImages, 'image/')} className="field-control w-full bg-white" />
               <p className="mt-3 text-sm text-slate-500">{t('sellerForm.imageHint')}</p>
               {images.length > 0 && (
@@ -302,7 +345,7 @@ function SellerForm() {
 
           <label className="block">
             <span className="field-label">{t('sellerForm.propertyVideos')}</span>
-            <div className="rounded-[28px] border border-slate-200 bg-slate-50 p-4">
+            <div className="rounded-[28px] border border-slate-200 bg-cream p-4">
               <input type="file" accept="video/*" multiple onChange={(event) => addFiles(event, setVideos, 'video/')} className="field-control w-full bg-white" />
               {videos.length > 0 && (
                 <div className="mt-4 space-y-3">
@@ -322,7 +365,7 @@ function SellerForm() {
 
           <label className="block">
             <span className="field-label">{t('sellerForm.document')} *</span>
-            <div className="rounded-[28px] border border-slate-200 bg-slate-50 p-4">
+            <div className="rounded-[28px] border border-slate-200 bg-cream p-4">
               <input type="file" accept=".pdf,.jpg,.jpeg,.png,.webp" onChange={(event) => setPdf(event.target.files?.[0] || null)} className="field-control w-full bg-white" />
               <p className="mt-3 text-sm text-slate-500">{t('sellerForm.documentHint')}</p>
               {pdf && (
@@ -367,7 +410,8 @@ function SellerForm() {
         </div>
       </form>
     </section>
-  </div>;
+    </div>
+  );
 }
 
 export default SellerForm;

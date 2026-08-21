@@ -1,5 +1,5 @@
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Home, Search, PlusCircle, Mail, User } from 'lucide-react';
+import { Home, Building2, FilePlus, Mail, User } from 'lucide-react';
 import { getSubmissionDestination } from '../utils/formNavigation';
 import { useLanguage } from '../i18n/LanguageContext';
 
@@ -11,8 +11,8 @@ function MobileBottomNav() {
 
   const items = [
     { label: t('nav.home'), to: '/home', icon: Home },
-    { label: t('nav.buy'), to: '/buy', icon: Search, action: 'buy' },
-    { label: t('nav.sell'), to: '/sell', icon: PlusCircle, action: 'sell' },
+    { label: t('nav.buy'), to: '/buy', icon: Building2, action: 'buy' },
+    { label: t('nav.sell'), to: '/sell', icon: FilePlus, action: 'sell' },
     { label: t('nav.contact'), to: '/contact', icon: Mail },
     { label: t('nav.profile'), to: '/profile', icon: User },
   ];
@@ -32,12 +32,22 @@ function MobileBottomNav() {
     navigate(item.to);
   };
 
+  const isItemActive = (item) => {
+    const path = location.pathname;
+    if (item.to === '/home') return path === '/home';
+    if (item.action === 'buy') return path === '/buy' || path === '/buyer-form' || path.startsWith('/buy');
+    if (item.action === 'sell') return path === '/sell' || path === '/seller-form' || path.startsWith('/sell');
+    if (item.to === '/contact') return path === '/contact';
+    if (item.to === '/profile') return path.startsWith('/profile');
+    return path === item.to;
+  };
+
   return (
     <nav className="mobile-bottom-nav sm:hidden">
       <div className="mobile-bottom-nav__inner">
         {items.map((item) => {
           const Icon = item.icon;
-          const active = location.pathname === item.to || (item.to === '/profile' && location.pathname.startsWith('/profile'));
+          const active = isItemActive(item);
           return (
             <button
               key={item.to}
@@ -45,6 +55,7 @@ function MobileBottomNav() {
               onClick={() => handleNavigation(item)}
               className={`mobile-bottom-nav__item ${active ? 'is-active' : ''}`}
               aria-label={item.label}
+              aria-current={active ? 'page' : undefined}
             >
               <span className="mobile-bottom-nav__icon-wrap">
                 <Icon size={20} />

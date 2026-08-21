@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../i18n/LanguageContext';
 import { languageStorageKey } from '../i18n/translations';
+import logo from '../assets/images/logo.png';
 
 function LanguageSelectionPage() {
   const navigate = useNavigate();
@@ -20,12 +21,12 @@ function LanguageSelectionPage() {
   };
 
   return (
-    <div className="min-h-screen w-full overflow-x-clip bg-[#F8F8F4] px-4 py-10 text-slate-900">
+    <div className="min-h-screen w-full overflow-x-clip bg-[#F8F8F4] px-4 py-10 text-slate-900 dark:bg-dark-bg dark:text-dark-text">
       <div className="mx-auto flex min-h-[calc(100vh-5rem)] max-w-xl items-center justify-center">
-        <section className="w-full rounded-[34px] border border-slate-200 bg-white p-6 shadow-[0_24px_80px_rgba(15,23,42,0.10)] sm:p-10">
+        <section className="w-full rounded-[34px] border border-slate-200 bg-white p-6 shadow-[0_24px_80px_rgba(15,23,42,0.10)] sm:p-10 dark:border-dark-border dark:bg-dark-card">
           <div className="text-center">
-            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-3xl bg-emerald-50">
-              <span className="text-2xl font-bold text-sage">BS</span>
+            <div className="mx-auto flex h-16 w-44 items-center justify-center rounded-3xl bg-sage/10 px-4">
+              <img src={logo} alt="Broker Streets logo" className="h-9 w-auto max-w-[150px] object-contain" />
             </div>
             <h1 className="mt-6 text-3xl font-semibold leading-tight text-slate-900 sm:text-4xl">{t('app.brand')}</h1>
             <p className="mt-3 text-sm font-medium uppercase tracking-[0.24em] text-slate-500">{t('app.subtitle')}</p>
