@@ -350,13 +350,15 @@ function Dashboard() {
 
   return (
     <div className="container-fluid px-0">
-      <div className="d-flex justify-content-between align-items-center mb-4">
+      <div className="d-flex flex-column flex-sm-row align-items-sm-center justify-content-sm-between gap-2 mb-4">
         <div>
           <h2 className="fw-bold mb-1 page-title">{t('admin.dashboard')}</h2>
           <p className="text-muted mb-0">{t('admin.overview')}</p>
         </div>
-        <div className="text-end">
-          <div className="fw-semibold">{new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</div>
+        <div className="text-start text-sm-end">
+          <div className="d-inline-flex align-items-center gap-1.5 px-3 py-1 rounded-pill border bg-white text-secondary small fw-semibold shadow-sm">
+            <span>{new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
+          </div>
         </div>
       </div>
 
@@ -1028,6 +1030,7 @@ function UsersPage() {
 
 /* ---------------- PROFILE PAGE ---------------- */
 function ProfilePage() {
+  const navigate = useNavigate();
   const { t } = useLanguage();
   const session = readMasterGroupSession();
   const isSuper = isSuperAdminSession();
@@ -1036,7 +1039,20 @@ function ProfilePage() {
 
   return (
     <div className="card table-card">
-      <div className="card-body">
+      <div className="card-body p-3 p-sm-4">
+        {/* Master Group Profile Back Button */}
+        <div className="mb-3">
+          <button
+            type="button"
+            onClick={() => navigate(-1)}
+            className="btn btn-sm d-inline-flex align-items-center gap-2 rounded-3 text-xs font-bold transition-all active:scale-95 shadow-sm"
+            style={{ color: '#1D5CA9', backgroundColor: 'rgba(29, 92, 169, 0.08)', borderColor: 'rgba(29, 92, 169, 0.25)', borderStyle: 'solid', borderWidth: '1px' }}
+          >
+            <span style={{ fontSize: '1.1rem', lineHeight: 1 }}>←</span>
+            <span>{t('common.back') || 'Back'}</span>
+          </button>
+        </div>
+
         <h4 className="fw-bold mb-3">{t('admin.profile')}</h4>
         <div className="d-flex align-items-center gap-3 mb-4">
           <span className="avatar" style={{ width: 56, height: 56, fontSize: '1.3rem' }}>{getInitials(name)}</span>

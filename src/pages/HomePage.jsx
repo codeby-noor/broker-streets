@@ -177,6 +177,42 @@ function HomePage() {
   const [currentReviewIndex, setCurrentReviewIndex] = useState(0);
   const prefersReducedMotion = useReducedMotion();
 
+  // Hero Image Carousel State (4-second Auto Slider with 4 land/property images)
+  const heroImages = useMemo(
+    () => [
+      {
+        src: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1200&q=85',
+        location: 'Surat & Navsari',
+        titleKey: 'home.verifiedListingTitle',
+      },
+      {
+        src: 'https://images.unsplash.com/photo-1500937386664-56d1dfef3854?auto=format&fit=crop&w=1200&q=85',
+        location: 'Surat (Olpad)',
+        titleKey: 'buyerForm.agriculturalLand',
+      },
+      {
+        src: 'https://images.unsplash.com/photo-1464226184884-fa280b87c399?auto=format&fit=crop&w=1200&q=85',
+        location: 'Navsari (Gandevi)',
+        titleKey: 'buyerForm.agriculturalLand',
+      },
+      {
+        src: 'https://images.unsplash.com/photo-1494526585095-c41746248156?auto=format&fit=crop&w=1200&q=85',
+        location: 'Surat (Kamrej)',
+        titleKey: 'buyerForm.nonAgriculturalLand',
+      },
+    ],
+    []
+  );
+
+  const [heroImageIndex, setHeroImageIndex] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setHeroImageIndex((prev) => (prev + 1) % heroImages.length);
+    }, 4000);
+    return () => clearInterval(timer);
+  }, [heroImages.length]);
+
   const reviews = useMemo(
     () => [
       { text: t('home.review1Text'), author: t('home.review1Author') },
@@ -277,17 +313,43 @@ function HomePage() {
             </div>
 
             <div className="relative h-44 w-full overflow-hidden rounded-xl bg-slate-100 sm:h-52 lg:h-60">
-              <img
-                src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1200&q=85"
-                alt="Agricultural & NA Land in Gujarat"
-                className="h-full w-full object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/40 via-transparent to-transparent" />
-              <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between rounded-lg bg-white/90 px-3 py-1.5 backdrop-blur-sm">
-                <span className="text-xs font-semibold text-slate-900">
-                  {t('home.verifiedListingTitle')}
+              <AnimatePresence mode="wait">
+                <motion.img
+                  key={heroImageIndex}
+                  src={heroImages[heroImageIndex].src}
+                  alt="Agricultural & NA Land in Gujarat"
+                  initial={prefersReducedMotion ? { opacity: 1 } : { opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={prefersReducedMotion ? { opacity: 1 } : { opacity: 0 }}
+                  transition={prefersReducedMotion ? { duration: 0 } : { duration: 0.5 }}
+                  className="absolute inset-0 h-full w-full object-cover"
+                />
+              </AnimatePresence>
+
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/50 via-transparent to-transparent pointer-events-none" />
+
+              {/* Subtle top-right pagination dots */}
+              <div className="absolute top-2.5 right-2.5 flex items-center gap-1 z-10 bg-black/40 backdrop-blur-sm px-2 py-1 rounded-full">
+                {heroImages.map((_, idx) => (
+                  <button
+                    key={idx}
+                    type="button"
+                    aria-label={`Hero slide ${idx + 1}`}
+                    onClick={() => setHeroImageIndex(idx)}
+                    className={`h-1.5 rounded-full transition-all duration-300 ${
+                      heroImageIndex === idx ? 'w-3.5 bg-white' : 'w-1.5 bg-white/50'
+                    }`}
+                  />
+                ))}
+              </div>
+
+              <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between rounded-lg bg-white/90 px-3 py-1.5 backdrop-blur-sm z-10">
+                <span className="text-xs font-semibold text-slate-900 truncate">
+                  {t(heroImages[heroImageIndex].titleKey)}
                 </span>
-                <span className="text-[11px] font-bold text-sage">Surat & Navsari</span>
+                <span className="text-[11px] font-bold text-sage shrink-0">
+                  {heroImages[heroImageIndex].location}
+                </span>
               </div>
             </div>
           </div>

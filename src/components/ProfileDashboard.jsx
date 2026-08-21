@@ -33,6 +33,7 @@ import {
   House,
   FileText,
   XCircle,
+  ArrowLeft,
 } from 'lucide-react';
 import { useUserStore } from '../store/useUserStore';
 import {
@@ -685,6 +686,16 @@ function ProfileDashboard() {
       </aside>
 
       <main className="dashboard-main">
+        {/* Back Button */}
+        <button
+          type="button"
+          onClick={() => navigate(-1)}
+          className="inline-flex items-center gap-1.5 rounded-xl border border-[#1D5CA9]/20 bg-[#1D5CA9]/10 px-3.5 py-1.5 text-xs font-bold text-[#1D5CA9] transition hover:bg-[#1D5CA9]/20 active:scale-95 mb-3"
+        >
+          <ArrowLeft size={16} />
+          <span>{t('common.back')}</span>
+        </button>
+
         {/* Topbar */}
         <div className="dashboard-topbar flex items-center justify-between gap-3 mb-4">
           <div>
