@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import LargeButton from '../components/LargeButton';
 import { useUserStore } from '../store/useUserStore';
@@ -16,26 +16,36 @@ const metadata = (files) => Array.from(files || []).map((file) => ({ name: file.
 
 function SellerForm() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { t } = useLanguage();
   const user = useUserStore((state) => state.user);
+  const editProperty = location.state?.editProperty || null;
+
   const { register, handleSubmit, watch, setValue, clearErrors, formState: { errors } } = useForm({
     defaultValues: {
-      state: 'Gujarat',
-      district: '',
-      subDistrict: '',
-      village: '',
-      type: '',
-      priceUnit: '',
-      priceAmount: '',
-      mapLink: '',
-      additionalDetails: '',
+      sellerType: editProperty?.sellerType || editProperty?.seller?.type || '',
+      state: editProperty?.state || 'Gujarat',
+      district: editProperty?.district || editProperty?.city || editProperty?.location || '',
+      subDistrict: editProperty?.subDistrict || editProperty?.taluka || '',
+      village: editProperty?.village || '',
+      type: editProperty?.type || editProperty?.propertyType || '',
+      priceUnit: editProperty?.priceUnit || '',
+      priceAmount: editProperty?.priceAmount || editProperty?.price || '',
+      mapLink: editProperty?.mapLink || editProperty?.mapUrl || editProperty?.googleMaps || '',
+      additionalDetails: editProperty?.description || editProperty?.additionalDetails || '',
     },
   });
   const [images, setImages] = useState([]);
   const [videos, setVideos] = useState([]);
   const [pdf, setPdf] = useState(null);
   const [submitting, setSubmitting] = useState(false);
-  const [displayPrice, setDisplayPrice] = useState('');
+  const [displayPrice, setDisplayPrice] = useState(
+    editProperty?.priceAmount || editProperty?.price ? String(editProperty.priceAmount || editProperty.price) : ''
+  );
+  const sellerTypeOptions = useMemo(() => [
+    { value: 'owner', label: t('sellerForm.owner') },
+    { value: 'agent', label: t('sellerForm.agent') },
+  ], [t]);
   const propertyTypeOptions = useMemo(() => [
     { value: 'Agricultural Land', label: t('sellerForm.agriculturalLand') },
     { value: 'Non-Agricultural Land', label: t('sellerForm.nonAgriculturalLand') },
@@ -45,10 +55,30 @@ function SellerForm() {
     { value: 'sq.yard (var)', label: t('sellerForm.sqYard') },
     { value: 'Sq.Ft', label: t('sellerForm.sqFt') },
   ], [t]);
+  const selectedSellerType = watch('sellerType');
   const selectedDistrict = watch('district');
   const selectedTaluka = watch('subDistrict');
   const selectedType = watch('type');
   const priceAmountValue = watch('priceAmount');
+
+  useEffect(() => {
+    if (editProperty) {
+      setValue('sellerType', editProperty.sellerType || editProperty.seller?.type || '');
+      setValue('state', editProperty.state || 'Gujarat');
+      setValue('district', editProperty.district || editProperty.city || editProperty.location || '');
+      setValue('subDistrict', editProperty.subDistrict || editProperty.taluka || '');
+      setValue('village', editProperty.village || '');
+      setValue('type', editProperty.type || editProperty.propertyType || '');
+      setValue('priceUnit', editProperty.priceUnit || '');
+      setValue('priceAmount', editProperty.priceAmount || editProperty.price || '');
+      if (editProperty.priceAmount || editProperty.price) {
+        setDisplayPrice(String(editProperty.priceAmount || editProperty.price));
+      }
+      setValue('mapLink', editProperty.mapLink || editProperty.mapUrl || editProperty.googleMaps || '');
+      setValue('additionalDetails', editProperty.description || editProperty.additionalDetails || '');
+    }
+  }, [editProperty, setValue]);
+
   const subDistrictOptions = useMemo(() => {
     if (!selectedDistrict) return [];
     const rawList = gujaratSubDistricts[selectedDistrict] || [];
@@ -66,15 +96,19 @@ function SellerForm() {
   }, [selectedDistrict, selectedTaluka, t]);
 
   useEffect(() => {
-    setValue('subDistrict', '');
-    setValue('village', '');
-    clearErrors('village');
-  }, [selectedDistrict, setValue, clearErrors]);
+    if (!editProperty) {
+      setValue('subDistrict', '');
+      setValue('village', '');
+      clearErrors('village');
+    }
+  }, [selectedDistrict, setValue, clearErrors, editProperty]);
 
   useEffect(() => {
-    setValue('village', '');
-    clearErrors('village');
-  }, [selectedTaluka, setValue, clearErrors]);
+    if (!editProperty) {
+      setValue('village', '');
+      clearErrors('village');
+    }
+  }, [selectedTaluka, setValue, clearErrors, editProperty]);
 
   const addFiles = (event, setter, accept) => {
     const files = Array.from(event.target.files || []).filter((file) => file.type.startsWith(accept));
@@ -98,29 +132,39 @@ function SellerForm() {
   };
 
   const submit = (data) => {
-    if (!pdf) { toast.error(t('sellerForm.documentRequired')); return; }
+    if (!editProperty && !pdf) { toast.error(t('sellerForm.documentRequired')); return; }
     setSubmitting(true);
-    const listingId = typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : `listing-${Date.now()}`;
-    const imageUrls = images.map((item) => item.url).filter(Boolean);
-    const pdfUrl = pdf ? URL.createObjectURL(pdf) : '';
+    const listingId = editProperty?.id || (typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : `listing-${Date.now()}`);
     const priceValue = data.priceAmount ? Number(String(data.priceAmount).replace(/[^\d]/g, '')) : 0;
     const title = `${data.type || 'Land'} in ${data.village || data.subDistrict || data.district || 'Gujarat'}`;
     const lead = {
+      ...(editProperty || {}),
       id: listingId,
       ...data,
+      sellerType: data.sellerType || '',
       priceAmount: data.priceAmount || '',
       subDistrict: data.subDistrict || '',
       village: data.village || '',
-      userId: user?.id || '', userName: user?.name || '', userMobile: user?.mobile || '', userEmail: user?.email || '',
-      ownerName: user?.name || '', ownerMobile: user?.mobile || '', ownerEmail: user?.email || '',
-      propertyImages: metadata(images.map((item) => item.file)), propertyVideos: metadata(videos.map((item) => item.file)), propertyDocument: metadata([pdf])[0],
-      submittedAt: new Date().toISOString(),
+      userId: editProperty?.userId || user?.id || '',
+      userName: editProperty?.userName || user?.name || '',
+      userMobile: editProperty?.userMobile || user?.mobile || '',
+      userEmail: editProperty?.userEmail || user?.email || '',
+      ownerName: editProperty?.ownerName || user?.name || '',
+      ownerMobile: editProperty?.ownerMobile || user?.mobile || '',
+      ownerEmail: editProperty?.ownerEmail || user?.email || '',
+      propertyImages: images.length ? metadata(images.map((item) => item.file)) : (editProperty?.propertyImages || []),
+      propertyVideos: videos.length ? metadata(videos.map((item) => item.file)) : (editProperty?.propertyVideos || []),
+      propertyDocument: pdf ? metadata([pdf])[0] : (editProperty?.propertyDocument || null),
+      submittedAt: editProperty?.submittedAt || new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
     };
     const listing = {
+      ...(editProperty || {}),
       ...lead,
       id: listingId,
       title,
       name: title,
+      sellerType: data.sellerType || '',
       type: data.type || '',
       propertyType: data.type || '',
       state: data.state || 'Gujarat',
@@ -137,40 +181,61 @@ function SellerForm() {
       landArea: data.additionalDetails || 'Area not specified',
       area: data.additionalDetails || 'Area not specified',
       description: data.additionalDetails || 'Verified land listing with clear location and pricing details.',
-      status: 'Available',
-      verified: true,
-      image: fallbackPropertyImage,
-      gallery: [fallbackPropertyImage],
-      images: [fallbackPropertyImage],
-      propertyDocument: pdf ? { name: pdf.name, type: pdf.type, size: pdf.size, lastModified: pdf.lastModified, url: '#' } : null,
-      documentUrl: '#',
+      status: editProperty?.status || 'Available',
+      verified: editProperty?.verified ?? true,
+      image: editProperty?.image || fallbackPropertyImage,
+      gallery: editProperty?.gallery || [fallbackPropertyImage],
+      images: editProperty?.images || [fallbackPropertyImage],
+      propertyDocument: pdf ? { name: pdf.name, type: pdf.type, size: pdf.size, lastModified: pdf.lastModified, url: '#' } : (editProperty?.propertyDocument || null),
+      documentUrl: editProperty?.documentUrl || '#',
       mapLink: data.mapLink || '',
       mapUrl: data.mapLink || '',
       googleMaps: data.mapLink || '',
-      seller: { name: user?.name || '', phone: user?.mobile || '', email: user?.email || '' },
-      sellerName: user?.name || '',
-      sellerPhone: user?.mobile || '',
-      sellerEmail: user?.email || '',
-      ownerName: user?.name || '',
-      ownerMobile: user?.mobile || '',
-      ownerEmail: user?.email || '',
+      seller: {
+        name: editProperty?.seller?.name || user?.name || '',
+        phone: editProperty?.seller?.phone || user?.mobile || '',
+        email: editProperty?.seller?.email || user?.email || '',
+        type: data.sellerType || '',
+        sellerType: data.sellerType || '',
+      },
+      sellerName: editProperty?.sellerName || user?.name || '',
+      sellerPhone: editProperty?.sellerPhone || user?.mobile || '',
+      sellerEmail: editProperty?.sellerEmail || user?.email || '',
+      ownerName: editProperty?.ownerName || user?.name || '',
+      ownerMobile: editProperty?.ownerMobile || user?.mobile || '',
+      ownerEmail: editProperty?.ownerEmail || user?.email || '',
       submittedAt: lead.submittedAt,
-      createdAt: lead.submittedAt,
-      updatedAt: lead.submittedAt,
-      uploadedDate: lead.submittedAt,
-      userId: user?.id || '',
+      createdAt: editProperty?.createdAt || lead.submittedAt,
+      updatedAt: lead.updatedAt,
+      uploadedDate: editProperty?.uploadedDate || lead.submittedAt,
+      userId: editProperty?.userId || user?.id || '',
     };
     try {
-      appendStorageArray(STORAGE_KEYS.sellerLeads, lead);
-      appendStorageArray(STORAGE_KEYS.listings, listing);
-      writeStorage(STORAGE_KEYS.lastProperty, listing);
+      const existingListings = readStorage(STORAGE_KEYS.listings, []);
+      if (editProperty?.id) {
+        const updatedListings = existingListings.map((item) =>
+          String(item.id) === String(editProperty.id) ? listing : item
+        );
+        writeStorage(STORAGE_KEYS.listings, updatedListings);
+
+        const existingLeads = readStorage(STORAGE_KEYS.sellerLeads, []);
+        const updatedLeads = existingLeads.map((item) =>
+          String(item.id) === String(editProperty.id) ? lead : item
+        );
+        writeStorage(STORAGE_KEYS.sellerLeads, updatedLeads);
+        writeStorage(STORAGE_KEYS.lastProperty, listing);
+      } else {
+        appendStorageArray(STORAGE_KEYS.sellerLeads, lead);
+        appendStorageArray(STORAGE_KEYS.listings, listing);
+        writeStorage(STORAGE_KEYS.lastProperty, listing);
+      }
     } catch {
       toast.error(t('sellerForm.saveError'));
       setSubmitting(false);
       return;
     }
     setSubmitting(false);
-    toast.success(t('sellerForm.submitSuccess'));
+    toast.success(editProperty ? t('sellerForm.listingUpdated') || 'Listing updated successfully.' : t('sellerForm.submitSuccess'));
     navigate('/seller-form', { state: { justSubmitted: true, data: lead } });
   };
 
@@ -192,6 +257,34 @@ function SellerForm() {
         </div>
 
         <div className="space-y-6">
+          <div className="block space-y-2">
+            <span className="field-label">{t('sellerForm.sellerTypeQuestion')} *</span>
+            <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
+              {sellerTypeOptions.map((opt) => {
+                const isSelected = selectedSellerType === opt.value;
+                return (
+                  <button
+                    key={opt.value}
+                    type="button"
+                    onClick={() => {
+                      setValue('sellerType', opt.value, { shouldDirty: true, shouldValidate: true });
+                      clearErrors('sellerType');
+                    }}
+                    className={`flex h-12 w-full items-center justify-center rounded-xl border text-xs font-bold transition ${
+                      isSelected
+                        ? 'border-[#1D5CA9] bg-[#1D5CA9] text-white shadow-sm'
+                        : 'border-slate-200 bg-white text-slate-700 hover:border-[#1D5CA9]/50 hover:bg-slate-50'
+                    }`}
+                  >
+                    {opt.label}
+                  </button>
+                );
+              })}
+            </div>
+            <input type="hidden" {...register('sellerType', { required: t('sellerForm.sellerTypeRequired') })} />
+            {errors.sellerType && <p className="error-style">{errors.sellerType.message}</p>}
+          </div>
+
           <label className="block">
             <span className="field-label">{t('sellerForm.state')} *</span>
             <input

@@ -26,7 +26,7 @@ import {
 } from './masterGroupAuth';
 import { useLanguage } from '../i18n/LanguageContext';
 import { locationTranslationsGu } from '../i18n/translations';
-import { formatIndianPrice, parseNaturalIndianPrice } from '../utils/format';
+import { formatIndianPrice, formatSellerNameWithType, parseNaturalIndianPrice } from '../utils/format';
 import AdminLanguageToggle from './AdminLanguageToggle';
 import {
   ADMIN_NAMES,
@@ -542,7 +542,7 @@ function PropertiesPage({ navigate }) {
         <div className="fw-semibold">{getPropertyDisplayTitle(p.title || p.name)}</div>
         <div className="small text-muted">{p.id}</div>
       </td>
-      <td>{p.sellerName || p.ownerName || '—'}</td>
+      <td>{formatSellerNameWithType(p.sellerName || p.ownerName, p.sellerType || p.seller?.type, t) || '—'}</td>
       <td>{translateDisplayValue(p.type || p.propertyType, t, isGujarati)}</td>
       <td>{translateDisplayValue(p.district || p.city || p.location, t, isGujarati)}</td>
       <td>{formatPrice(p.price || p.priceAmount)}</td>
@@ -599,8 +599,8 @@ function PropertiesPage({ navigate }) {
           </div>
           <div className="col-6 col-md-2">
             <select className="form-select" value={sort} onChange={(e) => setSort(e.target.value)}>
-              <option value="newest">{t('admin.newest')}</option>
-              <option value="oldest">{t('admin.oldest')}</option>
+              <option value="newest">{t('admin.sortNewest')}</option>
+              <option value="oldest">{t('admin.sortOldest')}</option>
               <option value="price-low">{t('admin.priceLowToHigh')}</option>
               <option value="price-high">{t('admin.priceHighToLow')}</option>
               <option value="location">{t('admin.location')}</option>
@@ -642,7 +642,7 @@ function PropertiesPage({ navigate }) {
               </div>
               <div className="mt-2">
                 <div className="row-label">{t('admin.owner')}</div>
-                <div className="row-value">{p.sellerName || p.ownerName || '—'}</div>
+                <div className="row-value">{formatSellerNameWithType(p.sellerName || p.ownerName, p.sellerType || p.seller?.type, t) || '—'}</div>
                 <div className="row-label mt-1">{t('admin.location')}</div>
                 <div className="row-value">{translateDisplayValue(p.district || p.city || p.location, t, isGujarati)} • {translateDisplayValue(p.type || p.propertyType, t, isGujarati)}</div>
                 <div className="row-label mt-1">{t('admin.price')}</div>
@@ -684,7 +684,7 @@ function PropertiesPage({ navigate }) {
                 <div className="admin-detail-row"><span className="detail-label">{t('admin.location')}</span><span className="detail-value">{viewing.address || [viewing.village, viewing.subDistrict, viewing.district, viewing.state].filter(Boolean).join(', ') || '—'}</span></div>
                 <div className="admin-detail-row"><span className="detail-label">{t('admin.price')}</span><span className="detail-value">{formatPrice(viewing.price || viewing.priceAmount)} {translateDisplayValue(viewing.priceUnit, t, isGujarati)}</span></div>
                 <div className="admin-detail-row"><span className="detail-label">{t('admin.area')}</span><span className="detail-value">{viewing.area || viewing.landArea || '—'}</span></div>
-                <div className="admin-detail-row"><span className="detail-label">{t('admin.seller')}</span><span className="detail-value">{viewing.sellerName || viewing.ownerName || '—'}</span></div>
+                <div className="admin-detail-row"><span className="detail-label">{t('admin.seller')}</span><span className="detail-value">{formatSellerNameWithType(viewing.sellerName || viewing.ownerName, viewing.sellerType || viewing.seller?.type, t) || '—'}</span></div>
                 <div className="admin-detail-row"><span className="detail-label">{t('admin.sellerMobile')}</span><span className="detail-value">{viewing.sellerPhone || viewing.ownerMobile || '—'}</span></div>
                 <div className="admin-detail-row"><span className="detail-label">{t('admin.description')}</span><span className="detail-value">{viewing.description || '—'}</span></div>
               </div>
@@ -704,6 +704,7 @@ function AddPropertyPage() {
   const editing = location.state?.editing || null;
   const [form, setForm] = useState({
     id: editing?.id || '',
+    sellerType: editing?.sellerType || editing?.seller?.type || 'owner',
     title: editing?.title || editing?.name || '',
     type: editing?.type || editing?.propertyType || '',
     priceUnit: editing?.priceUnit || '',
@@ -731,6 +732,7 @@ function AddPropertyPage() {
     const now = new Date().toISOString();
     const property = {
       id: form.id || `PROP-${Date.now()}`,
+      sellerType: form.sellerType || 'owner',
       title: form.title,
       name: form.title,
       type: form.type,
@@ -760,7 +762,7 @@ function AddPropertyPage() {
       ownerName: form.sellerName,
       ownerMobile: form.sellerPhone,
       ownerEmail: form.sellerEmail,
-      seller: { name: form.sellerName, phone: form.sellerPhone, email: form.sellerEmail },
+      seller: { name: form.sellerName, phone: form.sellerPhone, email: form.sellerEmail, type: form.sellerType || 'owner', sellerType: form.sellerType || 'owner' },
       createdAt: editing?.createdAt || now,
       updatedAt: now,
       submittedAt: editing?.submittedAt || now,
@@ -781,8 +783,15 @@ function AddPropertyPage() {
         <p className="text-muted mb-4">{t('admin.createUpdateListing')}</p>
         <form onSubmit={submit}>
           <div className="row g-3">
-            <div className="col-12 col-md-6"><label className="form-label">{t('admin.title')} *</label><input className="form-control input-glow" value={form.title} onChange={(e) => update('title', e.target.value)} required /></div>
-            <div className="col-12 col-md-6">
+            <div className="col-12 col-md-3">
+              <label className="form-label">{t('sellerForm.sellerTypeQuestion')}</label>
+              <select className="form-select input-glow" value={form.sellerType} onChange={(e) => update('sellerType', e.target.value)}>
+                <option value="owner">{t('sellerForm.owner')}</option>
+                <option value="agent">{t('sellerForm.agent')}</option>
+              </select>
+            </div>
+            <div className="col-12 col-md-5"><label className="form-label">{t('admin.title')} *</label><input className="form-control input-glow" value={form.title} onChange={(e) => update('title', e.target.value)} required /></div>
+            <div className="col-12 col-md-4">
               <label className="form-label">{t('admin.propertyType')} *</label>
               <select className="form-select input-glow" value={form.type} onChange={(e) => update('type', e.target.value)} required>
                 <option value="">{t('admin.selectType')}</option>

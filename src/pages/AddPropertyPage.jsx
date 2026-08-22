@@ -39,6 +39,7 @@ const statusTranslationKeys = {
 };
 
 const initialDetails = {
+  sellerType: 'owner',
   title: '',
   city: 'Ahmedabad',
   address: '',
@@ -71,6 +72,7 @@ function AddPropertyPage() {
     const currentListing = listings.find((item) => item.id === editId);
     if (!currentListing) return;
     setDetails({
+      sellerType: currentListing.sellerType || currentListing.seller?.type || 'owner',
       title: currentListing.title || '',
       city: currentListing.city || 'Ahmedabad',
       address: currentListing.address || '',
@@ -161,6 +163,7 @@ function AddPropertyPage() {
           <section className="rounded-[32px] border border-slate-200 bg-white p-6 shadow-card sm:p-8">
             <h2 className="text-xl font-semibold text-ink">{t('sellerForm.sectionEyebrow')}</h2>
             <div className="mt-6 grid gap-6 sm:grid-cols-2">
+              <label className="sm:col-span-2"><span className="field-label">{t('sellerForm.sellerTypeQuestion')} *</span><select name="sellerType" value={details.sellerType} onChange={update} className="field-control"><option value="owner">{t('sellerForm.owner')}</option><option value="agent">{t('sellerForm.agent')}</option></select></label>
               <label className="sm:col-span-2"><span className="field-label">{t('sellerForm.title')} *</span><input required name="title" value={details.title} onChange={update} placeholder={t('sellerForm.titlePlaceholder')} className="field-control" /></label>
               <label><span className="field-label">{t('sellerForm.propertyType')}</span><select name="propertyType" value={details.propertyType} onChange={update} className="field-control">{propertyTypeOptions.map((option) => <option key={option} value={option}>{t(propertyTypeTranslationKeys[option] || option)}</option>)}</select></label>
               <label><span className="field-label">{t('sellerForm.district')}</span><select name="city" value={details.city} onChange={update} className="field-control">{['Ahmedabad', 'Surat', 'Vadodara', 'Rajkot', 'Gandhinagar', 'Navsari'].map((c) => <option key={c} value={c}>{t(c)}</option>)}</select></label>

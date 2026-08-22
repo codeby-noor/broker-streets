@@ -286,6 +286,10 @@ export const translations = {
       smallHeading: 'Sell Listing',
       authMessage: 'Your land details will be shown to buyers.',
       sectionEyebrow: 'Land details',
+      sellerTypeQuestion: 'Are you the owner or an agent?',
+      sellerTypeRequired: 'Please select whether you are the owner or an agent.',
+      owner: 'Owner',
+      agent: 'Agent',
       state: 'State',
       district: 'District',
       taluka: 'Taluka',
@@ -1131,7 +1135,8 @@ const batchTwoTranslations = {
   },
   gu: {
     buyerForm: { submitSuccess: 'તમારી ખરીદદાર પ્રોફાઇલ સફળતાપૂર્વક સબમિટ થઈ છે.', submitting: 'સબમિટ થઈ રહ્યું છે...', validationError: 'આગળ વધતા પહેલાં દર્શાવેલ વિગતો સુધારો.', villageSelectionRequired: 'ઓછામાં ઓછું 1 ગામ પસંદ કરો.', villageSelectionRequiredPlural: 'ઓછામાં ઓછા 2 ગામ પસંદ કરો.', removeVillage: 'ગામ દૂર કરો', maxVillagesReached: 'તમે મહત્તમ 2 ગામ પસંદ કરી શકો છો' },
-    common: { back: 'પાછળ', cancel: 'રદ કરો', clear: 'સાફ કરો', confirm: 'પુષ્ટિ કરો', delete: 'કાઢી નાખો', duplicate: 'નકલ કરો', edit: 'ફેરફાર કરો', markAvailable: 'ઉપલબ્ધ તરીકે ચિહ્નિત કરો', markSold: 'વેચાયેલ તરીકે ચિહ્નિત કરો', notAvailable: 'ઉપલબ્ધ નથી', notProvided: 'આપેલ નથી', optional: 'વૈકલ્પિક', ready: 'તૈયાર', remove: 'દૂર કરો', view: 'જુઓ', viewAgain: 'ફરી જુઓ' },
+    sellerForm: { sellerTypeQuestion: 'તમે માલિક છો કે એજન્ટ?', sellerTypeRequired: 'કૃપા કરીને માલિક અથવા એજન્ટ પસંદ કરો.', owner: 'માલિક', agent: 'એજન્ટ', title: 'તમારી જમીન વેચો', state: 'રાજ્ય', district: 'જિલ્લો', taluka: 'તાલુકો', village: 'ગામ', propertyType: 'જમીનનો પ્રકાર', priceUnit: 'કિંમત એકમ', priceAmount: 'કિંમત રકમ' },
+    common: { back: 'પાછળ', cancel: 'રદ કરો', clear: 'સાફ કરો', confirm: 'પુષ્ટિ કરો', delete: 'કાઢી નાખો', duplicate: 'નકલ કરો', edit: 'ફેરફાર કરો', markAvailable: 'ઉપલબ્ધ તરીકે ચિહ્નિત કરો', markSold: 'વેચાયેલ તરીકે ચિહ્નિત કરો', notAvailable: 'ઉપલબ્ધ નથી', notProvided: 'આપેલ નથી', optional: 'વૈકલ્પિક', ready: 'તૈયાર', remove: 'દૂર કરો', view: 'જુઓ', viewAgain: 'ફરી જુઓ', owner: 'માલિક', agent: 'એજન્ટ' },
     contact: { heading: 'Broker Streets નો સંપર્ક કરો', description: 'કોઈ પ્રશ્ન છે અથવા મદદ જોઈએ છે? અમારી ટીમનો સંપર્ક કરો અને અમે તમને મદદ કરવામાં ખુશ થઈશું.', phone: 'ફોન', email: 'ઈમેલ', headOffice: 'મુખ્ય કાર્યાલય', officeLocation: 'સુરત, ગુજરાત', callUs: 'અમને કૉલ કરો', whatsappUs: 'અમને WhatsApp કરો', emailId: 'ઈમેલ ID', modalDescription: 'સંપર્કની વિગતો નીચે આપેલ છે.', modalEmail: 'ઈમેલ', modalMobile: 'મોબાઇલ નંબર', modalName: 'નામ', modalNoContact: 'કોઈ સંપર્ક વિગતો ઉપલબ્ધ નથી.', modalProperty: 'પ્રોપર્ટી' },
     home: {
       buyerContactTitle: 'ખરીદદારનો સંપર્ક કરો', buyerLeadTitle: 'ગુજરાતભરના વિશ્વસનીય જમીન માલિકો સાથે ખરીદદારોને જોડીએ છીએ.', buyerLeadDescription: 'કૃષિ અને બિન-કૃષિ જમીન શોધતા ચકાસેલા ખરીદદારો સાથે સીધો સંપર્ક કરો.',

@@ -8,7 +8,7 @@ import { getSubmissionDestination } from '../utils/formNavigation';
 import AsyncImage from '../components/AsyncImage';
 import ContactModal from '../components/ContactModal';
 import { useLanguage } from '../i18n/LanguageContext';
-import { formatIndianPrice, standardizePriceUnit } from '../utils/format';
+import { formatIndianPrice, formatSellerNameWithType, standardizePriceUnit } from '../utils/format';
 import logo from '../assets/images/logo.png';
 
 const propertyDetailCellClass = 'bg-white px-4 py-3 dark:bg-dark-card';
@@ -560,6 +560,8 @@ function PropertyDetailsPage() {
   const propertyLocationLabel = locationParts.join(' • ');
 
   const sellerName = property.seller?.name || property.sellerName || property.owner || property.ownerName || t('propertyDetails.sellerNameFallback');
+  const sellerType = property.sellerType || property.seller?.sellerType || property.seller?.type || '';
+  const formattedSellerDisplayName = formatSellerNameWithType(sellerName, sellerType, t);
   const sellerPhone = property.seller?.phone || property.sellerPhone || property.ownerMobile || property.mobile || '';
   const sellerEmail = property.seller?.email || property.sellerEmail || property.ownerEmail || property.email || '';
   const sellerWhatsApp = sellerPhone ? `https://wa.me/91${String(sellerPhone).replace(/\D/g, '')}` : '';
@@ -646,7 +648,7 @@ function PropertyDetailsPage() {
                     {sellerName?.split(' ').map((part) => part[0]).slice(0, 2).join('') || 'S'}
                   </div>
                   <div className="min-w-0">
-                    <p className="truncate text-lg font-bold text-ink dark:text-dark-text">{sellerName}</p>
+                    <p className="truncate text-lg font-bold text-ink dark:text-dark-text">{formattedSellerDisplayName}</p>
                     <p className="mt-0.5 flex items-center gap-1.5 truncate text-sm text-slate-600 dark:text-dark-muted">
                       <MapPin size={14} className="shrink-0 text-sage dark:text-sage" />
                       {translateLocation(property?.district || property?.location, t, isGujarati)}

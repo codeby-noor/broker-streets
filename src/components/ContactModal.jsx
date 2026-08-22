@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { X, Phone, MessageCircle, Mail, Building2, MapPin } from 'lucide-react';
 import { useLanguage } from '../i18n/LanguageContext';
+import { formatSellerNameWithType } from '../utils/format';
 
 function ContactModal({ open, onClose, data = {}, title }) {
   const { t, getPropertyDisplayTitle } = useLanguage();
@@ -28,6 +29,8 @@ function ContactModal({ open, onClose, data = {}, title }) {
   if (!open) return null;
 
   const fullName = data.sellerName || data.ownerName || data.userName || data.name || t('contact.modalName');
+  const sellerType = data.sellerType || data.seller?.type || data.seller?.sellerType || '';
+  const formattedFullName = formatSellerNameWithType(fullName, sellerType, t);
   const mobile = data.sellerPhone || data.ownerMobile || data.mobile || data.userMobile || '';
   const email = data.sellerEmail || data.ownerEmail || data.email || data.userEmail || '';
   const cleanedMobile = String(mobile).replace(/\D/g, '');
@@ -83,7 +86,7 @@ function ContactModal({ open, onClose, data = {}, title }) {
             {/* NAME */}
             <div className="flex items-center justify-between text-xs sm:text-sm">
               <span className="font-medium text-slate-500">{t('contact.modalName')}</span>
-              <span className="font-bold text-slate-900 truncate max-w-[220px]">{fullName}</span>
+              <span className="font-bold text-slate-900 truncate max-w-[220px]">{formattedFullName}</span>
             </div>
 
             {/* MOBILE NUMBER */}

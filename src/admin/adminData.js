@@ -23,6 +23,7 @@ const DEMO_IMAGE = 'https://images.unsplash.com/photo-1500382017468-9049fed747ef
 export const ADMIN_DEMO_PROPERTIES = [
     {
         id: 'DEMO-PROP-1001',
+        sellerType: 'owner',
         title: 'Agricultural Land in Bardoli',
         name: 'Agricultural Land in Bardoli',
         type: 'Agricultural Land',
@@ -52,6 +53,7 @@ export const ADMIN_DEMO_PROPERTIES = [
         ownerName: 'Rakesh Patel',
         ownerMobile: '9876500005',
         ownerEmail: 'rakesh@example.com',
+        seller: { name: 'Rakesh Patel', phone: '9876500005', email: 'rakesh@example.com', type: 'owner', sellerType: 'owner' },
         createdAt: '2026-07-20T09:00:00.000Z',
         updatedAt: '2026-07-20T09:00:00.000Z',
         submittedAt: '2026-07-20T09:00:00.000Z',
@@ -60,6 +62,7 @@ export const ADMIN_DEMO_PROPERTIES = [
     },
     {
         id: 'DEMO-PROP-1002',
+        sellerType: 'agent',
         title: 'Non-Agricultural Land in Kamrej',
         name: 'Non-Agricultural Land in Kamrej',
         type: 'Non-Agricultural Land',
@@ -89,6 +92,7 @@ export const ADMIN_DEMO_PROPERTIES = [
         ownerName: 'Mehul Shah',
         ownerMobile: '9876500006',
         ownerEmail: 'mehul@example.com',
+        seller: { name: 'Mehul Shah', phone: '9876500006', email: 'mehul@example.com', type: 'agent', sellerType: 'agent' },
         createdAt: '2026-07-18T10:30:00.000Z',
         updatedAt: '2026-07-18T10:30:00.000Z',
         submittedAt: '2026-07-18T10:30:00.000Z',

@@ -165,10 +165,35 @@ export function parseNaturalIndianPrice(input) {
     return Math.round(num * 1000);
   }
 
-  const digitsOnly = str.replace(/[^\d.]/g, '');
-  if (digitsOnly && !isNaN(Number(digitsOnly))) {
-    return Number(digitsOnly);
-  }
-
   return str;
 }
+
+/**
+ * Get localized seller type label ("Owner", "Agent", "માલિક", "એજન્ટ", or "").
+ * Returns empty string if sellerType is missing or invalid.
+ * @param {string} sellerType - "owner" | "agent"
+ * @param {function} t - Translation function
+ * @returns {string} Formatted label or empty string
+ */
+export function getSellerTypeLabel(sellerType, t) {
+  if (!sellerType) return '';
+  const normalized = String(sellerType).trim().toLowerCase();
+  if (normalized === 'owner') return (t && t('sellerForm.owner')) || 'Owner';
+  if (normalized === 'agent') return (t && t('sellerForm.agent')) || 'Agent';
+  return '';
+}
+
+/**
+ * Format seller name with seller type if present.
+ * Example: "Mahenoor Shaikh · Owner" or "Mahenoor Shaikh" if sellerType missing.
+ * @param {string} name - Seller name
+ * @param {string} sellerType - "owner" | "agent"
+ * @param {function} t - Translation function
+ * @returns {string} Formatted seller name string
+ */
+export function formatSellerNameWithType(name, sellerType, t) {
+  if (!name) return '';
+  const typeLabel = getSellerTypeLabel(sellerType, t);
+  if (!typeLabel) return name;
+  return `${name} · ${typeLabel}`;
+}
